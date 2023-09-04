@@ -1,0 +1,24 @@
+# Build caches
+*build*
+
+# IDE and tool storage
+.cache
+
+.idea
+.vs
+.vscode
+
+# Third party resources
+ThirdParty
+
+# OS garbage
+.DS_Store
+desktop.ini
+thumbs.db
+
+# Exclusions
+!BuildContent
+!BuildScripts
+
+# Too large for git
+**/PrivateContent

@@ -1,0 +1,10 @@
+Checks: "-*,readability-identifier-naming"
+WarningsAsErrors: "true"
+FormatStyle: llvm
+CheckOptions:
+  readability-identifier-naming.NamespaceCase: CamelCase
+  readability-identifier-naming.ClassCase: CamelCase
+  readability-identifier-naming.StructCase: CamelCase
+  readability-identifier-naming.FunctionCase: CamelCase
+  readability-identifier-naming.VariableCase: camelBack
+  readability-identifier-naming.GlobalConstantCase: CamelCase

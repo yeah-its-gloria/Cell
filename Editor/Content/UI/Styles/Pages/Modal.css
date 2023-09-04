@@ -1,0 +1,29 @@
+body
+{
+    background-color: #1d1d1d;
+    user-select:      none;
+}
+
+h1
+{
+    font-size:   3rem;
+    user-select: none;
+}
+
+p
+{
+    font-size:   2rem;
+    user-select: none;
+}
+
+.modalButtonContainer
+{
+    display:         flex;
+    justify-content: center;
+    vertical-align:  center;
+}
+
+.modalButtonSpacer
+{
+    margin: auto;
+}

@@ -1,0 +1,7 @@
+{
+    "message":   "hi Aurelia",
+    "number":    25.6,
+    "silly":     true,
+    "funny":     false,
+    "something": null
+}
