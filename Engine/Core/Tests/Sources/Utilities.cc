@@ -10,8 +10,7 @@
 using namespace Cell;
 using namespace Cell::Utilities;
 
-void CellEntry(Reference<System::IPlatform> platform, Reference<System::String> parameterString) {
-    (void)(platform);
+void CellEntry(Reference<System::String> parameterString) {
     (void)(parameterString);
 
     CELL_ASSERT(Byteswap((uint16_t)0xf0ff) == 0xfff0);

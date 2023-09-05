@@ -5,14 +5,13 @@
 
 #include <Cell/Reference.hh>
 #include <Cell/Shell/Input.hh>
-#include <Cell/System/Platform.hh>
+#include <Cell/Shell/Shell.hh>
+#include <Cell/System/String.hh>
 
 class Example : public Cell::Object {
 public:
-    CELL_FUNCTION_INTERNAL Example(Cell::System::IPlatform& platform) : platform(platform) {}
-
-    CELL_INLINE ~Example() { delete input; }
-
+    CELL_INLINE Example() { }
+    CELL_FUNCTION_INTERNAL ~Example();
     CELL_FUNCTION_INTERNAL void Launch(const Cell::System::String& parameterString);
 
 private:
@@ -21,8 +20,7 @@ private:
     CELL_FUNCTION_INTERNAL void XRThread();
     CELL_FUNCTION_INTERNAL void VulkanThread();
 
-    Cell::System::IPlatform& platform;
-
+    Cell::Shell::IShell* shell = nullptr;
     Cell::Shell::Input* input = nullptr;
 
     // TODO: communications :tm:

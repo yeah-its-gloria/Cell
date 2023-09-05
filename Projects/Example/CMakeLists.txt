@@ -33,6 +33,7 @@ target_link_libraries(CellExample PRIVATE
                       CellModulesDataManagement
                       CellModulesMathematics
                       CellModulesOpenXR
+                      CellModulesShell
                       CellModulesVulkan
 )
 

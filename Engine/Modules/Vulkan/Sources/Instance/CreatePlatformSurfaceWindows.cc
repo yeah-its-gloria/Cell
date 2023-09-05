@@ -3,32 +3,27 @@
 
 #include "Internal.hh"
 
-#include <Cell/System/Platform/Windows.hh>
+#include <Cell/Shell/Implementations/Windows.hh>
 
 #include <vulkan/vulkan_win32.h>
 
 using namespace Cell;
 using namespace Cell::Vulkan;
 
-CELL_FUNCTION_INTERNAL Result createPlatformSurface(VkSurfaceKHR* surface, VkInstance instance, System::IPlatform& platform) {
-    System::Platform::Windows* windows = (System::Platform::Windows*)&platform;
-    if (windows->GetWindow() == nullptr) {
-        return Result::PlatformNotReadyYet;
-    }
-
-    // Surface creation
+CELL_FUNCTION_INTERNAL Result createPlatformSurface(VkSurfaceKHR* surface, VkInstance instance, Shell::IShell* platform) {
+    Shell::Implementations::Windows* windows = (Shell::Implementations::Windows*)platform;
 
     const VkWin32SurfaceCreateInfoKHR surfaceInfo = {
-        .sType     = VK_STRUCTURE_TYPE_WIN32_SURFACE_CREATE_INFO_KHR,
-        .pNext     = nullptr,
-        .flags     = 0,
+        .sType = VK_STRUCTURE_TYPE_WIN32_SURFACE_CREATE_INFO_KHR,
+        .pNext = nullptr,
+        .flags = 0,
 
         .hinstance = windows->GetInstance(),
-        .hwnd      = windows->GetWindow()
+        .hwnd = windows->GetWindow()
     };
 
-    VkResult vk_result = vkCreateWin32SurfaceKHR(instance, &surfaceInfo, nullptr, surface);
-    switch (vk_result) {
+    const VkResult vkResult = vkCreateWin32SurfaceKHR(instance, &surfaceInfo, nullptr, surface);
+    switch (vkResult) {
     case VK_SUCCESS: {
         break;
     }

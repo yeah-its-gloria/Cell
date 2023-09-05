@@ -3,22 +3,15 @@
 
 #include "Internal.hh"
 
-#include <Cell/System/Platform/Linux.hh>
+#include <Cell/Shell/Implementations/Linux.hh>
 
 #include <vulkan/vulkan_wayland.h>
 
 using namespace Cell;
-using namespace Cell::System;
 using namespace Cell::Vulkan;
 
-CELL_FUNCTION_INTERNAL Vulkan::Result createPlatformSurface(VkSurfaceKHR* surface, VkInstance instance, IPlatform& platform) {
-    Platform::Linux* _linux = (Platform::Linux*)&platform;
-
-    if (_linux->GetWaylandDisplay() == nullptr || _linux->GetWaylandSurface() == nullptr) {
-        return Vulkan::Result::PlatformNotReadyYet;
-    }
-
-    // Surface creation
+CELL_FUNCTION_INTERNAL Vulkan::Result createPlatformSurface(VkSurfaceKHR* surface, VkInstance instance, Shell::IShell* platform) {
+    Shell::Implementations::Linux* _linux = (Shell::Implementations::Linux*)platform;
 
     const VkWaylandSurfaceCreateInfoKHR surfaceInfo = {
         .sType     = VK_STRUCTURE_TYPE_WAYLAND_SURFACE_CREATE_INFO_KHR,
@@ -29,8 +22,8 @@ CELL_FUNCTION_INTERNAL Vulkan::Result createPlatformSurface(VkSurfaceKHR* surfac
         .surface   = _linux->GetWaylandSurface()
     };
 
-    const VkResult vk_result = vkCreateWaylandSurfaceKHR(instance, &surfaceInfo, nullptr, surface);
-    switch (vk_result) {
+    const VkResult vkResult = vkCreateWaylandSurfaceKHR(instance, &surfaceInfo, nullptr, surface);
+    switch (vkResult) {
     case VK_SUCCESS: {
         break;
     }

@@ -2,11 +2,13 @@
 // SPDX-License-Identifier: BSD-2-Clause
 
 #include "Example.hh"
+
 #include <Cell/Audio/Engine.hh>
 #include <Cell/IO/File.hh>
 #include <Cell/Scoped.hh>
 #include <Cell/System/BlockImpl.hh>
 #include <Cell/System/Sleep.hh>
+#include <Cell/System/Thread.hh>
 
 using namespace Cell;
 using namespace Cell::Audio;
@@ -32,7 +34,7 @@ void Example::AudioThread() {
 
     uint32_t dataOffset = 0;
     uint32_t framesToWrite = 0;
-    while (this->platform.IsStillActive()) {
+    while (this->shell->IsStillActive()) {
         System::SleepPrecise(instance->GetLatencyMicroseconds());
 
         // prevents stupidly small sample sizes from underflowing us
@@ -68,8 +70,4 @@ void Example::AudioThread() {
 
     result = instance->PlaybackEnd();
     CELL_ASSERT(result == Result::Success || result == Result::NotYetFinished);
-
-    while (this->platform.IsStillActive()) {
-        System::Thread::Yield();
-    }
 }

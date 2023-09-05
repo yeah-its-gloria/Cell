@@ -4,8 +4,8 @@
 #include <Cell/Scoped.hh>
 #include <Cell/System/Event.hh>
 #include <Cell/System/Panic.hh>
-#include <Cell/System/Thread.hh>
 #include <Cell/System/Platform/Windows/Includes.h>
+#include <Cell/System/Thread.hh>
 
 namespace Cell::System {
 
@@ -15,7 +15,7 @@ struct threadData {
     void* parameter;
 };
 
-DWORD thread_trampoline(void* param) {
+DWORD threadTrampoline(void* param) {
     threadData data = *(threadData*)param;
     data.event->Signal();
 
@@ -27,12 +27,11 @@ Thread::Thread(ThreadFunction function, void* parameter, const String& name) {
     Event event;
 
     threadData data = {
-        .event     = &event,
-        .function  = function,
-        .parameter = parameter
-    };
+        .event = &event,
+        .function = function,
+        .parameter = parameter};
 
-    HANDLE thread = CreateThread(nullptr, 0, thread_trampoline, &data, 0, nullptr);
+    HANDLE thread = CreateThread(nullptr, 0, threadTrampoline, &data, 0, nullptr);
     CELL_ASSERT(thread != nullptr);
 
     event.Wait();

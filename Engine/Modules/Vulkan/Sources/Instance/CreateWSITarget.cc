@@ -30,13 +30,13 @@ CELL_INLINE VkPresentModeKHR selectPresentMode(VkPresentModeKHR* CELL_NONNULL mo
 
 namespace Cell::Vulkan {
 
-Wrapped<WSITarget*, Result> Instance::CreateWSITarget(System::IPlatform& platform) {
+Wrapped<WSITarget*, Result> Instance::CreateWSITarget(Shell::IShell* shell) {
     if (this->device == nullptr) {
         return Result::InvalidState;
     }
 
     VkSurfaceKHR surface = nullptr;
-    const Result result = createPlatformSurface(&surface, this->instance, platform);
+    const Result result = createPlatformSurface(&surface, this->instance, shell);
     if (result != Result::Success) {
         return result;
     }
@@ -191,7 +191,7 @@ Wrapped<WSITarget*, Result> Instance::CreateWSITarget(System::IPlatform& platfor
     }
     }
 
-    return new WSITarget(this, platform, surface, selectFormat(formats, formatCount), selectPresentMode(presentationModes, presentationModeCount));
+    return new WSITarget(this, shell, surface, selectFormat(formats, formatCount), selectPresentMode(presentationModes, presentationModeCount));
 }
 
 }

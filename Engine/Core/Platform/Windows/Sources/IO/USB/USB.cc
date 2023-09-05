@@ -61,7 +61,7 @@ Result USB::Read(IBlock& data, const uint8_t endpoint, const uint32_t millisecon
         }
 
         default: {
-            System::Panic("ReadFile failed");
+            System::Panic("WinUsb_ReadPipe failed");
         }
         }
     }
@@ -95,7 +95,7 @@ Result USB::Write(const IBlock& data, const uint8_t endpoint, const uint32_t mil
         }
 
         default: {
-            System::Panic("WriteFile failed");
+            System::Panic("WinUsb_WritePipe failed");
         }
         }
     }

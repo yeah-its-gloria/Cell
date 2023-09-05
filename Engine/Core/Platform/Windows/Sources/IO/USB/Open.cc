@@ -57,7 +57,7 @@ Wrapped<USB*, Result> USB::Open(const uint16_t vendorId, const uint16_t productI
     constexpr GUID deviceClassWinUSB = { 0x88bae032, 0x5a81, 0x49f0, { 0xbc, 0x3d, 0xa4, 0xff, 0x13, 0x82, 0x16, 0xd6 } };
     constexpr GUID deviceInterfaceWinUSB = {0xa5dcbf10, 0x6530, 0x11d2, { 0x90, 0x1f, 0x00, 0xc0, 0x4f, 0xb9, 0x51, 0xed } };
 
-    HDEVINFO info = SetupDiGetClassDevsW(&deviceClassWinUSB, nullptr, nullptr, DIGCF_PRESENT | DIGCF_DEVICEINTERFACE);
+    HDEVINFO info = SetupDiGetClassDevsW(&deviceInterfaceWinUSB, nullptr, nullptr, DIGCF_PRESENT | DIGCF_DEVICEINTERFACE);
     if (info == INVALID_HANDLE_VALUE || info == nullptr) {
         System::Panic("SetupDiGetClassDevsW failed");
     }

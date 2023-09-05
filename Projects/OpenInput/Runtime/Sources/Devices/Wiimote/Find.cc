@@ -12,7 +12,7 @@ using namespace WiimoteCommunications;
 
 Wrapped<Wiimote*, Result> Wiimote::Find() {
     const Wrapped<IO::HID*, IO::Result> hidResult = IO::HID::Open(0x057e, 0x0306);
-    if (!hidResult.IsValid()) {
+    if (!hidResult) {
         switch (hidResult.Result()) {
         case IO::Result::NotFound: {
             return Result::NotFound;

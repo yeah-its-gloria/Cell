@@ -14,22 +14,24 @@
 using namespace Cell;
 using namespace Cell::System;
 
-void CellEntry(Reference<IPlatform> platform, Reference<String> parameterString) {
+void CellEntry(Reference<String> parameterString) {
     (void)(parameterString);
 
-    Runtime::Server(platform.Unwrap()).Launch();
+    Runtime::Server().Launch();
 }
 
 namespace Runtime {
 
 void Server::Launch() {
     //Thread device([](void* p) { ((Server*)p)->DeviceThread(); }, this, "Device Thread");
+    this->DeviceThread();
+    return;
 
     Log("Creating the pipe...");
 
     ScopedObject<IO::Pipe> pipe = IO::Pipe::Create("openinput-1", sizeof(Message)).Unwrap();
 
-    while (this->platform.IsStillActive()) {
+    while (true) {
         Log("Waiting for a client...");
         IO::Result result = pipe->WaitForClient();
         CELL_ASSERT(result == IO::Result::Success);
@@ -52,7 +54,7 @@ void Server::Launch() {
         UnmanagedBlock messageBlock {&message};
 
         bool active = true;
-        while (this->platform.IsStillActive() && active) {
+        while (active) {
             Log("Waiting for message...");
 
             result = pipe->Read(messageBlock);

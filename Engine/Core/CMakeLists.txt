@@ -27,9 +27,6 @@ add_library(CellCore ${CELL_LIBRARY_TYPE}
             ${CORE_INCLUDES_DIR}/Cell/Network/Result.hh
             ${CORE_INCLUDES_DIR}/Cell/Network/Socket.hh
 
-            ${CORE_INCLUDES_DIR}/Cell/Shell/Result.hh
-            ${CORE_INCLUDES_DIR}/Cell/Shell/Window.hh
-
             ${CORE_INCLUDES_DIR}/Cell/System/Block.hh
             ${CORE_INCLUDES_DIR}/Cell/System/BlockImpl.hh
             ${CORE_INCLUDES_DIR}/Cell/System/DynamicLibrary.hh
@@ -39,7 +36,6 @@ add_library(CellCore ${CELL_LIBRARY_TYPE}
             ${CORE_INCLUDES_DIR}/Cell/System/Memory.hh
             ${CORE_INCLUDES_DIR}/Cell/System/Mutex.hh
             ${CORE_INCLUDES_DIR}/Cell/System/Panic.hh
-            ${CORE_INCLUDES_DIR}/Cell/System/Platform.hh
             ${CORE_INCLUDES_DIR}/Cell/System/Result.hh
             ${CORE_INCLUDES_DIR}/Cell/System/RNG.hh
             ${CORE_INCLUDES_DIR}/Cell/System/Sleep.hh
@@ -52,24 +48,16 @@ add_library(CellCore ${CELL_LIBRARY_TYPE}
 
             # ----------------------------------------------------------------
 
-            ${CORE_INCLUDES_DIR}/Cell/System/Platform/Windows.hh
-            ${CORE_INCLUDES_DIR}/Cell/System/Platform/Windows/Includes.h
-
-            ${CORE_INCLUDES_DIR}/Cell/System/Platform/Linux.hh
-            ${CORE_INCLUDES_DIR}/Cell/System/Platform/Linux/WaylandProtocols/idle-inhibit-client-protocol.h
-            ${CORE_INCLUDES_DIR}/Cell/System/Platform/Linux/WaylandProtocols/xdg-decoration-client-protocol.h
-            ${CORE_INCLUDES_DIR}/Cell/System/Platform/Linux/WaylandProtocols/xdg-shell-client-protocol.h
-
-            # ----------------------------------------------------------------
-
             ${GENERATE_DIR}/Includes/Cell/Version.h
 
             # ----------------------------------------------------------------
 
-            ${CORE_DIR}/Sources/Cell.cc
+            ${CORE_INCLUDES_DIR}/Cell/System/Platform/Windows/Includes.h
 
+            # ----------------------------------------------------------------
+
+            ${CORE_DIR}/Sources/Cell.cc
             ${CORE_DIR}/Sources/System/Panic.cc
-            ${CORE_DIR}/Sources/System/Platform.cc
             ${CORE_DIR}/Sources/System/String.cc
 )
 

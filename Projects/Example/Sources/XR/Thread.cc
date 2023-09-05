@@ -3,9 +3,9 @@
 
 #include "../Example.hh"
 #include "Tools.hh"
-#include <Cell/OpenXR/VulkanTarget.hh>
+
 #include <Cell/Scoped.hh>
-#include <Cell/Shell/Window.hh>
+#include <Cell/OpenXR/VulkanTarget.hh>
 #include <Cell/System/Log.hh>
 
 using namespace Cell;
@@ -66,7 +66,7 @@ void Example::XRThread() {
     CELL_ASSERT(result == OpenXR::Result::Success);
 
     const VkExtent2D resolution = instance->GetVulkanTarget(0)->GetExtent();
-    const Shell::Result shellResult = Shell::SetDrawableExtentForWindow(this->platform, {resolution.width / 2, resolution.height / 2});
+    const Shell::Result shellResult = this->shell->SetDrawableExtentForWindow({ resolution.width / 2, resolution.height / 2 });
     CELL_ASSERT(shellResult == Shell::Result::Success);
 
     ExampleUBO ubo;
@@ -86,7 +86,7 @@ void Example::XRThread() {
     }
 
     bool active = false;
-    while (this->platform.IsStillActive()) {
+    while (this->shell->IsStillActive()) {
         result = instance->UpdateState();
         CELL_ASSERT(result == OpenXR::Result::Success || result == OpenXR::Result::Unavailable);
 
@@ -173,6 +173,4 @@ void Example::XRThread() {
             delete buffer;
         }
     }
-
-    this->platform.SignalEnd();
 }

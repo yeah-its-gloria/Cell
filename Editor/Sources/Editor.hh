@@ -4,19 +4,15 @@
 #pragma once
 
 #include <Cell/Reference.hh>
-#include <Cell/System/Platform.hh>
+#include <Cell/Shell/Shell.hh>
+#include <Cell/System/String.hh>
 
-class Editor : public Cell::Object
-{
+class Editor : public Cell::Object {
 public:
-    CELL_FUNCTION_INTERNAL Editor(Cell::System::IPlatform& platform) : platform(platform)
-    { }
-
-    CELL_INLINE ~Editor()
-    { }
-
+    CELL_INLINE Editor() { }
+    CELL_FUNCTION_INTERNAL ~Editor();
     CELL_FUNCTION_INTERNAL void Launch(const Cell::System::String& parameterString);
 
 private:
-    Cell::System::IPlatform& platform;
+    Cell::Shell::IShell* shell = nullptr;
 };

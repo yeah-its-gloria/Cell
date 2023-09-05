@@ -11,7 +11,7 @@
 
 using namespace Cell;
 
-void CellEntry(Reference<System::IPlatform> platform, Reference<System::String> parameterString) {
+void CellEntry(Reference<System::String> parameterString) {
     IO::Result ioResult = IO::File::CheckPath(parameterString.Unwrap());
     if (ioResult != IO::Result::Success) {
         System::Log("Error: Content folder not found");
@@ -26,11 +26,6 @@ void CellEntry(Reference<System::IPlatform> platform, Reference<System::String> 
 
     IO::FolderWalkerElementData data;
     for (uint8_t i = 0; i < 3; i++) {
-        if (!platform.Unwrap().IsStillActive()) {
-            System::Log("Aborting...");
-            return;
-        }
-
         walker->GetCurrentElementDataAndAdvance(data);
         System::Log("- %s\t%s", data.fileName.ToCharPointer(), data.isFolder ? "folder" : "file");
 

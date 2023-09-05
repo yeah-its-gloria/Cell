@@ -3,4 +3,4 @@
 
 #include <Cell/Vulkan/Instance.hh>
 
-CELL_FUNCTION_INTERNAL Cell::Vulkan::Result createPlatformSurface(VkSurfaceKHR* surface, VkInstance instance, Cell::System::IPlatform& platform);
+CELL_FUNCTION_INTERNAL Cell::Vulkan::Result createPlatformSurface(VkSurfaceKHR* surface, VkInstance instance, Cell::Shell::IShell* shell);

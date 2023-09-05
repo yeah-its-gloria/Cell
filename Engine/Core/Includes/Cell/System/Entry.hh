@@ -4,15 +4,14 @@
 #pragma once
 
 #include <Cell/Reference.hh>
-#include <Cell/System/Platform.hh>
 #include <Cell/System/String.hh>
 
 namespace Cell::System {
 
 // Entry function typedef used by the platform instantiation code.
-typedef void (* EntryFunction)(Reference<IPlatform>, Reference<String>);
+typedef void (* EntryFunction)(Reference<String>);
 
 }
 
 // Title entry prototype. Needs to be defined by every title, utility or otherwise.
-CELL_FUNCTION void CellEntry(Cell::Reference<Cell::System::IPlatform> platform, Cell::Reference<Cell::System::String> parameterString);
+CELL_FUNCTION void CellEntry(Cell::Reference<Cell::System::String> parameterString);

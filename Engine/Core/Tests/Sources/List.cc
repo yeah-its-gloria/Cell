@@ -6,8 +6,7 @@
 
 using namespace Cell;
 
-void CellEntry(Reference<System::IPlatform> platform, Reference<System::String> parameterString) {
-    (void)(platform);
+void CellEntry(Reference<System::String> parameterString) {
     (void)(parameterString);
 
     List<uint8_t> data((uint8_t)15);

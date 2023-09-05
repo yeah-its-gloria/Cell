@@ -1,7 +1,6 @@
 // SPDX-FileCopyrightText: Copyright 2023 Gloria G.
 // SPDX-License-Identifier: BSD-2-Clause
 
-#include <Cell/Shell/Window.hh>
 #include <Cell/Utilities.hh>
 #include <Cell/Vulkan/WSITarget.hh>
 
@@ -36,10 +35,11 @@ Result WSITarget::RetrieveProperties() {
         return Result::Success;
     }
 
-    const Shell::Extent extent = Shell::GetDrawableExtentForWindow(platform).Unwrap();
+    const Shell::Extent extent = this->shell->GetDrawableExtentForWindow().Unwrap();
 
     this->extent.width = Utilities::Clamp(extent.width, this->capabilities.minImageExtent.width, this->capabilities.maxImageExtent.width);
     this->extent.height = Utilities::Clamp(extent.height, this->capabilities.minImageExtent.height, this->capabilities.maxImageExtent.height);
+
     return Result::Success;
 }
 

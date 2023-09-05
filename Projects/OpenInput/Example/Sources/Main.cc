@@ -3,36 +3,39 @@
 
 #include <Cell/System/Entry.hh>
 #include <Cell/System/Panic.hh>
+#include <Cell/System/Thread.hh>
 #include <openinput/openinput.h>
 
 using namespace Cell;
 
-void CellEntry(Reference<System::IPlatform> platform, Reference<System::String> parameterString) {
+void CellEntry(Reference<System::String> parameterString) {
     (void)(parameterString);
 
-    const OiApplicationInfo application_info = {
+    const OiApplicationInfo appInfo = {
         .applicationName = "OpenInput Example",
         .applicationVersion = 1,
 
         .engineName = "Cell",
         .engineVersion = 0,
 
-        .apiVersion = OI_CURRENT_API_VERSION};
+        .apiVersion = OI_CURRENT_API_VERSION
+    };
 
-    const OiInstanceCreateInfo create_info = {
+    const OiInstanceCreateInfo instanceInfo = {
         .type = OI_STRUCTURE_TYPE_INSTANCE_CREATE_INFO,
         .next = nullptr,
 
-        .applicationInfo = application_info,
+        .applicationInfo = appInfo,
 
         .enabledExtensionCount = 0,
-        .enabledExtensionNames = nullptr};
+        .enabledExtensionNames = nullptr
+    };
 
     OiInstance instance = nullptr;
-    OiResult result = oiCreateInstance(create_info, &instance);
+    OiResult result = oiCreateInstance(instanceInfo, &instance);
     CELL_ASSERT(result == OI_SUCCESS);
 
-    while (platform.Unwrap().IsStillActive()) {
+    while (true) {
         result = oiAcquireUpdates(instance);
         CELL_ASSERT(result == OI_SUCCESS);
 

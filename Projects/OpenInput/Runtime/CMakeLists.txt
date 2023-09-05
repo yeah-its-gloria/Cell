@@ -20,7 +20,12 @@ add_executable(OpenInput.Runtime
 
                ${CMAKE_CURRENT_LIST_DIR}/Sources/Devices/PS3.hh
 
-# Nintendo Wii Remote
+# Nintendo GameCube Controller (via a Nintendo Wii U GameCube Controller Adapter)
+
+               ${CMAKE_CURRENT_LIST_DIR}/Sources/Devices/GameCubeAdapter.hh
+               ${CMAKE_CURRENT_LIST_DIR}/Sources/Devices/GameCubeAdapter/GameCubeAdapter.cc
+
+# Nintendo Wiimote
 
                ${CMAKE_CURRENT_LIST_DIR}/Sources/Devices/Wiimote.hh
                ${CMAKE_CURRENT_LIST_DIR}/Sources/Devices/Wiimote/Find.cc

@@ -3,10 +3,9 @@
 
 #pragma once
 
-#include <Cell/Wrapped.hh>
-#include <Cell/System/Platform.hh>
+#include <Cell/Shell/Shell.hh>
 #include <Cell/Vulkan/Result.hh>
-
+#include <Cell/Wrapped.hh>
 #include <vulkan/vulkan.h>
 
 namespace Cell {
@@ -89,19 +88,22 @@ public:
     CELL_FUNCTION Wrapped<Pipeline*, Result> CreatePipeline(IRenderTarget* CELL_NONNULL target);
 
     // Creates a WSI render target.
-    CELL_FUNCTION Wrapped<WSITarget*, Result> CreateWSITarget(System::IPlatform& platform);
+    CELL_FUNCTION Wrapped<WSITarget*, Result> CreateWSITarget(Shell::IShell* CELL_NONNULL shell);
 
     // Rendering utility - Renders to the next swapchain image index with the given buffer.
     CELL_FUNCTION Result RenderImage(IRenderTarget* CELL_NONNULL target, VkCommandBuffer CELL_NONNULL buffer);
 
 private:
-    CELL_FUNCTION_INTERNAL Instance(VkInstance CELL_NONNULL instance, PFN_vkCmdBeginRenderingKHR CELL_NONNULL beginRendering, PFN_vkCmdEndRenderingKHR CELL_NONNULL endRendering)
+    CELL_INLINE Instance(VkInstance CELL_NONNULL instance, PFN_vkCmdBeginRenderingKHR CELL_NONNULL beginRendering, PFN_vkCmdEndRenderingKHR CELL_NONNULL endRendering)
         : instance(instance), beginRendering(beginRendering), endRendering(endRendering) { }
 
-    CELL_FUNCTION_INTERNAL        Result QueryPhysicalDevice();
-    CELL_FUNCTION_INTERNAL        Result CreateDevice();
-    CELL_FUNCTION Result CreateDevice(const char* CELL_NONNULL* CELL_NONNULL extensions, const uint32_t count);
+    CELL_FUNCTION_INTERNAL Result QueryPhysicalDevice();
+    CELL_FUNCTION_INTERNAL Result CreateDevice();
     CELL_FUNCTION_INTERNAL static uint16_t ScorePhysicalDevice(VkPhysicalDevice CELL_NONNULL device);
+    CELL_FUNCTION_INTERNAL uint32_t GetMemoryTypeIndex(VkBuffer buffer, const VkMemoryPropertyFlags type);
+    CELL_FUNCTION_INTERNAL uint32_t GetMemoryTypeIndex(VkImage image, const VkMemoryPropertyFlags type);
+
+    CELL_FUNCTION Result CreateDevice(const char* CELL_NONNULL* CELL_NONNULL extensions, const uint32_t count);
 
     // UPPER BITS: graphics LOWER BITS: transfer
     CELL_FUNCTION static uint64_t QueryPhysicalDeviceQueues(VkPhysicalDevice CELL_NONNULL device);
@@ -114,9 +116,6 @@ private:
         const VkImageAspectFlagBits aspectMask = VK_IMAGE_ASPECT_COLOR_BIT
     );
 
-    CELL_FUNCTION_INTERNAL uint32_t GetMemoryTypeIndex(VkBuffer buffer, const VkMemoryPropertyFlags type);
-    CELL_FUNCTION_INTERNAL uint32_t GetMemoryTypeIndex(VkImage image, const VkMemoryPropertyFlags type);
-
     VkInstance instance;
     PFN_vkCmdBeginRenderingKHR beginRendering;
     PFN_vkCmdEndRenderingKHR endRendering;
@@ -124,7 +123,13 @@ private:
     VkPhysicalDevice physicalDevice = nullptr;
     uint32_t physicalDeviceQueueGraphics = (uint32_t)-1;
     uint32_t physicalDeviceQueueTransfer = (uint32_t)-1;
-    VkPhysicalDeviceMemoryProperties physicalDeviceProperties = { .memoryTypeCount = 0, .memoryTypes = { }, .memoryHeapCount = 0, .memoryHeaps = { } };
+
+    VkPhysicalDeviceMemoryProperties physicalDeviceProperties = {
+        .memoryTypeCount = 0,
+        .memoryTypes = { },
+        .memoryHeapCount = 0,
+        .memoryHeaps = { }
+    };
 
     VkDevice device = nullptr;
     VkQueue deviceQueueGraphics = nullptr;

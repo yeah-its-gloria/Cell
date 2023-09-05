@@ -16,6 +16,7 @@ Cell_Add_Module(CELL_ENABLE_MODULE_AUDIO          ${MODULES_DIR}/Audio          
 Cell_Add_Module(CELL_ENABLE_MODULE_DATAMANAGEMENT ${MODULES_DIR}/DataManagement "Whether the Data Management module should be built. Defaults to ON.")
 Cell_Add_Module(CELL_ENABLE_MODULE_MATHEMATICS    ${MODULES_DIR}/Mathematics    "Whether the Mathematics module should be built. Defaults to ON.")
 Cell_Add_Module(CELL_ENABLE_MODULE_OPENXR         ${MODULES_DIR}/OpenXR         "Whether the OpenXR module should be built. Defaults to ON.")
+Cell_Add_Module(CELL_ENABLE_MODULE_SHELL          ${MODULES_DIR}/Shell          "Whether the Shell module should be built. Defaults to ON.")
 Cell_Add_Module(CELL_ENABLE_MODULE_VULKAN         ${MODULES_DIR}/Vulkan         "Whether the Vulkan module should be built. Defaults to ON.")
 
 if (CELL_ENABLE_UTILITIES)

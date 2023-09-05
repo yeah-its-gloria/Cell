@@ -89,8 +89,7 @@ CELL_FUNCTION_INTERNAL void TestHTTP() {
     HTTPParseResponse(&data, httpResponse.GetLength());
 }
 
-void CellEntry(Reference<IPlatform> platform, Reference<String> parameterString) {
-    (void)(platform);
+void CellEntry(Reference<String> parameterString) {
     (void)(parameterString);
 
     //Log("Testing JSON");

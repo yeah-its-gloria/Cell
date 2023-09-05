@@ -33,10 +33,6 @@ target_sources(CellCore PRIVATE
                ${PLATFORM_DIR}/Sources/Network/Socket/Connection.cc
                ${PLATFORM_DIR}/Sources/Network/Socket/NewDestruct.cc
 
-               ${PLATFORM_DIR}/Sources/Shell/DrawableExtentForWindow.cc
-               ${PLATFORM_DIR}/Sources/Shell/Input.cc
-               ${PLATFORM_DIR}/Sources/Shell/SetNewTitleForWindow.cc
-
                ${PLATFORM_DIR}/Sources/System/DynamicLibrary.cc
                ${PLATFORM_DIR}/Sources/System/Event.cc
                ${PLATFORM_DIR}/Sources/System/Log.cc
@@ -48,11 +44,6 @@ target_sources(CellCore PRIVATE
                ${PLATFORM_DIR}/Sources/System/String.cc
                ${PLATFORM_DIR}/Sources/System/Thread.cc
                ${PLATFORM_DIR}/Sources/System/Ticker.cc
-
-               ${PLATFORM_DIR}/Sources/System/Platform/Manifest.rc.h
-               ${PLATFORM_DIR}/Sources/System/Platform/KeyboardHandler.cc
-               ${PLATFORM_DIR}/Sources/System/Platform/WindowLoop.cc
-               ${PLATFORM_DIR}/Sources/System/Platform/Windows.cc
 )
 
 target_compile_definitions(CellCore PUBLIC
@@ -77,13 +68,13 @@ target_compile_options(CellCore PRIVATE -Wno-varargs)
 
 target_link_libraries(CellCore PRIVATE
                       bcrypt
-                      dwmapi
                       hid
-                      runtimeobject
                       setupapi
                       shlwapi
-                      ws2_32
                       winusb
+
+                      PUBLIC runtimeobject
+                      PUBLIC ws2_32
 )
 
 function(Cell_Platform_Windows_Generate_Manifests target type)

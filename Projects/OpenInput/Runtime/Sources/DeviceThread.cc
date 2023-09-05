@@ -2,11 +2,15 @@
 // SPDX-License-Identifier: BSD-2-Clause
 
 #include "Devices/DualSense.hh"
+#include "Devices/GameCubeAdapter.hh"
 #include "Devices/Wiimote.hh"
 #include "Devices/Wiimote/Communications/ClassicController.hh"
 #include "Devices/Wiimote/Communications/Nunchuck.hh"
+
 #include "Server.hh"
+
 #include <Cell/Scoped.hh>
+#include <Cell/System/Thread.hh>
 
 using namespace Cell;
 
@@ -16,7 +20,14 @@ using namespace Devices;
 using namespace Devices::WiimoteCommunications;
 
 void Server::DeviceThread() {
-    DualSense::Find();
+    const Wrapped<GameCubeAdapter*, Result> gccResult = GameCubeAdapter::Find();
+    if (!gccResult) {
+        System::Panic("Runtime::Devices::GameCubeAdapter::Find failed");
+    }
+
+    ScopedObject<GameCubeAdapter> gcc = gccResult.Unwrap();
+
+    /*DualSense::Find();
 
     const Wrapped<Wiimote*, Result> wiimoteResult = Wiimote::Find();
     if (!wiimoteResult) {
@@ -40,10 +51,10 @@ void Server::DeviceThread() {
     ScopedObject<Wiimote> wiimote = wiimoteResult.Unwrap();
 
     Result result = wiimote->SetLEDs(LEDMask::LED1);
-    CELL_ASSERT(result == Devices::Result::Success);
+    CELL_ASSERT(result == Devices::Result::Success);*/
 
-    while (this->platform.IsStillActive()) {
-        result = wiimote->Poll();
+    while (true) {
+        /*result = wiimote->Poll();
         if (result == Result::Timeout) {
             System::Thread::Yield();
             continue;
@@ -78,7 +89,9 @@ void Server::DeviceThread() {
 
             break;
         }
-        }
+        }*/
+
+        gcc->Poll();
 
         System::Thread::Yield();
     }

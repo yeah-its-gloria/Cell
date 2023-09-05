@@ -81,6 +81,7 @@ target_include_directories(CellModulesVulkan PUBLIC
 target_link_libraries(CellModulesVulkan PUBLIC
                       CellCore
                       CellModulesMathematics
+                      CellModulesShell
 
                       ${Vulkan_LIBRARIES}
 )

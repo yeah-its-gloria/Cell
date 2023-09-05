@@ -6,6 +6,7 @@
 #include "Result.hh"
 #include "Wiimote/Communications/LED.hh"
 #include "Wiimote/Communications/Reports.hh"
+
 #include <Cell/IO/HID.hh>
 
 namespace Runtime::Devices {

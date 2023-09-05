@@ -5,9 +5,10 @@
 #include <Windows.h>
 #undef APSTUDIO_HIDDEN_SYMBOLS
 
-#include "@PLATFORM_DIR@/Sources/System/Platform/Manifest.rc.h"
+//#include "@PLATFORM_DIR@/Sources/System/Platform/Manifest.rc.h"
 
-ManifestIconID ICON "@ENGINE_DIR@/BuildContent/CellLogo.ico"
+//ManifestIconID ICON "@ENGINE_DIR@/BuildContent/CellLogo.ico"
+1000 ICON "@ENGINE_DIR@/BuildContent/CellLogo.ico"
 
 1 VERSIONINFO
 FILEVERSION @VMAJOR@,@VMINOR@,@VPATCH@,0

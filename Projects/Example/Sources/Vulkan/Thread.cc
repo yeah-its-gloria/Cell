@@ -3,6 +3,7 @@
 
 #include "../Example.hh"
 #include "Tools.hh"
+
 #include <Cell/Mathematics/Utilities.hh>
 #include <Cell/Scoped.hh>
 #include <Cell/System/Log.hh>
@@ -19,7 +20,7 @@ void Example::VulkanThread() {
     Result result = instance->InitializeDevice();
     CELL_ASSERT(result == Result::Success);
 
-    ScopedObject<WSITarget> target = instance->CreateWSITarget(this->platform).Unwrap();
+    ScopedObject<WSITarget> target = instance->CreateWSITarget(this->shell).Unwrap();
 
     result = target->SetUpRendering();
     CELL_ASSERT(result == Result::Success);
@@ -104,9 +105,10 @@ void Example::VulkanThread() {
     InputData inputData = {.position = &position, .timeMilliseconds = &ubo.timeMilliseconds};
     VulkanToolsInputSetUp(this->input, &inputData);
 
-    const uint64_t startTick = System::GetPreciseTickerValue();
-    while (this->platform.IsStillActive()) {
-        const uint64_t tick = System::GetPreciseTickerValue();
+    uint64_t startTick = 0;
+    uint64_t tick = 1;
+    while (this->shell->IsStillActive()) {
+        tick = System::GetPreciseTickerValue();
 
         ubo.timeMilliseconds = (float)(tick - startTick) / 1000.f;
 
@@ -135,12 +137,14 @@ void Example::VulkanThread() {
         }
 
         default: {
-            System::Panic("Cell::Instance::RenderImage failed");
+            System::Panic("Cell::Vulkan::Instance::RenderImage failed");
         }
         }
 
         Shell::Result shellResult = input->Poll();
         CELL_ASSERT(shellResult == Shell::Result::Success);
+
+        startTick = System::GetPreciseTickerValue();
     }
 
     for (Buffer* uniform : uniforms) {
