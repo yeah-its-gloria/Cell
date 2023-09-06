@@ -27,6 +27,11 @@ public:
         return this->object.Unwrap();
     }
 
+    // Returns the wrapped object if it's valid, or returns other.
+    CELL_NODISCARD CELL_INLINE T UnwrapOr(T other) const {
+        return this->object ? this->object.Unwrap() : other;
+    }
+
     // Returns the wrapped result.
     CELL_NODISCARD CELL_INLINE R Result() const {
         return this->result;

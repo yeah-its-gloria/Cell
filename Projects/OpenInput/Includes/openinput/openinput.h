@@ -24,11 +24,12 @@ extern "C" {
 #define OI_FUNCTION __attribute__((visibility("default")))
 #endif
 
-OI_DEFINE_HANDLE(OiInstance) ;
-OI_DEFINE_HANDLE(OiActionSet) ;
+OI_DEFINE_HANDLE(OiInstance);
+OI_DEFINE_HANDLE(OiDevice);
 
 #define OI_MAX_ENGINE_NAME_SIZE      128
 #define OI_MAX_APPLICATION_NAME_SIZE 128
+#define OI_MAX_DEVICE_NAME           128
 
 typedef enum OiResult {
     OI_SUCCESS = 0,
@@ -59,6 +60,12 @@ typedef enum OiActionType {
     OI_ACTION_TYPE_MAX_ENUM = 0x7fffffff
 } OiActionType;
 
+typedef enum OiDeviceType {
+    OI_DEVICE_TYPE_CONTROLLER,
+    OI_DEVICE_TYPE_KEYBOARD,
+    OI_DEVICE_TYPE_MOUSE
+} OiDeviceType;
+
 typedef struct OiApplicationInfo {
     char applicationName[OI_MAX_APPLICATION_NAME_SIZE];
     uint32_t applicationVersion;
@@ -80,13 +87,33 @@ typedef struct OiActionSetCreateInfo {
     const void* next;
 } OiActionSetCreateInfo;
 
+typedef struct OiDeviceInfo {
+    uint32_t apiVersion;
+    uint32_t driverVersion;
+    uint32_t vendorID;
+    uint32_t deviceID;
+    OiDeviceType deviceType;
+    char deviceName[OI_MAX_DEVICE_NAME];
+} OiDeviceInfo;
+
+typedef void (* PFN_oiVoidFunction)(void);
+
 typedef OiResult (* PFN_oiCreateInstance)(const OiInstanceCreateInfo createInfo, OiInstance* instance);
 typedef OiResult (* PFN_oiDestroyInstance)(OiInstance instance);
+typedef OiResult (* PFN_oiRequestUsers)(OiInstance instance, const uint8_t count);
+typedef OiResult (* PFN_oiAcquireUpdates)(OiInstance instance);
+typedef OiResult (* PFN_oiEnumerateDevices)(OiInstance instance, uint32_t* count, OiDevice* devices);
+typedef OiResult (* PFN_oiGetDeviceInfo)(OiDevice device, OiDeviceInfo* info);
+
+OI_FUNCTION PFN_oiVoidFunction oiGetInstanceProcAddr(OiInstance instance, const char* name);
 
 OI_FUNCTION OiResult oiCreateInstance(const OiInstanceCreateInfo createInfo, OiInstance* instance);
 OI_FUNCTION OiResult oiDestroyInstance(OiInstance instance);
 OI_FUNCTION OiResult oiRequestUsers(OiInstance instance, const uint8_t count);
 OI_FUNCTION OiResult oiAcquireUpdates(OiInstance instance);
+
+OI_FUNCTION OiResult oiEnumerateDevices(OiInstance instance, uint32_t* count, OiDevice* devices);
+OI_FUNCTION OiResult oiGetDeviceInfo(OiDevice device, OiDeviceInfo* info);
 
 #ifdef __cplusplus
 }

@@ -8,7 +8,11 @@ namespace Runtime {
 enum class MessageType : uint16_t {
     Invalid,
     Connect,
-    CreateInstance
+    CreateInstance,
+    GetDeviceCount,
+    ResponseGetDeviceCount,
+    GetDeviceInfos,
+    ResponseGetDeviceInfos
 };
 
 struct CELL_PACKED(1) Message {
@@ -26,6 +30,19 @@ struct CELL_PACKED(1) MessageCreateInstance {
     MessageType messageType;
     OiInstanceCreateInfo info;
     uint8_t padding[512 - sizeof(OiInstanceCreateInfo)];
+};
+
+struct CELL_PACKED(1) MessageResponseGetDeviceCount {
+    MessageType messageType;
+    uint32_t count;
+    uint8_t padding[512 - sizeof(uint32_t)];
+};
+
+struct CELL_PACKED(1) MessageResponseDeviceInfos {
+    MessageType messageType;
+    uint32_t index;
+    OiDeviceInfo info;
+    uint8_t padding[512 - sizeof(uint32_t) - sizeof(OiDeviceInfo)];
 };
 
 }

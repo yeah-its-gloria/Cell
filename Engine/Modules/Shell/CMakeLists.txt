@@ -46,9 +46,9 @@ elseif (UNIX)
                    ${CMAKE_CURRENT_LIST_DIR}/Sources/Linux/Input.cc
                    ${CMAKE_CURRENT_LIST_DIR}/Sources/Linux/SetNewTitleForWindow.cc
 
-                   ${CMAKE_CURRENT_LIST_DIR}/Sources/Linux/Shell/WaylandProtocols/idle-inhibit-client-protocol.c
-                   ${CMAKE_CURRENT_LIST_DIR}/Sources/Linux/Shell/WaylandProtocols/xdg-decoration-client-protocol.c
-                   ${CMAKE_CURRENT_LIST_DIR}/Sources/Linux/Shell/WaylandProtocols/xdg-shell-client-protocol.c
+                   ${CMAKE_CURRENT_LIST_DIR}/Sources/Linux/Shell/WaylandProtocols/idle-inhibit-protocol.c
+                   ${CMAKE_CURRENT_LIST_DIR}/Sources/Linux/Shell/WaylandProtocols/xdg-decoration-protocol.c
+                   ${CMAKE_CURRENT_LIST_DIR}/Sources/Linux/Shell/WaylandProtocols/xdg-shell-protocol.c
 
                    ${CMAKE_CURRENT_LIST_DIR}/Sources/Linux/Shell/Linux.cc
                    ${CMAKE_CURRENT_LIST_DIR}/Sources/Linux/Shell/Wayland.cc

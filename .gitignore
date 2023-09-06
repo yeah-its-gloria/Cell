@@ -19,6 +19,7 @@ thumbs.db
 # Exclusions
 !BuildContent
 !BuildScripts
+!.github/workflows/build.yml
 
 # Too large for git
 **/PrivateContent

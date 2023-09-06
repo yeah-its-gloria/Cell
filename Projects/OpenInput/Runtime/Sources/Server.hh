@@ -9,13 +9,16 @@ namespace Runtime {
 
 class Server : public Cell::Object {
 public:
-    CELL_INLINE Server() {}
-    CELL_INLINE ~Server() {}
+    CELL_INLINE Server() { }
+    CELL_INLINE ~Server() { }
 
     CELL_FUNCTION_INTERNAL void Launch();
 
 private:
     CELL_FUNCTION_INTERNAL void DeviceThread();
+
+    bool isActive = true;
+    uint32_t deviceCount = 0;
 };
 
 }

@@ -1,0 +1,111 @@
+name: Build & Test
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build-ubuntu:
+    name: Ubuntu Release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: sudo apt install -y cmake ninja-build libvulkan-dev libwayland-dev libopenxr-dev libxkbcommon-dev libpulse-dev clang lld llvm
+
+      - name: Fetch glslc
+        run: |
+          curl -L -O https://storage.googleapis.com/shaderc/artifacts/prod/graphics_shader_compiler/shaderc/linux/continuous_clang_release/435/20230810-123653/install.tgz
+          tar xvf install.tgz
+
+      - name: Configure
+        working-directory: ${{ github.workspace }}
+        run: >
+          cmake
+          -B build
+          -G Ninja
+          -DCMAKE_BUILD_TYPE=Release
+          -DCMAKE_C_COMPILER=clang
+          -DCMAKE_CXX_COMPILER=clang++
+          -Dglslc_PROGRAM=${{ github.workspace }}/install/bin/glslc
+
+      - name: Build
+        run: cmake --build ${{ github.workspace }}/build -j4
+
+      - name: Test
+        working-directory: ${{ github.workspace }}/build
+        run: ctest --build-config Release
+
+  build-windows:
+    name: Windows Release
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install LLVM
+        uses: KyleMayes/install-llvm-action@v1.8.3
+        with:
+          version: "16.0"
+
+      - name: Install Ninja
+        uses: seanmiddleditch/gha-setup-ninja@master
+
+      - name: Install Vulkan SDK
+        uses: humbletim/setup-vulkan-sdk@v1.2.0
+        with:
+          vulkan-query-version: latest
+          vulkan-components: Vulkan-Headers, Vulkan-Loader
+          vulkan-use-cache: true
+
+      - name: Fetch glslc
+        working-directory: ${{ github.workspace }}
+        run: |
+          curl.exe -L -O https://storage.googleapis.com/shaderc/artifacts/prod/graphics_shader_compiler/shaderc/windows/continuous_release_2017/438/20230810-123700/install.zip
+          7z.exe x install.zip
+
+      - name: Fetch OpenXR SDK
+        uses: actions/checkout@v4
+        with:
+          repository: KhronosGroup/OpenXR-SDK
+          path: ${{ github.workspace }}/openxr-sdk
+
+      - name: Configure OpenXR SDK
+        working-directory: ${{ github.workspace }}/openxr-sdk
+        run: >
+          cmake
+          -B build
+          -G Ninja
+          -DCMAKE_BUILD_TYPE=Release
+          -DCMAKE_C_COMPILER=clang
+          -DCMAKE_CXX_COMPILER=clang++
+          -DGLSL_COMPILER=${{ github.workspace }}/install/bin/glslc.exe
+          -DGLSLANG_VALIDATOR=${{ github.workspace }}/install/bin/glslangValidator.exe
+
+      - name: Configure OpenXR SDK
+        working-directory: ${{ github.workspace }}/openxr-sdk
+        run: cmake --build build -j8
+
+      - name: Configure
+        working-directory: ${{ github.workspace }}
+        run: >
+          cmake
+          -B build
+          -G Ninja
+          -DCMAKE_BUILD_TYPE=Release
+          -DCMAKE_C_COMPILER=clang
+          -DCMAKE_CXX_COMPILER=clang++
+          -DOpenXR_LIBRARY=${{ github.workspace }}/openxr-sdk/build/src/loader/openxr_loader.lib
+          -DOpenXR_INCLUDE_DIR=${{ github.workspace }}/openxr-sdk/include
+          -Dglslc_PROGRAM=${{ github.workspace }}/install/bin/glslc.exe
+
+      - name: Build
+        run: cmake --build ${{ github.workspace }}/build -j4
+
+      - name: Test
+        working-directory: ${{ github.workspace }}/build
+        run: ctest .

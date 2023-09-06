@@ -22,9 +22,6 @@ target_sources(CellCore PRIVATE
                ${PLATFORM_DIR}/Sources/Network/Socket/DestructAndNew.cc
                ${PLATFORM_DIR}/Sources/Network/Socket/Socket.cc
 
-               ${PLATFORM_DIR}/Sources/Shell/DrawableExtentForWindow.cc
-               ${PLATFORM_DIR}/Sources/Shell/Input.cc
-               ${PLATFORM_DIR}/Sources/Shell/SetNewTitleForWindow.cc
 
                ${PLATFORM_DIR}/Sources/System/DynamicLibrary.cc
                ${PLATFORM_DIR}/Sources/System/Event.cc
@@ -36,17 +33,6 @@ target_sources(CellCore PRIVATE
                ${PLATFORM_DIR}/Sources/System/String.cc
                ${PLATFORM_DIR}/Sources/System/Thread.cc
                ${PLATFORM_DIR}/Sources/System/Ticker.cc
-
-               ${PLATFORM_DIR}/Sources/System/Platform/Linux.cc
-               ${PLATFORM_DIR}/Sources/System/Platform/Wayland.cc
-               ${PLATFORM_DIR}/Sources/System/Platform/WaylandRegistry.cc
-               ${PLATFORM_DIR}/Sources/System/Platform/WaylandKeyboard.cc
-               ${PLATFORM_DIR}/Sources/System/Platform/WaylandSeat.cc
-               ${PLATFORM_DIR}/Sources/System/Platform/WaylandXDGToplevel.cc
-
-               ${PLATFORM_DIR}/Sources/System/Platform/WaylandProtocols/idle-inhibit-protocol.c
-               ${PLATFORM_DIR}/Sources/System/Platform/WaylandProtocols/xdg-decoration-protocol.c
-               ${PLATFORM_DIR}/Sources/System/Platform/WaylandProtocols/xdg-shell-protocol.c
 )
 
 target_compile_definitions(CellCore PUBLIC

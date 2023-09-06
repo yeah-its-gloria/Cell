@@ -35,6 +35,10 @@ void CellEntry(Reference<System::String> parameterString) {
     OiResult result = oiCreateInstance(instanceInfo, &instance);
     CELL_ASSERT(result == OI_SUCCESS);
 
+    uint32_t count = 0;
+    result = oiEnumerateDevices(instance, &count, nullptr);
+    CELL_ASSERT(result == OI_SUCCESS);
+
     while (true) {
         result = oiAcquireUpdates(instance);
         CELL_ASSERT(result == OI_SUCCESS);

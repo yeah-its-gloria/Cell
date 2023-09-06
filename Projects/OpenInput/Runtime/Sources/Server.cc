@@ -23,15 +23,12 @@ void CellEntry(Reference<String> parameterString) {
 namespace Runtime {
 
 void Server::Launch() {
-    //Thread device([](void* p) { ((Server*)p)->DeviceThread(); }, this, "Device Thread");
-    this->DeviceThread();
-    return;
+    Thread device([](void* p) { ((Server*)p)->DeviceThread(); }, this, "Device Thread");
 
     Log("Creating the pipe...");
-
     ScopedObject<IO::Pipe> pipe = IO::Pipe::Create("openinput-1", sizeof(Message)).Unwrap();
 
-    while (true) {
+    while (this->isActive) {
         Log("Waiting for a client...");
         IO::Result result = pipe->WaitForClient();
         CELL_ASSERT(result == IO::Result::Success);
@@ -53,8 +50,7 @@ void Server::Launch() {
 
         UnmanagedBlock messageBlock {&message};
 
-        bool active = true;
-        while (active) {
+        while (this->isActive) {
             Log("Waiting for message...");
 
             result = pipe->Read(messageBlock);
@@ -66,16 +62,16 @@ void Server::Launch() {
             case IO::Result::Disconnected: {
                 Log("Client disconnected.");
 
-                active = false;
+                this->isActive = false;
                 break;
             }
 
             default: {
-                Panic("invalid pipe read result");
+                Panic("Cell::IO::Pipe::Read failed");
             }
             }
 
-            if (!active) {
+            if (!this->isActive) {
                 break;
             }
 
@@ -86,7 +82,7 @@ void Server::Launch() {
                     Log("Invalid instance create message received, disconnecting");
                     pipe->DisconnectClient();
 
-                    active = false;
+                    this->isActive = false;
                     break;
                 }
 
@@ -94,18 +90,27 @@ void Server::Launch() {
                 break;
             }
 
+            case MessageType::GetDeviceCount: {
+                Log("Requested device count, is %d", this->deviceCount);
+
+                MessageResponseGetDeviceCount response { MessageType::ResponseGetDeviceCount, this->deviceCount, { 0 } };
+                pipe->Write(System::UnmanagedBlock { &response });
+
+                break;
+            }
+
             default: {
                 Log("Invalid message type received, disconnecting");
                 pipe->DisconnectClient();
 
-                active = false;
+                this->isActive = false;
                 break;
             }
             }
         }
     }
 
-    //device.Join(1000);
+    device.Join(1000);
 }
 
 }

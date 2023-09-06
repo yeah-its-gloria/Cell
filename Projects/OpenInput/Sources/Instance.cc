@@ -1,19 +1,16 @@
 // SPDX-FileCopyrightText: Copyright 2023 Gloria G.
 // SPDX-License-Identifier: BSD-2-Clause
 
-#include <Cell/IO/Pipe.hh>
+#include "Internal.hh"
+
+#include <Runtime.hh>
+
 #include <Cell/System/BlockImpl.hh>
 #include <Cell/System/Memory.hh>
 #include <Cell/System/Panic.hh>
-#include <Runtime.hh>
-#include <openinput/openinput.h>
 
 using namespace Cell;
 using namespace Runtime;
-
-struct OiInstance_T {
-    IO::Pipe* pipe;
-};
 
 OiResult oiCreateInstance(const OiInstanceCreateInfo createInfo, OiInstance* instance) {
     (void)(createInfo);
@@ -41,7 +38,8 @@ OiResult oiCreateInstance(const OiInstanceCreateInfo createInfo, OiInstance* ins
 
     MessageCreateInstance createInstanceMessage = {
         .messageType = MessageType::CreateInstance,
-        .info = createInfo};
+        .info = createInfo
+    };
 
     System::UnmanagedBlock createInstMsgBlock {&createInstanceMessage};
     result = inst->pipe->Write(createInstMsgBlock);

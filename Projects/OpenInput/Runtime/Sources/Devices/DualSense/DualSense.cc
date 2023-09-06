@@ -41,29 +41,7 @@ Wrapped<DualSense*, Result> DualSense::Find() {
         }
     }
 
-    IO::HID* device = hidResult.Unwrap();
-
-    System::ManagedBlock<uint8_t> data(78);
-    while (true) {
-        IO::Result result = device->Read(data, 500);
-        switch (result) {
-        case IO::Result::Success:
-        case IO::Result::Incomplete: {
-            break;
-        }
-
-        default: {
-            System::Panic("Cell::IO::HID::Read failed");
-        }
-        }
-
-        PS5Packet* packet = (PS5Packet*)data.Pointer();
-        System::Log("%d", packet->buttons);
-
-        System::Thread::Yield();
-    }
-
-    return Result::Success;
+    return new DualSense(hidResult.Unwrap());
 }
 
 DualSense::~DualSense() {
@@ -71,6 +49,19 @@ DualSense::~DualSense() {
 }
 
 Result DualSense::Poll() {
+    System::ManagedBlock<uint8_t> data(78);
+    IO::Result result = device->Read(data, 500);
+    switch (result) {
+    case IO::Result::Success:
+    case IO::Result::Incomplete: {
+        break;
+    }
+
+    default: {
+        System::Panic("Cell::IO::HID::Read failed");
+    }
+    }
+
     return Result::Success;
 }
 

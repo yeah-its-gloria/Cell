@@ -17,7 +17,7 @@ using namespace Cell::DataManagement::Foreign;
 using namespace Cell::System;
 
 CELL_FUNCTION_INTERNAL void TestJSON() {
-    ScopedObject<IO::File> file = IO::File::Open("./Engine/Modules/ForeignData/Content/Data.json").Unwrap();
+    ScopedObject<IO::File> file = IO::File::Open("./Engine/Modules/DataManagement/Content/Data.json").Unwrap();
     const size_t size = file->GetSize().Unwrap();
 
     ManagedBlock<char> data(size);
@@ -60,7 +60,7 @@ CELL_FUNCTION_INTERNAL void TestJSON() {
 }
 
 CELL_FUNCTION_INTERNAL void TestglTF() {
-    ScopedObject<IO::File> file = IO::File::Open("./Engine/Modules/ontent/Box.glb").Unwrap();
+    ScopedObject<IO::File> file = IO::File::Open("./Engine/Modules/DataManagement/Content/Box.glb").Unwrap();
     const size_t size = file->GetSize().Unwrap();
 
     ManagedBlock<uint8_t> data(size);
@@ -71,7 +71,7 @@ CELL_FUNCTION_INTERNAL void TestglTF() {
 }
 
 CELL_FUNCTION_INTERNAL void TestPNG() {
-    ScopedObject<IO::File> file = IO::File::Open("./Engine/Modules/ForeignData/Content/Trans.png").Unwrap();
+    ScopedObject<IO::File> file = IO::File::Open("./Engine/Modules/DataManagement/Content/Trans.png").Unwrap();
     const size_t size = file->GetSize().Unwrap();
 
     ManagedBlock<uint8_t> data(size);
