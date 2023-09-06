@@ -74,7 +74,7 @@ jobs:
           repository: KhronosGroup/OpenXR-SDK
           path: ${{ github.workspace }}/openxr-sdk
 
-      - name: Configure OpenXR SDK
+      - name: Configure OpenXR
         working-directory: ${{ github.workspace }}/openxr-sdk
         run: >
           cmake
@@ -86,7 +86,7 @@ jobs:
           -DGLSL_COMPILER=${{ github.workspace }}/install/bin/glslc.exe
           -DGLSLANG_VALIDATOR=${{ github.workspace }}/install/bin/glslangValidator.exe
 
-      - name: Configure OpenXR SDK
+      - name: Build OpenXR
         working-directory: ${{ github.workspace }}/openxr-sdk
         run: cmake --build build -j8
 
