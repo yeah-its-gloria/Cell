@@ -9,12 +9,15 @@ using namespace Implementations;
 
 Result Input::Poll() {
     Linux* _linux = (Linux*)&this->shell;
+
+    _linux->keyLock.Lock();
     for (registerInfo info : this->registeredFunctions) {
         if ((_linux->keys & info.match) == info.match) {
             info.function(info.match, info.userData);
         }
     }
 
+    _linux->keyLock.Unlock();
     return Result::Success;
 }
 

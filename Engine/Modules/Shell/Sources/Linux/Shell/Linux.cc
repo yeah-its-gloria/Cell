@@ -3,6 +3,7 @@
 
 #include <Cell/Shell/Implementations/Linux.hh>
 #include <Cell/System/Log.hh>
+#include <Cell/System/Memory.hh>
 #include <Cell/System/Panic.hh>
 #include <Cell/System/Sleep.hh>
 
@@ -98,8 +99,13 @@ Wrapped<Linux*, Result> Linux::New(const System::String& title) {
     waylandResult = xdg_toplevel_add_listener(_linux->xdgToplevel, &toplevelListener, &_linux);
     CELL_ASSERT(waylandResult == 0);
 
-    xdg_toplevel_set_title(_linux->xdgToplevel, "Cell");
-    xdg_toplevel_set_app_id(_linux->xdgToplevel, "cell");
+    char* titleStr = title.IsEmpty() ? (char*)"Cell" : title.ToCharPointer();
+    xdg_toplevel_set_title(_linux->xdgToplevel, titleStr);
+    xdg_toplevel_set_app_id(_linux->xdgToplevel, titleStr);
+
+    if (!title.IsEmpty()) {
+        System::FreeMemory(titleStr);
+    }
 
     if (_linux->xdgDecorationManager != nullptr) {
         _linux->xdgDecoration = zxdg_decoration_manager_v1_get_toplevel_decoration(_linux->xdgDecorationManager, _linux->xdgToplevel);
@@ -136,7 +142,7 @@ Wrapped<Linux*, Result> Linux::New(const System::String& title) {
 }
 
 Result Linux::RunDispatch() {
-    const int waylandResult = wl_display_dispatch_pending(_linux->display);
+    const int waylandResult = wl_display_dispatch_pending(this->display);
     CELL_ASSERT(waylandResult > -1);
 
     if (this->xdgRequestedClose) {

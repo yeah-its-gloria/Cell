@@ -7,6 +7,7 @@
 #include <Cell/Scoped.hh>
 #include <Cell/OpenXR/VulkanTarget.hh>
 #include <Cell/System/Log.hh>
+#include <Cell/System/Thread.hh>
 
 using namespace Cell;
 using namespace Cell::Mathematics;

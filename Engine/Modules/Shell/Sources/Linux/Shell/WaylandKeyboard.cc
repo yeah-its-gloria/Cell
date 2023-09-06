@@ -69,12 +69,12 @@ void Linux::WaylandKeyboardKey(void* data, struct wl_keyboard* keyboard, const u
     Linux* _linux = (Linux*)data;
     CELL_ASSERT(_linux != nullptr);
 
-    _linux->keyLock->Lock();
+    _linux->keyLock.Lock();
 
     xkb_keysym_t sym = xkb_state_key_get_one_sym(_linux->keyboardState, key + 8);
     switch (sym) {
     case 65307: {// Escape
-        _linux->exitSignal->Signal();
+        _linux->isDone = true;
         break;
     }
 
@@ -149,7 +149,7 @@ void Linux::WaylandKeyboardKey(void* data, struct wl_keyboard* keyboard, const u
     }
     }
 
-    _linux->keyLock->Unlock();
+    _linux->keyLock.Unlock();
 }
 
 void Linux::WaylandKeyboardModifiers(void* data,

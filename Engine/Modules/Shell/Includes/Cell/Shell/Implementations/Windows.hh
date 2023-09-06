@@ -5,6 +5,8 @@
 
 #include <Cell/Shell/KeyValue.hh>
 #include <Cell/Shell/Shell.hh>
+#include <Cell/System/Mutex.hh>
+#include <Cell/System/String.hh>
 #include <Cell/System/Platform/Windows/Includes.h>
 
 namespace Cell::Shell::Implementations {

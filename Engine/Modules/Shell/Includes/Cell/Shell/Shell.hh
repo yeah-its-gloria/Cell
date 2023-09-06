@@ -3,10 +3,9 @@
 
 #pragma once
 
+#include <Cell/Wrapped.hh>
 #include <Cell/Shell/Result.hh>
-#include <Cell/System/Event.hh>
-#include <Cell/System/Mutex.hh>
-#include <Cell/System/Thread.hh>
+#include <Cell/System/String.hh>
 
 namespace Cell::Shell {
 

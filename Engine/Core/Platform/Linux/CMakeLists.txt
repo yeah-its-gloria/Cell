@@ -1,9 +1,6 @@
 # SPDX-FileCopyrightText: Copyright 2023 Gloria G.
 # SPDX-License-Identifier: BSD-2-Clause
 
-find_package(wayland REQUIRED FATAL_ERROR)
-find_package(xkbcommon REQUIRED FATAL_ERROR)
-
 target_sources(CellCore PRIVATE
                ${PLATFORM_DIR}/Sources/VirtualStub.cc
 
@@ -14,6 +11,7 @@ target_sources(CellCore PRIVATE
                ${PLATFORM_DIR}/Sources/IO/File/SetWorkingDirectory.cc
 
                ${PLATFORM_DIR}/Sources/IO/FolderWalker.cc
+               ${PLATFORM_DIR}/Sources/IO/HID.cc
                ${PLATFORM_DIR}/Sources/IO/Pipe.cc
                ${PLATFORM_DIR}/Sources/IO/USB.cc
 
@@ -21,7 +19,6 @@ target_sources(CellCore PRIVATE
                ${PLATFORM_DIR}/Sources/Network/AddressInfo.cc
                ${PLATFORM_DIR}/Sources/Network/Socket/DestructAndNew.cc
                ${PLATFORM_DIR}/Sources/Network/Socket/Socket.cc
-
 
                ${PLATFORM_DIR}/Sources/System/DynamicLibrary.cc
                ${PLATFORM_DIR}/Sources/System/Event.cc
@@ -59,16 +56,7 @@ else ()
 endif ()
 
 target_include_directories(CellCore PUBLIC ${wayland_INCLUDE_DIRS} ${xkbcommon_INCLUDE_DIRS})
-
-target_link_libraries(CellCore PRIVATE
-                      ${wayland_LIBRARIES}
-                      ${xkbcommon_LIBRARIES}
-
-                      PUBLIC pthread
-                      PUBLIC dl
-                      PUBLIC rt
-                      PUBLIC m
-)
+target_link_libraries(CellCore PUBLIC pthread dl rt m)
 
 function(Cell_Platform_Bootstrap_Target target)
     get_target_property(type ${target} TYPE)

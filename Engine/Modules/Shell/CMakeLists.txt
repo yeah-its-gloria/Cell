@@ -41,6 +41,9 @@ if (WIN32)
 
     target_link_libraries(CellModulesShell PRIVATE dwmapi)
 elseif (UNIX)
+    find_package(wayland REQUIRED FATAL_ERROR)
+    find_package(xkbcommon REQUIRED FATAL_ERROR)
+
     target_sources(CellModulesShell PRIVATE
                    ${CMAKE_CURRENT_LIST_DIR}/Sources/Linux/DrawableExtentForWindow.cc
                    ${CMAKE_CURRENT_LIST_DIR}/Sources/Linux/Input.cc
@@ -57,6 +60,8 @@ elseif (UNIX)
                    ${CMAKE_CURRENT_LIST_DIR}/Sources/Linux/Shell/WaylandSeat.cc
                    ${CMAKE_CURRENT_LIST_DIR}/Sources/Linux/Shell/WaylandXDGToplevel.cc
     )
+
+    target_link_libraries(CellModulesShell PRIVATE ${wayland_LIBRARIES} ${xkbcommon_LIBRARIES})
 else ()
     message(FATAL_ERROR "Unsupported platform")
 endif ()

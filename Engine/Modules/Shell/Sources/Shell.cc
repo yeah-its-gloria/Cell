@@ -7,7 +7,7 @@
 #if CELL_PLATFORM_WINDOWS
 #include <Cell/Shell/Implementations/Windows.hh>
 #elif CELL_PLATFORM_LINUX
-#include <Cell/Shell/Implementations/Linux.hh
+#include <Cell/Shell/Implementations/Linux.hh>
 #else
 #error No implementation
 #endif

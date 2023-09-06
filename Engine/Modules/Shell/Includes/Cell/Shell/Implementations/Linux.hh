@@ -3,13 +3,16 @@
 
 #pragma once
 
+#include <Cell/Shell/KeyValue.hh>
+#include <Cell/Shell/Shell.hh>
+#include <Cell/System/Mutex.hh>
+
+#include <wayland-client.h>
+#include <xkbcommon/xkbcommon.h>
+
 #include <Cell/Shell/Implementations/Linux/WaylandProtocols/idle-inhibit-client-protocol.h>
 #include <Cell/Shell/Implementations/Linux/WaylandProtocols/xdg-decoration-client-protocol.h>
 #include <Cell/Shell/Implementations/Linux/WaylandProtocols/xdg-shell-client-protocol.h>
-#include <Cell/Shell/KeyValue.hh>
-#include <Cell/Shell/Shell.hh>
-#include <wayland-client.h>
-#include <xkbcommon/xkbcommon.h>
 
 namespace Cell::Shell::Implementations {
 
@@ -108,7 +111,7 @@ private:
     };
 
     bool xdgRequestedClose = false;
-    Mutex keyLock;
+    System::Mutex keyLock;
     Shell::KeyValue keys = (Shell::KeyValue)0;
 };
 
