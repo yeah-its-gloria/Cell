@@ -17,13 +17,13 @@ public:
     // Creates a string from UTF-8 encoded data. Leaving length 0 makes it check for null termination instead.
     CELL_FUNCTION String(const char* CELL_NONNULL utf8, size_t length = 0);
 
-    // Copies the string.
+    // Copies another string.
     CELL_FUNCTION String(const String& string);
 
     // Creates a string from a wide string, which converts its contents from the platform encoding to UTF-8 automatically.
-    CELL_FUNCTION static Wrapped <String, Result> FromPlatformWideString(const wchar_t* CELL_NONNULL wide);
+    CELL_FUNCTION static Wrapped<String, Result> FromPlatformWideString(const wchar_t* CELL_NONNULL wide);
 
-    // Regular destructor.
+    // Destructs the string.
     CELL_FUNCTION ~String();
 
     // Appends another string.

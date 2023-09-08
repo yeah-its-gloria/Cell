@@ -14,26 +14,17 @@ class VulkanTarget final : public Vulkan::IRenderTarget {
 friend Instance;
 
 public:
-// RenderTarget
-    CELL_FUNCTION ~VulkanTarget();
+    CELL_FUNCTION ~VulkanTarget() override;
 
     CELL_FUNCTION Wrapped<Vulkan::AcquiredImage, Vulkan::Result> AcquireNext() override;
     CELL_FUNCTION Vulkan::Result Present() override;
 
-    CELL_INLINE VkExtent2D GetExtent() override {
-        return VkExtent2D { this->viewConfig->recommendedImageRectWidth, this->viewConfig->recommendedImageRectHeight };
-    }
-
+    CELL_INLINE VkExtent2D GetExtent() override { return { this->viewConfig->recommendedImageRectWidth, this->viewConfig->recommendedImageRectHeight }; }
     CELL_INLINE VkFormat GetColorFormat() override { return VK_FORMAT_R8G8B8A8_SRGB; }
-
     CELL_INLINE uint32_t GetImageCount() override { return this->swapchainColorImages.GetCount(); }
-
     CELL_INLINE uint32_t GetCurrentImageIndex() override { return this->imageIndex; }
-
     CELL_INLINE VkImage GetColorImage(const uint32_t index) override { return this->swapchainColorImages[index].image; }
-
     CELL_INLINE VkImageView GetColorImageView(const uint32_t index) override { return this->swapchainColorImageViews[index]; }
-
     CELL_INLINE VkImageView GetDepthImageView(const uint32_t index) override { return this->swapchainDepthImageViews[index]; }
 
 private:

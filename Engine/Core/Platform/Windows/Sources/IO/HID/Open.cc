@@ -6,7 +6,7 @@
 #include <Cell/System/Log.hh>
 #include <Cell/System/Panic.hh>
 #include <Cell/System/Platform/Windows/Includes.h>
-#include <Cell/Utilities.hh>
+#include <Cell/Utilities/RawString.hh>
 
 #include <devpkey.h>
 #include <hidsdi.h>

@@ -5,7 +5,7 @@
 #include <Cell/System/Memory.hh>
 #include <Cell/System/Panic.hh>
 
-#include <string.h>
+#include <Cell/Utilities/RawString.hh>
 
 namespace Cell::DataManagement::Foreign {
 
@@ -15,7 +15,7 @@ Result HTTPParseResponse(const uint8_t* data, const size_t size) {
     }
 
     const char* httpIdentifier = "HTTP/";
-    const bool result = System::CompareMemory<uint8_t>(data, (uint8_t*)httpIdentifier, strlen(httpIdentifier));
+    const bool result = System::CompareMemory<uint8_t>(data, (uint8_t*)httpIdentifier, Utilities::RawStringSize(httpIdentifier));
     CELL_ASSERT(result);
 
     return Result::Success;

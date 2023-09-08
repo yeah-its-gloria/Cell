@@ -98,9 +98,9 @@ void CellEntry(Reference<String> parameterString) {
     //Log("Testing glTF");
     //TestglTF();
 
-    Log("Testing PNG");
-    TestPNG();
+    //Log("Testing PNG");
+    //TestPNG();
 
-    //Log("Testing HTTP");
-    //TestHTTP();
+    Log("Testing HTTP");
+    TestHTTP();
 }

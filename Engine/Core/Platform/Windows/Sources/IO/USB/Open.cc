@@ -7,7 +7,7 @@
 #include <Cell/System/BlockImpl.hh>
 #include <Cell/System/Log.hh>
 #include <Cell/System/Panic.hh>
-#include <Cell/Utilities.hh>
+#include <Cell/Utilities/RawString.hh>
 
 #include <devpkey.h>
 #include <SetupAPI.h>

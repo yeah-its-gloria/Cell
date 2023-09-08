@@ -5,7 +5,7 @@
 #include <Cell/System/BlockImpl.hh>
 #include <Cell/System/Log.hh>
 #include <Cell/System/Panic.hh>
-#include <Cell/Utilities.hh>
+#include <Cell/Utilities/RawString.hh>
 #include <errno.h>
 #include <stdlib.h>
 #include <string.h>

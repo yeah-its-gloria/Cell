@@ -24,6 +24,9 @@ struct AcquiredImage {
 // CellModulesVulkan: WSITarget
 class IRenderTarget : public Object {
 public:
+    // Common destructor.
+    virtual ~IRenderTarget() = default;
+
     // Acquires the image at the given index.
     virtual Wrapped<AcquiredImage, Result> AcquireNext() = 0;
 

@@ -22,6 +22,7 @@ add_library(CellModulesDataManagement ${CELL_LIBRARY_TYPE}
             ${CMAKE_CURRENT_LIST_DIR}/Sources/Foreign/Base64.cc
             ${CMAKE_CURRENT_LIST_DIR}/Sources/Foreign/glTF.cc
             ${CMAKE_CURRENT_LIST_DIR}/Sources/Foreign/HTTP.cc
+            ${CMAKE_CURRENT_LIST_DIR}/Sources/Foreign/HTTPSocket.cc
             ${CMAKE_CURRENT_LIST_DIR}/Sources/Foreign/JSON.cc
             ${CMAKE_CURRENT_LIST_DIR}/Sources/Foreign/PNG.cc
 )

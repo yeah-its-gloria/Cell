@@ -43,8 +43,9 @@ add_library(CellCore ${CELL_LIBRARY_TYPE}
             ${CORE_INCLUDES_DIR}/Cell/System/Thread.hh
             ${CORE_INCLUDES_DIR}/Cell/System/Ticker.hh
 
-            ${CORE_INCLUDES_DIR}/Cell/Utilities.hh
             ${CORE_INCLUDES_DIR}/Cell/Utilities/Byteswap.hh
+            ${CORE_INCLUDES_DIR}/Cell/Utilities/MinMaxClamp.hh
+            ${CORE_INCLUDES_DIR}/Cell/Utilities/RawString.hh
 
             # ----------------------------------------------------------------
 

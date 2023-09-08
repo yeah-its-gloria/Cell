@@ -13,7 +13,7 @@ namespace Cell::Shell::Implementations {
 
 // Shell implementation for Windows.
 class Windows : public IShell {
-    friend Input;
+friend Input;
 
 public:
     // Creates a new shell instance.

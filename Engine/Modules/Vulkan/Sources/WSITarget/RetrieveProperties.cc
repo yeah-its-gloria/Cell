@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: Copyright 2023 Gloria G.
 // SPDX-License-Identifier: BSD-2-Clause
 
-#include <Cell/Utilities.hh>
+#include <Cell/Utilities/MinMaxClamp.hh>
 #include <Cell/Vulkan/WSITarget.hh>
 
 namespace Cell::Vulkan {

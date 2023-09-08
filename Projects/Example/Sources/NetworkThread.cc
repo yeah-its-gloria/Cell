@@ -7,7 +7,7 @@
 #include <Cell/Network/Socket.hh>
 #include <Cell/Scoped.hh>
 #include <Cell/System/BlockImpl.hh>
-#include <Cell/Utilities.hh>
+#include <Cell/Utilities/RawString.hh>
 
 using namespace Cell;
 using namespace Cell::System;
