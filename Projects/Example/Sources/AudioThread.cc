@@ -19,7 +19,7 @@ void Example::AudioThread() {
     Result result = instance->SetUpRendering();
     CELL_ASSERT(result == Result::Success);
 
-    ScopedObject<IO::File> file = IO::File::Open("./Projects/Example/Content/Sounds/message.bin").Unwrap();
+    ScopedObject<IO::File> file = IO::File::Open(this->GetContentPath("/Sounds/message.bin")).Unwrap();
 
     const size_t size = file->GetSize().Unwrap();
     CELL_ASSERT(size % 4 == 0);

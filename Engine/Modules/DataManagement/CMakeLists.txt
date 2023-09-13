@@ -1,11 +1,11 @@
 # SPDX-FileCopyrightText: Copyright 2023 Gloria G.
 # SPDX-License-Identifier: BSD-2-Clause
 
-project(CellModulesDataManagement LANGUAGES CXX VERSION 1.0.0 DESCRIPTION "Cell - Modules - Data Management")
+project(CellDataManagement LANGUAGES CXX VERSION 1.0.0 DESCRIPTION "Cell - Modules - Data Management")
 
 set(MODULE_INCLUDES_DIR ${CMAKE_CURRENT_LIST_DIR}/Includes)
 
-add_library(CellModulesDataManagement ${CELL_LIBRARY_TYPE}
+add_library(CellDataManagement ${CELL_LIBRARY_TYPE}
             ${MODULE_INCLUDES_DIR}/Cell/DataManagement/Archive.hh
             ${MODULE_INCLUDES_DIR}/Cell/DataManagement/Container.hh
             ${MODULE_INCLUDES_DIR}/Cell/DataManagement/Result.hh
@@ -27,23 +27,24 @@ add_library(CellModulesDataManagement ${CELL_LIBRARY_TYPE}
             ${CMAKE_CURRENT_LIST_DIR}/Sources/Foreign/PNG.cc
 )
 
-target_compile_definitions(CellModulesDataManagement PUBLIC "CELL_MODULES_DATAMANAGEMENT_AVAILABLE=1")
-target_include_directories(CellModulesDataManagement PUBLIC ${MODULE_INCLUDES_DIR})
-target_link_libraries(CellModulesDataManagement PUBLIC CellCore)
+target_compile_definitions(CellDataManagement PUBLIC "CELL_MODULES_DATAMANAGEMENT_AVAILABLE=1")
+target_include_directories(CellDataManagement PUBLIC ${MODULE_INCLUDES_DIR})
+target_link_libraries(CellDataManagement PUBLIC CellCore)
 
 if (CELL_ENABLE_TESTS)
-    add_executable(CellModulesDataManagementTestsParsing
-                   ${CMAKE_CURRENT_LIST_DIR}/Tests/Parsing.cc
-    )
+    add_executable(CellDataManagementParsingTest ${CMAKE_CURRENT_LIST_DIR}/Tests/Parsing.cc)
 
-    target_link_libraries(CellModulesDataManagementTestsParsing PUBLIC
+    target_link_libraries(CellDataManagementParsingTest PUBLIC
                           CellCore
-                          CellModulesDataManagement
+                          CellDataManagement
     )
 
-    add_test(NAME CellModulesDataManagementTestsParsing COMMAND CellModulesDataManagementTestsParsing WORKING_DIRECTORY ${PROJECT_ROOT_DIR})
-
-    Cell_Platform_Bootstrap_Target(CellModulesDataManagementTestsParsing TRUE)
+    add_test(NAME CellDataManagementParsingTest COMMAND CellDataManagementParsingTest WORKING_DIRECTORY ${PROJECT_ROOT_DIR})
+    Cell_Platform_Bootstrap_Target(CellDataManagementParsingTest TRUE)
 endif ()
 
-Cell_Platform_Bootstrap_Target(CellModulesDataManagement)
+Cell_Platform_Bootstrap_Target(CellDataManagement)
+
+if (CELL_ENABLE_UTILITIES)
+    add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/Utilities/ContentPacker)
+endif ()

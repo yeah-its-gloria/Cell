@@ -14,6 +14,14 @@ public:
     CELL_FUNCTION_INTERNAL ~Example();
     CELL_FUNCTION_INTERNAL void Launch(const Cell::System::String& parameterString);
 
+    CELL_INLINE float GetDelta() const {
+        return this->renderDeltaTime;
+    }
+
+    CELL_INLINE Cell::System::String GetContentPath(const Cell::System::String& string) {
+        return Cell::System::String("./Projects/Example/Content") + string;
+    }
+
 private:
     CELL_FUNCTION_INTERNAL void AudioThread();
     CELL_FUNCTION_INTERNAL void NetworkThread();
@@ -22,6 +30,9 @@ private:
 
     Cell::Shell::IShell* shell = nullptr;
     Cell::Shell::Input* input = nullptr;
+
+    float elapsedTime = 0.f;
+    float renderDeltaTime = 0.f;
 
     // TODO: communications :tm:
 };

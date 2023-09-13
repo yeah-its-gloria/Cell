@@ -3,7 +3,7 @@
 
 #pragma once
 
-#include <Cell/Vulkan/Instance.hh>
+#include <Cell/Vulkan/Buffer.hh>
 
 namespace Cell::Vulkan {
 

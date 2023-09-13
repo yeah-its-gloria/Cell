@@ -29,12 +29,12 @@ add_executable(CellExample
 
 target_link_libraries(CellExample PRIVATE
                       CellCore
-                      CellModulesAudio
-                      CellModulesDataManagement
-                      CellModulesMathematics
-                      CellModulesOpenXR
-                      CellModulesShell
-                      CellModulesVulkan
+                      CellAudio
+                      CellDataManagement
+                      CellMathematics
+                      CellOpenXR
+                      CellShell
+                      CellVulkan
 )
 
 Cell_Platform_Bootstrap_Target(CellExample)

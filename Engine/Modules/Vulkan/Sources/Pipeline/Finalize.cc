@@ -15,7 +15,7 @@ Result Pipeline::Finalize() {
 
     List<VkDescriptorSetLayout> setLayouts;
     if (this->resources.GetCount() > 0) {
-        for (pipelineResource resource : this->resources) {
+        for (PipelineResource resource : this->resources) {
             setLayouts.Append(resource.layout);
         }
     }

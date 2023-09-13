@@ -47,7 +47,7 @@ Matrix4x4 Matrix4x4::Invert() {
 
     int128_t x0 = _mm_movehl_ps(r3, r2);
     int128_t x3 = _mm_movelh_ps(r2, r3);
-    int128_t x1 = shuffle(x0, 1, 3, 3 ,3);
+    int128_t x1 = shuffle(x0, 1, 3, 3, 3);
     int128_t x2 = shuffle(x0, 0, 2, 2, 2);
     int128_t x4 = shuffle(x3, 1, 3, 3, 3);
     int128_t x7 = shuffle(x3, 0, 2, 2, 2);
@@ -165,6 +165,108 @@ Matrix4x4 Matrix4x4::Invert() {
     float det = 1.f / (a * this->data[0][0] + b * this->data[1][0] + c * this->data[2][0] + d * this->data[3][0]);
     this->Multiply(det);
 #endif
+
+    return *this;
+}
+
+// TODO: SIMD for Addition, Subtraction and Multiplication
+
+Matrix4x4 Matrix4x4::Add(const float scalar) {
+    this->data[0][0] += scalar;
+    this->data[0][1] += scalar;
+    this->data[0][2] += scalar;
+    this->data[0][3] += scalar;
+
+    this->data[1][0] += scalar;
+    this->data[1][1] += scalar;
+    this->data[1][2] += scalar;
+    this->data[1][3] += scalar;
+
+    this->data[2][0] += scalar;
+    this->data[2][1] += scalar;
+    this->data[2][2] += scalar;
+    this->data[2][3] += scalar;
+
+    this->data[3][0] += scalar;
+    this->data[3][1] += scalar;
+    this->data[3][2] += scalar;
+    this->data[3][3] += scalar;
+
+    return *this;
+}
+
+Matrix4x4 Matrix4x4::Add(const Matrix4x4 matrix) {
+    Matrix4x4 old = *this;
+
+    this->data[0][0] = old.data[0][0] + matrix.data[0][0];
+    this->data[0][2] = old.data[0][1] + matrix.data[0][1];
+    this->data[0][2] = old.data[0][2] + matrix.data[0][2];
+    this->data[0][3] = old.data[0][3] + matrix.data[0][3];
+
+    this->data[1][0] = old.data[1][0] + matrix.data[1][0];
+    this->data[1][2] = old.data[1][1] + matrix.data[1][1];
+    this->data[1][2] = old.data[1][2] + matrix.data[1][2];
+    this->data[1][3] = old.data[1][3] + matrix.data[1][3];
+
+    this->data[2][0] = old.data[2][0] + matrix.data[2][0];
+    this->data[2][2] = old.data[2][1] + matrix.data[2][1];
+    this->data[2][2] = old.data[2][2] + matrix.data[2][2];
+    this->data[2][3] = old.data[2][3] + matrix.data[2][3];
+
+    this->data[3][0] = old.data[3][0] + matrix.data[3][0];
+    this->data[3][2] = old.data[3][1] + matrix.data[3][1];
+    this->data[3][2] = old.data[3][2] + matrix.data[3][2];
+    this->data[3][3] = old.data[3][3] + matrix.data[3][3];
+
+    return *this;
+}
+
+Matrix4x4 Matrix4x4::Subtract(const float scalar) {
+    this->data[0][0] -= scalar;
+    this->data[0][1] -= scalar;
+    this->data[0][2] -= scalar;
+    this->data[0][3] -= scalar;
+
+    this->data[1][0] -= scalar;
+    this->data[1][1] -= scalar;
+    this->data[1][2] -= scalar;
+    this->data[1][3] -= scalar;
+
+    this->data[2][0] -= scalar;
+    this->data[2][1] -= scalar;
+    this->data[2][2] -= scalar;
+    this->data[2][3] -= scalar;
+
+    this->data[3][0] -= scalar;
+    this->data[3][1] -= scalar;
+    this->data[3][2] -= scalar;
+    this->data[3][3] -= scalar;
+
+    return *this;
+}
+
+Matrix4x4 Matrix4x4::Subtract(const Matrix4x4 matrix) {
+    Matrix4x4 old = *this;
+
+    this->data[0][0] = old.data[0][0] - matrix.data[0][0];
+    this->data[0][2] = old.data[0][1] - matrix.data[0][1];
+    this->data[0][2] = old.data[0][2] - matrix.data[0][2];
+    this->data[0][3] = old.data[0][3] - matrix.data[0][3];
+
+    this->data[1][0] = old.data[1][0] - matrix.data[1][0];
+    this->data[1][2] = old.data[1][1] - matrix.data[1][1];
+    this->data[1][2] = old.data[1][2] - matrix.data[1][2];
+    this->data[1][3] = old.data[1][3] - matrix.data[1][3];
+
+    this->data[2][0] = old.data[2][0] - matrix.data[2][0];
+    this->data[2][2] = old.data[2][1] - matrix.data[2][1];
+    this->data[2][2] = old.data[2][2] - matrix.data[2][2];
+    this->data[2][3] = old.data[2][3] - matrix.data[2][3];
+
+    this->data[3][0] = old.data[3][0] - matrix.data[3][0];
+    this->data[3][2] = old.data[3][1] - matrix.data[3][1];
+    this->data[3][2] = old.data[3][2] - matrix.data[3][2];
+    this->data[3][3] = old.data[3][3] - matrix.data[3][3];
 
     return *this;
 }

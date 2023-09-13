@@ -144,7 +144,7 @@ void Example::XRThread() {
                 const uint32_t index = instance->GetVulkanTarget(i)->GetCurrentImageIndex();
                 uniforms[i][index]->Copy(&ubo, sizeof(ExampleUBO));
 
-                VulkanToolsGenerateRenderCommands(36, &commandBuffer[i], &pipeline, &buffer, instance->GetVulkanTarget(i), index);
+                VulkanToolsGenerateRenderCommands(8, 36, &commandBuffer[i], &pipeline, &buffer, instance->GetVulkanTarget(i), index);
 
                 Vulkan::Result vkResult = instance->GetVulkan()->RenderImage(instance->GetVulkanTarget(i),
                                                                              commandBuffer[i]->GetCommandBufferHandle(instance->GetVulkanTarget(i)->GetCurrentImageIndex()));

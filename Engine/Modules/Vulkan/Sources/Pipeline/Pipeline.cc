@@ -15,7 +15,7 @@ Pipeline::~Pipeline() {
     }
 
     if (this->resources.GetCount() > 0) {
-        for (pipelineResource resource : this->resources) {
+        for (PipelineResource resource : this->resources) {
             System::FreeMemory(resource.sets);
 
             vkDestroyDescriptorPool(this->instance->device, resource.pool, nullptr);

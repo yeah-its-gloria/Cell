@@ -36,7 +36,7 @@ public:
     CELL_FUNCTION void Set(const char* CELL_NONNULL data = "");
 
     // Returns the length of the string. 0 equals empty.
-    CELL_NODISCARD CELL_FUNCTION size_t GetLength() const { return this->length; }
+    CELL_NODISCARD CELL_INLINE size_t GetLength() const { return this->length; }
 
     // Returns a null terminated C char buffer, UTF-8 encoded. The buffer lifetime is caller managed.
     CELL_NODISCARD CELL_FUNCTION char* CELL_NONNULL ToCharPointer() const;
@@ -67,6 +67,12 @@ public:
 
     // Comparison operator.
     CELL_INLINE bool operator !=(const String& other) { return !(*this == other); }
+
+    // Appending operator.
+    CELL_INLINE String& operator +(const String& input) { this->Append(input); return *this; }
+
+    // Appending operator for UTF-8 encoded data.
+    CELL_INLINE String& operator +(const char* input) { this->Append(input); return *this; }
 
     // Appending operator.
     CELL_INLINE void operator +=(const String& input) { this->Append(input); }

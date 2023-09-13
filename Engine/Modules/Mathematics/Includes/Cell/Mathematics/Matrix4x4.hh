@@ -48,19 +48,51 @@ public:
     // (Perspective utility) Calculates perspective projection for this matrix.
     CELL_FUNCTION Matrix4x4 Perspective(const float fovY, const float aspect, const float nearZ, const float farZ);
 
-    // Multiplies this matrix with a scalar.
+    // Adds the scalar value to this matrix.
+    CELL_FUNCTION Matrix4x4 Add(const float scalar);
+
+    // Adds the other matrix to this matrix.
+    CELL_FUNCTION Matrix4x4 Add(const Matrix4x4 matrix);
+
+    // Subtracts the scalar value from this matrix.
+    CELL_FUNCTION Matrix4x4 Subtract(const float scalar);
+
+    // Subtracts the other matrix from this matrix.
+    CELL_FUNCTION Matrix4x4 Subtract(const Matrix4x4 matrix);
+
+    // Multiplies the scalar value with this matrix.
     CELL_FUNCTION Matrix4x4 Multiply(const float scalar);
 
-    // Multiplies this matrix with another matrix.
+    // Multiplies the other matrix with this matrix.
     CELL_FUNCTION Matrix4x4 Multiply(const Matrix4x4 matrix);
 
-    // Multiplies this matrix with a scalar.
+    // Adds the scalar value to this matrix.
+    CELL_INLINE Matrix4x4 operator +(const float scalar) {
+        return this->Add(scalar);
+    }
+
+    // Adds the other matrix to this matrix.
+    CELL_INLINE Matrix4x4 operator +(const Matrix4x4 matrix) {
+        return this->Add(matrix);
+    }
+
+    // Subtracts the scalar value from this matrix.
+    CELL_INLINE Matrix4x4 operator -(const float scalar) {
+        return this->Subtract(scalar);
+    }
+
+    // Subtracts the other matrix from this matrix.
+    CELL_INLINE Matrix4x4 operator -(const Matrix4x4 matrix) {
+        return this->Subtract(matrix);
+    }
+
+    // Multiplies the scalar value with this matrix.
     CELL_INLINE Matrix4x4 operator *(const float scalar) {
         return this->Multiply(scalar);
     }
 
-    // Multiplies this matrix with another matrix.
-    CELL_FUNCTION Matrix4x4 operator *(const Matrix4x4 matrix) {
+    // Multiplies the other matrix with this matrix.
+    CELL_INLINE Matrix4x4 operator *(const Matrix4x4 matrix) {
         return this->Multiply(matrix);
     }
 };

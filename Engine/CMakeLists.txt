@@ -18,7 +18,3 @@ Cell_Add_Module(CELL_ENABLE_MODULE_MATHEMATICS    ${MODULES_DIR}/Mathematics    
 Cell_Add_Module(CELL_ENABLE_MODULE_OPENXR         ${MODULES_DIR}/OpenXR         "Whether the OpenXR module should be built. Defaults to ON.")
 Cell_Add_Module(CELL_ENABLE_MODULE_SHELL          ${MODULES_DIR}/Shell          "Whether the Shell module should be built. Defaults to ON.")
 Cell_Add_Module(CELL_ENABLE_MODULE_VULKAN         ${MODULES_DIR}/Vulkan         "Whether the Vulkan module should be built. Defaults to ON.")
-
-if (CELL_ENABLE_UTILITIES)
-    add_subdirectory(${UTILITIES_DIR}/ContentPacker)
-endif ()

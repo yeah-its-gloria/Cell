@@ -8,7 +8,7 @@
 using namespace Cell;
 using namespace Cell::Shell;
 
-const float MovementSpeed = 100.f;
+const float MovementSpeed = 5.f;
 
 void VulkanToolsInputSetUp(Input* input, InputData* data) {
     Result shellResult = input->RegisterAction(
@@ -16,7 +16,7 @@ void VulkanToolsInputSetUp(Input* input, InputData* data) {
             (void)(value);
 
             InputData* inputData = (InputData*)data;
-            inputData->position->y += MovementSpeed * (*inputData->timeMilliseconds);
+            inputData->position->y += MovementSpeed * inputData->instance->GetDelta();
         },
         data);
     CELL_ASSERT(shellResult == Result::Success);
@@ -26,7 +26,7 @@ void VulkanToolsInputSetUp(Input* input, InputData* data) {
             (void)(value);
 
             InputData* inputData = (InputData*)data;
-            inputData->position->y -= MovementSpeed * (*inputData->timeMilliseconds);
+            inputData->position->y -= MovementSpeed * inputData->instance->GetDelta();
         },
         data);
     CELL_ASSERT(shellResult == Result::Success);
@@ -36,7 +36,7 @@ void VulkanToolsInputSetUp(Input* input, InputData* data) {
             (void)(value);
 
             InputData* inputData = (InputData*)data;
-            inputData->position->x += MovementSpeed * (*inputData->timeMilliseconds);
+            inputData->position->x += MovementSpeed * inputData->instance->GetDelta();
         },
         data);
     CELL_ASSERT(shellResult == Result::Success);
@@ -46,7 +46,7 @@ void VulkanToolsInputSetUp(Input* input, InputData* data) {
             (void)(value);
 
             InputData* inputData = (InputData*)data;
-            inputData->position->x -= MovementSpeed * (*inputData->timeMilliseconds);
+            inputData->position->x -= MovementSpeed * inputData->instance->GetDelta();
         },
         data);
     CELL_ASSERT(shellResult == Result::Success);
@@ -56,7 +56,7 @@ void VulkanToolsInputSetUp(Input* input, InputData* data) {
             (void)(value);
 
             InputData* inputData = (InputData*)data;
-            inputData->position->z -= MovementSpeed * (*inputData->timeMilliseconds);
+            inputData->position->z -= MovementSpeed * inputData->instance->GetDelta();
         },
         data);
     CELL_ASSERT(shellResult == Result::Success);
@@ -66,7 +66,7 @@ void VulkanToolsInputSetUp(Input* input, InputData* data) {
             (void)(value);
 
             InputData* inputData = (InputData*)data;
-            inputData->position->z += MovementSpeed * (*inputData->timeMilliseconds);
+            inputData->position->z += MovementSpeed * inputData->instance->GetDelta();
         },
         data);
     CELL_ASSERT(shellResult == Result::Success);

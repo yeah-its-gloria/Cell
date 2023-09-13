@@ -4,10 +4,11 @@
 #include "../Example.hh"
 #include "Tools.hh"
 
-#include <Cell/Mathematics/Utilities.hh>
 #include <Cell/Scoped.hh>
+#include <Cell/Mathematics/Utilities.hh>
 #include <Cell/System/Log.hh>
 #include <Cell/System/Ticker.hh>
+#include <Cell/Utilities/MinMaxClamp.hh>
 #include <Cell/Vulkan/WSITarget.hh>
 
 using namespace Cell;
@@ -27,21 +28,21 @@ void Example::VulkanThread() {
 
     VkExtent2D extent = target->GetExtent();
 
-    ScopedObject<Image> texture = VulkanToolsLoadTexture(&instance, "./Projects/Example/Content/Textures/Raw/trans.bin");
+    ScopedObject<Image> texture = VulkanToolsLoadTexture(&instance, this->GetContentPath("/Textures/Raw/trans.bin"));
 
+    constexpr size_t vertexCount = 8;
     constexpr size_t indexCount = 36;
 
-    ScopedObject<Buffer> buffer = instance->CreateBuffer(sizeof(Vertex) * 8 + sizeof(uint16_t) * indexCount,
+    ScopedObject<Buffer> buffer = instance->CreateBuffer(sizeof(Vertex) * vertexCount + sizeof(uint16_t) * indexCount,
                                                          VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT,
-                                                         VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT)
-                                      .Unwrap();
+                                                         VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT).Unwrap();
 
     List<Buffer*> uniforms(target->GetImageCount());
     for (uint32_t index = 0; index < uniforms.GetCount(); index++) {
         uniforms[index] = instance->CreateBuffer(sizeof(ExampleUBO), VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT).Unwrap();
     }
 
-    const Vertex vertices[8] = {
+    const Vertex vertices[vertexCount] = {
         {{-1.0f, -1.0f, -1.0f}, {1.f, 1.f, 1.f, 1.f}, {0.0f, 1.0f}},
         {{1.0f, -1.0f, -1.0f}, {1.f, 1.f, 1.f, 1.f}, {1.0f, 1.0f}},
         {{-1.0f, 1.0f, -1.0f}, {1.f, 1.f, 1.f, 1.f}, {0.0f, 0.0f}},
@@ -76,7 +77,8 @@ void Example::VulkanThread() {
 
         // top
         4, 7, 6,
-        4, 5, 7};
+        4, 5, 7
+    };
 
     buffer->Copy((void*)vertices, sizeof(Vertex) * 8);
     buffer->Copy((void*)indices, sizeof(uint16_t) * indexCount, sizeof(Vertex) * 8);
@@ -86,8 +88,8 @@ void Example::VulkanThread() {
 
     VulkanToolsSetUpResources(&pipeline, &uniforms, &texture, &target);
 
-    VulkanToolsLoadShader(&pipeline, "./Projects/Example/Content/Shaders/DefaultVertex.spv", Stage::Vertex);
-    VulkanToolsLoadShader(&pipeline, "./Projects/Example/Content/Shaders/DefaultFragment.spv", Stage::Fragment);
+    VulkanToolsLoadShader(&pipeline, this->GetContentPath("/Shaders/DefaultVertex.spv"), Stage::Vertex);
+    VulkanToolsLoadShader(&pipeline, this->GetContentPath("/Shaders/DefaultFragment.spv"), Stage::Fragment);
 
     result = pipeline->Finalize();
     CELL_ASSERT(result == Result::Success);
@@ -100,27 +102,26 @@ void Example::VulkanThread() {
     Vector3 position = {0.f, 0.f, 0.f};
 
     ExampleUBO ubo;
-    ubo.projection.Perspective(Utilities::DegreesToRadians(45.f), (float)extent.width / (float)extent.height, 0.1, 1000.f);
+    ubo.projection.Perspective(Mathematics::Utilities::DegreesToRadians(45.f), (float)extent.width / (float)extent.height, 0.1, 1000.f);
 
-    InputData inputData = {.position = &position, .timeMilliseconds = &ubo.timeMilliseconds};
+    InputData inputData = {&position, this};
     VulkanToolsInputSetUp(this->input, &inputData);
 
-    uint64_t startTick = 0;
-    uint64_t tick = 1;
+    uint64_t finishedTick = System::GetPreciseTickerValue();
     while (this->shell->IsStillActive()) {
-        tick = System::GetPreciseTickerValue();
+        this->renderDeltaTime = Cell::Utilities::Minimum((System::GetPreciseTickerValue() - finishedTick) / 1000.f, 0.005f);
 
-        ubo.timeMilliseconds = (float)(tick - startTick) / 1000.f;
+        ubo.timeMilliseconds = this->elapsedTime;
 
         ubo.model.SetToIdentity();
 
         ubo.view.LookAt(Vector3 {0.f, 5.f, 5.f}, Vector3 {0.f, 0.f, 0.f}, Vector3 {0.f, 0.f, -1.f});
-        //ubo.view.LookAt(Vector3 { 0.f, 5.f, 5.f }, Utilities::DegreesToRadians(10.f), Utilities::DegreesToRadians(90.f));
+        //ubo.view.LookAt(Vector3 { 0.f, 5.f, 5.f }, Mathematics::Utilities::DegreesToRadians(10.f), Mathematics::Utilities::DegreesToRadians(90.f));
         ubo.view.Translate(position);
 
         uniforms[target->GetFrameCount()]->Copy(&ubo, sizeof(ExampleUBO));
 
-        VulkanToolsGenerateRenderCommands(indexCount, &cmdBufferManager, &pipeline, &buffer, &target, target->GetFrameCount());
+        VulkanToolsGenerateRenderCommands(vertexCount, indexCount, &cmdBufferManager, &pipeline, &buffer, &target, target->GetFrameCount());
         result = instance->RenderImage(&target, cmdBufferManager->GetCommandBufferHandle(target->GetFrameCount()));
         switch (result) {
         case Result::Success: {
@@ -132,7 +133,7 @@ void Example::VulkanThread() {
             CELL_ASSERT(result == Result::Success);
 
             extent = target->GetExtent();
-            ubo.projection.Perspective(Utilities::DegreesToRadians(45.f), (float)extent.width / (float)extent.height, 0.1, 10.f);
+            ubo.projection.Perspective(Mathematics::Utilities::DegreesToRadians(45.f), (float)extent.width / (float)extent.height, 0.1, 10.f);
             break;
         }
 
@@ -144,7 +145,7 @@ void Example::VulkanThread() {
         Shell::Result shellResult = input->Poll();
         CELL_ASSERT(shellResult == Shell::Result::Success);
 
-        startTick = System::GetPreciseTickerValue();
+        finishedTick = System::GetPreciseTickerValue();
     }
 
     for (Buffer* uniform : uniforms) {

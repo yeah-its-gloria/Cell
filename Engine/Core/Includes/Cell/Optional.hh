@@ -21,7 +21,7 @@ public:
     CELL_INLINE ~Optional() { }
 
     // Returns the wrapped value.
-    CELL_NODISCARD CELL_FUNCTION T Unwrap() const {
+    CELL_NODISCARD CELL_INLINE T Unwrap() const {
         CELL_ASSERT(this->hasData);
         return this->data;
     }
@@ -45,12 +45,11 @@ public:
     }
 
 private:
-    struct dummy { constexpr dummy() { }; };
-
-    CELL_STATIC_ASSERT(!__is_trivially_constructible(dummy));
+    struct Dummy { constexpr Dummy() { }; };
+    CELL_STATIC_ASSERT(!__is_trivially_constructible(Dummy));
 
     union {
-        dummy _dummy;
+        Dummy _dummy;
         T data;
     };
 

@@ -1,9 +1,9 @@
 # SPDX-FileCopyrightText: Copyright 2023 Gloria G.
 # SPDX-License-Identifier: BSD-2-Clause
 
-project(OpenInput.Runtime LANGUAGES C CXX VERSION 1.0.0)
+project(OpenInputRuntime LANGUAGES C CXX VERSION 1.0.0)
 
-add_executable(OpenInput.Runtime
+add_executable(OpenInputRuntime
                ${CMAKE_CURRENT_LIST_DIR}/Sources/Server.hh
                ${CMAKE_CURRENT_LIST_DIR}/Sources/Server.cc
 
@@ -44,7 +44,7 @@ add_executable(OpenInput.Runtime
                ${CMAKE_CURRENT_LIST_DIR}/Sources/Devices/Wiimote/Communications/StatusState.hh
 )
 
-target_include_directories(OpenInput.Runtime PRIVATE ${OPENINPUT_PRIVATE_INCLUDE_DIR})
-target_link_libraries(OpenInput.Runtime PRIVATE CellCore OpenInput)
+target_include_directories(OpenInputRuntime PRIVATE ${OPENINPUT_PRIVATE_INCLUDE_DIR})
+target_link_libraries(OpenInputRuntime PRIVATE CellCore OpenInput)
 
-Cell_Platform_Bootstrap_Target(OpenInput.Runtime TRUE)
+Cell_Platform_Bootstrap_Target(OpenInputRuntime TRUE)

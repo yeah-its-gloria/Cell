@@ -6,6 +6,7 @@
 #include <Cell/IO/File.hh>
 #include <Cell/System/Log.hh>
 #include <Cell/System/Thread.hh>
+#include <Cell/System/Ticker.hh>
 
 using namespace Cell;
 using namespace Cell::System;
@@ -30,12 +31,13 @@ void Example::Launch(const String& parameterString) {
     this->shell = Shell::CreateShell("Cell - Hi Aurelia").Unwrap();
     this->input = this->shell->CreateInputHandler();
 
-    Thread audio([](void* p) { ((Example*)p)->AudioThread(); }, this, "Audio Thread");
-    Thread network([](void* p) { ((Example*)p)->NetworkThread(); }, this, "Network Thread");
+    //Thread audio([](void* p) { ((Example*)p)->AudioThread(); }, this, "Audio Thread");
+    //Thread network([](void* p) { ((Example*)p)->NetworkThread(); }, this, "Network Thread");
     Thread renderer([](void* p) { ((Example*)p)->VulkanThread(); }, this, "Renderer Thread");
-    Thread xr([](void* p) { ((Example*)p)->XRThread(); }, this, "XR Thread");
+    //Thread xr([](void* p) { ((Example*)p)->XRThread(); }, this, "XR Thread");
 
-    while (audio.IsActive() || network.IsActive() || renderer.IsActive() || xr.IsActive()) {
+    const uint64_t startTick = GetPreciseTickerValue();
+    while (/*audio.IsActive() || network.IsActive() ||*/ renderer.IsActive() /*|| xr.IsActive()*/) {
         const Shell::Result result = this->shell->RunDispatch();
         if (result == Shell::Result::RequestedQuit) {
             break;
@@ -43,10 +45,12 @@ void Example::Launch(const String& parameterString) {
 
         CELL_ASSERT(result == Shell::Result::Success);
         Thread::Yield();
+
+        this->elapsedTime = (GetPreciseTickerValue() - startTick) / 1000.f;
     }
 
-    audio.Join();
-    network.Join();
+    //audio.Join();
+    //network.Join();
     renderer.Join();
-    xr.Join();
+    //xr.Join();
 }

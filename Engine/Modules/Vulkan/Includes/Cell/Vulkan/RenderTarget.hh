@@ -20,8 +20,8 @@ struct AcquiredImage {
 // Render target interface; this is used to perform presentation.
 //
 // Known implementations:
-// CellModulesOpenXR: VulkanTarget
-// CellModulesVulkan: WSITarget
+// CellOpenXR: VulkanTarget
+// CellVulkan: WSITarget
 class IRenderTarget : public Object {
 public:
     // Common destructor.

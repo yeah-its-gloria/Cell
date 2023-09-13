@@ -3,8 +3,8 @@
 
 #pragma once
 
-#include "Cell/System/Block.hh"
 #include <Cell/List.hh>
+#include <Cell/System/Block.hh>
 #include <Cell/Vulkan/Buffer.hh>
 #include <Cell/Vulkan/Image.hh>
 
@@ -13,6 +13,12 @@ namespace Cell::Vulkan {
 enum class PipelineResourceType : uint8_t {
     Buffer,
     Image
+};
+
+enum class CullMode : uint8_t {
+    Front,
+    Back,
+    None
 };
 
 struct PipelineResourceData {
@@ -27,14 +33,8 @@ struct PipelineResourceData {
     VkImageLayout imageLayout;
 };
 
-enum class CullMode : uint8_t {
-    Front,
-    Back,
-    None
-};
-
 class Pipeline : public Object {
-    friend Instance;
+friend Instance;
 
 public:
     // Destructor for pipelines.
@@ -69,7 +69,7 @@ public:
 private:
     CELL_FUNCTION_INTERNAL Pipeline(Instance* instance, VkFormat renderFormat) : instance(instance), layout(nullptr), pipeline(nullptr), cullMode(VK_CULL_MODE_NONE), renderFormat(renderFormat) { }
 
-    struct pipelineResource {
+    struct PipelineResource {
         VkDescriptorSetLayout layout;
         VkDescriptorPool pool;
         VkDescriptorSet* sets;
@@ -82,7 +82,7 @@ private:
     VkCullModeFlags cullMode;
     VkFormat renderFormat;
 
-    List<pipelineResource> resources;
+    List<PipelineResource> resources;
     List<VkPipelineShaderStageCreateInfo> stages;
     List<VkShaderModule> shaders;
 };

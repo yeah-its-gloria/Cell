@@ -1,13 +1,13 @@
 # SPDX-FileCopyrightText: Copyright 2023 Gloria G.
 # SPDX-License-Identifier: BSD-2-Clause
 
-project(CellModulesVulkan LANGUAGES CXX VERSION 1.0.0 DESCRIPTION "Cell - Modules - Vulkan")
+project(CellVulkan LANGUAGES CXX VERSION 1.0.0 DESCRIPTION "Cell - Modules - Vulkan")
 
 find_package(Vulkan REQUIRED FATAL_ERROR)
 
 set(MODULE_INCLUDES_DIR ${CMAKE_CURRENT_LIST_DIR}/Includes)
 
-add_library(CellModulesVulkan ${CELL_LIBRARY_TYPE}
+add_library(CellVulkan ${CELL_LIBRARY_TYPE}
             ${MODULE_INCLUDES_DIR}/Cell/Vulkan/Buffer.hh
             ${MODULE_INCLUDES_DIR}/Cell/Vulkan/CommandBufferManager.hh
             ${MODULE_INCLUDES_DIR}/Cell/Vulkan/Image.hh
@@ -70,36 +70,36 @@ add_library(CellModulesVulkan ${CELL_LIBRARY_TYPE}
             ${CMAKE_CURRENT_LIST_DIR}/Sources/WSITarget/WSITarget.cc
 )
 
-target_compile_definitions(CellModulesVulkan PUBLIC "CELL_MODULES_VULKAN_AVAILABLE=1")
+target_compile_definitions(CellVulkan PUBLIC "CELL_MODULES_VULKAN_AVAILABLE=1")
 
-target_include_directories(CellModulesVulkan PUBLIC
+target_include_directories(CellVulkan PUBLIC
                            ${MODULE_INCLUDES_DIR}
 
                            ${Vulkan_INCLUDE_DIRS}
 )
 
-target_link_libraries(CellModulesVulkan PUBLIC
+target_link_libraries(CellVulkan PUBLIC
                       CellCore
-                      CellModulesMathematics
-                      CellModulesShell
+                      CellMathematics
+                      CellShell
 
                       ${Vulkan_LIBRARIES}
 )
 
 if (WIN32)
-    target_sources(CellModulesVulkan PRIVATE ${CMAKE_CURRENT_LIST_DIR}/Sources/Instance/CreatePlatformSurfaceWindows.cc)
+    target_sources(CellVulkan PRIVATE ${CMAKE_CURRENT_LIST_DIR}/Sources/Instance/CreatePlatformSurfaceWindows.cc)
 
     if (DEFINED Vulkan_BINARIES)
         add_custom_command(
-                TARGET CellModulesVulkan PRE_BUILD
+                TARGET CellVulkan PRE_BUILD
                 COMMENT "Copying Vulkan loader..."
-                COMMAND ${CMAKE_COMMAND} -E copy_if_different ${Vulkan_BINARIES} $<TARGET_FILE_DIR:CellModulesVulkan>
+                COMMAND ${CMAKE_COMMAND} -E copy_if_different ${Vulkan_BINARIES} $<TARGET_FILE_DIR:CellVulkan>
         )
     endif ()
 elseif (UNIX)
-    target_sources(CellModulesVulkan PRIVATE ${CMAKE_CURRENT_LIST_DIR}/Sources/Instance/CreatePlatformSurfaceLinux.cc)
+    target_sources(CellVulkan PRIVATE ${CMAKE_CURRENT_LIST_DIR}/Sources/Instance/CreatePlatformSurfaceLinux.cc)
 else ()
     message(FATAL_ERROR "Unsupported platform")
 endif ()
 
-Cell_Platform_Bootstrap_Target(CellModulesVulkan)
+Cell_Platform_Bootstrap_Target(CellVulkan)
