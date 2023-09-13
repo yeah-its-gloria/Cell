@@ -11,8 +11,8 @@ class Pipeline;
 
 // Represents an image.
 class Image : public Object {
-friend Instance;
-friend Pipeline;
+    friend Instance;
+    friend Pipeline;
 
 public:
     // Destructs the images.
@@ -31,8 +31,9 @@ public:
     CELL_INLINE VkSampler GetSamplerHandle() { return this->sampler; }
 
 private:
-    CELL_FUNCTION_INTERNAL Image(Instance* instance, VkImage image, VkDeviceMemory memory, VkImageView view, VkSampler sampler) : instance(instance), image(image), memory(memory), view(view),
-                                                                                                                                  sampler(sampler) { }
+    CELL_FUNCTION_INTERNAL Image(Instance* instance, VkImage image, VkDeviceMemory memory, VkImageView view, VkSampler sampler,
+                                 const uint32_t width, const uint32_t height, const uint32_t depth)
+        : instance(instance), image(image), memory(memory), view(view), sampler(sampler), width(width), height(height), depth(depth) { }
 
     Instance* instance;
 
@@ -40,6 +41,10 @@ private:
     VkDeviceMemory memory;
     VkImageView view;
     VkSampler sampler;
+
+    const uint32_t width;
+    const uint32_t height;
+    const uint32_t depth;
 };
 
 }

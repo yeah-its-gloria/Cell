@@ -70,4 +70,14 @@ void VulkanToolsInputSetUp(Input* input, InputData* data) {
         },
         data);
     CELL_ASSERT(shellResult == Result::Success);
+
+    shellResult = input->RegisterAction(
+        KeyValue::F, [](const KeyValue value, void* data) {
+            (void)(value);
+
+            InputData* inputData = (InputData*)data;
+            inputData->instance->Trigger();
+        },
+        data);
+    CELL_ASSERT(shellResult == Result::Success);
 }

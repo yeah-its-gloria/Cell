@@ -31,13 +31,13 @@ void Example::Launch(const String& parameterString) {
     this->shell = Shell::CreateShell("Cell - Hi Aurelia").Unwrap();
     this->input = this->shell->CreateInputHandler();
 
-    //Thread audio([](void* p) { ((Example*)p)->AudioThread(); }, this, "Audio Thread");
+    Thread audio([](void* p) { ((Example*)p)->AudioThread(); }, this, "Audio Thread");
     //Thread network([](void* p) { ((Example*)p)->NetworkThread(); }, this, "Network Thread");
     Thread renderer([](void* p) { ((Example*)p)->VulkanThread(); }, this, "Renderer Thread");
     //Thread xr([](void* p) { ((Example*)p)->XRThread(); }, this, "XR Thread");
 
     const uint64_t startTick = GetPreciseTickerValue();
-    while (/*audio.IsActive() || network.IsActive() ||*/ renderer.IsActive() /*|| xr.IsActive()*/) {
+    while (audio.IsActive() || /*network.IsActive() ||*/ renderer.IsActive() /*|| xr.IsActive()*/) {
         const Shell::Result result = this->shell->RunDispatch();
         if (result == Shell::Result::RequestedQuit) {
             break;
@@ -49,7 +49,7 @@ void Example::Launch(const String& parameterString) {
         this->elapsedTime = (GetPreciseTickerValue() - startTick) / 1000.f;
     }
 
-    //audio.Join();
+    audio.Join();
     //network.Join();
     renderer.Join();
     //xr.Join();

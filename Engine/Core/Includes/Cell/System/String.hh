@@ -69,10 +69,10 @@ public:
     CELL_INLINE bool operator !=(const String& other) { return !(*this == other); }
 
     // Appending operator.
-    CELL_INLINE String& operator +(const String& input) { this->Append(input); return *this; }
+    CELL_INLINE String operator +(const String& input) { String str(this->data, this->length); str.Append(input); return str; }
 
     // Appending operator for UTF-8 encoded data.
-    CELL_INLINE String& operator +(const char* input) { this->Append(input); return *this; }
+    CELL_INLINE String operator +(const char* input) { String str(this->data, this->length); str.Append(input); return str; }
 
     // Appending operator.
     CELL_INLINE void operator +=(const String& input) { this->Append(input); }

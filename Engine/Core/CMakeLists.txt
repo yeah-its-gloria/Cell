@@ -29,6 +29,7 @@ add_library(CellCore ${CELL_LIBRARY_TYPE}
 
             ${CORE_INCLUDES_DIR}/Cell/System/Block.hh
             ${CORE_INCLUDES_DIR}/Cell/System/BlockImpl.hh
+            ${CORE_INCLUDES_DIR}/Cell/System/Channel.hh
             ${CORE_INCLUDES_DIR}/Cell/System/DynamicLibrary.hh
             ${CORE_INCLUDES_DIR}/Cell/System/Entry.hh
             ${CORE_INCLUDES_DIR}/Cell/System/Event.hh

@@ -6,6 +6,7 @@
 #include <Cell/Reference.hh>
 #include <Cell/Shell/Input.hh>
 #include <Cell/Shell/Shell.hh>
+#include <Cell/System/Channel.hh>
 #include <Cell/System/String.hh>
 
 class Example : public Cell::Object {
@@ -14,8 +15,12 @@ public:
     CELL_FUNCTION_INTERNAL ~Example();
     CELL_FUNCTION_INTERNAL void Launch(const Cell::System::String& parameterString);
 
-    CELL_INLINE float GetDelta() const {
+    CELL_INLINE float GetDelta() {
         return this->renderDeltaTime;
+    }
+
+    CELL_FUNCTION void Trigger() {
+        this->audioTrigger.TrySend(1);
     }
 
     CELL_INLINE Cell::System::String GetContentPath(const Cell::System::String& string) {
@@ -34,5 +39,5 @@ private:
     float elapsedTime = 0.f;
     float renderDeltaTime = 0.f;
 
-    // TODO: communications :tm:
+    Cell::System::Channel<uint8_t> audioTrigger { 0 };
 };

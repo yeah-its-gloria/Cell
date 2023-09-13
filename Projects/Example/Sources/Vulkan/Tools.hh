@@ -23,7 +23,7 @@ struct CELL_PACKED(16) ExampleUBO {
 
 struct InputData {
     Cell::Mathematics::Vector3* position;
-    const Example* instance;
+    Example* instance;
 };
 
 CELL_FUNCTION_INTERNAL void VulkanToolsLoadShader(Cell::Vulkan::Pipeline* CELL_NONNULL pipeline, const Cell::System::String& path, const Cell::Vulkan::Stage stage);

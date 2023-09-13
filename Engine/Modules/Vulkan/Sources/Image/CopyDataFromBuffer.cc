@@ -69,9 +69,9 @@ Result Image::CopyDataFromBuffer(Buffer* buffer) {
         .imageOffset.y                   = 0,
         .imageOffset.z                   = 0,
 
-        .imageExtent.width               = 1024,
-        .imageExtent.height              = 1024,
-        .imageExtent.depth               = 1
+        .imageExtent.width               = this->width,
+        .imageExtent.height              = this->height,
+        .imageExtent.depth               = this->depth
     };
 
     CommandParameters::CopyBufferToImage copyParameters = {

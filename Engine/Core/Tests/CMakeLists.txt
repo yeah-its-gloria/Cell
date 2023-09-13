@@ -16,4 +16,5 @@ function(cell_add_test name)
 endfunction()
 
 cell_add_test(List)
+cell_add_test(System)
 cell_add_test(Utilities)

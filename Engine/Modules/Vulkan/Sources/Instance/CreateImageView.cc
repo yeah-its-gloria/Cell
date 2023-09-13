@@ -35,8 +35,8 @@ Result Instance::CreateImageView(VkImageView& view, VkImage image, const VkForma
         .subresourceRange.layerCount     = 1
     };
 
-    const VkResult vk_result = vkCreateImageView(this->device, &viewInfo, nullptr, &view);
-    switch (vk_result) {
+    const VkResult result = vkCreateImageView(this->device, &viewInfo, nullptr, &view);
+    switch (result) {
     case VK_SUCCESS: {
         break;
     }

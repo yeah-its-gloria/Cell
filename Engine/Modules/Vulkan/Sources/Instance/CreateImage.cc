@@ -178,7 +178,7 @@ Instance::CreateImage(const uint32_t width, const uint32_t height, const VkForma
     }
     }
 
-    return new Image(this, vkImage, memory, view, sampler);
+    return new Image(this, vkImage, memory, view, sampler, width, height, 1);
 }
 
 }

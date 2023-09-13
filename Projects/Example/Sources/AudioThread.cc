@@ -19,7 +19,7 @@ void Example::AudioThread() {
     Result result = instance->SetUpRendering();
     CELL_ASSERT(result == Result::Success);
 
-    ScopedObject<IO::File> file = IO::File::Open(this->GetContentPath("/Sounds/message.bin")).Unwrap();
+    ScopedObject<IO::File> file = IO::File::Open(this->GetContentPath("/Sounds/boing.bin")).Unwrap();
 
     const size_t size = file->GetSize().Unwrap();
     CELL_ASSERT(size % 4 == 0);
@@ -35,37 +35,46 @@ void Example::AudioThread() {
     uint32_t dataOffset = 0;
     uint32_t framesToWrite = 0;
     while (this->shell->IsStillActive()) {
-        System::SleepPrecise(instance->GetLatencyMicroseconds());
+        if (this->audioTrigger.IsDataAvailable()) {
+            while (this->shell->IsStillActive()) {
+                System::SleepPrecise(instance->GetLatencyMicroseconds());
 
-        // prevents stupidly small sample sizes from underflowing us
-        if (dataOffset >= size) {
-            break;
+                // prevents stupidly small sample sizes from underflowing us
+                if (dataOffset >= size) {
+                    break;
+                }
+
+                uint32_t offset = instance->GetCurrentSampleOffset().Unwrap();
+                if (offset > 0) {
+                    System::Thread::Yield();
+                    continue;
+                }
+
+                framesToWrite = count - offset;
+                CELL_ASSERT(framesToWrite > 0);
+
+                if (size - dataOffset < framesToWrite * sampleSize) {
+                    framesToWrite = (size - dataOffset) / sampleSize;
+                }
+
+                if (buffer.Count() != framesToWrite * sampleSize) {
+                    buffer.Resize(framesToWrite * sampleSize);
+                }
+
+                IO::Result ioResult = file->Read(buffer, dataOffset);
+                CELL_ASSERT(ioResult == IO::Result::Success);
+
+                result = instance->WriteSamples(buffer, framesToWrite);
+                CELL_ASSERT(result == Result::Success);
+
+                dataOffset += framesToWrite * sampleSize;
+            }
+
+            dataOffset = 0;
+            this->audioTrigger.Read();
         }
 
-        uint32_t offset = instance->GetCurrentSampleOffset().Unwrap();
-        if (offset > 0) {
-            System::Thread::Yield();
-            continue;
-        }
-
-        framesToWrite = count - offset;
-        CELL_ASSERT(framesToWrite > 0);
-
-        if (size - dataOffset < framesToWrite * sampleSize) {
-            framesToWrite = (size - dataOffset) / sampleSize;
-        }
-
-        if (buffer.Count() != framesToWrite * sampleSize) {
-            buffer.Resize(framesToWrite * sampleSize);
-        }
-
-        IO::Result ioResult = file->Read(buffer, dataOffset);
-        CELL_ASSERT(ioResult == IO::Result::Success);
-
-        result = instance->WriteSamples(buffer, framesToWrite);
-        CELL_ASSERT(result == Result::Success);
-
-        dataOffset += framesToWrite * sampleSize;
+        System::Thread::Yield();
     }
 
     result = instance->PlaybackEnd();
