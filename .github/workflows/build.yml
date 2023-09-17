@@ -15,7 +15,9 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Install dependencies
-        run: sudo apt install -y cmake ninja-build libvulkan-dev libwayland-dev libopenxr-dev libxkbcommon-dev libpulse-dev clang lld llvm
+        run: |
+          sudo apt update
+          sudo apt install -y cmake ninja-build libvulkan-dev libwayland-dev libopenxr-dev libxkbcommon-dev libpulse-dev clang lld llvm
 
       - name: Fetch glslc
         run: |
