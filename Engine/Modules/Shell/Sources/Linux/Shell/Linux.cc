@@ -51,12 +51,7 @@ Wrapped<Linux*, Result> Linux::New(const System::String& title) {
 
     Linux* _linux = new Linux(display, registry);
 
-    const struct wl_registry_listener registryListener = {
-        .global = &Linux::WaylandRegistryAdd,
-        .global_remove = &Linux::WaylandRegistryRemove
-    };
-
-    int waylandResult = wl_registry_add_listener(_linux->registry, &registryListener, _linux);
+    int waylandResult = wl_registry_add_listener(_linux->registry, &Linux::RegistryListener, _linux);
     CELL_ASSERT(waylandResult == 0);
 
     _linux->keyboardContext = xkb_context_new(XKB_CONTEXT_NO_FLAGS);
@@ -77,11 +72,7 @@ Wrapped<Linux*, Result> Linux::New(const System::String& title) {
         Panic("xdg_wm_base_get_xdg_surface failed");
     }
 
-    const struct xdg_surface_listener surfaceListener = {
-        .configure = &Linux::WaylandXDGSurfaceConfigure,
-    };
-
-    waylandResult = xdg_surface_add_listener(_linux->xdgSurface, &surfaceListener, &_linux);
+    waylandResult = xdg_surface_add_listener(_linux->xdgSurface, &Linux::SurfaceListener, _linux);
     CELL_ASSERT(waylandResult == 0);
 
     _linux->xdgToplevel = xdg_surface_get_toplevel(_linux->xdgSurface);
@@ -89,23 +80,8 @@ Wrapped<Linux*, Result> Linux::New(const System::String& title) {
         Panic("xdg_surface_get_toplevel failed");
     }
 
-    const struct xdg_toplevel_listener toplevelListener = {
-        .configure = &Linux::WaylandXDGToplevelConfigure,
-        .close = &Linux::WaylandXDGToplevelClose,
-        .configure_bounds = &Linux::WaylandXDGToplevelConfigureBounds,
-        .wm_capabilities = &Linux::WaylandXDGToplevelAnnounceWMCapabilities
-    };
-
-    waylandResult = xdg_toplevel_add_listener(_linux->xdgToplevel, &toplevelListener, &_linux);
+    waylandResult = xdg_toplevel_add_listener(_linux->xdgToplevel, &Linux::ToplevelListener, _linux);
     CELL_ASSERT(waylandResult == 0);
-
-    char* titleStr = title.IsEmpty() ? (char*)"Cell" : title.ToCharPointer();
-    xdg_toplevel_set_title(_linux->xdgToplevel, titleStr);
-    xdg_toplevel_set_app_id(_linux->xdgToplevel, titleStr);
-
-    if (!title.IsEmpty()) {
-        System::FreeMemory(titleStr);
-    }
 
     if (_linux->xdgDecorationManager != nullptr) {
         _linux->xdgDecoration = zxdg_decoration_manager_v1_get_toplevel_decoration(_linux->xdgDecorationManager, _linux->xdgToplevel);
@@ -113,11 +89,7 @@ Wrapped<Linux*, Result> Linux::New(const System::String& title) {
             Panic("zxdg_decoration_manager_v1_get_toplevel_decoration failed");
         }
 
-        const struct zxdg_toplevel_decoration_v1_listener decorationListener = {
-            .configure = &Linux::WaylandXDGDecorationConfigure,
-        };
-
-        waylandResult = zxdg_toplevel_decoration_v1_add_listener(_linux->xdgDecoration, &decorationListener, &_linux);
+        waylandResult = zxdg_toplevel_decoration_v1_add_listener(_linux->xdgDecoration, &Linux::DecorationListener, _linux);
         CELL_ASSERT(waylandResult == 0);
 
         zxdg_toplevel_decoration_v1_set_mode(_linux->xdgDecoration, ZXDG_TOPLEVEL_DECORATION_V1_MODE_SERVER_SIDE);
@@ -134,9 +106,16 @@ Wrapped<Linux*, Result> Linux::New(const System::String& title) {
         Log("zwp_idle_inhibit_manager_v1 is unavailable");
     }
 
+    char* titleStr = title.IsEmpty() ? (char*)"Cell" : title.ToCharPointer();
+    xdg_toplevel_set_title(_linux->xdgToplevel, titleStr);
+    xdg_toplevel_set_app_id(_linux->xdgToplevel, titleStr);
     xdg_surface_set_window_geometry(_linux->xdgSurface, 0, 0, 1280, 720);
 
     wl_surface_commit(_linux->surface);
+
+    if (!title.IsEmpty()) {
+        System::FreeMemory(titleStr);
+    }
 
     return _linux;
 }

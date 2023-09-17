@@ -18,7 +18,7 @@ namespace Cell::Shell::Implementations {
 
 // Platform implementation for Linux. Should support both glibc and musl.
 class Linux : public IShell {
-    friend Input;
+friend Input;
 
 public:
     // Creates a new shell instance.
@@ -92,16 +92,36 @@ private:
     struct zwp_idle_inhibit_manager_v1* idleInhibitManager = nullptr;
     struct zwp_idle_inhibitor_v1* idleInhibitor = nullptr;
 
-    static constexpr struct wl_seat_listener seatListener = {
+    static constexpr struct wl_registry_listener RegistryListener = {
+        .global = &Linux::WaylandRegistryAdd,
+        .global_remove = &Linux::WaylandRegistryRemove
+    };
+
+    static constexpr struct xdg_surface_listener SurfaceListener = {
+        .configure = &Linux::WaylandXDGSurfaceConfigure,
+    };
+
+    static constexpr struct xdg_toplevel_listener ToplevelListener = {
+        .configure = &Linux::WaylandXDGToplevelConfigure,
+        .close = &Linux::WaylandXDGToplevelClose,
+        .configure_bounds = &Linux::WaylandXDGToplevelConfigureBounds,
+        .wm_capabilities = &Linux::WaylandXDGToplevelAnnounceWMCapabilities
+    };
+
+    static constexpr struct zxdg_toplevel_decoration_v1_listener DecorationListener = {
+        .configure = &Linux::WaylandXDGDecorationConfigure,
+    };
+
+    static constexpr struct wl_seat_listener SeatListener = {
         .capabilities = &Linux::WaylandSeatCapabilities,
         .name = &Linux::WaylandSeatName
     };
 
-    static constexpr struct xdg_wm_base_listener xdgManagerListener = {
+    static constexpr struct xdg_wm_base_listener XDGManagerListener = {
         .ping = &Linux::WaylandXDGManagerPing
     };
 
-    static constexpr struct wl_keyboard_listener keyboardListener = {
+    static constexpr struct wl_keyboard_listener KeyboardListener = {
         .keymap = &Linux::WaylandKeyboardKeymap,
         .enter = &Linux::WaylandKeyboardEnter,
         .leave = &Linux::WaylandKeyboardLeave,

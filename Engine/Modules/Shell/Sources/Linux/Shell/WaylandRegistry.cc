@@ -37,7 +37,7 @@ void Linux::WaylandRegistryAdd(void* data, struct wl_registry* registry, const u
             System::Panic("wl_registry_bind for wl_seat failed");
         }
 
-        wl_seat_add_listener(_linux->seat, &Linux::seatListener, _linux);
+        wl_seat_add_listener(_linux->seat, &Linux::SeatListener, _linux);
         return;
     }
 
@@ -51,7 +51,7 @@ void Linux::WaylandRegistryAdd(void* data, struct wl_registry* registry, const u
             System::Panic("wl_registry_bind for xdg_wm_base failed");
         }
 
-        xdg_wm_base_add_listener(_linux->xdgManager, &Linux::xdgManagerListener, _linux);
+        xdg_wm_base_add_listener(_linux->xdgManager, &Linux::XDGManagerListener, _linux);
         return;
     }
 

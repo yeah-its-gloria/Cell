@@ -15,7 +15,7 @@ void Linux::WaylandSeatCapabilities(void* data, struct wl_seat* seat, const uint
         _linux->keyboard = wl_seat_get_keyboard(seat);
         CELL_ASSERT(_linux->keyboard != nullptr);
 
-        wl_keyboard_add_listener(_linux->keyboard, &Linux::keyboardListener, _linux);
+        wl_keyboard_add_listener(_linux->keyboard, &Linux::KeyboardListener, _linux);
         return;
     }
 }
