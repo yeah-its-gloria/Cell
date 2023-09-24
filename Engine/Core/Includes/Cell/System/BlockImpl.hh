@@ -10,27 +10,24 @@
 namespace Cell::System {
 
 // Represents a typed block of memory that owns its memory.
-template <typename T> class ManagedBlock : public IBlock {
+template <typename T> class OwnedBlock : public IBlock {
 public:
-    // Creates an owned, zeroed block of memory, with the given number of bytes allocated.
-    CELL_INLINE explicit ManagedBlock(const size_t count) : data(nullptr), count(count) {
+    // Creates an owned, zeroed block of memory, with the given number of T elements allocated.
+    CELL_INLINE explicit OwnedBlock(const size_t count) : data(nullptr), count(count) {
         this->data = System::AllocateMemory<T>(count);
     }
 
-    // Destructs the block and frees its memory, if owned.
-    CELL_INLINE ~ManagedBlock() {
+    // Destructs the block and frees its memory.
+    CELL_INLINE ~OwnedBlock() {
         System::FreeMemory(this->data);
     }
 
-    // Resizes the owned block of memory.
+    // Resizes the block to the given number of T elements.
     CELL_INLINE void Resize(const size_t count) {
         this->count = count;
 
         System::ReallocateMemory<T>(&this->data, this->count);
     }
-
-    // Returns the count of the block in bytes.
-    CELL_NODISCARD CELL_INLINE size_t GetSize() const { return this->count * sizeof(T); }
 
     // Automatic pointer conversion utility.
     CELL_INLINE operator T* CELL_NONNULL() { return this->data; }
@@ -38,14 +35,11 @@ public:
     // Automatic pointer conversion utility.
     CELL_INLINE operator const T* CELL_NONNULL() const { return (const uint8_t*)this->data; }
 
-// IBlock
+// -> IBlock
 
     CELL_NODISCARD CELL_INLINE void* Pointer() override { return this->data; }
-
     CELL_NODISCARD CELL_INLINE const void* Pointer() const override { return this->data; }
-
     CELL_NODISCARD CELL_INLINE size_t Count() const override { return this->count; }
-
     CELL_NODISCARD CELL_INLINE size_t BlockSize() const override { return sizeof(T); }
 
 private:
@@ -53,10 +47,11 @@ private:
     size_t count;
 };
 
-// Represents heap storage without taking ownership.
-template <typename T> class UnmanagedBlock : public IBlock {
+// Typed block wrapper for unowned memory.
+template <typename T> class UnownedBlock : public IBlock {
 public:
-    CELL_INLINE explicit UnmanagedBlock(const T* block, const size_t count = 1) : data(block), count(count) { }
+    // Creates an unowned block of memory with the given block address and element count.
+    CELL_INLINE explicit UnownedBlock(const T* block, const size_t count = 1) : data(block), count(count) { }
 
 // IBlock
     CELL_NODISCARD CELL_INLINE void* Pointer() override { return (void*)this->data; }

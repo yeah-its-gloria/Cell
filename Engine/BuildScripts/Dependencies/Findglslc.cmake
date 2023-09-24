@@ -4,7 +4,4 @@
 include(FindPackageHandleStandardArgs)
 
 find_program(glslc_PROGRAM NAMES glslc HINTS $ENV{VULKAN_SDK}/Bin)
-
 find_package_handle_standard_args(glslc DEFAULT_MSG glslc_PROGRAM)
-
-mark_as_advanced(glslc_PROGRAM)

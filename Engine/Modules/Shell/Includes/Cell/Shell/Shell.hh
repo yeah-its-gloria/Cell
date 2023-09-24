@@ -34,13 +34,13 @@ public:
     virtual Result RunDispatch() = 0;
 
     // Gets the count of the drawable area of the current window.
-    virtual Wrapped<Extent, Result> GetDrawableExtentForWindow() = 0;
+    virtual Wrapped<Extent, Result> GetDrawableExtent() = 0;
 
     // Sets a new drawable area count for the current window.
-    virtual Result SetDrawableExtentForWindow(const Extent extent) = 0;
+    virtual Result SetDrawableExtent(const Extent extent) = 0;
 
     // Sets a new window title.
-    virtual Result SetNewTitleForWindow(const System::String& title) = 0;
+    virtual Result SetNewTitle(const System::String& title) = 0;
 
 protected:
     bool isDone = false;

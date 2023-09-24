@@ -19,7 +19,7 @@ Wrapped<String, Result> String::FromPlatformWideString(const wchar_t* input) {
         return Result::ConversionFailure;
     }
 
-    System::ManagedBlock<char> data(outputSize + 1);
+    System::OwnedBlock<char> data(outputSize + 1);
     outputSize = WideCharToMultiByte(CP_UTF8, WC_ERR_INVALID_CHARS, input, (int)inputSize, data, outputSize, nullptr, nullptr);
     CELL_ASSERT(outputSize > 0);
 

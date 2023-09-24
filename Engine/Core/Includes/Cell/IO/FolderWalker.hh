@@ -14,7 +14,7 @@ struct FolderWalkerElementData {
     bool isFolder;
 };
 
-// Allows for inspecting the files and folders present within a specific folder.
+// Traversal of folders within hierarchical file systems.
 class FolderWalker : public Object {
 public:
     // Creates a new folder walker.

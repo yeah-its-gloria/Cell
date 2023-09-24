@@ -106,12 +106,18 @@ Wrapped<Windows*, Result> Windows::New(const System::String& title) {
 }
 
 Result Windows::RunDispatch() {
+    bool hasProcessed = false;
+
     MSG message;
     while (PeekMessageW(&message, nullptr, 0, 0, PM_REMOVE) == TRUE) {
-        // TODO: error checking
+        hasProcessed = true;
 
         TranslateMessage(&message);
         DispatchMessageW(&message);
+    }
+
+    if (!hasProcessed) {
+        return Result::NoUpdates;
     }
 
     if (message.message == WM_QUIT) {

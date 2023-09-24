@@ -20,7 +20,7 @@ CELL_FUNCTION_INTERNAL void TestJSON() {
     ScopedObject<IO::File> file = IO::File::Open("./Engine/Modules/DataManagement/Content/Data.json").Unwrap();
     const size_t size = file->GetSize().Unwrap();
 
-    ManagedBlock<char> data(size);
+    OwnedBlock<char> data(size);
     IO::Result result = file->Read(data);
     CELL_ASSERT(result == IO::Result::Success);
 
@@ -63,7 +63,7 @@ CELL_FUNCTION_INTERNAL void TestglTF() {
     ScopedObject<IO::File> file = IO::File::Open("./Engine/Modules/DataManagement/Content/Box.glb").Unwrap();
     const size_t size = file->GetSize().Unwrap();
 
-    ManagedBlock<uint8_t> data(size);
+    OwnedBlock<uint8_t> data(size);
     IO::Result result = file->Read(data);
     CELL_ASSERT(result == IO::Result::Success);
 
@@ -74,7 +74,7 @@ CELL_FUNCTION_INTERNAL void TestPNG() {
     ScopedObject<IO::File> file = IO::File::Open("./Engine/Modules/DataManagement/Content/Trans.png").Unwrap();
     const size_t size = file->GetSize().Unwrap();
 
-    ManagedBlock<uint8_t> data(size);
+    OwnedBlock<uint8_t> data(size);
     IO::Result result = file->Read(data);
     CELL_ASSERT(result == IO::Result::Success);
 

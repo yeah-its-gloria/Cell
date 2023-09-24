@@ -12,7 +12,7 @@ function(cell_add_test name)
 
     add_test(NAME CellCore${name}Test COMMAND CellCore${name}Test WORKING_DIRECTORY ${PROJECT_ROOT_DIR})
 
-    Cell_Platform_Bootstrap_Target(CellCore${name}Test TRUE)
+    CellPlatformBootstrapTarget(CellCore${name}Test TRUE)
 endfunction()
 
 cell_add_test(List)

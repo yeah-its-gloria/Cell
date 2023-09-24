@@ -35,7 +35,7 @@ Result WSITarget::RetrieveProperties() {
         return Result::Success;
     }
 
-    const Shell::Extent extent = this->shell->GetDrawableExtentForWindow().Unwrap();
+    const Shell::Extent extent = this->shell->GetDrawableExtent().Unwrap();
 
     this->extent.width = Utilities::Clamp(extent.width, this->capabilities.minImageExtent.width, this->capabilities.maxImageExtent.width);
     this->extent.height = Utilities::Clamp(extent.height, this->capabilities.minImageExtent.height, this->capabilities.maxImageExtent.height);

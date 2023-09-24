@@ -13,7 +13,7 @@ find_package(glslc REQUIRED FATAL_ERROR)
 #
 # Optional parameters:
 # is_glsl (Bool):   Whether this shader is written in GLSL instead of HLSL.
-function(Cell_Add_Shader target name input output)
+function(CellAddShader target name input output)
     if(${ARGC} GREATER 3 AND "${ARGV4}" STREQUAL "TRUE") # Why do I use CMake
         set(type "GLSL")
         set(additional_shader_parameters "-x" "glsl")

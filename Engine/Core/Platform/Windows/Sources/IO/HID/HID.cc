@@ -27,6 +27,7 @@ CELL_FUNCTION_INTERNAL Result handleOverlappedHID(HANDLE handle, OVERLAPPED& ove
     }
 
     case WAIT_FAILED: {
+        CloseHandle(overlapped.hEvent);
         return Result::Disconnected;
     }
 
@@ -40,6 +41,7 @@ CELL_FUNCTION_INTERNAL Result handleOverlappedHID(HANDLE handle, OVERLAPPED& ove
     if (result == FALSE) {
         switch (GetLastError()) {
         case ERROR_OPERATION_ABORTED: {
+            CloseHandle(overlapped.hEvent);
             return Result::Disconnected;
         }
 

@@ -3,22 +3,22 @@
 
 include(FindPackageHandleStandardArgs)
 
-if(WIN32)
+if (WIN32)
     find_file(Vulkan_BINARY NAMES vulkan-1.dll)
-endif()
+endif ()
 
 find_path   (Vulkan_INCLUDE_DIR NAMES vulkan/vulkan.h HINTS $ENV{VULKAN_SDK}/Include)
 find_library(Vulkan_LIBRARY     NAMES vulkan-1 vulkan HINTS $ENV{VULKAN_SDK}/Lib)
 
 find_package_handle_standard_args(Vulkan DEFAULT_MSG Vulkan_LIBRARY Vulkan_INCLUDE_DIR)
 
-if(Vulkan_FOUND)
-    if(NOT ${Vulkan_BINARY} STREQUAL "Vulkan_BINARY-NOTFOUND")
+if (Vulkan_FOUND)
+    if (NOT ${Vulkan_BINARY} STREQUAL "Vulkan_BINARY-NOTFOUND")
         set(Vulkan_BINARIES "${Vulkan_BINARY}")
-    endif()
+    endif ()
 
-	set(Vulkan_LIBRARIES    "${Vulkan_LIBRARY}")
-	set(Vulkan_INCLUDE_DIRS "${Vulkan_INCLUDE_DIR}")
-endif()
+    set(Vulkan_LIBRARIES "${Vulkan_LIBRARY}")
+    set(Vulkan_INCLUDE_DIRS "${Vulkan_INCLUDE_DIR}")
+endif ()
 
 mark_as_advanced(Vulkan_BINARY Vulkan_INCLUDE_DIR Vulkan_LIBRARY)

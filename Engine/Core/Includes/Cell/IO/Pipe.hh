@@ -3,15 +3,17 @@
 
 #pragma once
 
-#include "Cell/System/Block.hh"
 #include <Cell/Wrapped.hh>
+
 #include <Cell/IO/PipeMode.hh>
 #include <Cell/IO/Result.hh>
+
+#include <Cell/System/Block.hh>
 #include <Cell/System/String.hh>
 
 namespace Cell::IO {
 
-// Represents means of interprocess communication.
+// Pipes are means of interprocess communication.
 class Pipe : public Object {
 public:
     // Creates a new pipe.

@@ -7,16 +7,16 @@
 
 namespace Cell::System {
 
-// Allocates a count bytes large block.
+// Allocates a size bytes large block.
 CELL_FUNCTION void* CELL_NONNULL AllocateMemory(const size_t size);
 
-// Reallocates the given block with the new count bytes count.
+// Reallocates the given block with the new byte size.
 CELL_FUNCTION void ReallocateMemory(void* CELL_NONNULL* CELL_NONNULL block, const size_t size);
 
 // Frees the given block.
 CELL_FUNCTION void FreeMemory(const void* CELL_NONNULL block);
 
-// Copies the given block.
+// Copies size bytes from the source address to the destination address.
 CELL_FUNCTION void CopyMemory(void* CELL_NONNULL destination, const void* CELL_NONNULL source, const size_t size);
 
 // Compares the data of the given blocks of memory and checks them for equality.

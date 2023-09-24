@@ -106,7 +106,7 @@ Wrapped<WSITarget*, Result> Instance::CreateWSITarget(Shell::IShell* shell) {
 
     CELL_ASSERT(formatCount > 0);
 
-    System::ManagedBlock<VkSurfaceFormatKHR> formats(formatCount);
+    System::OwnedBlock<VkSurfaceFormatKHR> formats(formatCount);
     vkResult = vkGetPhysicalDeviceSurfaceFormatsKHR(this->physicalDevice, surface, &formatCount, formats);
     switch (vkResult) {
     case VK_SUCCESS: {
@@ -164,7 +164,7 @@ Wrapped<WSITarget*, Result> Instance::CreateWSITarget(Shell::IShell* shell) {
 
     CELL_ASSERT(presentationModeCount > 0);
 
-    System::ManagedBlock<VkPresentModeKHR> presentationModes(presentationModeCount);
+    System::OwnedBlock<VkPresentModeKHR> presentationModes(presentationModeCount);
     vkResult = vkGetPhysicalDeviceSurfacePresentModesKHR(this->physicalDevice, surface, &presentationModeCount, presentationModes);
     switch (vkResult) {
     case VK_SUCCESS: {

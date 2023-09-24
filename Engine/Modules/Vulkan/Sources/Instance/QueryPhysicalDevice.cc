@@ -27,7 +27,7 @@ Result Instance::QueryPhysicalDevice() {
     }
     }
 
-    System::ManagedBlock<VkPhysicalDevice> devices(deviceCount);
+    System::OwnedBlock<VkPhysicalDevice> devices(deviceCount);
     vk_result = vkEnumeratePhysicalDevices(this->instance, &deviceCount, devices);
     switch (vk_result) {
     case VK_SUCCESS: {

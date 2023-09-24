@@ -13,7 +13,7 @@ uint64_t Instance::QueryPhysicalDeviceQueues(VkPhysicalDevice device) {
     uint32_t queueFamilyPropertiesCount = 0;
     vkGetPhysicalDeviceQueueFamilyProperties(device, &queueFamilyPropertiesCount, nullptr);
 
-    System::ManagedBlock <VkQueueFamilyProperties> queueFamilyProperties(queueFamilyPropertiesCount);
+    System::OwnedBlock <VkQueueFamilyProperties> queueFamilyProperties(queueFamilyPropertiesCount);
     vkGetPhysicalDeviceQueueFamilyProperties(device, &queueFamilyPropertiesCount, queueFamilyProperties);
 
     for (uint32_t index = 0; index < queueFamilyPropertiesCount; index++) {

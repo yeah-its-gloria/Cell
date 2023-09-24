@@ -9,7 +9,7 @@
 namespace Cell::System {
 
 // Secure random number generation implementation.
-class RandomNumberGenerator {
+class RandomNumberGenerator : public Object {
 public:
     // Creates a new generator.
     CELL_FUNCTION static Wrapped<RandomNumberGenerator*, Result> New();

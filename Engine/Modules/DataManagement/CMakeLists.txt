@@ -3,28 +3,29 @@
 
 project(CellDataManagement LANGUAGES CXX VERSION 1.0.0 DESCRIPTION "Cell - Modules - Data Management")
 
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH};${CMAKE_CURRENT_LIST_DIR}/BuildScripts)
+
+include(ContentPacking)
+
 set(MODULE_INCLUDES_DIR ${CMAKE_CURRENT_LIST_DIR}/Includes)
 
 add_library(CellDataManagement ${CELL_LIBRARY_TYPE}
-            ${MODULE_INCLUDES_DIR}/Cell/DataManagement/Archive.hh
-            ${MODULE_INCLUDES_DIR}/Cell/DataManagement/Container.hh
-            ${MODULE_INCLUDES_DIR}/Cell/DataManagement/Result.hh
-
-            ${MODULE_INCLUDES_DIR}/Cell/DataManagement/Foreign/Base64.hh
-            ${MODULE_INCLUDES_DIR}/Cell/DataManagement/Foreign/glTF.hh
-            ${MODULE_INCLUDES_DIR}/Cell/DataManagement/Foreign/HTTP.hh
-            ${MODULE_INCLUDES_DIR}/Cell/DataManagement/Foreign/JSON.hh
-            ${MODULE_INCLUDES_DIR}/Cell/DataManagement/Foreign/PNG.hh
-
-            ${CMAKE_CURRENT_LIST_DIR}/Sources/Archive.cc
-
-            ${CMAKE_CURRENT_LIST_DIR}/Sources/Foreign/CRC.hh
-            ${CMAKE_CURRENT_LIST_DIR}/Sources/Foreign/Base64.cc
-            ${CMAKE_CURRENT_LIST_DIR}/Sources/Foreign/glTF.cc
-            ${CMAKE_CURRENT_LIST_DIR}/Sources/Foreign/HTTP.cc
-            ${CMAKE_CURRENT_LIST_DIR}/Sources/Foreign/HTTPSocket.cc
-            ${CMAKE_CURRENT_LIST_DIR}/Sources/Foreign/JSON.cc
-            ${CMAKE_CURRENT_LIST_DIR}/Sources/Foreign/PNG.cc
+    ${MODULE_INCLUDES_DIR}/Cell/DataManagement/Archive.hh
+    ${MODULE_INCLUDES_DIR}/Cell/DataManagement/Container.hh
+    ${MODULE_INCLUDES_DIR}/Cell/DataManagement/Result.hh
+    ${MODULE_INCLUDES_DIR}/Cell/DataManagement/Foreign/Base64.hh
+    ${MODULE_INCLUDES_DIR}/Cell/DataManagement/Foreign/glTF.hh
+    ${MODULE_INCLUDES_DIR}/Cell/DataManagement/Foreign/HTTP.hh
+    ${MODULE_INCLUDES_DIR}/Cell/DataManagement/Foreign/JSON.hh
+    ${MODULE_INCLUDES_DIR}/Cell/DataManagement/Foreign/PNG.hh
+    ${CMAKE_CURRENT_LIST_DIR}/Sources/Archive.cc
+    ${CMAKE_CURRENT_LIST_DIR}/Sources/Foreign/CRC.hh
+    ${CMAKE_CURRENT_LIST_DIR}/Sources/Foreign/Base64.cc
+    ${CMAKE_CURRENT_LIST_DIR}/Sources/Foreign/glTF.cc
+    ${CMAKE_CURRENT_LIST_DIR}/Sources/Foreign/HTTP.cc
+    ${CMAKE_CURRENT_LIST_DIR}/Sources/Foreign/HTTPSocket.cc
+    ${CMAKE_CURRENT_LIST_DIR}/Sources/Foreign/JSON.cc
+    ${CMAKE_CURRENT_LIST_DIR}/Sources/Foreign/PNG.cc
 )
 
 target_compile_definitions(CellDataManagement PUBLIC "CELL_MODULES_DATAMANAGEMENT_AVAILABLE=1")
@@ -34,16 +35,17 @@ target_link_libraries(CellDataManagement PUBLIC CellCore)
 if (CELL_ENABLE_TESTS)
     add_executable(CellDataManagementParsingTest ${CMAKE_CURRENT_LIST_DIR}/Tests/Parsing.cc)
 
-    target_link_libraries(CellDataManagementParsingTest PUBLIC
-                          CellCore
-                          CellDataManagement
-    )
+    target_link_libraries(CellDataManagementParsingTest PUBLIC CellCore CellDataManagement)
 
-    add_test(NAME CellDataManagementParsingTest COMMAND CellDataManagementParsingTest WORKING_DIRECTORY ${PROJECT_ROOT_DIR})
-    Cell_Platform_Bootstrap_Target(CellDataManagementParsingTest TRUE)
+    add_test(
+        NAME CellDataManagementParsingTest
+        COMMAND CellDataManagementParsingTest
+        WORKING_DIRECTORY ${PROJECT_ROOT_DIR}
+    )
+    CellPlatformBootstrapTarget(CellDataManagementParsingTest TRUE)
 endif ()
 
-Cell_Platform_Bootstrap_Target(CellDataManagement)
+CellPlatformBootstrapTarget(CellDataManagement)
 
 if (CELL_ENABLE_UTILITIES)
     add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/Utilities/ContentPacker)

@@ -112,7 +112,7 @@ Wrapped<USB*, Result> USB::Open(const uint16_t vendorId, const uint16_t productI
 
         CELL_ASSERT(propertyType == DEVPROP_TYPE_STRING_LIST);
 
-        System::ManagedBlock<wchar_t> hardwareIDs(size + 1);
+        System::OwnedBlock<wchar_t> hardwareIDs(size + 1);
         result = SetupDiGetDevicePropertyW(info, &data, &DEVPKEY_Device_HardwareIds, &propertyType, (BYTE*)hardwareIDs.Pointer(), size, &size, 0);
         if (result == FALSE) {
             System::Panic("SetupDiGetDevicePropertyW failed");

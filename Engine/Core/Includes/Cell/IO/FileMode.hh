@@ -9,19 +9,19 @@ namespace Cell::IO {
 
 // Different modes of operation supported for files.
 enum class FileMode : uint8_t {
-    // Allows reading the contents.
+    // Allows reading data.
     Read = 1 << 0,
 
-    // Allows (over)writing contents.
+    // Allows writing data.
     Write = 1 << 1,
 
-    // Creates a new file. An existing file with the same identity will result in an error.
+    // Creates a new file. This will not replace an existing file.
     Create = 1 << 2,
 
-    // Opens an existing file. If the file cannot be found, an error will occur.
+    // Opens an existing file. This will not create a file.
     Open = 1 << 3,
 
-    // Opens a new file and clears it out entirely. If the file cannot be found, it'll be created.
+    // Either creates a new file or overwrites the contents of the existing file.
     Overwrite = 1 << 4
 };
 

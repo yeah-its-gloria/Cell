@@ -20,7 +20,7 @@ Editor::~Editor() {
 void Editor::Launch(const String& parameterString) {
     (void)(parameterString);
 
-    this->shell = Shell::CreateShell("Cell Editor").Unwrap();
+    this->shell = Shell::CreateShell("Cell - Editor").Unwrap();
 
     while (true) {
         const Shell::Result result = this->shell->RunDispatch();

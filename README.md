@@ -23,7 +23,7 @@ You can additionally configure the engine further through CMake. I recommend usi
 | Property                   | Default Value | Intent                                                                    |
 |----------------------------|---------------|---------------------------------------------------------------------------|
 | `CELL_ENABLE_EDITOR`       | ON            | Enables the editor being built.                                           |
-| `CELL_ENABLE_PROJECTS`     | ON            | Enables all projects being built.                                         |
+| `CELL_ENABLE_PROJECT`      | ON            | Enables the in tree project being built.                                  |
 | `CELL_ENABLE_TESTS`        | ON            | Enables tests across the entire engine.                                   |
 | `CELL_ENABLE_UTILITIES`    | ON            | Enables utilities being built.                                            |
 | `CELL_ENABLE_STATIC_BUILD` | OFF           | Builds all library components statically. Recommended for release builds. |
@@ -38,6 +38,7 @@ The editor serves as a creation utility for various workloads.
 | Name           | Implementation                       | Notes                                         |
 |----------------|--------------------------------------|-----------------------------------------------|
 | Audio          | WASAPI (Windows), PulseAudio (Linux) |                                               |
+| D3D12          | DirectX 12.1                         | Windows only                                  |
 | DataManagement | self-contained                       |                                               |
 | Mathematics    | self-contained                       | Has hardware acceleration on x86_64 platforms |
 | OpenXR         | OpenXR 1.0                           | Vulkan implemented                            |
@@ -46,11 +47,8 @@ The editor serves as a creation utility for various workloads.
 
 A content packing utility is also available.
 
-# Projects
-| Name      | Purpose                                                | Notes                                    |
-|-----------|--------------------------------------------------------|------------------------------------------|
-| Example   | Testing and debugging project                          | Changes constantly :)                    |
-| OpenInput | Cross platform, generic, modern API for input handling | Specs are hard                           |
+## In-tree Project
+The project in Cell's source tree is meant to be a broad testing ground.
 
 ## Testing
 The engine, modules and projects may use tests.

@@ -9,9 +9,15 @@
 
 namespace Cell::IO {
 
+// Defines the capabilities of a HID device's reports.
 struct HIDCapabilities {
+    // The readable report size in bytes.
     uint16_t InputReportSize;
+
+    // The writable report size in bytes.
     uint16_t OutputReportSize;
+
+    // The size of the feature report.
     uint16_t FeatureReportSize;
 };
 

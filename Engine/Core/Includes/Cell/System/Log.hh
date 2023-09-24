@@ -9,8 +9,9 @@ namespace Cell::System {
 
 // Logs a message.
 //
-// The target is determined in engine; formatting should be kept minimal.
-// Every message is separated as appropriate for the given logging implementation (e.g newlines are appended automatically for a plain text log file)
+// The target is determined in core; formatting should be kept minimal.
+// Every message is separated as appropriate for the given logging implementation,
+//  e.g newlines are appended automatically for a plain text log to console or a file)
 CELL_FUNCTION void Log(const System::String& message, ...);
 
 }

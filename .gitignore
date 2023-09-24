@@ -9,7 +9,7 @@
 .vscode
 
 # Third party resources
-ThirdParty
+/ThirdParty
 
 # OS garbage
 .DS_Store

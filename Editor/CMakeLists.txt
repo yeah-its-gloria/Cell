@@ -3,18 +3,14 @@
 
 project(CellEditor LANGUAGES CXX VERSION 1.0.0 DESCRIPTION "Cell - Editor")
 
-set(CONTENT_DIR      ${CMAKE_CURRENT_LIST_DIR}/Content)
-set(SOURCES_DIR      ${CMAKE_CURRENT_LIST_DIR}/Sources)
+set(CONTENT_DIR ${CMAKE_CURRENT_LIST_DIR}/Content)
+set(SOURCES_DIR ${CMAKE_CURRENT_LIST_DIR}/Sources)
 
 add_executable(CellEditor
-               ${SOURCES_DIR}/Editor.hh
-               ${SOURCES_DIR}/Editor.cc
+    ${SOURCES_DIR}/Editor.hh
+    ${SOURCES_DIR}/Editor.cc
 )
 
-target_link_libraries(CellEditor PRIVATE
-                      CellCore
-                      CellDataManagement
-                      CellShell
-)
+target_link_libraries(CellEditor PRIVATE CellCore CellDataManagement CellShell)
 
-Cell_Platform_Bootstrap_Target(CellEditor)
+CellPlatformBootstrapTarget(CellEditor)

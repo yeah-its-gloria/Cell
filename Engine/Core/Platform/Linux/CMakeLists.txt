@@ -58,7 +58,7 @@ endif ()
 target_include_directories(CellCore PUBLIC ${wayland_INCLUDE_DIRS} ${xkbcommon_INCLUDE_DIRS})
 target_link_libraries(CellCore PUBLIC pthread dl rt m)
 
-function(Cell_Platform_Bootstrap_Target target)
+function(CellPlatformBootstrapTarget target)
     get_target_property(type ${target} TYPE)
     if (NOT "${type}" STREQUAL "EXECUTABLE" AND NOT "${type}" STREQUAL "SHARED_LIBRARY")
         return()

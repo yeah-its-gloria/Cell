@@ -164,7 +164,7 @@ Wrapped<List<Value>, Result> Parse(const System::String& string) {
             }
             }
 
-            System::ManagedBlock<char> numberString(numberEnd - position + 1);
+            System::OwnedBlock<char> numberString(numberEnd - position + 1);
             System::CopyMemory(numberString, document + position, numberEnd - position);
 
             value.type = Type::Number;

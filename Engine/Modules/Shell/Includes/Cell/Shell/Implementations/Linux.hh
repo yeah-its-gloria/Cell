@@ -37,9 +37,9 @@ public:
     CELL_NODISCARD CELL_INLINE struct xdg_toplevel* GetWaylandXDGToplevel() const { return this->xdgToplevel; }
 
     Result RunDispatch() override;
-    Wrapped<Extent, Result> GetDrawableExtentForWindow() override;
-    Result SetDrawableExtentForWindow(const Extent extent) override;
-    Result SetNewTitleForWindow(const System::String& title) override;
+    Wrapped<Extent, Result> GetDrawableExtent() override;
+    Result SetDrawableExtent(const Extent extent) override;
+    Result SetNewTitle(const System::String& title) override;
 
 private:
     CELL_INLINE Linux(struct wl_display* display, struct wl_registry* registry) : display(display), registry(registry) { }

@@ -3,13 +3,13 @@
 
 #pragma once
 
-#include "Cell/System/Block.hh"
 #include <Cell/Wrapped.hh>
 #include <Cell/IO/Result.hh>
+#include <Cell/System/Block.hh>
 
 namespace Cell::IO {
 
-// Allows for interacting with HID devices.
+// Interactions with generic USB devices.
 class USB : public Object {
 public:
     // Opens or creates a USB device.

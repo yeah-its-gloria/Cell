@@ -29,9 +29,9 @@ public:
     CELL_INLINE HWND GetWindow() { return this->window; }
 
     Result RunDispatch() override;
-    Wrapped<Extent, Result> GetDrawableExtentForWindow() override;
-    Result SetDrawableExtentForWindow(const Extent extent) override;
-    Result SetNewTitleForWindow(const System::String& title) override;
+    Wrapped<Extent, Result> GetDrawableExtent() override;
+    Result SetDrawableExtent(const Extent extent) override;
+    Result SetNewTitle(const System::String& title) override;
 
 private:
     CELL_FUNCTION_INTERNAL Windows(HINSTANCE CELL_NONNULL instance, HWND CELL_NONNULL window, WNDCLASSEXW _class) : instance(instance), window(window), _class(_class) { }

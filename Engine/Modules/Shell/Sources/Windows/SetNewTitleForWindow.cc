@@ -7,7 +7,7 @@
 
 namespace Cell::Shell::Implementations {
 
-Result Windows::SetNewTitleForWindow(const System::String& title) {
+Result Windows::SetNewTitle(const System::String& title) {
     if (title.IsEmpty()) {
         return Result::InvalidParameters;
     }

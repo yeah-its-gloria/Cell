@@ -70,7 +70,7 @@ Result Instance::InitializeSessionVulkan() {
     }
     }
 
-    System::ManagedBlock<char> instanceExtensions(instanceExtensionSize);
+    System::OwnedBlock<char> instanceExtensions(instanceExtensionSize);
     xrResult = getVkInstExt(this->instance, this->systemId, instanceExtensionSize, &instanceExtensionSize, instanceExtensions);
     switch (xrResult) {
     case XR_SUCCESS: {
@@ -166,7 +166,7 @@ Result Instance::InitializeSessionVulkan() {
     }
     }
 
-    System::ManagedBlock<char> deviceExtensions(deviceExtensionSize);
+    System::OwnedBlock<char> deviceExtensions(deviceExtensionSize);
     xrResult = getVkDevExt(this->instance, this->systemId, deviceExtensionSize, &deviceExtensionSize, deviceExtensions);
     switch (xrResult) {
     case XR_SUCCESS: {

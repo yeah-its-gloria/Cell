@@ -12,6 +12,9 @@ enum class Result : uint8_t {
     // The operation completed successfully.
     Success,
 
+    // There were no updates to process.
+    NoUpdates,
+
     // The given parameters were malformed.
     InvalidParameters,
 

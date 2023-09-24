@@ -15,8 +15,8 @@ CELL_NODISCARD CELL_INLINE uint16_t Byteswap(const uint16_t a) {
 // Swaps an unsigned, 32 bit integer.
 CELL_NODISCARD CELL_INLINE uint32_t Byteswap(const uint32_t a) {
     return ((a >> 24) & 0x000000ff) |
-           ((a >> 8) & 0x0000ff00) |
-           ((a << 8) & 0x00ff0000) |
+           ((a >>  8) & 0x0000ff00) |
+           ((a <<  8) & 0x00ff0000) |
            ((a << 24) & 0xff000000);
 }
 
@@ -25,8 +25,8 @@ CELL_NODISCARD CELL_INLINE uint64_t Byteswap(const uint64_t a) {
     return ((a >> 56) & 0x00000000000000ff) |
            ((a >> 40) & 0x000000000000ff00) |
            ((a >> 24) & 0x0000000000ff0000) |
-           ((a >> 8) & 0x00000000ff000000) |
-           ((a << 8) & 0x000000ff00000000) |
+           ((a >>  8) & 0x00000000ff000000) |
+           ((a <<  8) & 0x000000ff00000000) |
            ((a << 24) & 0x0000ff0000000000) |
            ((a << 40) & 0x00ff000000000000) |
            ((a << 56) & 0xff00000000000000);

@@ -11,7 +11,7 @@ namespace Cell {
 // Packing attribute for offsets in structures.
 #define CELL_PACKED(x) __attribute__((packed, aligned(x)))
 
-// Base class type for Cell
+// Base class type for Cell.
 class Object {
 public:
     CELL_FUNCTION static void* CELL_NONNULL operator new(size_t size);

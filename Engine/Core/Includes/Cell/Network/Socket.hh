@@ -5,6 +5,7 @@
 
 #include <Cell/Network/AddressInfo.hh>
 #include <Cell/Network/Result.hh>
+
 #include <Cell/System/Block.hh>
 
 namespace Cell::Network {

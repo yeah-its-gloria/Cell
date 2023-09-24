@@ -6,7 +6,7 @@
 
 namespace Cell::Shell::Implementations {
 
-Wrapped<Extent, Result> Windows::GetDrawableExtentForWindow() {
+Wrapped<Extent, Result> Windows::GetDrawableExtent() {
     RECT rect = {0, 0, 0, 0};
     const BOOL result = GetClientRect(this->window, &rect);
     if (result == FALSE) {
@@ -20,7 +20,7 @@ Wrapped<Extent, Result> Windows::GetDrawableExtentForWindow() {
     return Extent {(uint32_t)rect.right - rect.left, (uint32_t)rect.bottom - rect.top};
 }
 
-Result Windows::SetDrawableExtentForWindow(const Extent extent) {
+Result Windows::SetDrawableExtent(const Extent extent) {
     const BOOL result = SetWindowPos(this->window, nullptr, 0, 0, extent.width, extent.height, SWP_NOMOVE);
     if (result == FALSE) {
         switch (GetLastError()) {

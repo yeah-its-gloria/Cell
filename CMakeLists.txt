@@ -24,28 +24,22 @@ if (NOT WIN32 AND NOT UNIX)
     message(WARNING "Support for platforms other than Windows or Linux is considered experimental at the moment.")
 endif ()
 
-if (NOT ${CMAKE_GENERATOR} STREQUAL "Ninja Multi-Config" AND NOT ${CMAKE_GENERATOR} STREQUAL "Ninja" AND (NOT MSVC AND NOT ${CMAKE_GENERATOR} STREQUAL "Visual Studio 17 2022"))
+if (NOT ${CMAKE_GENERATOR} STREQUAL "Ninja Multi-Config"
+    AND NOT ${CMAKE_GENERATOR} STREQUAL "Ninja"
+    AND (NOT MSVC AND NOT ${CMAKE_GENERATOR} STREQUAL "Visual Studio 17 2022"))
     message(AUTHOR_WARNING "Using Ninja or Ninja Multi-Config as the generator is recommended over \"${CMAKE_GENERATOR}\".")
 endif ()
 
 if (MSVC AND NOT ${CMAKE_VS_PLATFORM_TOOLSET} STREQUAL "ClangCL")
-    message(WARNING "CL is basically guaranteed to break. Recommended that you use the ClangCL tookit instead of \"${CMAKE_VS_PLATFORM_TOOLSET}\".")
+    message(WARNING "CL is basically guaranteed to break. It's recommended that you use the ClangCL tookit instead of \"${CMAKE_VS_PLATFORM_TOOLSET}\".")
 endif ()
 
 option(CELL_ENABLE_TESTS "Whether tests should be built. Defaults to ON." ON)
 option(CELL_ENABLE_EDITOR "Whether the editor should be built. Defaults to ON." ON)
-option(CELL_ENABLE_PROJECTS "Whether projects should be built. Defaults to ON." ON)
+option(CELL_ENABLE_PROJECT "Whether the in tree project should be built. Defaults to ON." ON)
 option(CELL_ENABLE_UTILITIES "Whether utilities should be built. Defaults to ON." ON)
 
 option(CELL_ENABLE_STATIC_BUILD "Whether the libraries (engine, modules, etc) should be build statically. Defaults to OFF." OFF)
-
-option(CELL_USE_EXTERNAL_ASSERT "Whether to use assert from the C standard library implementation. Defaults to OFF." OFF)
-option(CELL_USE_PANIC_ASSERT "Whether to use a built in engine assert implementation. Calls Cell::System::Panic. Defaults to ON." ON)
-option(CELL_SKIP_ASSERT "Whether to skip assert checks and simply continue. Defaults to OFF." OFF)
-
-if (WIN32)
-    option(CELL_PLATFORM_WINDOWS_LOG_TO_CONSOLE "Whether to log to the console or via OutputDebugStringW" OFF)
-endif ()
 
 if (CELL_ENABLE_STATIC_BUILD)
     set(CELL_LIBRARY_TYPE STATIC)
@@ -64,8 +58,6 @@ set(UTILITIES_DIR ${ENGINE_DIR}/Utilities)
 
 set(GENERATE_DIR ${CMAKE_CURRENT_BINARY_DIR}/Generated)
 
-set(CMAKE_MODULE_PATH ${ENGINE_DIR}/BuildScripts;${ENGINE_DIR}/BuildScripts/Dependencies)
-
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
@@ -82,6 +74,6 @@ if (CELL_ENABLE_EDITOR)
     add_subdirectory(${PROJECT_ROOT_DIR}/Editor)
 endif ()
 
-if (CELL_ENABLE_PROJECTS)
-    add_subdirectory(${PROJECT_ROOT_DIR}/Projects)
+if (CELL_ENABLE_PROJECT)
+    add_subdirectory(${PROJECT_ROOT_DIR}/Project)
 endif ()

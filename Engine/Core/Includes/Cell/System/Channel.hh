@@ -8,7 +8,7 @@
 
 namespace Cell::System {
 
-// Represents a channel; this serves as a one way pipe to communicate across threads.
+// Means of inter-thread communication.
 template <typename T> class Channel : public Object {
 public:
     // Creates a new event.
@@ -48,7 +48,7 @@ public:
 
     // Returns whether there's unread data available.
     CELL_INLINE bool IsDataAvailable() {
-        return this->newMessage.Wait(1) == EventWaitState::Signaled;
+        return this->newMessage.Wait(1) == EventWaitResult::Signaled;
     }
 
 private:

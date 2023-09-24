@@ -3,15 +3,17 @@
 
 #pragma once
 
-#include "Cell/System/Block.hh"
 #include <Cell/Wrapped.hh>
+
 #include <Cell/IO/FileMode.hh>
 #include <Cell/IO/Result.hh>
+
+#include <Cell/System/Block.hh>
 #include <Cell/System/String.hh>
 
 namespace Cell::IO {
 
-// Represents a file within a nondescript file system.
+// Represents a file within a nondescript, path based file system.
 class File : public Object {
 public:
     // Opens or creates a file.

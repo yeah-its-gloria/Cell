@@ -11,19 +11,19 @@ void CellEntry(Reference<String> parameterString) {
     (void)(parameterString);
 
     Event event;
-    CELL_ASSERT(event.Wait(1) == EventWaitState::Timeout);
+    CELL_ASSERT(event.Wait(1) == EventWaitResult::Timeout);
 
     event.Signal();
-    CELL_ASSERT(event.Wait(1) == EventWaitState::Signaled);
+    CELL_ASSERT(event.Wait(1) == EventWaitResult::Signaled);
 
     event.Signal();
-    CELL_ASSERT(event.Wait(1) == EventWaitState::Signaled);
+    CELL_ASSERT(event.Wait(1) == EventWaitResult::Signaled);
 
     event.Reset();
-    CELL_ASSERT(event.Wait(1) == EventWaitState::Timeout);
+    CELL_ASSERT(event.Wait(1) == EventWaitResult::Timeout);
 
     event.Reset();
-    CELL_ASSERT(event.Wait(1) == EventWaitState::Timeout);
+    CELL_ASSERT(event.Wait(1) == EventWaitResult::Timeout);
 
     String a = "Hello";
     String b = " World";

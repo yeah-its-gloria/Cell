@@ -33,11 +33,20 @@ CELL_FUNCTION_INTERNAL deviceProps parseDevicePathHID(const wchar_t* data) {
         props.vendorId = path.Substring(offset, 4).Unwrap().AsNumber(true).Unwrap();
         props.productId = path.Substring(offset + 4 + pidOffset, 4).Unwrap().AsNumber(true).Unwrap();
     } else if (path.BeginsWith("HID\\{")) {
-        const size_t offset = Utilities::RawStringSize("HID\\{00000000-0000-0000-0000-000000000000}_VID&0000");
+        const size_t baseOffset = Utilities::RawStringSize("HID\\{00000000-0000-0000-0000-000000000000}");
+        if (path.Substring(baseOffset, 4).Unwrap() == "_Dev") {
+            const size_t offset = baseOffset + Utilities::RawStringSize("_Dev_VID&00");
+
+            props.vendorId = path.Substring(offset, 4).Unwrap().AsNumber(true).Unwrap();
+            props.productId = path.Substring(offset + 4 + pidOffset, 4).Unwrap().AsNumber(true).Unwrap();
+        } else {
+            const size_t offset = baseOffset + Utilities::RawStringSize("_VID&0000");
+
+            props.vendorId = path.Substring(offset, 4).Unwrap().AsNumber(true).Unwrap();
+            props.productId = path.Substring(offset + 4 + pidOffset, 4).Unwrap().AsNumber(true).Unwrap();
+        }
 
         props.isValid = true;
-        props.vendorId = path.Substring(offset, 4).Unwrap().AsNumber(true).Unwrap();
-        props.productId = path.Substring(offset + 4 + pidOffset, 4).Unwrap().AsNumber(true).Unwrap();
     }
 
     return props;
@@ -101,7 +110,7 @@ Wrapped<HID*, Result> HID::Open(const uint16_t vendorId, const uint16_t productI
 
         CELL_ASSERT(propertyType == DEVPROP_TYPE_STRING_LIST);
 
-        System::ManagedBlock<wchar_t> hardwareIDs(size + 1);
+        System::OwnedBlock<wchar_t> hardwareIDs(size + 1);
         result = SetupDiGetDevicePropertyW(info, &data, &DEVPKEY_Device_HardwareIds, &propertyType, (BYTE*)hardwareIDs.Pointer(), size, &size, 0);
         if (result == FALSE) {
             System::Panic("SetupDiGetDevicePropertyW failed");

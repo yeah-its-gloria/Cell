@@ -29,16 +29,16 @@ void Event::Reset() {
     CELL_ASSERT(result);
 }
 
-EventWaitState Event::Wait(const uint32_t timeoutMs) {
+EventWaitResult Event::Wait(const uint32_t timeoutMs) {
     const DWORD result = WaitForSingleObjectEx((HANDLE)this->handle, timeoutMs == 0 ? INFINITE : timeoutMs, FALSE);
     switch (result) {
     case WAIT_OBJECT_0: {
         this->Signal();
-        return EventWaitState::Signaled;
+        return EventWaitResult::Signaled;
     }
 
     case WAIT_TIMEOUT: {
-        return EventWaitState::Timeout;
+        return EventWaitResult::Timeout;
     }
 
     default: {

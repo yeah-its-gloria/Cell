@@ -1,6 +1,8 @@
 # SPDX-FileCopyrightText: Copyright 2023 Gloria G.
 # SPDX-License-Identifier: BSD-2-Clause
 
+option(CELL_PLATFORM_WINDOWS_LOG_TO_CONSOLE "Whether to log to the console or via OutputDebugStringW" OFF)
+
 target_sources(CellCore PRIVATE
                ${PLATFORM_DIR}/Sources/IO/File/File.cc
                ${PLATFORM_DIR}/Sources/IO/File/CheckPath.cc
@@ -102,7 +104,7 @@ function(Cell_Platform_Windows_Generate_Manifests target type)
     )
 endfunction()
 
-function(Cell_Platform_Bootstrap_Target target)
+function(CellPlatformBootstrapTarget target)
     get_target_property(type ${target} TYPE)
     if (NOT "${type}" STREQUAL "EXECUTABLE")
         return()

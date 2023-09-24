@@ -7,7 +7,7 @@
 #include <Cell/Shell/Shell.hh>
 #include <Cell/System/String.hh>
 
-class Editor : public Cell::Object {
+class Editor : Cell::Object {
 public:
     CELL_INLINE Editor() { }
     CELL_FUNCTION_INTERNAL ~Editor();

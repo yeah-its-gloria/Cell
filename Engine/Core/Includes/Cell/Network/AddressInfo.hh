@@ -4,8 +4,10 @@
 #pragma once
 
 #include <Cell/Wrapped.hh>
+
 #include <Cell/Network/Properties.hh>
 #include <Cell/Network/Result.hh>
+
 #include <Cell/System/Memory.hh>
 #include <Cell/System/String.hh>
 
