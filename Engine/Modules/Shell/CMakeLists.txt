@@ -42,12 +42,11 @@ if (WIN32)
     target_link_libraries(CellShell PRIVATE dwmapi)
 elseif (UNIX)
     find_package(wayland REQUIRED FATAL_ERROR)
-    find_package(xkbcommon REQUIRED FATAL_ERROR)
 
     target_sources(CellShell PRIVATE
-        ${CMAKE_CURRENT_LIST_DIR}/Sources/Linux/DrawableExtentForWindow.cc
+        ${CMAKE_CURRENT_LIST_DIR}/Sources/Linux/DrawableExtent.cc
         ${CMAKE_CURRENT_LIST_DIR}/Sources/Linux/Input.cc
-        ${CMAKE_CURRENT_LIST_DIR}/Sources/Linux/SetNewTitleForWindow.cc
+        ${CMAKE_CURRENT_LIST_DIR}/Sources/Linux/SetNewTitle.cc
 
         ${CMAKE_CURRENT_LIST_DIR}/Sources/Linux/Shell/WaylandProtocols/idle-inhibit-protocol.c
         ${CMAKE_CURRENT_LIST_DIR}/Sources/Linux/Shell/WaylandProtocols/xdg-decoration-protocol.c
@@ -61,6 +60,7 @@ elseif (UNIX)
         ${CMAKE_CURRENT_LIST_DIR}/Sources/Linux/Shell/WaylandXDGToplevel.cc
     )
 
+    target_include_directories(CellShell PRIVATE ${wayland_INCLUDE_DIRS} ${xkbcommon_INCLUDE_DIRS})
     target_link_libraries(CellShell PRIVATE ${wayland_LIBRARIES} ${xkbcommon_LIBRARIES})
 else ()
     message(FATAL_ERROR "Unsupported platform")

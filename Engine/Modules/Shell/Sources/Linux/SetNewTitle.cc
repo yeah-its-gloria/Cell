@@ -6,7 +6,7 @@
 
 namespace Cell::Shell::Implementations {
 
-Result Linux::SetNewTitleForWindow(const System::String& title) {
+Result Linux::SetNewTitle(const System::String& title) {
     if (title.IsEmpty()) {
         return Result::InvalidParameters;
     }

@@ -5,19 +5,18 @@
 
 namespace Cell::Shell::Implementations {
 
-Wrapped<Extent, Result> Linux::GetDrawableExtentForWindow() {
+Wrapped<Extent, Result> Linux::GetDrawableExtent() {
     // TODO: don't hardcode this lol
 
     return Extent { 1280, 720 };
 }
 
-Result Linux::SetDrawableExtentForWindow(const Extent extent) {
+Result Linux::SetDrawableExtent(const Extent extent) {
     (void)(extent);
 
     // TODO: implement
 
     return Result::Success;
 }
-
 
 }

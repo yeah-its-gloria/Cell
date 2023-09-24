@@ -14,7 +14,7 @@ Wrapped<String, Result> String::FromPlatformWideString(const wchar_t* input) {
     const size_t result = wcstombs(nullptr, input, 0);
     CELL_ASSERT(result > 0);
 
-    ManagedBlock<char> stuff(result + 1);
+    OwnedBlock<char> stuff(result + 1);
     const size_t result2 = wcstombs(stuff, input, result);
     CELL_ASSERT(result2 == result);
 

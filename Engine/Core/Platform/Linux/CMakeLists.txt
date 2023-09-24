@@ -55,7 +55,6 @@ else ()
     message("${CELL_LIBRARY_TYPE} is an invalid library type")
 endif ()
 
-target_include_directories(CellCore PUBLIC ${wayland_INCLUDE_DIRS} ${xkbcommon_INCLUDE_DIRS})
 target_link_libraries(CellCore PUBLIC pthread dl rt m)
 
 function(CellPlatformBootstrapTarget target)
