@@ -40,6 +40,7 @@ The editor serves as a creation utility for various workloads.
 | Audio          | WASAPI (Windows), PulseAudio (Linux) |                                               |
 | D3D12          | DirectX 12.1                         | Windows only                                  |
 | DataManagement | self-contained                       |                                               |
+| JavaScript     | QuickJS                              | Includes some custom patches                  |
 | Mathematics    | self-contained                       | Has hardware acceleration on x86_64 platforms |
 | OpenXR         | OpenXR 1.0                           | Vulkan implemented                            |
 | Shell          | Windows, Wayland (Linux)             | Often needed by other modules, serves as GUI  |

@@ -118,6 +118,7 @@ else ()
         -Werror
 
         -Wno-c99-designator
+        -Wno-c99-extensions
         -Wno-nullability-extension
         -Wno-nullability-completeness
         -Wno-c++2b-extensions

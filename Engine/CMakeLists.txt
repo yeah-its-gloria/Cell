@@ -12,6 +12,7 @@ set(PLATFORM_DIR ${PLATFORM_DIR} PARENT_SCOPE)
 
 CellAddModule(CELL_ENABLE_MODULE_AUDIO          ${MODULES_DIR}/Audio          "Whether the Audio module should be built. Defaults to ON.")
 CellAddModule(CELL_ENABLE_MODULE_DATAMANAGEMENT ${MODULES_DIR}/DataManagement "Whether the Data Management module should be built. Defaults to ON.")
+CellAddModule(CELL_ENABLE_MODULE_JAVASCRIPT     ${MODULES_DIR}/JavaScript     "Whether the JavaScript module should be built. Defaults to ON.")
 CellAddModule(CELL_ENABLE_MODULE_MATHEMATICS    ${MODULES_DIR}/Mathematics    "Whether the Mathematics module should be built. Defaults to ON.")
 CellAddModule(CELL_ENABLE_MODULE_OPENXR         ${MODULES_DIR}/OpenXR         "Whether the OpenXR module should be built. Defaults to ON.")
 CellAddModule(CELL_ENABLE_MODULE_SHELL          ${MODULES_DIR}/Shell          "Whether the Shell module should be built. Defaults to ON.")

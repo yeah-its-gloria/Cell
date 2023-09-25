@@ -8,7 +8,7 @@
 namespace Cell::System {
 
 // Panics with the given message.
-CELL_NORETURN CELL_FUNCTION void Panic(const char* CELL_NONNULL message, ...);
+CELL_NORETURN CELL_FUNCTION __attribute__((format(printf, 1, 2))) void Panic(const char* CELL_NONNULL message, ...);
 
 // Attempts to show the user a message box saying an error occurred, and then aborts.
 // Mostly intended for release builds.

@@ -3,55 +3,57 @@
 
 option(CELL_PLATFORM_WINDOWS_LOG_TO_CONSOLE "Whether to log to the console or via OutputDebugStringW" OFF)
 
+find_file(CLANG_RT_BUILTINS NAME "clang_rt.builtins-x86_64.lib" HINTS "C:\\Program Files\\LLVM\\lib\\clang\\16\\lib\\windows\\")
+
 target_sources(CellCore PRIVATE
-               ${PLATFORM_DIR}/Sources/IO/File/File.cc
-               ${PLATFORM_DIR}/Sources/IO/File/CheckPath.cc
-               ${PLATFORM_DIR}/Sources/IO/File/Delete.cc
-               ${PLATFORM_DIR}/Sources/IO/File/Open.cc
-               ${PLATFORM_DIR}/Sources/IO/File/SetWorkingDirectory.cc
+    ${PLATFORM_DIR}/Sources/IO/File/File.cc
+    ${PLATFORM_DIR}/Sources/IO/File/CheckPath.cc
+    ${PLATFORM_DIR}/Sources/IO/File/Delete.cc
+    ${PLATFORM_DIR}/Sources/IO/File/Open.cc
+    ${PLATFORM_DIR}/Sources/IO/File/SetWorkingDirectory.cc
 
-               ${PLATFORM_DIR}/Sources/IO/FolderWalker/FolderWalker.cc
-               ${PLATFORM_DIR}/Sources/IO/FolderWalker/Instance.hh
-               ${PLATFORM_DIR}/Sources/IO/FolderWalker/Advance.cc
-               ${PLATFORM_DIR}/Sources/IO/FolderWalker/GetCurrentElementAndAdvance.cc
-               ${PLATFORM_DIR}/Sources/IO/FolderWalker/Open.cc
+    ${PLATFORM_DIR}/Sources/IO/FolderWalker/FolderWalker.cc
+    ${PLATFORM_DIR}/Sources/IO/FolderWalker/Instance.hh
+    ${PLATFORM_DIR}/Sources/IO/FolderWalker/Advance.cc
+    ${PLATFORM_DIR}/Sources/IO/FolderWalker/GetCurrentElementAndAdvance.cc
+    ${PLATFORM_DIR}/Sources/IO/FolderWalker/Open.cc
 
-               ${PLATFORM_DIR}/Sources/IO/HID/HID.cc
-               ${PLATFORM_DIR}/Sources/IO/HID/Open.cc
+    ${PLATFORM_DIR}/Sources/IO/HID/HID.cc
+    ${PLATFORM_DIR}/Sources/IO/HID/Open.cc
 
-               ${PLATFORM_DIR}/Sources/IO/Pipe/Pipe.cc
-               ${PLATFORM_DIR}/Sources/IO/Pipe/ClientManagement.cc
-               ${PLATFORM_DIR}/Sources/IO/Pipe/Connect.cc
-               ${PLATFORM_DIR}/Sources/IO/Pipe/Create.cc
-               ${PLATFORM_DIR}/Sources/IO/Pipe/WaitUntilReady.cc
+    ${PLATFORM_DIR}/Sources/IO/Pipe/Pipe.cc
+    ${PLATFORM_DIR}/Sources/IO/Pipe/ClientManagement.cc
+    ${PLATFORM_DIR}/Sources/IO/Pipe/Connect.cc
+    ${PLATFORM_DIR}/Sources/IO/Pipe/Create.cc
+    ${PLATFORM_DIR}/Sources/IO/Pipe/WaitUntilReady.cc
 
-               ${PLATFORM_DIR}/Sources/IO/USB/Internal.hh
-               ${PLATFORM_DIR}/Sources/IO/USB/USB.cc
-               ${PLATFORM_DIR}/Sources/IO/USB/Open.cc
+    ${PLATFORM_DIR}/Sources/IO/USB/Internal.hh
+    ${PLATFORM_DIR}/Sources/IO/USB/USB.cc
+    ${PLATFORM_DIR}/Sources/IO/USB/Open.cc
 
-               ${PLATFORM_DIR}/Sources/Network/Internal.hh
-               ${PLATFORM_DIR}/Sources/Network/AddressInfo.cc
-               ${PLATFORM_DIR}/Sources/Network/Socket/Communication.cc
-               ${PLATFORM_DIR}/Sources/Network/Socket/Connection.cc
-               ${PLATFORM_DIR}/Sources/Network/Socket/NewDestruct.cc
+    ${PLATFORM_DIR}/Sources/Network/Internal.hh
+    ${PLATFORM_DIR}/Sources/Network/AddressInfo.cc
+    ${PLATFORM_DIR}/Sources/Network/Socket/Communication.cc
+    ${PLATFORM_DIR}/Sources/Network/Socket/Connection.cc
+    ${PLATFORM_DIR}/Sources/Network/Socket/NewDestruct.cc
 
-               ${PLATFORM_DIR}/Sources/System/DynamicLibrary.cc
-               ${PLATFORM_DIR}/Sources/System/Event.cc
-               ${PLATFORM_DIR}/Sources/System/Log.cc
-               ${PLATFORM_DIR}/Sources/System/Memory.cc
-               ${PLATFORM_DIR}/Sources/System/Mutex.cc
-               ${PLATFORM_DIR}/Sources/System/Panic.cc
-               ${PLATFORM_DIR}/Sources/System/RNG.cc
-               ${PLATFORM_DIR}/Sources/System/Sleep.cc
-               ${PLATFORM_DIR}/Sources/System/String.cc
-               ${PLATFORM_DIR}/Sources/System/Thread.cc
-               ${PLATFORM_DIR}/Sources/System/Ticker.cc
+    ${PLATFORM_DIR}/Sources/System/DynamicLibrary.cc
+    ${PLATFORM_DIR}/Sources/System/Event.cc
+    ${PLATFORM_DIR}/Sources/System/Log.cc
+    ${PLATFORM_DIR}/Sources/System/Memory.cc
+    ${PLATFORM_DIR}/Sources/System/Mutex.cc
+    ${PLATFORM_DIR}/Sources/System/Panic.cc
+    ${PLATFORM_DIR}/Sources/System/RNG.cc
+    ${PLATFORM_DIR}/Sources/System/Sleep.cc
+    ${PLATFORM_DIR}/Sources/System/String.cc
+    ${PLATFORM_DIR}/Sources/System/Thread.cc
+    ${PLATFORM_DIR}/Sources/System/Ticker.cc
 )
 
 target_compile_definitions(CellCore PUBLIC
-                           "CELL_PLATFORM_WINDOWS=1"
+    "CELL_PLATFORM_WINDOWS=1"
 
-                           "_CRT_SECURE_NO_WARNINGS=1"
+    "_CRT_SECURE_NO_WARNINGS=1"
 )
 
 if (CELL_PLATFORM_WINDOWS_LOG_TO_CONSOLE)
@@ -69,14 +71,15 @@ endif ()
 target_compile_options(CellCore PRIVATE -Wno-varargs)
 
 target_link_libraries(CellCore PRIVATE
-                      bcrypt
-                      hid
-                      setupapi
-                      shlwapi
-                      winusb
+    bcrypt
+    hid
+    setupapi
+    shlwapi
+    winusb
 
-                      PUBLIC runtimeobject
-                      PUBLIC ws2_32
+    PUBLIC runtimeobject
+    PUBLIC ws2_32
+    PUBLIC ${CLANG_RT_BUILTINS}
 )
 
 function(Cell_Platform_Windows_Generate_Manifests target type)
@@ -99,8 +102,8 @@ function(Cell_Platform_Windows_Generate_Manifests target type)
     configure_file(${PLATFORM_DIR}/Manifests/Manifest.rc.in ${GENERATE_DIR}/Manifests/${target}/Manifest.rc)
 
     target_sources(${target} PRIVATE
-                   ${GENERATE_DIR}/Manifests/${target}/Manifest.manifest
-                   ${GENERATE_DIR}/Manifests/${target}/Manifest.rc
+        ${GENERATE_DIR}/Manifests/${target}/Manifest.manifest
+        ${GENERATE_DIR}/Manifests/${target}/Manifest.rc
     )
 endfunction()
 

@@ -43,13 +43,8 @@ else ()
 endif ()
 
 if (CELL_ENABLE_TESTS)
-    add_executable(CellMathematicsVectorTest ${CMAKE_CURRENT_LIST_DIR}/Tests/Vector.cc )
-
-    target_link_libraries(CellMathematicsVectorTest PUBLIC
-                          CellCore
-                          CellMathematics
-    )
-
+    add_executable(CellMathematicsVectorTest ${CMAKE_CURRENT_LIST_DIR}/Tests/Vector.cc)
+    target_link_libraries(CellMathematicsVectorTest PRIVATE CellMathematics)
     add_test(NAME CellMathematicsVectorTest COMMAND CellMathematicsVectorTest WORKING_DIRECTORY ${PROJECT_ROOT_DIR})
     CellPlatformBootstrapTarget(CellMathematicsVectorTest TRUE)
 endif ()
