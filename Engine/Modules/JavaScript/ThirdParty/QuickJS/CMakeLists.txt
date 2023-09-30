@@ -31,8 +31,10 @@ target_compile_options(QuickJS PRIVATE
     -Wno-zero-length-array
     -Wno-microsoft-enum-forward-reference
     -Wno-unused-parameter
+    -Wno-unused-variable
+    -Wno-unused-but-set-variable
     -Wno-sign-compare
-    -Wgnu-label-as-value
+    -Wno-gnu-label-as-value
     -Wno-pedantic
     -Wno-implicit-const-int-float-conversion
 )
