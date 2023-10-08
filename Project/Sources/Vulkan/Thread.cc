@@ -109,19 +109,20 @@ void Example::VulkanThread() {
 
     uint64_t finishedTick = System::GetPreciseTickerValue();
     while (this->shell->IsStillActive()) {
-        this->renderDeltaTime = Cell::Utilities::Minimum((System::GetPreciseTickerValue() - finishedTick) / 1000.f, 0.005f);
+        this->renderDeltaTime = Cell::Utilities::Minimum((System::GetPreciseTickerValue() - finishedTick) / 1000.f, 0.001f);
 
         ubo.timeMilliseconds = this->elapsedTime;
 
         ubo.model.SetToIdentity();
 
-        ubo.view.LookAt(Vector3 {0.f, 5.f, 5.f}, Vector3 {0.f, 0.f, 0.f}, Vector3 {0.f, 0.f, -1.f});
+        ubo.view.LookAt(Vector3 { 0.f, 5.f, 5.f }, Vector3 { 0.f, 0.f, 0.f }, Vector3 { 0.f, 0.f, -1.f });
         //ubo.view.LookAt(Vector3 { 0.f, 5.f, 5.f }, Mathematics::Utilities::DegreesToRadians(10.f), Mathematics::Utilities::DegreesToRadians(90.f));
         ubo.view.Translate(position);
 
         uniforms[target->GetFrameCount()]->Copy(&ubo, sizeof(ExampleUBO));
 
         VulkanToolsGenerateRenderCommands(vertexCount, indexCount, &cmdBufferManager, &pipeline, &buffer, &target, target->GetFrameCount());
+
         result = instance->RenderImage(&target, cmdBufferManager->GetCommandBufferHandle(target->GetFrameCount()));
         switch (result) {
         case Result::Success: {

@@ -16,7 +16,8 @@ void VulkanToolsSetUpResources(Pipeline* pipeline, Buffer** uniforms, Image* tex
         .bufferOffset = 0,
 
         .image = nullptr,
-        .imageLayout = VK_IMAGE_LAYOUT_UNDEFINED};
+        .imageLayout = VK_IMAGE_LAYOUT_UNDEFINED
+    };
 
     const PipelineResourceData textureData = {
         .type = PipelineResourceType::Image,
@@ -27,7 +28,8 @@ void VulkanToolsSetUpResources(Pipeline* pipeline, Buffer** uniforms, Image* tex
         .bufferOffset = 0,
 
         .image = texture,
-        .imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL};
+        .imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL
+    };
 
     // awful hacks
 

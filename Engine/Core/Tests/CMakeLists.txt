@@ -4,14 +4,9 @@
 project(CellCoreTests LANGUAGES CXX VERSION 1.0.0 DESCRIPTION "Cell - Tests")
 
 function(cell_add_test name)
-    add_executable(CellCore${name}Test
-                   ${CMAKE_CURRENT_LIST_DIR}/Sources/${name}.cc
-    )
-
+    add_executable(CellCore${name}Test ${CMAKE_CURRENT_LIST_DIR}/Sources/${name}.cc)
     target_link_libraries(CellCore${name}Test PRIVATE CellCore)
-
     add_test(NAME CellCore${name}Test COMMAND CellCore${name}Test WORKING_DIRECTORY ${PROJECT_ROOT_DIR})
-
     CellPlatformBootstrapTarget(CellCore${name}Test TRUE)
 endfunction()
 

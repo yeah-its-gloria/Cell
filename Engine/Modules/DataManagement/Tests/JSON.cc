@@ -2,10 +2,7 @@
 // SPDX-License-Identifier: BSD-2-Clause
 
 #include <Cell/Scoped.hh>
-#include <Cell/DataManagement/Foreign/glTF.hh>
-#include <Cell/DataManagement/Foreign/HTTP.hh>
 #include <Cell/DataManagement/Foreign/JSON.hh>
-#include <Cell/DataManagement/Foreign/PNG.hh>
 #include <Cell/IO/File.hh>
 #include <Cell/System/BlockImpl.hh>
 #include <Cell/System/Entry.hh>
@@ -16,7 +13,9 @@ using namespace Cell;
 using namespace Cell::DataManagement::Foreign;
 using namespace Cell::System;
 
-CELL_FUNCTION_INTERNAL void TestJSON() {
+void CellEntry(Reference<String> parameterString) {
+    (void)(parameterString);
+
     ScopedObject<IO::File> file = IO::File::Open("./Engine/Modules/DataManagement/Content/Data.json").Unwrap();
     const size_t size = file->GetSize().Unwrap();
 
@@ -57,50 +56,4 @@ CELL_FUNCTION_INTERNAL void TestJSON() {
     }
 
     JSON::Free(values);
-}
-
-CELL_FUNCTION_INTERNAL void TestglTF() {
-    ScopedObject<IO::File> file = IO::File::Open("./Engine/Modules/DataManagement/Content/Box.glb").Unwrap();
-    const size_t size = file->GetSize().Unwrap();
-
-    OwnedBlock<uint8_t> data(size);
-    IO::Result result = file->Read(data);
-    CELL_ASSERT(result == IO::Result::Success);
-
-    ParseGlTF(data, size);
-}
-
-CELL_FUNCTION_INTERNAL void TestPNG() {
-    ScopedObject<IO::File> file = IO::File::Open("./Engine/Modules/DataManagement/Content/Trans.png").Unwrap();
-    const size_t size = file->GetSize().Unwrap();
-
-    OwnedBlock<uint8_t> data(size);
-    IO::Result result = file->Read(data);
-    CELL_ASSERT(result == IO::Result::Success);
-
-    PNG* png = PNG::Decode(data, size).Unwrap();
-    delete png;
-}
-
-CELL_FUNCTION_INTERNAL void TestHTTP() {
-    const String httpResponse = "HTTP/1.1 200 OK\r\nContent-Type: text/html; charset=utf-8\r\n\r\n<html><body>hi</body></html>";
-
-    ScopedBlock<uint8_t> data = (uint8_t*)httpResponse.ToCharPointer();
-    HTTPParseResponse(&data, httpResponse.GetLength());
-}
-
-void CellEntry(Reference<String> parameterString) {
-    (void)(parameterString);
-
-    //Log("Testing JSON");
-    //TestJSON();
-
-    //Log("Testing glTF");
-    //TestglTF();
-
-    //Log("Testing PNG");
-    //TestPNG();
-
-    Log("Testing HTTP");
-    TestHTTP();
 }

@@ -15,7 +15,7 @@ Result Pipeline::AddResources(PipelineResourceData** resources, const uint32_t r
 
     List<VkDescriptorSetLayoutBinding> bindings;
     for (uint32_t i = 0; i < resourceCount; i++) {
-        VkDescriptorType type = VK_DESCRIPTOR_TYPE_MAX_ENUM;
+        VkDescriptorType type;
         switch (resources[0][i].type) {
         case PipelineResourceType::Buffer: {
             type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
@@ -32,7 +32,7 @@ Result Pipeline::AddResources(PipelineResourceData** resources, const uint32_t r
         }
         }
 
-        VkShaderStageFlags stageFlags = VK_SHADER_STAGE_ALL;
+        VkShaderStageFlags stageFlags;
         switch (resources[0][i].stage) {
         case Stage::Vertex: {
             stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
@@ -145,15 +145,14 @@ Result Pipeline::AddResources(PipelineResourceData** resources, const uint32_t r
 
     List<VkDescriptorSetLayout> layouts(layout, setCount);
 
-    const VkDescriptorSetAllocateInfo setAllocateInfo =
-        {
-            .sType              = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO,
-            .pNext              = nullptr,
+    const VkDescriptorSetAllocateInfo setAllocateInfo = {
+        .sType              = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO,
+        .pNext              = nullptr,
 
-            .descriptorPool     = pool,
-            .descriptorSetCount = setCount,
-            .pSetLayouts        = &layouts
-        };
+        .descriptorPool     = pool,
+        .descriptorSetCount = setCount,
+        .pSetLayouts        = &layouts
+    };
 
     VkDescriptorSet* sets = System::AllocateMemory<VkDescriptorSet>(setCount);
     result = vkAllocateDescriptorSets(this->instance->device, &setAllocateInfo, sets);

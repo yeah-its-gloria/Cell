@@ -33,16 +33,17 @@ target_include_directories(CellDataManagement PUBLIC ${MODULE_INCLUDES_DIR})
 target_link_libraries(CellDataManagement PUBLIC CellCore)
 
 if (CELL_ENABLE_TESTS)
-    add_executable(CellDataManagementParsingTest ${CMAKE_CURRENT_LIST_DIR}/Tests/Parsing.cc)
+    function(cell_dm_add_test name)
+        add_executable(CellDataManagementParsing${name}Test ${CMAKE_CURRENT_LIST_DIR}/Tests/${name}.cc)
+        target_link_libraries(CellDataManagementParsing${name}Test PRIVATE CellDataManagement)
+        add_test(NAME CellDataManagementParsing${name}Test COMMAND CellDataManagementParsing${name}Test WORKING_DIRECTORY ${PROJECT_ROOT_DIR})
+        CellPlatformBootstrapTarget(CellDataManagementParsing${name}Test TRUE)
+    endfunction()
 
-    target_link_libraries(CellDataManagementParsingTest PUBLIC CellCore CellDataManagement)
-
-    add_test(
-        NAME CellDataManagementParsingTest
-        COMMAND CellDataManagementParsingTest
-        WORKING_DIRECTORY ${PROJECT_ROOT_DIR}
-    )
-    CellPlatformBootstrapTarget(CellDataManagementParsingTest TRUE)
+    cell_dm_add_test(glTF)
+    cell_dm_add_test(HTTP)
+    cell_dm_add_test(JSON)
+    cell_dm_add_test(PNG)
 endif ()
 
 CellPlatformBootstrapTarget(CellDataManagement)
