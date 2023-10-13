@@ -26,10 +26,9 @@ target_sources(CellCore PRIVATE
                ${PLATFORM_DIR}/Sources/System/Memory.cc
                ${PLATFORM_DIR}/Sources/System/Mutex.cc
                ${PLATFORM_DIR}/Sources/System/Panic.cc
-               ${PLATFORM_DIR}/Sources/System/Sleep.cc
                ${PLATFORM_DIR}/Sources/System/String.cc
                ${PLATFORM_DIR}/Sources/System/Thread.cc
-               ${PLATFORM_DIR}/Sources/System/Ticker.cc
+               ${PLATFORM_DIR}/Sources/System/Timer.cc
 )
 
 target_compile_definitions(CellCore PUBLIC

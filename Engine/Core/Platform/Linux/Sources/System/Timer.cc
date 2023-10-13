@@ -2,12 +2,20 @@
 // SPDX-License-Identifier: BSD-2-Clause
 
 #include <Cell/System/Panic.hh>
-#include <Cell/System/Sleep.hh>
+#include <Cell/System/Timer.hh>
 
 #include <time.h>
 #include <unistd.h>
 
 namespace Cell::System {
+
+uint64_t GetPreciseTickerValue() {
+    timespec timespec { };
+    const int result = clock_gettime(CLOCK_MONOTONIC, &timespec);
+    CELL_ASSERT(result == 0);
+
+    return timespec.tv_nsec / 1000 + timespec.tv_sec * 1000000;
+}
 
 void Sleep(const uint32_t milliseconds) {
     const int result = usleep(milliseconds * 1000);

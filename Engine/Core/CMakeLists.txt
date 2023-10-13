@@ -43,10 +43,9 @@ add_library(CellCore ${CELL_LIBRARY_TYPE}
     ${CORE_INCLUDES_DIR}/Cell/System/Panic.hh
     ${CORE_INCLUDES_DIR}/Cell/System/Result.hh
     ${CORE_INCLUDES_DIR}/Cell/System/RNG.hh
-    ${CORE_INCLUDES_DIR}/Cell/System/Sleep.hh
     ${CORE_INCLUDES_DIR}/Cell/System/String.hh
     ${CORE_INCLUDES_DIR}/Cell/System/Thread.hh
-    ${CORE_INCLUDES_DIR}/Cell/System/Ticker.hh
+    ${CORE_INCLUDES_DIR}/Cell/System/Timer.hh
 
     ${CORE_INCLUDES_DIR}/Cell/Utilities/Byteswap.hh
     ${CORE_INCLUDES_DIR}/Cell/Utilities/MinMaxClamp.hh

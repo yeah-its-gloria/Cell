@@ -6,7 +6,7 @@
 #include <Cell/IO/File.hh>
 #include <Cell/System/Log.hh>
 #include <Cell/System/Thread.hh>
-#include <Cell/System/Ticker.hh>
+#include <Cell/System/Timer.hh>
 
 using namespace Cell;
 using namespace Cell::System;

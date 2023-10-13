@@ -29,7 +29,8 @@ Thread::Thread(ThreadFunction function, void* parameter, const String& name) {
     threadData data = {
         .event = &event,
         .function = function,
-        .parameter = parameter};
+        .parameter = parameter
+    };
 
     HANDLE thread = CreateThread(nullptr, 0, threadTrampoline, &data, 0, nullptr);
     CELL_ASSERT(thread != nullptr);

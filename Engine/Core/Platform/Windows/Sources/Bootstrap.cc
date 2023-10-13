@@ -2,13 +2,13 @@
 // SPDX-License-Identifier: BSD-2-Clause
 
 #include <Cell/System/Entry.hh>
+#include <Cell/System/Log.hh>
 #include <Cell/System/Panic.hh>
 #include <Cell/System/Platform/Windows/Includes.h>
 
 #include <stdio.h>
 
 #include <roapi.h>
-#include <timeapi.h>
 #include <WinSock2.h>
 
 using namespace Cell;
@@ -17,16 +17,27 @@ using namespace Cell;
 
 CELL_UNMANGLED {
 
-__declspec(dllexport) DWORD AmdPowerXpressRequestHighPerformance = 0x00000001;
-__declspec(dllexport) DWORD NvOptimusEnablement = 0x00000001;
+__declspec(dllexport) uint32_t AmdPowerXpressRequestHighPerformance = 0x00000001;
+__declspec(dllexport) uint32_t NvOptimusEnablement = 0x00000001;
+
+int32_t NtQueryTimerResolution(uint32_t* minimum, uint32_t* maximum, uint32_t* current);
+int32_t NtSetTimerResolution(uint32_t desired, BOOL set, uint32_t* current);
 
 }
 
 // NOLINTEND
 
 int main() {
-    MMRESULT mmResult = timeBeginPeriod(1);
-    CELL_ASSERT(mmResult == MMSYSERR_NOERROR);
+    uint32_t _ = 0, desired = 0;
+    int32_t ntResult = NtQueryTimerResolution(&_, &desired, &_);
+    CELL_ASSERT(ntResult == 0);
+
+    if (desired > 5000) {
+        System::Log("Timer resolution %d ns is above 50 ns!", desired / 100);
+    }
+
+    ntResult = NtSetTimerResolution(desired, TRUE, &_);
+    CELL_ASSERT(ntResult == 0);
 
     const int stdResult = setvbuf(stdout, nullptr, _IONBF, 0);
     CELL_ASSERT(stdResult == 0);
@@ -45,9 +56,6 @@ int main() {
 
     wsaResult = WSACleanup();
     CELL_ASSERT(wsaResult == 0);
-
-    mmResult = timeEndPeriod(1);
-    CELL_ASSERT(mmResult == MMSYSERR_NOERROR);
 
     return 0;
 }

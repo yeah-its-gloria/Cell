@@ -44,10 +44,9 @@ target_sources(CellCore PRIVATE
     ${PLATFORM_DIR}/Sources/System/Mutex.cc
     ${PLATFORM_DIR}/Sources/System/Panic.cc
     ${PLATFORM_DIR}/Sources/System/RNG.cc
-    ${PLATFORM_DIR}/Sources/System/Sleep.cc
     ${PLATFORM_DIR}/Sources/System/String.cc
     ${PLATFORM_DIR}/Sources/System/Thread.cc
-    ${PLATFORM_DIR}/Sources/System/Ticker.cc
+    ${PLATFORM_DIR}/Sources/System/Timer.cc
 )
 
 target_compile_definitions(CellCore PUBLIC
@@ -73,6 +72,7 @@ target_compile_options(CellCore PRIVATE -Wno-varargs)
 target_link_libraries(CellCore PRIVATE
     bcrypt
     hid
+    ntdll
     setupapi
     shlwapi
     winusb
@@ -136,7 +136,7 @@ function(CellPlatformBootstrapTarget target)
             set_target_properties(${target} PROPERTIES LINK_FLAGS "-Wl,-subsystem:${subsystem} -Wl,-entry:mainCRTStartup")
         endif ()
 
-        target_link_libraries(${target} PRIVATE winmm)
+        target_link_libraries(${target} PRIVATE ntdll)
     endif ()
 
     Cell_Platform_Windows_Generate_Manifests(${target} ${type})

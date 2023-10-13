@@ -7,7 +7,7 @@
 #include <Cell/Scoped.hh>
 #include <Cell/Mathematics/Utilities.hh>
 #include <Cell/System/Log.hh>
-#include <Cell/System/Ticker.hh>
+#include <Cell/System/Timer.hh>
 #include <Cell/Utilities/MinMaxClamp.hh>
 #include <Cell/Vulkan/WSITarget.hh>
 

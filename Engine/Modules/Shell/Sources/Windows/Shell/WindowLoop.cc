@@ -3,7 +3,7 @@
 
 #include <Cell/Shell/Implementations/Windows.hh>
 #include <Cell/System/Panic.hh>
-#include <Cell/System/Sleep.hh>
+#include <Cell/System/Timer.hh>
 
 #include <dwmapi.h>
 

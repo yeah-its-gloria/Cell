@@ -5,7 +5,7 @@
 #include <Cell/System/Log.hh>
 #include <Cell/System/Memory.hh>
 #include <Cell/System/Panic.hh>
-#include <Cell/System/Sleep.hh>
+#include <Cell/System/Timer.hh>
 
 namespace Cell::Shell::Implementations {
 using namespace System;

@@ -7,7 +7,7 @@
 #include <Cell/IO/File.hh>
 #include <Cell/Scoped.hh>
 #include <Cell/System/BlockImpl.hh>
-#include <Cell/System/Sleep.hh>
+#include <Cell/System/Timer.hh>
 #include <Cell/System/Thread.hh>
 
 using namespace Cell;
