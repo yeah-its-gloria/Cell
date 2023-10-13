@@ -6,7 +6,9 @@
 #include <Cell/System/Panic.hh>
 #include <Cell/System/String.hh>
 
+#include <stdarg.h>
 #include <stdlib.h>
+#include <string.h>
 
 namespace Cell::System {
 
@@ -36,5 +38,20 @@ wchar_t* String::ToPlatformWideString() const {
 
     return output;
 }
+
+String String::Format(const char* CELL_NONNULL format, ...) {
+    CELL_ASSERT(strlen(format) < 32768);
+
+    va_list parameters;
+    va_start(parameters, format);
+
+    char buffer[32768] = { 0 };
+    vsnprintf(buffer, 32767, format, parameters);
+
+    va_end(parameters);
+
+    return String(buffer);
+}
+
 
 }

@@ -40,7 +40,10 @@ enum class Result : uint8_t {
     OutOfMemory,
 
     // The message being sent was too large.
-    ContentTooLarge
+    ContentTooLarge,
+
+    // The requested index was too large.
+    OutOfRange
 };
 
 }

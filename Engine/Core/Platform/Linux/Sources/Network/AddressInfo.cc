@@ -76,4 +76,62 @@ AddressInfo::~AddressInfo() {
     freeaddrinfo((addrinfo*)this->handle);
 }
 
+size_t AddressInfo::GetResolvedCount() {
+    size_t i = 1;
+
+    addrinfo* ptr = (addrinfo*)this->handle;
+    for (; i < SIZE_MAX; i++) {
+        ptr = ptr->ai_next;
+        if (ptr == nullptr) {
+            break;
+        }
+    }
+
+    return i;
+}
+
+Wrapped<System::String, Result> AddressInfo::GetName(const size_t infoIndex) {
+    addrinfo* ptr = (addrinfo*)this->handle;
+    for (size_t i = 1; i < infoIndex; i++) {
+        ptr = ptr->ai_next;
+        if (ptr == nullptr) {
+            return Result::OutOfRange;
+        }
+    }
+
+    if (ptr->ai_flags & AI_CANONNAME) {
+        return System::String(ptr->ai_canonname);
+    }
+
+    switch (ptr->ai_family) {
+    case AF_INET: {
+        sockaddr_in* addr = (sockaddr_in*)ptr->ai_addr;
+        return System::String::Format("%d.%d.%d.%d",
+                                      (addr->sin_addr.s_addr >> 24) & 0xff,
+                                      (addr->sin_addr.s_addr >> 16) & 0xff,
+                                      (addr->sin_addr.s_addr >>  8) & 0xff,
+                                       addr->sin_addr.s_addr        & 0xff);
+    }
+
+    case AF_INET6: {
+        sockaddr_in6* addr = (sockaddr_in6*)ptr->ai_addr;
+        return System::String::Format("%04x:%04x:%04x:%04x:%04x:%04x:%04x:%04x",
+                                      ((uint16_t)addr->sin6_addr.s6_addr[1]  << 8) | addr->sin6_addr.s6_addr[0],
+                                      ((uint16_t)addr->sin6_addr.s6_addr[3]  << 8) | addr->sin6_addr.s6_addr[2],
+                                      ((uint16_t)addr->sin6_addr.s6_addr[5]  << 8) | addr->sin6_addr.s6_addr[4],
+                                      ((uint16_t)addr->sin6_addr.s6_addr[7]  << 8) | addr->sin6_addr.s6_addr[6],
+                                      ((uint16_t)addr->sin6_addr.s6_addr[9]  << 8) | addr->sin6_addr.s6_addr[8],
+                                      ((uint16_t)addr->sin6_addr.s6_addr[11] << 8) | addr->sin6_addr.s6_addr[10],
+                                      ((uint16_t)addr->sin6_addr.s6_addr[13] << 8) | addr->sin6_addr.s6_addr[12],
+                                      ((uint16_t)addr->sin6_addr.s6_addr[15] << 8) | addr->sin6_addr.s6_addr[14]);
+    }
+
+    default: {
+        break;
+    }
+    }
+
+    CELL_UNREACHABLE;
+}
+
 }

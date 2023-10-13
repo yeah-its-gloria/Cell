@@ -15,8 +15,8 @@ using namespace Cell::System;
 const char* prebuiltRequest = "GET / HTTP/1.1\r\nHost: example.com\r\nUser-Agent: Cell/1.0.0\r\nAccept: */*\r\n\r\n";
 
 void Example::NetworkThread() {
-    ScopedObject<Network::Socket> socket = Network::Socket::New().Unwrap();
     ScopedObject<Network::AddressInfo> info = Network::AddressInfo::Get("example.com", 80).Unwrap();
+    ScopedObject<Network::Socket> socket = Network::Socket::New().Unwrap();
 
     Network::Result result = socket->Connect(&info);
     CELL_ASSERT(result == Network::Result::Success);

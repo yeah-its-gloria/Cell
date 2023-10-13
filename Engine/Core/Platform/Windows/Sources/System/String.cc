@@ -6,6 +6,9 @@
 #include <Cell/System/String.hh>
 #include <Cell/System/Platform/Windows/Includes.h>
 
+#include <stdarg.h>
+#include <stdio.h>
+
 namespace Cell::System {
 
 Wrapped<String, Result> String::FromPlatformWideString(const wchar_t* input) {
@@ -42,6 +45,20 @@ wchar_t* String::ToPlatformWideString() const {
     CELL_ASSERT(outputSize > 0);
 
     return output;
+}
+
+String String::Format(const char* CELL_NONNULL format, ...) {
+    CELL_ASSERT(strlen(format) < 32768);
+
+    va_list parameters;
+    va_start(parameters, format);
+
+    char buffer[32768] = { 0 };
+    vsprintf_s(buffer, 32767, format, parameters);
+
+    va_end(parameters);
+
+    return String(buffer);
 }
 
 }

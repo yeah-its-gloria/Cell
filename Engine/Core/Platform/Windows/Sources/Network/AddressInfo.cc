@@ -76,4 +76,56 @@ AddressInfo::~AddressInfo() {
     FreeAddrInfoW((ADDRINFOW*)this->handle);
 }
 
+size_t AddressInfo::GetResolvedCount() {
+    size_t i = 1;
+
+    ADDRINFOW* ptr = (ADDRINFOW*)this->handle;
+    for (; i < SIZE_MAX; i++) {
+        ptr = ptr->ai_next;
+        if (ptr == nullptr) {
+            break;
+        }
+    }
+
+    return i;
+}
+
+Wrapped<System::String, Result> AddressInfo::GetName(const size_t infoIndex) {
+    ADDRINFOW* ptr = (ADDRINFOW*)this->handle;
+    for (size_t i = 1; i < infoIndex; i++) {
+        ptr = ptr->ai_next;
+        if (ptr == nullptr) {
+            return Result::OutOfRange;
+        }
+    }
+
+    if (ptr->ai_flags & AI_CANONNAME) {
+        return System::String::FromPlatformWideString(ptr->ai_canonname).Unwrap();
+    }
+
+    switch (ptr->ai_family) {
+    case AF_INET: {
+        sockaddr_in* addr = (sockaddr_in*)ptr->ai_addr;
+        return System::String::Format("%d.%d.%d.%d",
+                                      addr->sin_addr.S_un.S_un_b.s_b1, addr->sin_addr.S_un.S_un_b.s_b2,
+                                      addr->sin_addr.S_un.S_un_b.s_b3, addr->sin_addr.S_un.S_un_b.s_b4);
+    }
+
+    case AF_INET6: {
+        sockaddr_in6* addr = (sockaddr_in6*)ptr->ai_addr;
+        return System::String::Format("%04x:%04x:%04x:%04x:%04x:%04x:%04x:%04x",
+                                      addr->sin6_addr.u.Word[0], addr->sin6_addr.u.Word[1],
+                                      addr->sin6_addr.u.Word[2], addr->sin6_addr.u.Word[3],
+                                      addr->sin6_addr.u.Word[4], addr->sin6_addr.u.Word[5],
+                                      addr->sin6_addr.u.Word[6], addr->sin6_addr.u.Word[7]);
+    }
+
+    default: {
+        break;
+    }
+    }
+
+    CELL_UNREACHABLE;
+}
+
 }

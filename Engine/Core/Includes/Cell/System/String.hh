@@ -23,6 +23,9 @@ public:
     // Creates a string from a wide string, which converts its contents from the platform encoding to UTF-8 automatically.
     CELL_FUNCTION static Wrapped<String, Result> FromPlatformWideString(const wchar_t* CELL_NONNULL wide);
 
+    // Creates a string from a format string and arguments.
+    CELL_FUNCTION __attribute__((format(printf, 1, 2))) static String Format(const char* CELL_NONNULL format, ...);
+
     // Destructs the string.
     CELL_FUNCTION ~String();
 

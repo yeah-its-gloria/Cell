@@ -15,15 +15,6 @@ namespace Cell::Network {
 
 class Socket;
 
-// Flags to inform about the kind of address information stored.
-enum class AddressInfoFlags : uint8_t {
-    // The address is local to the network of the current device.
-    IsLocalAddress = 1 << 0,
-
-    // The address has a canonical (human-readable) name.
-    HasCanonicalName = 1 << 1
-};
-
 // Represents a collection of information on a given address.
 class AddressInfo : public Object {
 friend Socket;
@@ -39,6 +30,12 @@ public:
 
     // Destructs the address information.
     CELL_FUNCTION ~AddressInfo();
+
+    // Returns the number of resolved addresses.
+    CELL_FUNCTION size_t GetResolvedCount();
+
+    // Returns either the canonical name or a string representation of the address at the given info index.
+    CELL_FUNCTION Wrapped<System::String, Result> GetName(const size_t infoIndex = 0);
 
 private:
     CELL_FUNCTION_INTERNAL AddressInfo(const uintptr_t handle) : handle(handle) { };
