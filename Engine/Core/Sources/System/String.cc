@@ -110,23 +110,17 @@ Wrapped<String, Result> String::Substring(const size_t offset, const size_t leng
 Wrapped<uint64_t, Result> String::AsNumber(const bool isHex) const {
     ScopedBlock<char> terminated = this->ToCharPointer();
 
-#if CELL_PLATFORM_WINDOWS
-    _set_errno(0);
-#elif CELL_PLATFORM_LINUX
-    int* errnoLocation = __errno_location();
-    *errnoLocation = 0;
-#else
-#error oops
-#endif
+    // TODO: this returns 0 if the conversion couldn't be done but isn't a number that's beyond our range
+    //       find a way to properly distinguish, possibly abandoning strtoull altogether
+    //       alo allow specifying an offset and end position within the string)
 
-    uint64_t number = strtoull(terminated, nullptr, isHex ? 16 : 10);
-    if (errno != 0) {
+    const uint64_t number = strtoull(terminated, nullptr, isHex ? 16 : 10);
+    if (number == UINT64_MAX && errno == ERANGE) {
         return Result::ConversionFailure;
     }
 
     return number;
 }
-
 
 char* String::ToCharPointer() const {
     char* dataStr = AllocateMemory<char>(this->length + 1);
