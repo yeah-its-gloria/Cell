@@ -13,7 +13,7 @@ void XRToolsPrepare(Example* example,
                     ExampleUBO& ubo,
                     Vulkan::Image* texture,
                     Vulkan::Buffer* buffer,
-                    List<Vulkan::Buffer*>& uniforms,
+                    Collection::List<Vulkan::Buffer*>& uniforms,
                     Vulkan::Pipeline* pipeline,
                     Vulkan::CommandBufferManager* commandBuffer,
                     OpenXR::VulkanTarget* target) {

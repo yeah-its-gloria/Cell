@@ -1,10 +1,11 @@
 // SPDX-FileCopyrightText: Copyright 2023 Gloria G.
 // SPDX-License-Identifier: BSD-2-Clause
 
-#include <Cell/List.hh>
+#include <Cell/Collection/List.hh>
 #include <Cell/System/Entry.hh>
 
 using namespace Cell;
+using namespace Cell::Collection;
 
 void CellEntry(Reference<System::String> parameterString) {
     (void)(parameterString);

@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: Copyright 2023 Gloria G.
 // SPDX-License-Identifier: BSD-2-Clause
 
-#include <Cell/List.hh>
+#include <Cell/Collection/List.hh>
 #include <Cell/OpenXR/Instance.hh>
 
 namespace Cell::OpenXR {
@@ -23,7 +23,7 @@ Result Instance::FetchViewConfiguration() {
     }
     }
 
-    List<XrViewConfigurationType> configurationsTypes(configurationTypeCount);
+    Collection::List<XrViewConfigurationType> configurationsTypes(configurationTypeCount);
     result = xrEnumerateViewConfigurations(this->instance, this->systemId, configurationTypeCount, &configurationTypeCount, &configurationsTypes);
     switch (result) {
     case XR_SUCCESS: {

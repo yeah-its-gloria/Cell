@@ -80,7 +80,7 @@ void Example::XRThread() {
     ScopedObject<Vulkan::Pipeline> pipeline = nullptr;
 
     ScopedObject<Vulkan::CommandBufferManager> commandBuffer[2] = {nullptr, nullptr};
-    List<Vulkan::Buffer*> uniforms[2];
+    Collection::List<Vulkan::Buffer*> uniforms[2];
 
     for (uint8_t i = 0; i < OpenXR::ViewCount; i++) {
         XRToolsPrepare(this, &instance, ubo, &texture, &buffer, uniforms[i], &pipeline, &commandBuffer[i], instance->GetVulkanTarget(i));
@@ -169,7 +169,7 @@ void Example::XRThread() {
     result = instance->RequestExit();
     CELL_ASSERT(result == OpenXR::Result::Success);
 
-    for (List<Vulkan::Buffer*>& uniform : uniforms) {
+    for (Collection::List<Vulkan::Buffer*>& uniform : uniforms) {
         for (Vulkan::Buffer* buffer : uniform) {
             delete buffer;
         }

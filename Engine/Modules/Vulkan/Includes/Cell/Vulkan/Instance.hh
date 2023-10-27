@@ -12,21 +12,14 @@ namespace Cell {
 
 #if CELL_MODULES_OPENXR_AVAILABLE
 namespace OpenXR {
-
 class Instance;
 class VulkanTarget;
-
 }
 #endif
 
 namespace Vulkan {
 
-class Buffer;
-class CommandBufferManager;
-class Image;
-class Pipeline;
 class IRenderTarget;
-class WSITarget;
 
 enum class QueueType : uint8_t {
     Graphics,
@@ -39,11 +32,11 @@ enum class Stage : uint8_t {
 };
 
 class Instance : public Object {
-friend Buffer;
-friend CommandBufferManager;
-friend Image;
-friend Pipeline;
-friend WSITarget;
+friend class Buffer;
+friend class CommandBufferManager;
+friend class Image;
+friend class Pipeline;
+friend class WSITarget;
 
 #if CELL_MODULES_OPENXR_AVAILABLE
 friend OpenXR::Instance;

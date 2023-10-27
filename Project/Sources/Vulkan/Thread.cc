@@ -37,7 +37,7 @@ void Example::VulkanThread() {
                                                          VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT,
                                                          VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT).Unwrap();
 
-    List<Buffer*> uniforms(target->GetImageCount());
+    Collection::List<Buffer*> uniforms(target->GetImageCount());
     for (uint32_t index = 0; index < uniforms.GetCount(); index++) {
         uniforms[index] = instance->CreateBuffer(sizeof(ExampleUBO), VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT).Unwrap();
     }

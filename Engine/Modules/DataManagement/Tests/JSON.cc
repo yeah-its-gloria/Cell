@@ -24,7 +24,7 @@ void CellEntry(Reference<String> parameterString) {
     CELL_ASSERT(result == IO::Result::Success);
 
     String jsonData(data);
-    List<JSON::Value> values = JSON::Parse(jsonData).Unwrap();
+    Collection::List<JSON::Value> values = JSON::Parse(jsonData).Unwrap();
 
     for (JSON::Value value : values) {
         switch (value.type) {

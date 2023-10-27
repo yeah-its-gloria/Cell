@@ -5,21 +5,39 @@
 
 #include <Cell/System/String.hh>
 
-#include <quickjs.h>
-
 namespace Cell::JavaScript {
+
+typedef class Engine Engine;
+typedef class Value Value;
+
+typedef Value (Function)(Engine* engine);
 
 class Engine : public Object {
 public:
     CELL_FUNCTION Engine();
     CELL_FUNCTION ~Engine();
 
-    CELL_FUNCTION JSValue RunScript(const System::String& content);
-    CELL_FUNCTION System::String ValueToString(JSValue value);
+    CELL_FUNCTION void AddFunction(Function& function, const System::String& name);
+    CELL_FUNCTION Value Execute(const System::String& content);
 
 private:
-    JSContext* context;
-    JSRuntime* runtime;
+    void* context;
+    void* runtime;
+};
+
+class Value : public Object {
+friend Engine;
+
+public:
+    CELL_FUNCTION ~Value();
+
+    CELL_FUNCTION System::String AsString();
+
+private:
+    CELL_INLINE Value(Engine* ref, void* val) : reference(ref), value(val) { }
+
+    Engine* reference;
+    void* value;
 };
 
 }

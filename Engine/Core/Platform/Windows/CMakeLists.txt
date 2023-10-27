@@ -6,6 +6,8 @@ option(CELL_PLATFORM_WINDOWS_LOG_TO_CONSOLE "Whether to log to the console or vi
 find_file(CLANG_RT_BUILTINS NAME "clang_rt.builtins-x86_64.lib" HINTS "C:\\Program Files\\LLVM\\lib\\clang\\16\\lib\\windows\\")
 
 target_sources(CellCore PRIVATE
+    ${PLATFORM_DIR}/Includes/Cell/System/Platform/Windows/Includes.h
+
     ${PLATFORM_DIR}/Sources/IO/File/File.cc
     ${PLATFORM_DIR}/Sources/IO/File/CheckPath.cc
     ${PLATFORM_DIR}/Sources/IO/File/Delete.cc
@@ -68,6 +70,8 @@ else ()
 endif ()
 
 target_compile_options(CellCore PRIVATE -Wno-varargs)
+
+target_include_directories(CellCore PUBLIC ${PLATFORM_DIR}/Includes/)
 
 target_link_libraries(CellCore PRIVATE
     bcrypt

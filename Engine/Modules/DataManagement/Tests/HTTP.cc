@@ -3,17 +3,20 @@
 
 #include <Cell/Scoped.hh>
 #include <Cell/DataManagement/Foreign/HTTP.hh>
+#include <Cell/System/BlockImpl.hh>
 #include <Cell/System/Entry.hh>
 
 using namespace Cell;
+using namespace Cell::DataManagement;
 using namespace Cell::DataManagement::Foreign;
-using namespace Cell::System;
 
-void CellEntry(Reference<String> parameterString) {
+void CellEntry(Reference<System::String> parameterString) {
     (void)(parameterString);
 
-    const String httpResponse = "HTTP/1.1 200 OK\r\nContent-Type: text/html; charset=utf-8\r\n\r\n<html><body>hi</body></html>";
+    const System::String httpResponse = "HTTP/1.1 200 OK\r\nContent-Type: text/html; charset=utf-8\r\n\r\n<html><body>hi</body></html>";
 
     ScopedBlock<uint8_t> data = (uint8_t*)httpResponse.ToCharPointer();
-    HTTPParseResponse(&data, httpResponse.GetLength());
+
+    Wrapped<HTTP::Request*, Result> result = HTTP::Request::FromRaw(System::UnownedBlock<uint8_t> {data, httpResponse.GetLength()});
+    CELL_ASSERT(result.IsValid());
 }

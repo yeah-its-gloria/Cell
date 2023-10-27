@@ -42,14 +42,14 @@ seekResult seekNextToken(size_t& position, const char token, const char* documen
     return seekResult::Success;
 }
 
-Wrapped<List<Value>, Result> Parse(const System::String& string) {
+Wrapped<Collection::List<Value>, Result> Parse(const System::String& string) {
     if (string.IsEmpty()) {
         return Result::InvalidParameters;
     }
 
     const char* document = string.ToRawPointer();
 
-    List<Value> values;
+    Collection::List<Value> values;
 
     // seek to beginning
     size_t position = 0;
@@ -231,7 +231,7 @@ CELL_INLINE void Free(Value* child) {
     }
 }
 
-void Free(List<Value>& data) {
+void Free(Collection::List<Value>& data) {
     for (Value value : data) {
         Free(&value);
     }

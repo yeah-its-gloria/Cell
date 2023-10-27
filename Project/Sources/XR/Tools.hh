@@ -15,7 +15,7 @@ void XRToolsPrepare(Example* example,
                     ExampleUBO& ubo,
                     Cell::Vulkan::Image* texture,
                     Cell::Vulkan::Buffer* buffer,
-                    Cell::List<Cell::Vulkan::Buffer*>& uniforms,
+                    Cell::Collection::List<Cell::Vulkan::Buffer*>& uniforms,
                     Cell::Vulkan::Pipeline* pipeline,
                     Cell::Vulkan::CommandBufferManager* commandBuffer,
                     Cell::OpenXR::VulkanTarget* target);

@@ -3,7 +3,7 @@
 
 #pragma once
 
-#include <Cell/Dictionary.hh>
+#include <Cell/Collection/Dictionary.hh>
 
 #include <Cell/System/Result.hh>
 #include <Cell/System/String.hh>
@@ -29,7 +29,7 @@ private:
     CELL_FUNCTION_INTERNAL DynamicLibrary(const uintptr_t handle) : handle(handle) { }
 
     uintptr_t handle;
-    Dictionary<String, GenericFunctionPointer> loadedFunctions;
+    Collection::Dictionary<String, GenericFunctionPointer> loadedFunctions;
 };
 
 }

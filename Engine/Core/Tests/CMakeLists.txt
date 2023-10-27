@@ -10,6 +10,6 @@ function(cell_add_test name)
     CellPlatformBootstrapTarget(CellCore${name}Test TRUE)
 endfunction()
 
-cell_add_test(List)
+cell_add_test(Enumerables)
 cell_add_test(System)
 cell_add_test(Utilities)

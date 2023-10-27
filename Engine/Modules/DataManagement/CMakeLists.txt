@@ -20,14 +20,16 @@ add_library(CellDataManagement ${CELL_LIBRARY_TYPE}
     ${MODULE_INCLUDES_DIR}/Cell/DataManagement/Foreign/HTTP.hh
     ${MODULE_INCLUDES_DIR}/Cell/DataManagement/Foreign/JSON.hh
     ${MODULE_INCLUDES_DIR}/Cell/DataManagement/Foreign/PNG.hh
+
     ${CMAKE_CURRENT_LIST_DIR}/Sources/Archive.cc
     ${CMAKE_CURRENT_LIST_DIR}/Sources/Foreign/CRC.hh
     ${CMAKE_CURRENT_LIST_DIR}/Sources/Foreign/Base64.cc
     ${CMAKE_CURRENT_LIST_DIR}/Sources/Foreign/glTF.cc
-    ${CMAKE_CURRENT_LIST_DIR}/Sources/Foreign/HTTP.cc
-    ${CMAKE_CURRENT_LIST_DIR}/Sources/Foreign/HTTPSocket.cc
     ${CMAKE_CURRENT_LIST_DIR}/Sources/Foreign/JSON.cc
     ${CMAKE_CURRENT_LIST_DIR}/Sources/Foreign/PNG.cc
+
+    ${CMAKE_CURRENT_LIST_DIR}/Sources/Foreign/HTTP/Connection.cc
+    ${CMAKE_CURRENT_LIST_DIR}/Sources/Foreign/HTTP/Request.cc
 )
 
 target_compile_definitions(CellDataManagement PUBLIC "CELL_MODULES_DATAMANAGEMENT_AVAILABLE=1")

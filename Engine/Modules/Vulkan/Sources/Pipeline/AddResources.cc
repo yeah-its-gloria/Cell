@@ -1,28 +1,35 @@
 // SPDX-FileCopyrightText: Copyright 2023 Gloria G.
 // SPDX-License-Identifier: BSD-2-Clause
 
-#include <Cell/Dictionary.hh>
+#include <Cell/Collection/Dictionary.hh>
 #include <Cell/Vulkan/Pipeline.hh>
 
 namespace Cell::Vulkan {
 
-Result Pipeline::AddResources(PipelineResourceData** resources, const uint32_t resourceCount, const uint32_t setCount) {
-    if (resourceCount == 0 || setCount == 0) {
+using namespace Collection;
+
+Result Pipeline::AddResources(IEnumerable<ResourceBinding>& resBindings, IEnumerable<ResourceDescriptor>& resDescriptors) {
+    if (resBindings.IsEmpty() || resDescriptors.IsEmpty()) {
         return Result::InvalidParameters;
     }
 
+    // This is kinda weirdly improvised
+    CELL_ASSERT(resDescriptors.GetCount() % resBindings.GetCount() == 0);
+
+    const uint32_t setCount = resDescriptors.GetCount() / resBindings.GetCount();
+
     // binding generation
 
-    List<VkDescriptorSetLayoutBinding> bindings;
-    for (uint32_t i = 0; i < resourceCount; i++) {
+    Collection::List<VkDescriptorSetLayoutBinding> bindings(resBindings.GetCount());
+    for (uint32_t i = 0; i < resBindings.GetCount(); i++) {
         VkDescriptorType type;
-        switch (resources[0][i].type) {
-        case PipelineResourceType::Buffer: {
+        switch (resBindings[i].type) {
+        case ResourceType::Buffer: {
             type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
             break;
         }
 
-        case PipelineResourceType::Image: {
+        case ResourceType::Image: {
             type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
             break;
         }
@@ -33,7 +40,7 @@ Result Pipeline::AddResources(PipelineResourceData** resources, const uint32_t r
         }
 
         VkShaderStageFlags stageFlags;
-        switch (resources[0][i].stage) {
+        switch (resBindings[i].stage) {
         case Stage::Vertex: {
             stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
             break;
@@ -56,7 +63,7 @@ Result Pipeline::AddResources(PipelineResourceData** resources, const uint32_t r
             .stageFlags      = stageFlags
         };
 
-        bindings.Append(binding);
+        bindings[i] = binding;
     }
 
     // layout creation
@@ -92,7 +99,7 @@ Result Pipeline::AddResources(PipelineResourceData** resources, const uint32_t r
 
     // pool allocation
 
-    Dictionary<VkDescriptorType, uint32_t> countPerType;
+    Collection::Dictionary<VkDescriptorType, uint32_t> countPerType;
     for (VkDescriptorSetLayoutBinding binding : bindings) {
         Optional<size_t> position = countPerType.Has(binding.descriptorType);
         if (position) {
@@ -103,7 +110,7 @@ Result Pipeline::AddResources(PipelineResourceData** resources, const uint32_t r
         countPerType.Append(binding.descriptorType, setCount);
     }
 
-    List<VkDescriptorPoolSize> poolSizes(countPerType.GetCount());
+    Collection::List<VkDescriptorPoolSize> poolSizes(countPerType.GetCount());
     for (size_t i = 0; i < countPerType.GetCount(); i++) {
         poolSizes[i].descriptorCount = countPerType.GetValue(i);
         poolSizes[i].type = countPerType.GetKey(i);
@@ -143,7 +150,7 @@ Result Pipeline::AddResources(PipelineResourceData** resources, const uint32_t r
 
     // set allocation
 
-    List<VkDescriptorSetLayout> layouts(layout, setCount);
+    Collection::List<VkDescriptorSetLayout> layouts(layout, setCount);
 
     const VkDescriptorSetAllocateInfo setAllocateInfo = {
         .sType              = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO,
@@ -180,12 +187,12 @@ Result Pipeline::AddResources(PipelineResourceData** resources, const uint32_t r
 
     // set resource writing
 
-    List<VkWriteDescriptorSet> writeSets;
-    List<VkDescriptorBufferInfo> bufferInfos;
-    List<VkDescriptorImageInfo> imageInfos;
+    Collection::List<VkWriteDescriptorSet> writeSets;
+    Collection::List<VkDescriptorBufferInfo> bufferInfos;
+    Collection::List<VkDescriptorImageInfo> imageInfos;
 
     for (uint32_t setIndex = 0; setIndex < setCount; setIndex++) {
-        for (uint32_t resourceIndex = 0; resourceIndex < resourceCount; resourceIndex++) {
+        for (uint32_t resourceIndex = 0; resourceIndex < resBindings.GetCount(); resourceIndex++) {
             VkWriteDescriptorSet set = {
                 .sType            = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET,
                 .pNext            = nullptr,
@@ -202,9 +209,9 @@ Result Pipeline::AddResources(PipelineResourceData** resources, const uint32_t r
             switch (bindings[resourceIndex].descriptorType) {
             case VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER: {
                 const VkDescriptorBufferInfo bufferInfo = {
-                    .buffer = resources[setIndex][resourceIndex].buffer->buffer,
-                    .offset = resources[setIndex][resourceIndex].bufferOffset,
-                    .range  = resources[setIndex][resourceIndex].bufferRange
+                    .buffer = resDescriptors[setIndex * 2 + resourceIndex].buffer->buffer,
+                    .offset = resDescriptors[setIndex * 2 + resourceIndex].bufferOffset,
+                    .range = resDescriptors[setIndex * 2 + resourceIndex].bufferRange
                 };
 
                 const size_t bufferInfoPos = bufferInfos.Append(bufferInfo);
@@ -214,9 +221,9 @@ Result Pipeline::AddResources(PipelineResourceData** resources, const uint32_t r
 
             case VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER: {
                 const VkDescriptorImageInfo imageInfo = {
-                    .sampler     = resources[setIndex][resourceIndex].image->sampler,
-                    .imageView   = resources[setIndex][resourceIndex].image->view,
-                    .imageLayout = resources[setIndex][resourceIndex].imageLayout
+                    .sampler     = resDescriptors[setIndex * 2 + resourceIndex].image->sampler,
+                    .imageView   = resDescriptors[setIndex * 2 + resourceIndex].image->view,
+                    .imageLayout = resDescriptors[setIndex * 2 + resourceIndex].imageLayout
                 };
 
                 const size_t imageInfoPos = imageInfos.Append(imageInfo);
@@ -233,7 +240,7 @@ Result Pipeline::AddResources(PipelineResourceData** resources, const uint32_t r
         }
     }
 
-    // BUG: (Linux) this crashes with a page fault, quit using a double list
+    // BUG: (Linux) this crashes with a page fault, TEST AGAIN
     vkUpdateDescriptorSets(this->instance->device, writeSets.GetCount(), &writeSets, 0, nullptr);
 
     // collecting data

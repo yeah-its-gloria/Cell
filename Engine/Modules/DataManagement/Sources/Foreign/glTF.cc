@@ -42,7 +42,7 @@ Result ParseGlTF(const uint8_t* data, const size_t size) {
 
     System::String jsonData((const char*)data + sizeof(glTFHeader) + sizeof(glTFChunkHeader), jsonChunkHeader->chunkSize * sizeof(char));
 
-    List<JSON::Value> values = JSON::Parse(jsonData).Unwrap();
+    Collection::List<JSON::Value> values = JSON::Parse(jsonData).Unwrap();
     (void)(values);
 
     // ...

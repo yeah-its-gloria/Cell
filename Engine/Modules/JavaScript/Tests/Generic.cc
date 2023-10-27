@@ -9,17 +9,30 @@
 #include <string.h>
 
 using namespace Cell;
+using namespace Cell::JavaScript;
+using namespace Cell::System;
 
-void CellEntry(Reference<System::String> parameterString) {
+Value ExampleImpl(Engine* engine) {
+    (void)(engine);
+
+    __debugbreak();
+    CELL_UNREACHABLE;
+}
+
+void CellEntry(Reference<String> parameterString) {
     (void)(parameterString);
 
-    // TODO: better testing
-
-    System::Log("Testing: magnitude");
+    Log("Testing: engine execution");
 
     JavaScript::Engine engine;
-    JSValue val = engine.RunScript("\"stuff!\"");
+    Value val = engine.Execute("\"stuff!\"");
 
-    ScopedBlock<char> logData = engine.ValueToString(val).ToCharPointer();
-    CELL_ASSERT(strcmp(&logData, "stuff!") == 0);
+    //String a = val.AsString();
+    //CELL_ASSERT(a == "stuff!");
+
+    Log("Testing: functions");
+
+    engine.AddFunction(ExampleImpl, "Example");
+    Value val2 = engine.Execute("Example(\"stuff\", 2)");
+    (void)(val2);
 }

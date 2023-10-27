@@ -3,7 +3,7 @@
 
 #pragma once
 
-#include <Cell/List.hh>
+#include <Cell/Collection/List.hh>
 #include <Cell/DataManagement/Result.hh>
 #include <Cell/System/String.hh>
 
@@ -25,7 +25,7 @@ struct Value {
     union {
         Value* object;
         Value* array;  // values are unnamed
-        System::String* string; // UTF-8, not null terminated!
+        System::String* string; // UTF-8
         double number;
         bool boolean;
     };
@@ -34,9 +34,9 @@ struct Value {
 };
 
 // Parses a complete JSON document.
-CELL_FUNCTION Wrapped<List<Value>, Result> Parse(const System::String& document);
+CELL_FUNCTION Wrapped<Collection::List<Value>, Result> Parse(const System::String& document);
 
 // Frees a JSON list.
-CELL_FUNCTION void Free(List<Value>& data);
+CELL_FUNCTION void Free(Collection::List<Value>& data);
 
 }

@@ -12,12 +12,14 @@ configure_file(${CORE_DIR}/GeneratedIncludes/Cell/Version.h.in ${GENERATE_DIR}/I
 add_library(CellCore ${CELL_LIBRARY_TYPE}
     ${CORE_INCLUDES_DIR}/Cell/Cell.hh
 
-    ${CORE_INCLUDES_DIR}/Cell/Dictionary.hh
-    ${CORE_INCLUDES_DIR}/Cell/List.hh
     ${CORE_INCLUDES_DIR}/Cell/Optional.hh
     ${CORE_INCLUDES_DIR}/Cell/Reference.hh
     ${CORE_INCLUDES_DIR}/Cell/Scoped.hh
     ${CORE_INCLUDES_DIR}/Cell/Wrapped.hh
+
+    ${CORE_INCLUDES_DIR}/Cell/Collection/Dictionary.hh
+    ${CORE_INCLUDES_DIR}/Cell/Collection/Enumerable.hh
+    ${CORE_INCLUDES_DIR}/Cell/Collection/List.hh
 
     ${CORE_INCLUDES_DIR}/Cell/IO/File.hh
     ${CORE_INCLUDES_DIR}/Cell/IO/FolderWalker.hh
@@ -52,8 +54,6 @@ add_library(CellCore ${CELL_LIBRARY_TYPE}
     ${CORE_INCLUDES_DIR}/Cell/Utilities/RawString.hh
 
     ${GENERATE_DIR}/Includes/Cell/Version.h
-
-    ${CORE_INCLUDES_DIR}/Cell/System/Platform/Windows/Includes.h
 
     ${CORE_DIR}/Sources/Cell.cc
     ${CORE_DIR}/Sources/System/Panic.cc

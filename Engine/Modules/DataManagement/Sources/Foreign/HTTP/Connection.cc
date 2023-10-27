@@ -4,23 +4,23 @@
 #include <Cell/DataManagement/Foreign/HTTP.hh>
 #include <Cell/System/Panic.hh>
 
-namespace Cell::DataManagement::Foreign {
+namespace Cell::DataManagement::Foreign::HTTP {
 
-Wrapped<HTTPSocket*, Result> HTTPSocket::Connect(const System::String& url) {
+Wrapped<Connection*, Result> Connection::Connect(const System::String& url) {
     (void)(url);
 
     CELL_UNIMPLEMENTED
 }
 
-HTTPSocket::~HTTPSocket() {
+Connection::~Connection() {
     delete this->socket;
 }
 
-Result HTTPSocket::Send() {
+Result Connection::Send() {
     CELL_UNIMPLEMENTED
 }
 
-void* HTTPSocket::Receive() {
+void* Connection::Receive() {
     CELL_UNIMPLEMENTED
 }
 

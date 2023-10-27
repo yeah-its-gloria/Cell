@@ -3,7 +3,7 @@
 
 #pragma once
 
-#include <Cell/List.hh>
+#include <Cell/Collection/List.hh>
 #include <Cell/Shell/KeyValue.hh>
 #include <Cell/Shell/Result.hh>
 #include <Cell/Shell/Shell.hh>
@@ -35,7 +35,7 @@ private:
     CELL_FUNCTION_INTERNAL Input(IShell& shell) : shell(shell) {}
 
     IShell& shell;
-    List<registerInfo> registeredFunctions;
+    Collection::List<registerInfo> registeredFunctions;
 };
 
 }

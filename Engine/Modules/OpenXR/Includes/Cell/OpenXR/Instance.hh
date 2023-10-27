@@ -17,8 +17,6 @@ namespace Cell::OpenXR {
 
 constexpr uint8_t ViewCount = 2;
 
-class VulkanTarget;
-
 enum class FormFactor : uint8_t {
     HeadMountedDisplay
 };
@@ -35,7 +33,7 @@ enum class SessionState : uint8_t {
 };
 
 class Instance : public Object {
-friend VulkanTarget;
+friend class VulkanTarget;
 
 public:
     // Creates a new instance, and initializes a Vulkan instance for it.

@@ -3,17 +3,12 @@
 
 #pragma once
 
-#include <Cell/List.hh>
+#include <Cell/Collection/List.hh>
 #include <Cell/System/Block.hh>
 #include <Cell/Vulkan/Buffer.hh>
 #include <Cell/Vulkan/Image.hh>
 
 namespace Cell::Vulkan {
-
-enum class PipelineResourceType : uint8_t {
-    Buffer,
-    Image
-};
 
 enum class CullMode : uint8_t {
     Front,
@@ -21,9 +16,18 @@ enum class CullMode : uint8_t {
     None
 };
 
-struct PipelineResourceData {
-    PipelineResourceType type;
+enum class ResourceType : uint8_t {
+    Buffer,
+    Image
+};
+
+struct ResourceBinding {
+    ResourceType type;
     Stage stage;
+};
+
+struct ResourceDescriptor {
+    size_t bindingIndex;
 
     Buffer* buffer;
     VkDeviceSize bufferRange;
@@ -44,9 +48,8 @@ public:
     // By default, it's a vertex shader.
     CELL_FUNCTION Result AddShader(const IBlock& data, const Stage stage = Stage::Vertex);
 
-    // Adds the given resources from the list.
-    // The resources need to be a two-dimensional list, resources per set ([setCount][resourceCount]).
-    CELL_FUNCTION Result AddResources(PipelineResourceData** resources, const uint32_t resourceCount, const uint32_t setCount = 1);
+    // Adds resources for shaders to this pipeline.
+    CELL_FUNCTION Result AddResources(Collection::IEnumerable<ResourceBinding>& resBindings, Collection::IEnumerable<ResourceDescriptor>& resDescriptors);
 
     // Sets a new culling mode for this pipeline. Default is culling the back of faces.
     CELL_FUNCTION void SetCullingMode(const CullMode mode);
@@ -82,9 +85,9 @@ private:
     VkCullModeFlags cullMode;
     VkFormat renderFormat;
 
-    List<PipelineResource> resources;
-    List<VkPipelineShaderStageCreateInfo> stages;
-    List<VkShaderModule> shaders;
+    Collection::List<PipelineResource> resources;
+    Collection::List<VkPipelineShaderStageCreateInfo> stages;
+    Collection::List<VkShaderModule> shaders;
 };
 
 }

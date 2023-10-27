@@ -13,7 +13,7 @@ Result Pipeline::Finalize() {
 
     // pipeline layout
 
-    List<VkDescriptorSetLayout> setLayouts;
+    Collection::List<VkDescriptorSetLayout> setLayouts;
     if (this->resources.GetCount() > 0) {
         for (PipelineResource resource : this->resources) {
             setLayouts.Append(resource.layout);

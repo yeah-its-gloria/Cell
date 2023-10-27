@@ -3,13 +3,14 @@
 
 #pragma once
 
+#include <Cell/Collection/Enumerable.hh>
 #include <Cell/System/Memory.hh>
 #include <Cell/System/Panic.hh>
 
-namespace Cell {
+namespace Cell::Collection {
 
 // Represents a generic list.
-template <typename T> class List : public Object {
+template <typename T> class List : public IEnumerable<T> {
 public:
     // Creates a list of empty T elements with the given expected number of elements.
     CELL_INLINE explicit List(const size_t count = 0) : count(count) {
@@ -160,12 +161,12 @@ public:
     }
 
     // begin operator for loops.
-    CELL_NODISCARD CELL_INLINE T* begin() const {
+    CELL_NODISCARD CELL_INLINE T* begin() {
         return &this->data[0];
     }
 
     // end operator for loops.
-    CELL_NODISCARD CELL_INLINE T* end() const {
+    CELL_NODISCARD CELL_INLINE T* end() {
         return &this->data[this->count];
     }
 

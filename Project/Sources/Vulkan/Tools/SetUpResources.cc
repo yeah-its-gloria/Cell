@@ -7,48 +7,23 @@ using namespace Cell;
 using namespace Cell::Vulkan;
 
 void VulkanToolsSetUpResources(Pipeline* pipeline, Buffer** uniforms, Image* texture, IRenderTarget* target) {
-    const PipelineResourceData uniformData = {
-        .type = PipelineResourceType::Buffer,
-        .stage = Stage::Vertex,
-
-        .buffer = nullptr,
-        .bufferRange = sizeof(ExampleUBO),
-        .bufferOffset = 0,
-
-        .image = nullptr,
-        .imageLayout = VK_IMAGE_LAYOUT_UNDEFINED
+    ResourceBinding bindings[2] = {
+        { .type = ResourceType::Buffer, .stage = Stage::Vertex },
+        { .type = ResourceType::Image, .stage = Stage::Fragment }
     };
 
-    const PipelineResourceData textureData = {
-        .type = PipelineResourceType::Image,
-        .stage = Stage::Fragment,
+    Collection::List<ResourceDescriptor> descriptors(2 * target->GetImageCount()); // 2 resources per image
 
-        .buffer = nullptr,
-        .bufferRange = 0,
-        .bufferOffset = 0,
+    for (size_t i = 0; i < descriptors.GetCount(); i += 2) {
+        descriptors[i].buffer = uniforms[i / 2];
+        descriptors[i].bufferOffset = 0;
+        descriptors[i].bufferRange = sizeof(ExampleUBO);
 
-        .image = texture,
-        .imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL
-    };
-
-    // awful hacks
-
-    List<PipelineResourceData*> resourcesList(target->GetImageCount());
-
-    uint32_t uniformCounter = 0;
-    for (PipelineResourceData*& resources : resourcesList) {
-        resources = System::AllocateMemory<PipelineResourceData>(2);
-
-        System::CopyMemory<PipelineResourceData>(&resources[0], &uniformData);
-        System::CopyMemory<PipelineResourceData>(&resources[1], &textureData);
-
-        resources[0].buffer = uniforms[uniformCounter++];
+        descriptors[i + 1].image = texture;
+        descriptors[i + 1].imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
     }
 
-    const Result result = pipeline->AddResources(&resourcesList, 2, resourcesList.GetCount());
+    Collection::Array bindingsArray(bindings, 2);
+    const Result result = pipeline->AddResources(bindingsArray, descriptors);
     CELL_ASSERT(result == Result::Success);
-
-    for (PipelineResourceData*& resources : resourcesList) {
-        System::FreeMemory(resources);
-    }
 }

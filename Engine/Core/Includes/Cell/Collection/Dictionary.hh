@@ -4,13 +4,14 @@
 #pragma once
 
 #include <Cell/Wrapped.hh>
+#include <Cell/Collection/Enumerable.hh>
 #include <Cell/System/Memory.hh>
 #include <Cell/System/Panic.hh>
 
-namespace Cell {
+namespace Cell::Collection {
 
 // Basic dictionary type.
-template <typename K, typename V> class Dictionary : public Object {
+template <typename K, typename V> class Dictionary : public IEnumerable<K> {
 public:
     // Creates an empty dictionary.
     CELL_INLINE explicit Dictionary(const size_t size = 0) : count(size) {
@@ -164,13 +165,19 @@ public:
         this->values[index] = value;
     }
 
+    CELL_NODISCARD K& operator [] (const size_t index) {
+        CELL_ASSERT(index < this->count);
+
+        return this->keys[index];
+    }
+
     // begin operator for loops.
-    CELL_NODISCARD CELL_INLINE K* begin() const {
+    CELL_NODISCARD CELL_INLINE K* begin() {
         return &this->keys[0];
     }
 
     // end operator for loops.
-    CELL_NODISCARD CELL_INLINE K* end() const {
+    CELL_NODISCARD CELL_INLINE K* end() {
         return &this->keys[this->count];
     }
 
