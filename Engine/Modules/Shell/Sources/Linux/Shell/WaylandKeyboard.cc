@@ -47,7 +47,7 @@ void Linux::WaylandKeyboardEnter(void* data, struct wl_keyboard* keyboard, uint3
     Linux* _linux = (Linux*)data;
     CELL_ASSERT(_linux != nullptr);
 
-    // TODO: implement
+    _linux->isActivated = true;  // TODO: verify this behavior
 }
 
 void Linux::WaylandKeyboardLeave(void* data, struct wl_keyboard* keyboard, uint32_t serial, struct wl_surface* surface) {
@@ -58,7 +58,7 @@ void Linux::WaylandKeyboardLeave(void* data, struct wl_keyboard* keyboard, uint3
     Linux* _linux = (Linux*)data;
     CELL_ASSERT(_linux != nullptr);
 
-    // TODO: implement
+    _linux->isActivated = false;  // TODO: verify this behavior
 }
 
 void Linux::WaylandKeyboardKey(void* data, struct wl_keyboard* keyboard, const uint32_t serial, const uint32_t time, const uint32_t key, const uint32_t state) {
@@ -71,6 +71,8 @@ void Linux::WaylandKeyboardKey(void* data, struct wl_keyboard* keyboard, const u
 
     _linux->keyLock.Lock();
 
+    // TODO: build a LUT
+
     xkb_keysym_t sym = xkb_state_key_get_one_sym(_linux->keyboardState, key + 8);
     switch (sym) {
     case 65307: {// Escape
@@ -78,61 +80,61 @@ void Linux::WaylandKeyboardKey(void* data, struct wl_keyboard* keyboard, const u
         break;
     }
 
-    case 113: {// Q
+    case 113: { // Q
         if (state & WL_KEYBOARD_KEY_STATE_PRESSED) {
-            _linux->keys |= Shell::KeyValue::Q;
+            _linux->keys |= Shell::KeyboardButton::Q;
         } else {
-            _linux->keys ^= Shell::KeyValue::Q;
+            _linux->keys ^= Shell::KeyboardButton::Q;
         }
 
         break;
     }
 
-    case 119: {// W
+    case 119: { // W
         if (state & WL_KEYBOARD_KEY_STATE_PRESSED) {
-            _linux->keys |= Shell::KeyValue::W;
+            _linux->keys |= Shell::KeyboardButton::W;
         } else {
-            _linux->keys ^= Shell::KeyValue::W;
+            _linux->keys ^= Shell::KeyboardButton::W;
         }
 
         break;
     }
 
-    case 101: {// E
+    case 101: { // E
         if (state & WL_KEYBOARD_KEY_STATE_PRESSED) {
-            _linux->keys |= Shell::KeyValue::E;
+            _linux->keys |= Shell::KeyboardButton::E;
         } else {
-            _linux->keys ^= Shell::KeyValue::E;
+            _linux->keys ^= Shell::KeyboardButton::E;
         }
 
         break;
     }
 
-    case 97: {// A
+    case 97: { // A
         if (state & WL_KEYBOARD_KEY_STATE_PRESSED) {
-            _linux->keys |= Shell::KeyValue::A;
+            _linux->keys |= Shell::KeyboardButton::A;
         } else {
-            _linux->keys ^= Shell::KeyValue::A;
+            _linux->keys ^= Shell::KeyboardButton::A;
         }
 
         break;
     }
 
-    case 115: {// S
+    case 115: { // S
         if (state & WL_KEYBOARD_KEY_STATE_PRESSED) {
-            _linux->keys |= Shell::KeyValue::S;
+            _linux->keys |= Shell::KeyboardButton::S;
         } else {
-            _linux->keys ^= Shell::KeyValue::S;
+            _linux->keys ^= Shell::KeyboardButton::S;
         }
 
         break;
     }
 
-    case 100: {// D
+    case 100: { // D
         if (state & WL_KEYBOARD_KEY_STATE_PRESSED) {
-            _linux->keys |= Shell::KeyValue::D;
+            _linux->keys |= Shell::KeyboardButton::D;
         } else {
-            _linux->keys ^= Shell::KeyValue::D;
+            _linux->keys ^= Shell::KeyboardButton::D;
         }
 
         break;

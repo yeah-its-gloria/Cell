@@ -51,6 +51,7 @@ add_library(CellCore ${CELL_LIBRARY_TYPE}
 
     ${CORE_INCLUDES_DIR}/Cell/Utilities/Byteswap.hh
     ${CORE_INCLUDES_DIR}/Cell/Utilities/MinMaxClamp.hh
+    ${CORE_INCLUDES_DIR}/Cell/Utilities/Preprocessor.hh
     ${CORE_INCLUDES_DIR}/Cell/Utilities/RawString.hh
 
     ${GENERATE_DIR}/Includes/Cell/Version.h
@@ -162,3 +163,5 @@ CellPlatformBootstrapTarget(CellCore)
 if (CELL_ENABLE_TESTS)
     add_subdirectory(${CORE_DIR}/Tests)
 endif ()
+
+add_custom_command(TARGET CellCore POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_if_different ${ENGINE_DIR}/Content/NOTICE $<TARGET_FILE_DIR:CellCore>)

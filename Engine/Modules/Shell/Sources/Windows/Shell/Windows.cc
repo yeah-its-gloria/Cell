@@ -40,7 +40,8 @@ Wrapped<Windows*, Result> Windows::New(const System::String& title) {
         .hbrBackground = CreateSolidBrush(RGB(0, 0, 0)),
         .lpszMenuName = nullptr,
         .lpszClassName = L"Cell",
-        .hIconSm = windowClass.hIcon};
+        .hIconSm = windowClass.hIcon
+    };
 
     const ATOM atom = RegisterClassExW(&windowClass);
     if (atom == 0) {
@@ -55,7 +56,8 @@ Wrapped<Windows*, Result> Windows::New(const System::String& title) {
         .left = 60,
         .top = 60,
         .right = 60 + 1280,
-        .bottom = 60 + 720};
+        .bottom = 60 + 720
+    };
 
     const BOOL win32Result = AdjustWindowRectEx(&defaultResolution, windowStyle, FALSE, exWindowStyle);
     if (win32Result == FALSE) {
@@ -64,19 +66,19 @@ Wrapped<Windows*, Result> Windows::New(const System::String& title) {
     }
 
     wchar_t* titleWide = title.IsEmpty() ? (wchar_t*)L"Cell" : title.ToPlatformWideString();
-    HWND window = CreateWindowExW(
-        exWindowStyle,
-        windowClass.lpszClassName,
-        titleWide,
-        windowStyle | WS_OVERLAPPED,
-        defaultResolution.left,
-        defaultResolution.top,
-        defaultResolution.right,
-        defaultResolution.bottom,
-        nullptr,
-        nullptr,
-        instance,
-        nullptr);
+    HWND window = CreateWindowExW(exWindowStyle,
+                                  windowClass.lpszClassName,
+                                  titleWide,
+                                  windowStyle | WS_OVERLAPPED,
+                                  defaultResolution.left,
+                                  defaultResolution.top,
+                                  defaultResolution.right,
+                                  defaultResolution.bottom,
+                                  nullptr,
+                                  nullptr,
+                                  instance,
+                                  nullptr
+    );
 
     if (!title.IsEmpty()) {
         System::FreeMemory(titleWide);

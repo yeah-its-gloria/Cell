@@ -16,7 +16,7 @@ uint64_t GetPreciseTickerValue() {
     int64_t counter = 0, freq = 0;
 
     const int32_t result = NtQueryPerformanceCounter(&counter, &freq);
-    CELL_ASSERT(result == 0);
+    CELL_ASSERT(result == ERROR_SUCCESS);
 
     return counter / (freq * 1000000); // sec -> usec
 }
@@ -26,11 +26,11 @@ void Sleep(const uint32_t milliseconds) {
 }
 
 void SleepPrecise(const uint64_t microseconds) {
-    CELL_ASSERT(microseconds > INT64_MAX);
+    CELL_ASSERT(microseconds <= INT64_MAX);
 
     int64_t converted = microseconds / 10; // expects 100 ns
     const int32_t result = NtDelayExecution(FALSE, &converted);
-    CELL_ASSERT(result);
+    CELL_ASSERT(result == ERROR_SUCCESS);
 }
 
 }

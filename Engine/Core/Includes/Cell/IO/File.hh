@@ -4,14 +4,32 @@
 #pragma once
 
 #include <Cell/Wrapped.hh>
-
-#include <Cell/IO/FileMode.hh>
 #include <Cell/IO/Result.hh>
-
 #include <Cell/System/Block.hh>
 #include <Cell/System/String.hh>
+#include <Cell/Utilities/Preprocessor.hh>
 
 namespace Cell::IO {
+
+// Different modes of operation supported for files.
+enum class FileMode : uint8_t {
+    // Allows reading data.
+    Read = 1 << 0,
+
+    // Allows writing data.
+    Write = 1 << 1,
+
+    // Creates a new file. This will not replace an existing file.
+    Create = 1 << 2,
+
+    // Opens an existing file. This will not create a file.
+    Open = 1 << 3,
+
+    // Either creates a new file or overwrites the contents of the existing file.
+    Overwrite = 1 << 4
+};
+
+CELL_ENUM_CLASS_OPERATORS(FileMode)
 
 // Represents a file within a nondescript, path based file system.
 class File : public Object {
@@ -44,7 +62,7 @@ public:
     CELL_FUNCTION static Result SetWorkingDirectory(const System::String& path);
 
 private:
-    CELL_FUNCTION_INTERNAL File(const uintptr_t handle) : handle(handle) { };
+    CELL_INLINE File(const uintptr_t handle) : handle(handle) { };
 
     uintptr_t handle;
 };

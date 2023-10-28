@@ -11,8 +11,7 @@ Result WASAPI::CreateRenderClient() {
         return Result::InvalidState;
     }
 
-    IAudioClient* clientOld = nullptr;
-    HRESULT result = this->renderDevice->Activate(__uuidof(IAudioClient), CLSCTX_INPROC_SERVER, nullptr, (void**)&clientOld);
+    HRESULT result = this->renderDevice->Activate(__uuidof(IAudioClient3), CLSCTX_INPROC_SERVER, nullptr, (void**)&this->renderClient);
     switch (result) {
     case S_OK: {
         break;
@@ -39,55 +38,38 @@ Result WASAPI::CreateRenderClient() {
     }
     }
 
-    result = clientOld->QueryInterface(__uuidof(IAudioClient3), (void**)&this->renderClient);
+    const WAVEFORMATEXTENSIBLE format = {
+        .Format = {
+            .wFormatTag = WAVE_FORMAT_EXTENSIBLE,
+            .nChannels = 2,
+            .nSamplesPerSec = 48000, // in Hertz
+            .nAvgBytesPerSec = 48000 * ((2 * 32) / 8), // freq * block
+            .nBlockAlign = (2 * 32) / 8, // channel * bits per sample, in bits
+            .wBitsPerSample = 32,
+            .cbSize = sizeof(WAVEFORMATEXTENSIBLE) - sizeof(WAVEFORMATEX)
+        },
 
-    clientOld->Release();
+        .Samples.wValidBitsPerSample = 32,
+        .dwChannelMask = KSAUDIO_SPEAKER_STEREO,
+        .SubFormat = KSDATAFORMAT_SUBTYPE_IEEE_FLOAT,
+    };
+
+    result = this->renderClient->Initialize(AUDCLNT_SHAREMODE_SHARED,
+                                            AUDCLNT_STREAMFLAGS_AUTOCONVERTPCM | AUDCLNT_STREAMFLAGS_SRC_DEFAULT_QUALITY,
+                                            10000000,
+                                            0,
+                                            (const WAVEFORMATEX*)&format,
+                                            nullptr
+    );
 
     switch (result) {
     case S_OK: {
         break;
     }
 
-    case E_NOINTERFACE: {
-        return Result::RunningOnIncompatibleSoftware;
-    }
-
-    default: {
-        System::Panic("IMMDevice::Activate failed");
-    }
-    }
-
-    WAVEFORMATEXTENSIBLE* format;
-    result = this->renderClient->GetMixFormat((WAVEFORMATEX**)&format);
-    switch (result) {
-    case S_OK: {
-        break;
-    }
-
-    case AUDCLNT_E_SERVICE_NOT_RUNNING: {
+    case E_INVALIDARG: {
         this->renderClient->Release();
-        return Result::RunningOnIncompatibleSoftware;
-    }
-
-    case AUDCLNT_E_DEVICE_INVALIDATED: {
-        this->renderClient->Release();
-        return Result::DeviceLost;
-    }
-
-    case E_OUTOFMEMORY: {
-        this->renderClient->Release();
-        return Result::OutOfMemory;
-    }
-
-    default: {
-        System::Panic("IAudioClient3::GetMixFormat failed");
-    }
-    }
-
-    result = this->renderClient->Initialize(AUDCLNT_SHAREMODE_SHARED, 0, 10000000, 0, (const WAVEFORMATEX*)format, nullptr);
-    switch (result) {
-    case S_OK: {
-        break;
+        return Result::InvalidParameters;
     }
 
     case E_NOTFOUND:
@@ -103,7 +85,7 @@ Result WASAPI::CreateRenderClient() {
 
     case AUDCLNT_E_UNSUPPORTED_FORMAT: {
         this->renderClient->Release();
-        return Result::InvalidParameters;
+        return Result::UnsupportedFormat;
     }
 
     case AUDCLNT_E_DEVICE_INVALIDATED:

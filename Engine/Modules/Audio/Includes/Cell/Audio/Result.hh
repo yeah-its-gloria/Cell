@@ -39,6 +39,9 @@ enum class Result : uint8_t {
     // The current underlying implementation is not compatible.
     RunningOnIncompatibleSoftware,
 
+    // The requested format isn't supported.
+    UnsupportedFormat,
+
     // The underlying device was lost.
     DeviceLost,
 

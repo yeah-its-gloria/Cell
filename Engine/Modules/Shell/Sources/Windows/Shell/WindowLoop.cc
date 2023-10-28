@@ -22,6 +22,18 @@ LRESULT Windows::WindowLoop(HWND window, UINT message, WPARAM paramHigh, LPARAM 
         return 0;
     }
 
+    case WM_ACTIVATE: {
+        // Apparently this is called very early, so the pointer is null
+        if (windows != nullptr) {
+            windows->isActivated = paramHigh == WA_ACTIVE || paramHigh == WA_CLICKACTIVE;
+            if (!windows->isActivated) {
+                windows->keys = KeyboardButton::None;
+            }
+        }
+
+        break;
+    }
+
     case WM_CLOSE: {
         PostQuitMessage(0);
         return 0;

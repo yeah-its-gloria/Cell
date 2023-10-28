@@ -7,7 +7,7 @@
 
 namespace Cell {
 
-// Interface for managed blocks of memory.
+// Managed interface for blocks of memory.
 class IBlock : public Object {
 public:
     // Retrieves a bare pointer to the block.

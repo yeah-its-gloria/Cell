@@ -9,9 +9,13 @@ using namespace Implementations;
 
 Result Input::Poll() {
     Windows* windows = (Windows*)&this->shell;
+    if (!windows->isActivated) {
+        return Result::Success;
+    }
+
     windows->keyLock.Lock();
 
-    for (registerInfo info : this->registeredFunctions) {
+    for (RegisterInfo info : this->registeredFunctions) {
         if ((windows->keys & info.match) == info.match) {
             info.function(info.match, info.userData);
         }

@@ -2,7 +2,6 @@
 // SPDX-License-Identifier: BSD-2-Clause
 
 #include <Cell/Shell/Input.hh>
-#include <Cell/Shell/Shell.hh>
 
 #if CELL_PLATFORM_WINDOWS
 #include <Cell/Shell/Implementations/Windows.hh>

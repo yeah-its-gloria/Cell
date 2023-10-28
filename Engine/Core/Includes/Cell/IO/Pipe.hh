@@ -4,14 +4,20 @@
 #pragma once
 
 #include <Cell/Wrapped.hh>
-
-#include <Cell/IO/PipeMode.hh>
 #include <Cell/IO/Result.hh>
-
 #include <Cell/System/Block.hh>
 #include <Cell/System/String.hh>
+#include <Cell/Utilities/Preprocessor.hh>
 
 namespace Cell::IO {
+
+// Different modes of operation for a pipe.
+enum class PipeMode : uint8_t {
+    Read = 1 << 0,
+    Write = 1 << 1
+};
+
+CELL_ENUM_CLASS_OPERATORS(PipeMode)
 
 // Pipes are means of interprocess communication.
 class Pipe : public Object {

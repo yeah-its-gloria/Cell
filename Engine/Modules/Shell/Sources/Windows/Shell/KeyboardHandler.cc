@@ -8,60 +8,60 @@ namespace Cell::Shell::Implementations {
 
 const size_t KeyLUTOffset = 0x30;
 
-const Shell::KeyValue KeyLUT[43] = {// TODO: special keys and such
-    Shell::KeyValue::Zero,
-    Shell::KeyValue::One,
-    Shell::KeyValue::Two,
-    Shell::KeyValue::Three,
-    Shell::KeyValue::Four,
-    Shell::KeyValue::Five,
-    Shell::KeyValue::Six,
-    Shell::KeyValue::Seven,
-    Shell::KeyValue::Eight,
-    Shell::KeyValue::Nine,
-    Shell::KeyValue::None,
-    Shell::KeyValue::None,
-    Shell::KeyValue::None,
-    Shell::KeyValue::None,
-    Shell::KeyValue::None,
-    Shell::KeyValue::None,
-    Shell::KeyValue::None,
-    Shell::KeyValue::A,
-    Shell::KeyValue::B,
-    Shell::KeyValue::C,
-    Shell::KeyValue::D,
-    Shell::KeyValue::E,
-    Shell::KeyValue::F,
-    Shell::KeyValue::G,
-    Shell::KeyValue::H,
-    Shell::KeyValue::I,
-    Shell::KeyValue::J,
-    Shell::KeyValue::K,
-    Shell::KeyValue::L,
-    Shell::KeyValue::M,
-    Shell::KeyValue::N,
-    Shell::KeyValue::O,
-    Shell::KeyValue::P,
-    Shell::KeyValue::Q,
-    Shell::KeyValue::R,
-    Shell::KeyValue::S,
-    Shell::KeyValue::T,
-    Shell::KeyValue::U,
-    Shell::KeyValue::V,
-    Shell::KeyValue::W,
-    Shell::KeyValue::X,
-    Shell::KeyValue::Y,
-    Shell::KeyValue::Z
+const Shell::KeyboardButton KeyLUT[43] = {// TODO: special keys and such
+    Shell::KeyboardButton::Zero,
+    Shell::KeyboardButton::One,
+    Shell::KeyboardButton::Two,
+    Shell::KeyboardButton::Three,
+    Shell::KeyboardButton::Four,
+    Shell::KeyboardButton::Five,
+    Shell::KeyboardButton::Six,
+    Shell::KeyboardButton::Seven,
+    Shell::KeyboardButton::Eight,
+    Shell::KeyboardButton::Nine,
+    Shell::KeyboardButton::None,
+    Shell::KeyboardButton::None,
+    Shell::KeyboardButton::None,
+    Shell::KeyboardButton::None,
+    Shell::KeyboardButton::None,
+    Shell::KeyboardButton::None,
+    Shell::KeyboardButton::None,
+    Shell::KeyboardButton::A,
+    Shell::KeyboardButton::B,
+    Shell::KeyboardButton::C,
+    Shell::KeyboardButton::D,
+    Shell::KeyboardButton::E,
+    Shell::KeyboardButton::F,
+    Shell::KeyboardButton::G,
+    Shell::KeyboardButton::H,
+    Shell::KeyboardButton::I,
+    Shell::KeyboardButton::J,
+    Shell::KeyboardButton::K,
+    Shell::KeyboardButton::L,
+    Shell::KeyboardButton::M,
+    Shell::KeyboardButton::N,
+    Shell::KeyboardButton::O,
+    Shell::KeyboardButton::P,
+    Shell::KeyboardButton::Q,
+    Shell::KeyboardButton::R,
+    Shell::KeyboardButton::S,
+    Shell::KeyboardButton::T,
+    Shell::KeyboardButton::U,
+    Shell::KeyboardButton::V,
+    Shell::KeyboardButton::W,
+    Shell::KeyboardButton::X,
+    Shell::KeyboardButton::Y,
+    Shell::KeyboardButton::Z
 };
 
 void Windows::HandleKeyInput(WPARAM key, bool isPressed) {
-    if (key - KeyLUTOffset > sizeof(KeyLUT) / sizeof(Shell::KeyValue) || key < KeyLUTOffset) {
+    if (key - KeyLUTOffset > sizeof(KeyLUT) / sizeof(Shell::KeyboardButton) || key < KeyLUTOffset) {
         System::Log("Unimplemented key: %d, %s", key, isPressed ? "pressed" : "released");
         return;
     }
 
-    const Shell::KeyValue value = KeyLUT[key - KeyLUTOffset];
-    if (value == Shell::KeyValue::None) {
+    const Shell::KeyboardButton value = KeyLUT[key - KeyLUTOffset];
+    if (value == Shell::KeyboardButton::None) {
         return;
     }
 

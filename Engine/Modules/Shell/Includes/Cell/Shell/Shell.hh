@@ -27,6 +27,11 @@ public:
         return !this->isDone;
     }
 
+    // Returns whether the application is still in the foreground.
+    CELL_NODISCARD CELL_INLINE bool IsInForeground() const {
+        return this->isActivated;
+    }
+
     // Creates an input handler.
     CELL_FUNCTION Input* CreateInputHandler();
 
@@ -43,6 +48,7 @@ public:
     virtual Result SetNewTitle(const System::String& title) = 0;
 
 protected:
+    bool isActivated = true;
     bool isDone = false;
 };
 

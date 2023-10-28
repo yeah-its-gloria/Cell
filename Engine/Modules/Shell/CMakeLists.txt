@@ -7,7 +7,7 @@ set(MODULE_INCLUDES_DIR ${CMAKE_CURRENT_LIST_DIR}/Includes)
 
 add_library(CellShell ${CELL_LIBRARY_TYPE}
     ${MODULE_INCLUDES_DIR}/Cell/Shell/Input.hh
-    ${MODULE_INCLUDES_DIR}/Cell/Shell/KeyValue.hh
+    ${MODULE_INCLUDES_DIR}/Cell/Shell/InputTypes.hh
     ${MODULE_INCLUDES_DIR}/Cell/Shell/Result.hh
     ${MODULE_INCLUDES_DIR}/Cell/Shell/Shell.hh
 

@@ -15,7 +15,7 @@ using namespace Cell::System;
 Value ExampleImpl(Engine* engine) {
     (void)(engine);
 
-    __debugbreak();
+    CELL_DEBUGBREAK;
     CELL_UNREACHABLE;
 }
 

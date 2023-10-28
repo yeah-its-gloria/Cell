@@ -5,8 +5,8 @@
 
 namespace Cell::Shell {
 
-Result Input::RegisterAction(const KeyValue value, const InputFunction function, void* userData) {
-    const registerInfo info = {
+Result Input::RegisterAction(const KeyboardButton value, const InputFunction function, void* userData) {
+    const RegisterInfo info = {
         .match = value,
         .function = function,
         .userData = userData

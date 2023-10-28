@@ -3,7 +3,7 @@
 
 #pragma once
 
-#include <Cell/Shell/KeyValue.hh>
+#include <Cell/Shell/InputTypes.hh>
 #include <Cell/Shell/Shell.hh>
 #include <Cell/System/Mutex.hh>
 
@@ -132,7 +132,7 @@ private:
 
     bool xdgRequestedClose = false;
     System::Mutex keyLock;
-    Shell::KeyValue keys = (Shell::KeyValue)0;
+    Shell::KeyboardButton keys = (Shell::KeyboardButton)0;
 };
 
 }
