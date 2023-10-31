@@ -26,4 +26,51 @@ WASAPI::~WASAPI() {
     this->enumerator->Release();
 }
 
+Wrapped<uint32_t, Result> WASAPI::GetBufferSize() {
+    if (this->renderClient == NULL) {
+        return Result::InvalidState;
+    }
+
+    uint32_t count = 0;
+    const HRESULT result = this->renderClient->GetBufferSize(&count);
+    switch (result) {
+    case S_OK: {
+        break;
+    }
+
+    case AUDCLNT_E_DEVICE_INVALIDATED: {
+        return Result::DeviceLost;
+    }
+
+    default: {
+        System::Panic("IAudioClient3::GetBufferSize failed");
+    }
+    }
+
+    return count;
+}
+
+Wrapped<uint32_t, Result> WASAPI::GetCurrentBufferFillCount() {
+    if (this->renderClient == NULL) {
+        return Result::InvalidState;
+    }
+
+    uint32_t offset = 0;
+    const HRESULT result = this->renderClient->GetCurrentPadding(&offset);
+    switch (result) {
+    case S_OK: {
+        break;
+    }
+
+    case AUDCLNT_E_DEVICE_INVALIDATED: {
+        return Result::DeviceLost;
+    }
+
+    default: {
+        System::Panic("IAudioClient3::GetCurrentPadding failed");
+    }
+    }
+
+    return offset;
+}
 }

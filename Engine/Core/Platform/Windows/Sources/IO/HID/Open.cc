@@ -152,12 +152,22 @@ Wrapped<HID*, Result> HID::Open(const uint16_t vendorId, const uint16_t productI
         return Result::NotFound;
     }
 
-    HANDLE _device = CreateFileW(path, GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, nullptr, OPEN_EXISTING, FILE_FLAG_OVERLAPPED, nullptr);
-    CELL_ASSERT(_device != INVALID_HANDLE_VALUE && _device != nullptr);
+    HANDLE device = CreateFileW(path, GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, nullptr, OPEN_EXISTING, FILE_FLAG_OVERLAPPED, nullptr);
+    if (device == INVALID_HANDLE_VALUE || device == nullptr) {
+        switch (GetLastError()) {
+        case ERROR_SHARING_VIOLATION: {
+            return Result::Locked;
+        }
+
+        default: {
+            System::Panic("CreateFileW failed");
+        }
+        }
+    }
 
     System::FreeMemory(path);
 
-    return new HID((uintptr_t)_device);
+    return new HID((uintptr_t)device);
 }
 
 }

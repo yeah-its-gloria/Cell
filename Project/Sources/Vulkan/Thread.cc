@@ -1,12 +1,10 @@
 // SPDX-FileCopyrightText: Copyright 2023 Gloria G.
 // SPDX-License-Identifier: BSD-2-Clause
 
-#include "../Example.hh"
 #include "Tools.hh"
 
 #include <Cell/Scoped.hh>
 #include <Cell/Mathematics/Utilities.hh>
-#include <Cell/System/Log.hh>
 #include <Cell/System/Timer.hh>
 #include <Cell/Utilities/MinMaxClamp.hh>
 #include <Cell/Vulkan/WSITarget.hh>
@@ -43,15 +41,15 @@ void Example::VulkanThread() {
     }
 
     const Vertex vertices[vertexCount] = {
-        {{-1.0f, -1.0f, -1.0f}, {1.f, 1.f, 1.f, 1.f}, {0.0f, 1.0f}},
-        {{1.0f, -1.0f, -1.0f}, {1.f, 1.f, 1.f, 1.f}, {1.0f, 1.0f}},
-        {{-1.0f, 1.0f, -1.0f}, {1.f, 1.f, 1.f, 1.f}, {0.0f, 0.0f}},
-        {{1.0f, 1.0f, -1.0f}, {1.f, 1.f, 1.f, 1.f}, {1.0f, 0.0f}},
+        { { -1.0f, -1.0f, -1.0f }, { 1.f, 1.f, 1.f, 1.f }, { 0.0f, 1.0f } },
+        { { 1.0f, -1.0f, -1.0f }, { 1.f, 1.f, 1.f, 1.f }, { 1.0f, 1.0f } },
+        { { -1.0f, 1.0f, -1.0f }, { 1.f, 1.f, 1.f, 1.f }, { 0.0f, 0.0f } },
+        { { 1.0f, 1.0f, -1.0f }, { 1.f, 1.f, 1.f, 1.f }, { 1.0f, 0.0f } },
 
-        {{-1.0f, -1.0f, 1.0f}, {1.f, 1.f, 1.f, 1.f}, {0.0f, 1.0f}},
-        {{1.0f, -1.0f, 1.0f}, {1.f, 1.f, 1.f, 1.f}, {1.0f, 1.0f}},
-        {{-1.0f, 1.0f, 1.0f}, {1.f, 1.f, 1.f, 1.f}, {0.0f, 0.0f}},
-        {{1.0f, 1.0f, 1.0f}, {1.f, 1.f, 1.f, 1.f}, {1.0f, 0.0f}},
+        { { -1.0f, -1.0f, 1.0f }, { 1.f, 1.f, 1.f, 1.f }, { 0.0f, 1.0f } },
+        { { 1.0f, -1.0f, 1.0f }, { 1.f, 1.f, 1.f, 1.f }, { 1.0f, 1.0f } },
+        { { -1.0f, 1.0f, 1.0f }, { 1.f, 1.f, 1.f, 1.f }, { 0.0f, 0.0f } },
+        { { 1.0f, 1.0f, 1.0f }, { 1.f, 1.f, 1.f, 1.f }, { 1.0f, 0.0f } },
     };
 
     const uint16_t indices[indexCount] = {
@@ -99,13 +97,8 @@ void Example::VulkanThread() {
     result = cmdBufferManager->CreateBuffers(target->GetImageCount());
     CELL_ASSERT(result == Result::Success);
 
-    Vector3 position = {0.f, 0.f, 0.f};
-
     ExampleUBO ubo;
     ubo.projection.Perspective(Mathematics::Utilities::DegreesToRadians(45.f), (float)extent.width / (float)extent.height, 0.1, 1000.f);
-
-    InputData inputData = {&position, this};
-    VulkanToolsInputSetUp(this->input, &inputData);
 
     uint64_t finishedTick = System::GetPreciseTickerValue();
     while (this->shell->IsStillActive()) {
@@ -115,9 +108,13 @@ void Example::VulkanThread() {
 
         ubo.model.SetToIdentity();
 
+        this->inputMutex.Lock();
+
         ubo.view.LookAt(Vector3 { 0.f, 5.f, 5.f }, Vector3 { 0.f, 0.f, 0.f }, Vector3 { 0.f, 0.f, -1.f });
         //ubo.view.LookAt(Vector3 { 0.f, 5.f, 5.f }, Mathematics::Utilities::DegreesToRadians(10.f), Mathematics::Utilities::DegreesToRadians(90.f));
-        ubo.view.Translate(position);
+        ubo.view.Translate(this->position);
+
+        this->inputMutex.Unlock();
 
         uniforms[target->GetFrameCount()]->Copy(&ubo, sizeof(ExampleUBO));
 
@@ -143,10 +140,9 @@ void Example::VulkanThread() {
         }
         }
 
-        Shell::Result shellResult = input->Poll();
-        CELL_ASSERT(shellResult == Shell::Result::Success);
-
         finishedTick = System::GetPreciseTickerValue();
+
+        System::Thread::Yield();
     }
 
     for (Buffer* uniform : uniforms) {

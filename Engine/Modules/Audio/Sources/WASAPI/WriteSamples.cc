@@ -39,7 +39,7 @@ Result WASAPI::WriteSamples(const uint8_t* CELL_NONNULL frames, const uint32_t c
 
     System::CopyMemory<uint8_t>(frameBuffer, frames, this->sampleSize * count);
 
-    result = this->renderClientService->ReleaseBuffer(count, treatAsSilent ? AUDCLNT_BUFFERFLAGS_SILENT : 0); // TODO: allow writing silent samples
+    result = this->renderClientService->ReleaseBuffer(count, treatAsSilent ? AUDCLNT_BUFFERFLAGS_SILENT : 0);
     switch (result) {
     case S_OK: {
         break;

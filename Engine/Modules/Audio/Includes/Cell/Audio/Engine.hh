@@ -8,6 +8,21 @@
 
 namespace Cell::Audio {
 
+enum class FormatType : uint8_t {
+    // 32 bit PCM stored in floating point.
+    Float32PCM
+};
+
+struct Format {
+    FormatType type;
+
+    // Supports Stereo only.
+    uint8_t channels;
+
+    // In Hertz.
+    uint32_t rate;
+};
+
 // Base audio engine interface.
 class IEngine : public Object {
 public:
@@ -15,13 +30,7 @@ public:
     virtual ~IEngine() = default;
 
     // Sets up resources for rendering audio.
-    virtual Result SetUpRendering() = 0;
-
-    // Returns the maximum number of samples allowed in a single sample submission.
-    virtual Wrapped<uint32_t, Result> GetMaximumSampleCount() = 0;
-
-    // Returns the current sample offset for the subsystem.
-    virtual Wrapped<uint32_t, Result> GetCurrentSampleOffset() = 0;
+    virtual Result SetUpRendering(Format format) = 0;
 
     // Writes the given number of samples to the subsystem in one go.
     virtual Result WriteSamples(const uint8_t* CELL_NONNULL data, const uint32_t count, const bool treatAsSilent = false) = 0;
@@ -32,11 +41,11 @@ public:
     // Ends playback.
     virtual Result PlaybackEnd() = 0;
 
-    // Returns the sample count in bytes.
-    virtual uint16_t GetSampleSizeInBytes() = 0;
+    // Returns the size of the allocated buffer.
+    virtual Wrapped<uint32_t, Result> GetBufferSize() = 0;
 
-    // Returns the number of samples per second.
-    virtual uint16_t GetSampleCountPerSecond() = 0;
+    // Returns the number of samples left in the buffer.
+    virtual Wrapped<uint32_t, Result> GetCurrentBufferFillCount() = 0;
 
     // Returns the latency of the subsystem in microseconds. Useful for waiting between submissions.
     virtual uint32_t GetLatencyMicroseconds() = 0;

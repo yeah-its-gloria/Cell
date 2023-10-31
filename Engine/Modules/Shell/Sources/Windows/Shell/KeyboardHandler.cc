@@ -64,16 +64,11 @@ void Windows::HandleKeyInput(WPARAM key, bool isPressed) {
     if (value == Shell::KeyboardButton::None) {
         return;
     }
-
-    this->keyLock.Lock();
-
     if (isPressed) {
         this->keys |= value;
     } else {
         this->keys ^= value;
     }
-
-    this->keyLock.Unlock();
 }
 
 }

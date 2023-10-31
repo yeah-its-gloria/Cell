@@ -10,6 +10,7 @@ add_library(CellAudio ${CELL_LIBRARY_TYPE}
     ${MODULE_INCLUDES_DIR}/Cell/Audio/PulseAudio.hh
     ${MODULE_INCLUDES_DIR}/Cell/Audio/Result.hh
     ${MODULE_INCLUDES_DIR}/Cell/Audio/WASAPI.hh
+    ${MODULE_INCLUDES_DIR}/Cell/Audio/Stub.cc
 
     ${CMAKE_CURRENT_LIST_DIR}/Sources/CreateEngine.cc
 )
@@ -20,7 +21,6 @@ target_link_libraries(CellAudio PUBLIC CellCore)
 
 if (WIN32)
     target_sources(CellAudio PRIVATE
-        ${CMAKE_CURRENT_LIST_DIR}/Sources/WASAPI/BufferInfo.cc
         ${CMAKE_CURRENT_LIST_DIR}/Sources/WASAPI/CreateRenderClient.cc
         ${CMAKE_CURRENT_LIST_DIR}/Sources/WASAPI/FindRenderDevice.cc
         ${CMAKE_CURRENT_LIST_DIR}/Sources/WASAPI/New.cc

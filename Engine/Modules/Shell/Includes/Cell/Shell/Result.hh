@@ -22,7 +22,13 @@ enum class Result : uint8_t {
     InvalidPlatform,
 
     // The shell informed us that the user wants to quit.
-    RequestedQuit
+    RequestedQuit,
+
+    // The controller wasn't found.
+    NotFound,
+
+    // The request timed out.
+    Timeout
 };
 
 }

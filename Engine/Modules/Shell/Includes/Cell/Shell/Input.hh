@@ -4,38 +4,56 @@
 #pragma once
 
 #include <Cell/Collection/List.hh>
-#include <Cell/Shell/InputTypes.hh>
-#include <Cell/Shell/Result.hh>
+#include <Cell/Shell/Controller.hh>
 #include <Cell/Shell/Shell.hh>
 
 namespace Cell::Shell {
 
-// Represents an input callback.
-// Parameters are the matched input value and the user data pointer.
-typedef void (*InputFunction)(KeyboardButton, void*);
+typedef void (* ButtonFunction)(InputType, void*);
+typedef void (* AxisFunction)(double, void*);
 
 // Input as provided by the shell, generally via a keyboard and mouse.
 class Input : public Object {
 friend IShell;
 
 public:
-    // Registers an action.
-    CELL_FUNCTION Result RegisterAction(const KeyboardButton value, const InputFunction function, void* userData);
+    CELL_FUNCTION Result RegisterAction(const KeyboardButton button, const ButtonFunction function, void* userData);
+    CELL_FUNCTION Result RegisterAction(const MouseButton button, const ButtonFunction function, void* userData);
+    CELL_FUNCTION Result RegisterAction(const ControllerButton button, const ButtonFunction function, void* userData);
+
+    CELL_FUNCTION Result RegisterAction(const MouseAxis axis, const AxisFunction function, void* userData);
+    CELL_FUNCTION Result RegisterAction(const ControllerAxis axis, const AxisFunction function, void* userData);
+
+    // Checks for all controllers and initializes them.
+    CELL_FUNCTION Result DiscoverControllers();
 
     // Polls for updates.
     CELL_FUNCTION Result Poll();
 
 private:
     struct RegisterInfo {
-        const KeyboardButton match;
-        const InputFunction function;
+        uint8_t type;
         void* userData;
+
+        union {
+            const KeyboardButton keyboard;
+            const MouseButton mouse;
+            const ControllerButton controller;
+            const MouseAxis mouseAxis;
+            const ControllerAxis controllerAxis;
+        };
+
+        union {
+            const ButtonFunction button;
+            const AxisFunction axis;
+        };
     };
 
-    CELL_FUNCTION_INTERNAL Input(IShell& shell) : shell(shell) {}
+    CELL_INLINE Input(IShell& shell) : shell(shell) { }
 
     IShell& shell;
     Collection::List<RegisterInfo> registeredFunctions;
+    Collection::List<IController*> controllers;
 };
 
 }

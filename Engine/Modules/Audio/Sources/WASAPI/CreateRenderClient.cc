@@ -6,10 +6,41 @@
 
 namespace Cell::Audio {
 
-Result WASAPI::CreateRenderClient() {
+Result WASAPI::CreateRenderClient(Format format) {
     if (this->renderDevice == nullptr) {
         return Result::InvalidState;
     }
+
+    if (format.rate != 48000 || format.channels != 2) {
+        return Result::InvalidParameters;
+    }
+
+    uint8_t bits = 32;
+    switch (format.type) {
+    case FormatType::Float32PCM: {
+        break;
+    }
+
+    default:  {
+        return Result::InvalidParameters;
+    }
+    }
+
+    const WAVEFORMATEXTENSIBLE exFormat = {
+        .Format = {
+            .wFormatTag = WAVE_FORMAT_EXTENSIBLE,
+            .nChannels = format.channels,
+            .nSamplesPerSec = format.rate,
+            .nAvgBytesPerSec = format.rate * ((format.channels * bits) / 8),
+            .nBlockAlign = (WORD)((format.channels * bits) / 8),
+            .wBitsPerSample = bits,
+            .cbSize = sizeof(WAVEFORMATEXTENSIBLE) - sizeof(WAVEFORMATEX)
+        },
+
+        .Samples.wValidBitsPerSample = bits,
+        .dwChannelMask = KSAUDIO_SPEAKER_STEREO,
+        .SubFormat = KSDATAFORMAT_SUBTYPE_IEEE_FLOAT,
+    };
 
     HRESULT result = this->renderDevice->Activate(__uuidof(IAudioClient3), CLSCTX_INPROC_SERVER, nullptr, (void**)&this->renderClient);
     switch (result) {
@@ -38,27 +69,11 @@ Result WASAPI::CreateRenderClient() {
     }
     }
 
-    const WAVEFORMATEXTENSIBLE format = {
-        .Format = {
-            .wFormatTag = WAVE_FORMAT_EXTENSIBLE,
-            .nChannels = 2,
-            .nSamplesPerSec = 48000, // in Hertz
-            .nAvgBytesPerSec = 48000 * ((2 * 32) / 8), // freq * block
-            .nBlockAlign = (2 * 32) / 8, // channel * bits per sample, in bits
-            .wBitsPerSample = 32,
-            .cbSize = sizeof(WAVEFORMATEXTENSIBLE) - sizeof(WAVEFORMATEX)
-        },
-
-        .Samples.wValidBitsPerSample = 32,
-        .dwChannelMask = KSAUDIO_SPEAKER_STEREO,
-        .SubFormat = KSDATAFORMAT_SUBTYPE_IEEE_FLOAT,
-    };
-
     result = this->renderClient->Initialize(AUDCLNT_SHAREMODE_SHARED,
                                             AUDCLNT_STREAMFLAGS_AUTOCONVERTPCM | AUDCLNT_STREAMFLAGS_SRC_DEFAULT_QUALITY,
                                             10000000,
                                             0,
-                                            (const WAVEFORMATEX*)&format,
+                                            (const WAVEFORMATEX*)&exFormat,
                                             nullptr
     );
 

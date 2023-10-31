@@ -44,5 +44,8 @@ bool CompareMemory(const void* a, const void* b, const size_t size) {
     return memcmp(a, b, size) == 0;
 }
 
+void ClearMemory(void* CELL_NONNULL block, const size_t size) {
+    memset(block, 0, size);
+}
 
 }

@@ -131,8 +131,6 @@ private:
     };
 
     bool xdgRequestedClose = false;
-    System::Mutex keyLock;
-    Shell::KeyboardButton keys = (Shell::KeyboardButton)0;
 };
 
 }

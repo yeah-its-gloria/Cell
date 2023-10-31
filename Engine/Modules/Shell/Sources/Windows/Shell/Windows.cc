@@ -45,8 +45,13 @@ Wrapped<Windows*, Result> Windows::New(const System::String& title) {
 
     const ATOM atom = RegisterClassExW(&windowClass);
     if (atom == 0) {
+        switch (GetLastError()) {
         // TODO: error checking
-        System::Panic("RegisterClassExW failed");
+
+        default: {
+            System::Panic("RegisterClassExW failed");
+        }
+        }
     }
 
     const DWORD exWindowStyle = WS_EX_WINDOWEDGE;
@@ -59,11 +64,8 @@ Wrapped<Windows*, Result> Windows::New(const System::String& title) {
         .bottom = 60 + 720
     };
 
-    const BOOL win32Result = AdjustWindowRectEx(&defaultResolution, windowStyle, FALSE, exWindowStyle);
-    if (win32Result == FALSE) {
-        // TODO: error checking
-        System::Panic("AdjustWindowRectEx failed");
-    }
+    const BOOL win32Result = AdjustWindowRectExForDpi(&defaultResolution, windowStyle, FALSE, exWindowStyle, GetDpiForSystem());
+    CELL_ASSERT(win32Result == TRUE); // why would this shit fail?
 
     wchar_t* titleWide = title.IsEmpty() ? (wchar_t*)L"Cell" : title.ToPlatformWideString();
     HWND window = CreateWindowExW(exWindowStyle,
@@ -91,6 +93,7 @@ Wrapped<Windows*, Result> Windows::New(const System::String& title) {
 
     Windows* windows = new Windows(instance, window, windowClass);
 
+    SetLastError(0); // SetWindowLongPtr does not clear errors
     SetWindowLongPtrW(window, GWLP_USERDATA, (LONG_PTR)windows);
     switch (GetLastError()) {
     case ERROR_SUCCESS: {

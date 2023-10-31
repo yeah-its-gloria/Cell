@@ -4,6 +4,7 @@
 #pragma once
 
 #include <Cell/Wrapped.hh>
+#include <Cell/Shell/InputTypes.hh>
 #include <Cell/Shell/Result.hh>
 #include <Cell/System/String.hh>
 
@@ -32,6 +33,20 @@ public:
         return this->isActivated;
     }
 
+    // Returns the currently pressed keys.
+    CELL_NODISCARD CELL_INLINE KeyboardButton GetKeys() const {
+        return this->keys;
+    }
+
+    CELL_NODISCARD CELL_INLINE KeyboardButton GetPreviousKeys() const {
+        return this->oldKeys;
+    }
+
+    // Acknowledges the current keys and moves them to old key storage.
+    CELL_INLINE void MoveKeysToOld() {
+        this->oldKeys = this->keys;
+    }
+
     // Creates an input handler.
     CELL_FUNCTION Input* CreateInputHandler();
 
@@ -50,6 +65,9 @@ public:
 protected:
     bool isActivated = true;
     bool isDone = false;
+
+    KeyboardButton keys = KeyboardButton::None;
+    KeyboardButton oldKeys = KeyboardButton::None;
 };
 
 // Sets up the most suited shell implementation for the platform.

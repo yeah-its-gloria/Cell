@@ -16,7 +16,13 @@ using namespace Cell::Audio;
 void Example::AudioThread() {
     ScopedObject<IEngine> instance = CreateEngine().Unwrap();
 
-    Result result = instance->SetUpRendering();
+    Format format = {
+        .type = FormatType::Float32PCM,
+        .channels = 2,
+        .rate = 48000
+    };
+
+    Result result = instance->SetUpRendering(format);
     CELL_ASSERT(result == Result::Success);
 
     ScopedObject<IO::File> file = IO::File::Open(this->GetContentPath("/Sounds/boing.bin")).Unwrap();
@@ -24,13 +30,15 @@ void Example::AudioThread() {
     const size_t size = file->GetSize().Unwrap();
     CELL_ASSERT(size % 4 == 0);
 
-    const uint32_t count = instance->GetMaximumSampleCount().Unwrap();
+    const uint32_t count = instance->GetBufferSize().Unwrap();
 
     result = instance->PlaybackBegin();
     CELL_ASSERT(result == Result::Success);
 
-    const uint32_t sampleSize = instance->GetSampleSizeInBytes();
-    System::OwnedBlock<uint8_t> buffer(sampleSize * count);
+    const uint32_t sampleSize = ((2 * 32) / 8);
+    System::OwnedBlock<uint8_t> buffer(count * sampleSize);
+
+    // TODO: short samples get played twice, fix that
 
     uint32_t dataOffset = 0;
     uint32_t framesToWrite = 0;
@@ -44,7 +52,7 @@ void Example::AudioThread() {
                     break;
                 }
 
-                uint32_t offset = instance->GetCurrentSampleOffset().Unwrap();
+                const uint32_t offset = instance->GetCurrentBufferFillCount().Unwrap();
                 if (offset > 0) {
                     System::Thread::Yield();
                     continue;
@@ -71,7 +79,7 @@ void Example::AudioThread() {
             }
 
             dataOffset = 0;
-            this->audioTrigger.Read();
+            audioTrigger.Read();
         }
 
         System::Thread::Yield();

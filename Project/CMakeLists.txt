@@ -12,7 +12,7 @@ add_executable(CellExample
     ${SOURCES_DIR}/Example.cc
 
     ${SOURCES_DIR}/AudioThread.cc
-
+    ${SOURCES_DIR}/InputThread.cc
     ${SOURCES_DIR}/NetworkThread.cc
 
     ${SOURCES_DIR}/Vulkan/Thread.cc
@@ -20,7 +20,6 @@ add_executable(CellExample
     ${SOURCES_DIR}/Vulkan/Tools/GenerateRenderCommands.cc
     ${SOURCES_DIR}/Vulkan/Tools/LoadShader.cc
     ${SOURCES_DIR}/Vulkan/Tools/LoadTexture.cc
-    ${SOURCES_DIR}/Vulkan/Tools/SetUpInput.cc
     ${SOURCES_DIR}/Vulkan/Tools/SetUpResources.cc
 
     ${SOURCES_DIR}/XR/Thread.cc

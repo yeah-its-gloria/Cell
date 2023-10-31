@@ -42,9 +42,6 @@ private:
     HINSTANCE instance;
     HWND window;
     WNDCLASSEXW _class;
-
-    System::Mutex keyLock;
-    KeyboardButton keys = KeyboardButton::None;
 };
 
 }

@@ -20,8 +20,8 @@ CELL_FUNCTION_INTERNAL Result handleOverlappedHID(HANDLE handle, OVERLAPPED& ove
         break;
     }
 
-    case WAIT_TIMEOUT: {                        // BUG: some Bluetooth devices that disconnect don't always report that / Windows doesn't respect it
-        CancelIo(handle);                       //      Instead they keep timing us out, so count this and disconnect automatically
+    case WAIT_TIMEOUT: {                // BUG: some Bluetooth devices that disconnect don't always report that / Windows doesn't respect it
+        CancelIo(handle);               //      Instead they keep timing us out, so count this and disconnect automatically
         CloseHandle(overlapped.hEvent);
         return Result::Timeout;
     }

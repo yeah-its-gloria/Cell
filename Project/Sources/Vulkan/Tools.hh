@@ -21,16 +21,17 @@ struct CELL_PACKED(16) ExampleUBO {
     float timeMilliseconds = 0;
 };
 
-struct InputData {
-    Cell::Mathematics::Vector3* position;
-    Example* instance;
-};
+CELL_FUNCTION_INTERNAL void VulkanToolsLoadShader(Cell::Vulkan::Pipeline* CELL_NONNULL pipeline,
+                                                  const Cell::System::String& path,
+                                                  const Cell::Vulkan::Stage stage
+);
 
-CELL_FUNCTION_INTERNAL void VulkanToolsLoadShader(Cell::Vulkan::Pipeline* CELL_NONNULL pipeline, const Cell::System::String& path, const Cell::Vulkan::Stage stage);
-CELL_FUNCTION_INTERNAL Cell::Vulkan::Image* VulkanToolsLoadTexture(Cell::Vulkan::Instance* CELL_NONNULL instance, const Cell::System::String& texturePath);
-CELL_FUNCTION_INTERNAL void VulkanToolsInputSetUp(Cell::Shell::Input* CELL_NONNULL input, InputData* CELL_NONNULL data);
+CELL_FUNCTION_INTERNAL Cell::Vulkan::Image* VulkanToolsLoadTexture(Cell::Vulkan::Instance* CELL_NONNULL instance,
+                                                                   const Cell::System::String& texturePath
+);
 
-CELL_FUNCTION_INTERNAL void VulkanToolsGenerateRenderCommands(const uint32_t vertexCount, const uint32_t drawCount,
+CELL_FUNCTION_INTERNAL void VulkanToolsGenerateRenderCommands(const uint32_t vertexCount,
+                                                              const uint32_t drawCount,
                                                               Cell::Vulkan::CommandBufferManager* CELL_NONNULL commandBuffer,
                                                               Cell::Vulkan::Pipeline* CELL_NONNULL pipeline,
                                                               Cell::Vulkan::Buffer* CELL_NONNULL buffer,

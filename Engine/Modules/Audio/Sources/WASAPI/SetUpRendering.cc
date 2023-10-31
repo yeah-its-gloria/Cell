@@ -8,11 +8,11 @@ namespace Cell::Audio {
 
 #define CHECK_RESULT if (result != Result::Success) { return result; }
 
-Result WASAPI::SetUpRendering() {
+Result WASAPI::SetUpRendering(Format format) {
     Result result = this->FindRenderDevice();
     CHECK_RESULT
 
-    result = this->CreateRenderClient();
+    result = this->CreateRenderClient(format);
     CHECK_RESULT
 
     return Result::Success;

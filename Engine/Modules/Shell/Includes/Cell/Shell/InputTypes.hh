@@ -7,7 +7,12 @@
 
 namespace Cell::Shell {
 
-// Various values for keyboards.
+enum class InputType : uint8_t {
+    Pressed,
+    Held,
+    Released,
+};
+
 enum class KeyboardButton : uint64_t {
     None = 0ull,
     Zero = 1ull << 0,
@@ -45,40 +50,24 @@ enum class KeyboardButton : uint64_t {
     W = 1ull << 32,
     X = 1ull << 33,
     Y = 1ull << 34,
-    Z = 1ull << 35
+    Z = 1ull << 35,
 };
 
 enum class MouseButton : uint8_t {
-    None = 0,
-
-    LeftClick = 1 << 0,
-    RightClick = 1 << 1,
+    MouseLeftClick = 1 << 0,
+    MouseRightClick = 1 << 1,
 
     // Generally represents clicking the mouse wheel itself.
-    MiddleClick = 1 << 2,
+    MouseMiddleClick = 1 << 2,
 
     // Generally the button farthest from the thumb.
-    ThumbButton1 = 1 << 3,
+    MouseThumbButton1 = 1 << 3,
 
     // Generally the button closest to the thumb.
-    ThumbButton2 = 1 << 4
+    MouseThumbButton2 = 1 << 4,
 };
 
-// Axes supported by mice.
-// Note that unlike controller axes, these only supply offsets, not absolute positions.
-enum class MouseAxis : uint8_t {
-    None = 0,
-
-    PositionX = 1 << 0,
-    PositionY = 1 << 1,
-    WheelRotation = 1 << 2
-};
-
-// Various buttons on controllers.
-// Based on the Xbox controller.
 enum class ControllerButton : uint32_t {
-    None = 0,
-
     // Cross on PlayStation
     // Represents A button on Switch, physically located where B/Circle would be on Xbox/PlayStation controllers
     A = 1 << 0,
@@ -130,39 +119,48 @@ enum class ControllerButton : uint32_t {
     DPadRight = 1 << 16,
 
     // PlayStation only
-    Touchpad = 1 << 17,
+    Touchpad = 1 << 17
 };
 
-// Various single dimension axes (sticks, triggers) on controllers.
-// Based on the Xbox controller.
-enum class ControllerAxis : uint16_t {
+enum class MouseAxis : uint8_t {
     None = 0,
 
-    LeftStickX = 1 << 0,
-    LeftStickY = 1 << 1,
+    // Only provides an offset.
+    PositionX = 1 << 0,
 
-    RightStickX = 1 << 2,
-    RightStickY = 1 << 3,
+    // Only provides an offset.
+    PositionY = 1 << 1,
+
+    // Only provides an offset.
+    WheelRotation = 1 << 2
+};
+
+enum class ControllerAxis : uint8_t {
+    LeftStickX = 1ull << 0,
+    LeftStickY = 1ull << 1,
+
+    RightStickX = 1ull << 2,
+    RightStickY = 1ull << 3,
 
     // L2 on PlayStation, ZL on Switch
     // ZL on the Switch is a digital trigger, values will always be either 0 or 255.
-    LeftTrigger = 1 << 4,
+    LeftTrigger = 1ull << 4,
 
     // R2 on PlayStation, ZR on Switch
     // ZR on the Switch is a digital trigger, values will always be either 0 or 255.
-    RightTrigger = 1 << 5,
+    RightTrigger = 1ull << 5,
 
     // PlayStation only
-    TouchpadX = 1 << 6,
+    TouchpadX = 1ull << 6,
 
     // PlayStation only
-    TouchpadY = 1 << 7
+    TouchpadY = 1ull << 7
 };
 
 CELL_ENUM_CLASS_OPERATORS(KeyboardButton)
 CELL_ENUM_CLASS_OPERATORS(MouseButton)
-CELL_ENUM_CLASS_OPERATORS(MouseAxis)
 CELL_ENUM_CLASS_OPERATORS(ControllerButton)
+CELL_ENUM_CLASS_OPERATORS(MouseAxis)
 CELL_ENUM_CLASS_OPERATORS(ControllerAxis)
 
 }
