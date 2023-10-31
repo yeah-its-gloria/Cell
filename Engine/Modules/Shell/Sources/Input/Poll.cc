@@ -1,15 +1,12 @@
 // SPDX-FileCopyrightText: Copyright 2023 Gloria G.
 // SPDX-License-Identifier: BSD-2-Clause
 
-#include <Cell/Shell/Implementations/Windows.hh>
 #include <Cell/Shell/Input.hh>
 #include <Cell/System/Log.hh>
 
 #include <math.h>
 
 namespace Cell::Shell {
-using namespace Implementations;
-
 Result Input::Poll() {
     if (!this->shell.IsInForeground()) {
         return Result::Success;

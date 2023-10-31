@@ -33,9 +33,12 @@ void CopyMemory(void* destination, const void* source, const size_t size) {
     memcpy(destination, source, size);
 }
 
-// Compares the data of the given blocks of memory and checks them for equality.
 bool CompareMemory(const void* a, const void* b, const size_t size) {
     return memcmp(a, b, size) == 0;
+}
+
+void ClearMemory(void* block, const size_t size) {
+    memset(block, 0, size);
 }
 
 }

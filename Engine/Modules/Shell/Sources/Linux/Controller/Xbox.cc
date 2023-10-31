@@ -11,6 +11,8 @@ Wrapped<Xbox*, Result> Xbox::Find() {
 }
 
 Xbox::~Xbox() {
+    (void)(this->device);
+
     CELL_UNIMPLEMENTED
 }
 

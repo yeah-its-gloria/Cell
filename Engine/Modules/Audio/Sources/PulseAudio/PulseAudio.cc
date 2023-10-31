@@ -10,23 +10,17 @@ PulseAudio::~PulseAudio() {
     pa_simple_free(this->engine);
 }
 
-Wrapped <uint32_t, Result> PulseAudio::GetMaximumSampleCount() {
+Wrapped <uint32_t, Result> PulseAudio::GetBufferSize() {
     const uint32_t count = 48000; // TODO: figure this out properly
 
     return count;
-}
-
-Wrapped <uint32_t, Result> PulseAudio::GetCurrentSampleOffset() {
-    const uint32_t offset = 0; // TODO: figure this out properly
-
-    return offset;
 }
 
 Result PulseAudio::WriteSamples(const uint8_t* data, const uint32_t count, const bool treatAsSilent) {
     (void)(treatAsSilent);
 
     int error = 0;
-    int result = pa_simple_write(this->engine, data, count * this->GetSampleSizeInBytes(), &error);
+    int result = pa_simple_write(this->engine, data, count * ((32 / 8) * 2), &error);
     CELL_ASSERT(result >= 0);
 
     return Result::Success;
@@ -44,12 +38,10 @@ Result PulseAudio::PlaybackEnd() {
     return Result::Success; // TODO: figure out how to do this better for PulseAudio
 }
 
-uint16_t PulseAudio::GetSampleSizeInBytes() {
-    return (32 / 8) * 2; // 32 bit float, 2 channel
-}
+Wrapped <uint32_t, Result> PulseAudio::GetCurrentBufferFillCount() {
+    const uint32_t offset = 0; // TODO: figure this out properly
 
-uint16_t PulseAudio::GetSampleCountPerSecond() {
-    return 48000;
+    return offset;
 }
 
 uint32_t PulseAudio::GetLatencyMicroseconds() {

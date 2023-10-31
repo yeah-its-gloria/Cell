@@ -6,8 +6,11 @@
 
 namespace Cell::Audio {
 
-Result PulseAudio::SetUpRendering() {
+Result PulseAudio::SetUpRendering(Format format) {
+    (void)(format);
+
     // TODO: how?
+
     return Result::Success;
 }
 
