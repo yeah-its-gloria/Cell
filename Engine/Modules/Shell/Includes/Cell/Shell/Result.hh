@@ -18,9 +18,6 @@ enum class Result : uint8_t {
     // The given parameters were malformed.
     InvalidParameters,
 
-    // The platform given was invalid.
-    InvalidPlatform,
-
     // The shell informed us that the user wants to quit.
     RequestedQuit,
 
@@ -28,7 +25,10 @@ enum class Result : uint8_t {
     NotFound,
 
     // The request timed out.
-    Timeout
+    Timeout,
+
+    // The device (e.g controller) responded improperly.
+    InvalidReplies
 };
 
 }

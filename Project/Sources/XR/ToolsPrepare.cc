@@ -3,8 +3,10 @@
 
 #include "../Vulkan/Tools.hh"
 #include "Tools.hh"
+
 #include <Cell/Mathematics/Utilities.hh>
 #include <Cell/OpenXR/VulkanTarget.hh>
+#include <Cell/System/BlockImpl.hh>
 
 using namespace Cell;
 
@@ -25,25 +27,23 @@ void XRToolsPrepare(Example* example,
 
     buffer = vkInstance->CreateBuffer(sizeof(Vulkan::Vertex) * 8 + sizeof(uint16_t) * indexCount,
                                       VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT,
-                                      VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT)
-                 .Unwrap();
+                                      VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT).Unwrap();
 
     uniforms.SetCount(target->GetImageCount());
     for (uint32_t index = 0; index < uniforms.GetCount(); index++) {
-        uniforms[index] = vkInstance->CreateBuffer(sizeof(ExampleUBO),
-            VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT).Unwrap();
+        uniforms[index] = vkInstance->CreateBuffer(sizeof(ExampleUBO), VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT).Unwrap();
     }
 
     const Vulkan::Vertex vertices[8] = {
-        {{-1.0f, -1.0f, -1.0f}, {1.f, 1.f, 1.f, 1.f}, {0.0f, 1.0f}},
-        {{1.0f, -1.0f, -1.0f}, {1.f, 1.f, 1.f, 1.f}, {1.0f, 1.0f}},
-        {{-1.0f, 1.0f, -1.0f}, {1.f, 1.f, 1.f, 1.f}, {0.0f, 0.0f}},
-        {{1.0f, 1.0f, -1.0f}, {1.f, 1.f, 1.f, 1.f}, {1.0f, 0.0f}},
+        { { -1.0f, -1.0f, -1.0f }, { 1.f, 1.f, 1.f, 1.f }, { 0.0f, 1.0f } },
+        { { 1.0f, -1.0f, -1.0f }, { 1.f, 1.f, 1.f, 1.f }, { 1.0f, 1.0f } },
+        { { -1.0f, 1.0f, -1.0f }, { 1.f, 1.f, 1.f, 1.f }, { 0.0f, 0.0f } },
+        { { 1.0f, 1.0f, -1.0f }, { 1.f, 1.f, 1.f, 1.f }, { 1.0f, 0.0f } },
 
-        {{-1.0f, -1.0f, 1.0f}, {1.f, 1.f, 1.f, 1.f}, {0.0f, 1.0f}},
-        {{1.0f, -1.0f, 1.0f}, {1.f, 1.f, 1.f, 1.f}, {1.0f, 1.0f}},
-        {{-1.0f, 1.0f, 1.0f}, {1.f, 1.f, 1.f, 1.f}, {0.0f, 0.0f}},
-        {{1.0f, 1.0f, 1.0f}, {1.f, 1.f, 1.f, 1.f}, {1.0f, 0.0f}},
+        { { -1.0f, -1.0f, 1.0f }, { 1.f, 1.f, 1.f, 1.f }, { 0.0f, 1.0f } },
+        { { 1.0f, -1.0f, 1.0f }, { 1.f, 1.f, 1.f, 1.f }, { 1.0f, 1.0f } },
+        { { -1.0f, 1.0f, 1.0f }, { 1.f, 1.f, 1.f, 1.f }, { 0.0f, 0.0f } },
+        { { 1.0f, 1.0f, 1.0f }, { 1.f, 1.f, 1.f, 1.f }, { 1.0f, 0.0f } },
     };
 
     const uint16_t indices[indexCount] = {
@@ -71,10 +71,10 @@ void XRToolsPrepare(Example* example,
         4, 7, 6,
         4, 5, 7};
 
-    Vulkan::Result result = buffer->Copy((void*)vertices, sizeof(Vulkan::Vertex) * 8);
+    Vulkan::Result result = buffer->Copy(System::UnownedBlock { vertices, 8 });
     CELL_ASSERT(result == Vulkan::Result::Success);
 
-    result = buffer->Copy((void*)indices, sizeof(uint16_t) * indexCount, sizeof(Vulkan::Vertex) * 8);
+    result = buffer->Copy(System::UnownedBlock { indices, indexCount }, sizeof(Vulkan::Vertex) * 8);
     CELL_ASSERT(result == Vulkan::Result::Success);
 
     pipeline = vkInstance->CreatePipeline(target).Unwrap();

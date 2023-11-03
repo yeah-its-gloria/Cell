@@ -28,9 +28,6 @@ public:
     // Utility function to copy a whole block at once.
     CELL_FUNCTION Result Copy(const IBlock& data, const uint64_t offset = 0);
 
-    // Utility function to copy a bare block of memory.
-    CELL_FUNCTION Result Copy(const void* data, const size_t size, const uint64_t offset = 0);
-
     // Returns the owning Vulkan instance.
     CELL_INLINE Instance* GetOwningInstance() { return this->instance; }
 

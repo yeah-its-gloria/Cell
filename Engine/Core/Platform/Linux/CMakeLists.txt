@@ -7,7 +7,9 @@ target_sources(CellCore PRIVATE
                ${PLATFORM_DIR}/Sources/IO/File/File.cc
                ${PLATFORM_DIR}/Sources/IO/File/CheckPath.cc
                ${PLATFORM_DIR}/Sources/IO/File/Delete.cc
+               ${PLATFORM_DIR}/Sources/IO/File/Offset.cc
                ${PLATFORM_DIR}/Sources/IO/File/Open.cc
+               ${PLATFORM_DIR}/Sources/IO/File/ReadWrite.cc
                ${PLATFORM_DIR}/Sources/IO/File/SetWorkingDirectory.cc
 
                ${PLATFORM_DIR}/Sources/IO/FolderWalker.cc

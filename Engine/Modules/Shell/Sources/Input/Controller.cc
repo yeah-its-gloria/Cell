@@ -4,6 +4,7 @@
 #include <Cell/Shell/Input.hh>
 
 #include <Cell/Shell/Controller/DualSense.hh>
+#include <Cell/Shell/Controller/SwitchPro.hh>
 #include <Cell/Shell/Controller/Xbox.hh>
 
 namespace Cell::Shell {
@@ -20,6 +21,11 @@ Result Input::DiscoverControllers() {
         });
 
         this->controllers.Append(dualSense);
+    }
+
+    Wrapped<Controller::SwitchPro*, Result> switchResult = Controller::SwitchPro::Find();
+    if (switchResult.IsValid()) {
+        this->controllers.Append(switchResult.Unwrap());
     }
 
     Wrapped<Controller::Xbox*, Result> xboxResult = Controller::Xbox::Find();

@@ -5,6 +5,7 @@
 
 #include <Cell/Scoped.hh>
 #include <Cell/OpenXR/VulkanTarget.hh>
+#include <Cell/System/BlockImpl.hh>
 #include <Cell/System/Log.hh>
 
 using namespace Cell;
@@ -140,7 +141,7 @@ void Example::XRThread() {
                 ubo.view = (Matrix4x4(instance->GetViewOrientation(i)) * Matrix4x4(instance->GetViewPosition(i))).Invert();
 
                 const uint32_t index = instance->GetVulkanTarget(i)->GetCurrentImageIndex();
-                uniforms[i][index]->Copy(&ubo, sizeof(ExampleUBO));
+                uniforms[i][index]->Copy(System::UnownedBlock { &ubo });
 
                 VulkanToolsGenerateRenderCommands(8, 36, &commandBuffer[i], &pipeline, &buffer, instance->GetVulkanTarget(i), index);
 

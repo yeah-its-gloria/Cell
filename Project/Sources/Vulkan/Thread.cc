@@ -5,6 +5,7 @@
 
 #include <Cell/Scoped.hh>
 #include <Cell/Mathematics/Utilities.hh>
+#include <Cell/System/BlockImpl.hh>
 #include <Cell/System/Timer.hh>
 #include <Cell/Utilities/MinMaxClamp.hh>
 #include <Cell/Vulkan/WSITarget.hh>
@@ -26,7 +27,8 @@ void Example::VulkanThread() {
 
     VkExtent2D extent = target->GetExtent();
 
-    ScopedObject<Image> texture = VulkanToolsLoadTexture(&instance, this->GetContentPath("/Textures/Raw/trans.bin"));
+    ScopedObject<Image> lesbianTexture = VulkanToolsLoadTexture(&instance, this->GetContentPath("/Textures/Raw/lesbian.bin"));
+    ScopedObject<Image> transTexture = VulkanToolsLoadTexture(&instance, this->GetContentPath("/Textures/Raw/trans.bin"));
 
     constexpr size_t vertexCount = 8;
     constexpr size_t indexCount = 36;
@@ -78,13 +80,13 @@ void Example::VulkanThread() {
         4, 5, 7
     };
 
-    buffer->Copy((void*)vertices, sizeof(Vertex) * 8);
-    buffer->Copy((void*)indices, sizeof(uint16_t) * indexCount, sizeof(Vertex) * 8);
+    buffer->Copy(System::UnownedBlock { vertices, vertexCount });
+    buffer->Copy(System::UnownedBlock { indices, indexCount }, sizeof(Vertex) * 8);
 
     ScopedObject<Pipeline> pipeline = instance->CreatePipeline(&target).Unwrap();
     pipeline->SetCullingMode(CullMode::Back);
 
-    VulkanToolsSetUpResources(&pipeline, &uniforms, &texture, &target);
+    VulkanToolsSetUpResources(&pipeline, &uniforms, &lesbianTexture, &target);
 
     VulkanToolsLoadShader(&pipeline, this->GetContentPath("/Shaders/DefaultVertex.spv"), Stage::Vertex);
     VulkanToolsLoadShader(&pipeline, this->GetContentPath("/Shaders/DefaultFragment.spv"), Stage::Fragment);
@@ -116,7 +118,7 @@ void Example::VulkanThread() {
 
         this->inputMutex.Unlock();
 
-        uniforms[target->GetFrameCount()]->Copy(&ubo, sizeof(ExampleUBO));
+        uniforms[target->GetFrameCount()]->Copy(System::UnownedBlock { &ubo });
 
         VulkanToolsGenerateRenderCommands(vertexCount, indexCount, &cmdBufferManager, &pipeline, &buffer, &target, target->GetFrameCount());
 

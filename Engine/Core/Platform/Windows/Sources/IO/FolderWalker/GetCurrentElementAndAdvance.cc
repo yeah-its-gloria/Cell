@@ -7,12 +7,20 @@
 
 namespace Cell::IO {
 
-Result FolderWalker::GetCurrentElementDataAndAdvance(FolderWalkerElementData& output) {
+Wrapped<FolderWalkerElementData, Result> FolderWalker::GetCurrentElementDataAndAdvance() {
     FolderWalkerInstance* instance = (FolderWalkerInstance*)this->handle;
 
-    output.fileName = System::String::FromPlatformWideString(instance->data.cFileName).Unwrap();
-    output.isFolder = (instance->data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) != 0;
+    FolderWalkerElementData data = {
+        .fileName = System::String::FromPlatformWideString(instance->data.cFileName).Unwrap(),
+        .isFolder = (instance->data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) != 0
+    };
 
-    return this->Advance();
+    Result result = this->Advance();
+    if (result != Result::Success) {
+        return result;
+    }
+
+    return data;
 }
+
 }

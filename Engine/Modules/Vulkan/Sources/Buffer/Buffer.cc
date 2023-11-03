@@ -70,26 +70,4 @@ Result Buffer::Copy(const IBlock& data, const uint64_t offset) {
     return Result::Success;
 }
 
-
-Result Buffer::Copy(const void* data, const size_t size, const uint64_t offset) {
-    if (this->isMapped) {
-        return Result::InvalidState;
-    }
-
-    if (size == 0) {
-        return Result::InvalidParameters;
-    }
-
-    void* address = nullptr;
-    Result result = this->Map(address, size, offset);
-    if (result != Result::Success) {
-        return result;
-    }
-
-    System::CopyMemory(address, data, size);
-
-    this->Unmap();
-    return Result::Success;
-}
-
 }

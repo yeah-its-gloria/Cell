@@ -3,40 +3,43 @@
 
 #include <Cell/IO/File.hh>
 #include <Cell/System/Panic.hh>
+#include <Cell/System/Platform/Windows/Includes.h>
 
-#include <errno.h>
 #include <stdio.h>
 
 namespace Cell::IO {
 
-File::~File() {
-    fclose((FILE*)this->handle);
-}
-
-Result File::Flush() {
+Wrapped<size_t, Result> File::GetOffset() {
     FILE* file = (FILE*)this->handle;
 
-    const int result = fflush(file);
-    if (result != 0) {
+    int64_t size = _ftelli64(file);
+    if (size == -1) {
         switch (ferror(file)) {
+        case EFBIG: {
+            return Result::InvalidParameters;
+        }
+
         case ENOMEM: {
             return Result::NotEnoughMemory;
         }
 
         default: {
-            System::Panic("fflush failed");
+            System::Panic("_fseeki64 failed");
         }
         }
     }
-
-    return Result::Success;
+    return (size_t)size;
 }
 
-Wrapped<size_t, Result> File::GetSize() {
+Result File::SetOffset(const size_t offset) {
+    if (offset > INT64_MAX) {
+        return Result::InvalidParameters;
+    }
+
     FILE* file = (FILE*)this->handle;
 
-    const int seekResult = fseeko64(file, 0, SEEK_END);
-    if (seekResult != 0) {
+    const int result = _fseeki64(file, (int64_t)offset, SEEK_SET);
+    if (result != 0) {
         if (feof(file) != 0) {
             return Result::ReachedEnd;
         }
@@ -51,17 +54,12 @@ Wrapped<size_t, Result> File::GetSize() {
         }
 
         default: {
-            System::Panic("fseeko64 failed");
+            System::Panic("_fseeki64 failed");
         }
         }
     }
 
-    const __off64_t size = ftello64(file);
-    if (size < 0) {
-        System::Panic("ftello64 failed");
-    }
-
-    return size;
+    return Result::Success;
 }
 
 }

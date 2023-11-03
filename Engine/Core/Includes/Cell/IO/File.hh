@@ -40,11 +40,17 @@ public:
     // Closes the file.
     CELL_FUNCTION ~File();
 
-    // Reads count bytes of data in the file at the given offset (0 by default) into the block.
-    CELL_FUNCTION Result Read(IBlock& data, const size_t offset = 0);
+    // Reads into the given block of memory.
+    CELL_FUNCTION Result Read(IBlock& data);
 
-    // Writes count bytes of data from the block to the file at the given offset (0 by default).
-    CELL_FUNCTION Result Write(const IBlock& data, const size_t offset = 0);
+    // Reads into the given block of memory at the given offset. Allows keeping the previous offset.
+    CELL_FUNCTION Result Read(IBlock& data, const size_t offset, const bool keepPrevious = true);
+
+    // Writes the given block of memory.
+    CELL_FUNCTION Result Write(const IBlock& data);
+
+    // Writes the given block of memory at the given offset. Allows keeping the previous offset.
+    CELL_FUNCTION Result Write(const IBlock& data, const size_t offset, const bool keepPrevious = true);
 
     // Flushes any buffered data, if available.
     CELL_FUNCTION Result Flush();
@@ -52,19 +58,25 @@ public:
     // Fetches the count of the current file.
     CELL_FUNCTION Wrapped<size_t, Result> GetSize();
 
-    // Deletes the file at the given path.
-    CELL_FUNCTION static Result Delete(const System::String& path);
+    // Retrieves the offset at which data would currently be written or read.
+    CELL_FUNCTION Wrapped<size_t, Result> GetOffset();
 
-    // Checks if the given path is valid; e.g a file or directory is present.
-    CELL_FUNCTION static Result CheckPath(const System::String& path);
-
-    // Sets the current working directory to the given path.
-    CELL_FUNCTION static Result SetWorkingDirectory(const System::String& path);
+    // Sets the offset at which data is read and written. By default, it's reset to zero.
+    CELL_FUNCTION Result SetOffset(const size_t offset = 0);
 
 private:
     CELL_INLINE File(const uintptr_t handle) : handle(handle) { };
 
     uintptr_t handle;
 };
+
+// Deletes the file at the given path.
+CELL_FUNCTION Result Delete(const System::String& path);
+
+// Checks if the given path is valid; e.g a file or directory is present.
+CELL_FUNCTION Result CheckPath(const System::String& path);
+
+// Sets the current working directory to the given path.
+CELL_FUNCTION Result SetWorkingDirectory(const System::String& path);
 
 }

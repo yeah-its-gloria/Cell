@@ -43,11 +43,15 @@ Result String::Append(const String& string) {
         return Result::IsEmpty;
     }
 
-    ReallocateMemory<char>(&this->data, this->length + string.length);
+    if (this->length == 0) {
+        this->data = AllocateMemory<char>(string.length);
+    } else {
+        ReallocateMemory<char>(&this->data, this->length + string.length);
+    }
+
     CopyMemory<char>(this->data + this->length, string.data, string.length);
 
     this->length += string.length;
-
     return Result::Success;
 }
 

@@ -136,11 +136,11 @@ Result Xbox::Update() {
 
     // Xbox sticks are Y+ up, we want the opposite
 
-    this->report.leftStickX   = reading.LeftThumbstickX;
-    this->report.leftStickY   = reading.LeftThumbstickY * -1.0;
-    this->report.rightStickX  = reading.RightThumbstickX;
-    this->report.rightStickY  = reading.RightThumbstickY * -1.0;
-    this->report.leftTrigger  = reading.LeftTrigger;
+    this->report.leftStickX = reading.LeftThumbstickX;
+    this->report.leftStickY = reading.LeftThumbstickY * -1.0;
+    this->report.rightStickX = reading.RightThumbstickX;
+    this->report.rightStickY = reading.RightThumbstickY * -1.0;
+    this->report.leftTrigger = reading.LeftTrigger;
     this->report.rightTrigger = reading.RightTrigger;
 
     return Result::Success;

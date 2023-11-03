@@ -119,7 +119,10 @@ enum class ControllerButton : uint32_t {
     DPadRight = 1 << 16,
 
     // PlayStation only
-    Touchpad = 1 << 17
+    Touchpad = 1 << 17,
+
+    // Switch only
+    Capture = 1 << 18
 };
 
 enum class MouseAxis : uint8_t {

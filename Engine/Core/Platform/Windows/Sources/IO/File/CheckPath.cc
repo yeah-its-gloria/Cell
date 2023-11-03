@@ -9,7 +9,7 @@
 
 namespace Cell::IO {
 
-Result File::CheckPath(const System::String& path) {
+Result CheckPath(const System::String& path) {
     if (path.IsEmpty()) {
         return Result::InvalidParameters;
     }

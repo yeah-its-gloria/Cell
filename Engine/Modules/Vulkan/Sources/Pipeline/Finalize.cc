@@ -2,7 +2,6 @@
 // SPDX-License-Identifier: BSD-2-Clause
 
 #include <Cell/Vulkan/Pipeline.hh>
-#include <Cell/Vulkan/Vertex.hh>
 
 namespace Cell::Vulkan {
 
@@ -51,7 +50,7 @@ Result Pipeline::Finalize() {
     }
     }
 
-    // pipeline data
+    // input
 
     const VkVertexInputBindingDescription vertexInputBindingDescription = {
         .binding   = 0,
@@ -106,6 +105,8 @@ Result Pipeline::Finalize() {
         .primitiveRestartEnable = VK_FALSE
     };
 
+    // viewport and scissor
+
     const VkViewport viewport = {
         .x        = 0.f,
         .y        = 0.f,
@@ -130,6 +131,8 @@ Result Pipeline::Finalize() {
         .scissorCount  = 1,
         .pScissors     = &scissor
     };
+
+    // rasterization
 
     const VkPipelineRasterizationStateCreateInfo rasterizationInfo = {
         .sType                   = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO,
@@ -160,6 +163,8 @@ Result Pipeline::Finalize() {
         .alphaToCoverageEnable = VK_FALSE,
         .alphaToOneEnable      = VK_FALSE
     };
+
+    // color, depth and stencil attachments
 
     const VkPipelineDepthStencilStateCreateInfo depthStencilInfo = {
         .sType                 = VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO,
@@ -207,6 +212,8 @@ Result Pipeline::Finalize() {
         .blendConstants[3] = 0.f,
     };
 
+    // dynamic states
+
     const VkDynamicState dynamicStates[2] = {
         VK_DYNAMIC_STATE_VIEWPORT,
         VK_DYNAMIC_STATE_SCISSOR
@@ -220,6 +227,8 @@ Result Pipeline::Finalize() {
         .dynamicStateCount = 2,
         .pDynamicStates    = dynamicStates
     };
+
+    // render setup
 
     const VkPipelineRenderingCreateInfoKHR pipelineRenderInfo = {
         .sType                   = VK_STRUCTURE_TYPE_PIPELINE_RENDERING_CREATE_INFO_KHR,

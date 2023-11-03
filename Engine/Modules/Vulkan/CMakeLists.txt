@@ -15,22 +15,35 @@ add_library(CellVulkan ${CELL_LIBRARY_TYPE}
     ${MODULE_INCLUDES_DIR}/Cell/Vulkan/Pipeline.hh
     ${MODULE_INCLUDES_DIR}/Cell/Vulkan/RenderTarget.hh
     ${MODULE_INCLUDES_DIR}/Cell/Vulkan/Result.hh
-    ${MODULE_INCLUDES_DIR}/Cell/Vulkan/Vertex.hh
     ${MODULE_INCLUDES_DIR}/Cell/Vulkan/WSITarget.hh
+
     ${MODULE_INCLUDES_DIR}/Cell/Vulkan/CommandParameters/Binding.hh
     ${MODULE_INCLUDES_DIR}/Cell/Vulkan/CommandParameters/Copy.hh
     ${MODULE_INCLUDES_DIR}/Cell/Vulkan/CommandParameters/Draw.hh
     ${MODULE_INCLUDES_DIR}/Cell/Vulkan/CommandParameters/Rendering.hh
+
+# ------------------------------------------------------------------------------------------------
+
     ${CMAKE_CURRENT_LIST_DIR}/Sources/Buffer/Buffer.cc
+
+# ------------------------------------------------------------------------------------------------
+
     ${CMAKE_CURRENT_LIST_DIR}/Sources/CommandBufferManager/CommandBufferManager.cc
     ${CMAKE_CURRENT_LIST_DIR}/Sources/CommandBufferManager/CommandOperations.cc
     ${CMAKE_CURRENT_LIST_DIR}/Sources/CommandBufferManager/CreateBuffers.cc
     ${CMAKE_CURRENT_LIST_DIR}/Sources/CommandBufferManager/Reset.cc
     ${CMAKE_CURRENT_LIST_DIR}/Sources/CommandBufferManager/Submit.cc
     ${CMAKE_CURRENT_LIST_DIR}/Sources/CommandBufferManager/WriteCommands.cc
+
+# ------------------------------------------------------------------------------------------------
+
     ${CMAKE_CURRENT_LIST_DIR}/Sources/Image/Image.cc
     ${CMAKE_CURRENT_LIST_DIR}/Sources/Image/CopyDataFromBuffer.cc
+
+# ------------------------------------------------------------------------------------------------
+
     ${CMAKE_CURRENT_LIST_DIR}/Sources/Instance/Internal.hh
+
     ${CMAKE_CURRENT_LIST_DIR}/Sources/Instance/CreateBuffer.cc
     ${CMAKE_CURRENT_LIST_DIR}/Sources/Instance/CreateCommandBuffer.cc
     ${CMAKE_CURRENT_LIST_DIR}/Sources/Instance/CreateDevice.cc
@@ -46,11 +59,17 @@ add_library(CellVulkan ${CELL_LIBRARY_TYPE}
     ${CMAKE_CURRENT_LIST_DIR}/Sources/Instance/QueryPhysicalDeviceQueues.cc
     ${CMAKE_CURRENT_LIST_DIR}/Sources/Instance/RenderImage.cc
     ${CMAKE_CURRENT_LIST_DIR}/Sources/Instance/ScorePhysicalDevice.cc
+
+# ------------------------------------------------------------------------------------------------
+
     ${CMAKE_CURRENT_LIST_DIR}/Sources/Pipeline/AddResources.cc
     ${CMAKE_CURRENT_LIST_DIR}/Sources/Pipeline/AddShader.cc
     ${CMAKE_CURRENT_LIST_DIR}/Sources/Pipeline/Finalize.cc
     ${CMAKE_CURRENT_LIST_DIR}/Sources/Pipeline/Pipeline.cc
     ${CMAKE_CURRENT_LIST_DIR}/Sources/Pipeline/SetCullingMode.cc
+
+# ------------------------------------------------------------------------------------------------
+
     ${CMAKE_CURRENT_LIST_DIR}/Sources/WSITarget/AcquireNext.cc
     ${CMAKE_CURRENT_LIST_DIR}/Sources/WSITarget/CreateSwapchain.cc
     ${CMAKE_CURRENT_LIST_DIR}/Sources/WSITarget/PrepareSwapchain.cc
@@ -65,17 +84,15 @@ add_library(CellVulkan ${CELL_LIBRARY_TYPE}
 
 target_compile_definitions(CellVulkan PUBLIC "CELL_MODULES_VULKAN_AVAILABLE=1")
 target_include_directories(CellVulkan PUBLIC ${MODULE_INCLUDES_DIR} ${Vulkan_INCLUDE_DIRS})
-target_link_libraries(CellVulkan PUBLIC CellCore CellMathematics CellShell ${Vulkan_LIBRARIES})
+target_link_libraries(CellVulkan PUBLIC CellCore CellMathematics CellShell PRIVATE ${Vulkan_LIBRARIES})
 
 if (WIN32)
     target_sources(CellVulkan PRIVATE ${CMAKE_CURRENT_LIST_DIR}/Sources/Instance/CreatePlatformSurfaceWindows.cc)
 
     if (DEFINED Vulkan_BINARIES)
-        add_custom_command(
-            TARGET CellVulkan
-            PRE_BUILD
-            COMMENT "Copying Vulkan loader..."
-            COMMAND ${CMAKE_COMMAND} -E copy_if_different ${Vulkan_BINARIES} $<TARGET_FILE_DIR:CellVulkan>
+        add_custom_command(TARGET CellVulkan POST_BUILD
+                           COMMENT "Copying Vulkan loader..."
+                           COMMAND ${CMAKE_COMMAND} -E copy_if_different ${Vulkan_BINARIES} $<TARGET_FILE_DIR:CellVulkan>
         )
     endif ()
 elseif (UNIX)

@@ -49,6 +49,33 @@ Wrapped<File*, Result> File::Open(const System::String& path, const FileMode mod
     }
 
     ScopedBlock<wchar_t> widePath = path.ToPlatformWideString();
+    if ((mode & FileMode::Create) != FileMode::Create) {
+        const DWORD attributes = GetFileAttributesW(widePath);
+        if (attributes == INVALID_FILE_ATTRIBUTES) {
+            switch (GetLastError()) {
+            case ERROR_ACCESS_DENIED: {
+                return Result::AccessDenied;
+            }
+
+            case ERROR_PATH_NOT_FOUND:
+            case ERROR_FILE_NOT_FOUND:
+            case ERROR_NOT_FOUND: {
+
+
+                return Result::NotFound;
+            }
+
+            default: {
+                System::Panic("GetFileAttributesW failed");
+            }
+            }
+        }
+
+        if (attributes & FILE_ATTRIBUTE_DIRECTORY || attributes & FILE_ATTRIBUTE_DEVICE) {
+            return Result::InvalidOperation;
+        }
+    }
+
     HANDLE _file = CreateFileW(&widePath, accessType, shareType, nullptr, creationType, FILE_ATTRIBUTE_NORMAL, nullptr);
     if (_file == INVALID_HANDLE_VALUE) {
         switch (GetLastError()) {

@@ -13,7 +13,16 @@ Wrapped<FolderWalker*, Result> FolderWalker::Open(const System::String& path) {
         return Result::InvalidParameters;
     }
 
-    ScopedBlock<wchar_t> widePath = path.ToPlatformWideString();
+    System::String pathModified = path;
+    if (!pathModified.EndsWith("\\")) {
+        pathModified += "\\";
+    }
+
+    if (!pathModified.EndsWith("**")) {
+        pathModified += "**";
+    }
+
+    ScopedBlock<wchar_t> widePath = pathModified.ToPlatformWideString();
 
     WIN32_FIND_DATAW findData = { };
     HANDLE find = FindFirstFileExW(&widePath, FindExInfoBasic, &findData, FindExSearchNameMatch, nullptr, FIND_FIRST_EX_LARGE_FETCH);
@@ -32,7 +41,7 @@ Wrapped<FolderWalker*, Result> FolderWalker::Open(const System::String& path) {
     FolderWalkerInstance* instance = System::AllocateMemory<FolderWalkerInstance>();
 
     instance->handle = find;
-    System::CopyMemory<WIN32_FIND_DATAW>(&instance->data, &findData);
+    instance->data = findData;
 
     FolderWalker* walker = new FolderWalker((uintptr_t)instance);
 

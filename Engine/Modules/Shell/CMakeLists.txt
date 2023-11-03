@@ -13,6 +13,7 @@ add_library(CellShell ${CELL_LIBRARY_TYPE}
     ${MODULE_INCLUDES_DIR}/Cell/Shell/Shell.hh
 
     ${MODULE_INCLUDES_DIR}/Cell/Shell/Controller/DualSense.hh
+    ${MODULE_INCLUDES_DIR}/Cell/Shell/Controller/SwitchPro.hh
     ${MODULE_INCLUDES_DIR}/Cell/Shell/Controller/Xbox.hh
 
     ${MODULE_INCLUDES_DIR}/Cell/Shell/Implementations/Windows.hh
@@ -28,10 +29,16 @@ add_library(CellShell ${CELL_LIBRARY_TYPE}
     ${CMAKE_CURRENT_LIST_DIR}/Sources/Input/Controller.cc
     ${CMAKE_CURRENT_LIST_DIR}/Sources/Input/Poll.cc
 
+    ${CMAKE_CURRENT_LIST_DIR}/Sources/Controller/DualSenseStructures.hh
     ${CMAKE_CURRENT_LIST_DIR}/Sources/Controller/DualSense.cc
+
+    ${CMAKE_CURRENT_LIST_DIR}/Sources/Controller/SwitchPro/Structures.hh
+    ${CMAKE_CURRENT_LIST_DIR}/Sources/Controller/SwitchPro/Commands.cc
+    ${CMAKE_CURRENT_LIST_DIR}/Sources/Controller/SwitchPro/SwitchPro.cc
 )
 
 target_compile_definitions(CellShell PUBLIC "CELL_MODULES_SHELL_AVAILABLE=1")
+target_compile_options(CellShell PRIVATE -Wno-nested-anon-types)
 target_include_directories(CellShell PUBLIC ${MODULE_INCLUDES_DIR})
 target_link_libraries(CellShell PUBLIC CellCore)
 

@@ -7,6 +7,15 @@
 
 namespace Cell::DataManagement {
 
+struct CELL_PACKED(1)  ArchiveHeader {
+    uint32_t elements;
+};
+
+struct CELL_PACKED(1) ArchiveEntry {
+    uint8_t name[20];
+    uint32_t size;
+};
+
 class Archive : public Object {
 public:
     Archive(IO::File* CELL_NONNULL file);

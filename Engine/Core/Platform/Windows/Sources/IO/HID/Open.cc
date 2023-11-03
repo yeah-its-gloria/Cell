@@ -12,27 +12,30 @@
 #include <hidsdi.h>
 #include <SetupAPI.h>
 
-namespace Cell::IO {
+namespace Cell::IO::HID {
 
 struct deviceProps {
+    bool isBluetooth;
     bool isValid;
     uint16_t vendorId;
     uint16_t productId;
 };
 
 CELL_FUNCTION_INTERNAL deviceProps parseDevicePathHID(const wchar_t* data) {
-    deviceProps props = {false, 0, 0};
+    deviceProps props = { false, false, 0, 0 };
 
     const size_t pidOffset = Utilities::RawStringSize("_PID&");
 
     System::String path = System::String::FromPlatformWideString(data).Unwrap();
-    if (path.BeginsWith("HID\\VID")) {
+    if (path.BeginsWith("HID\\VID")) { // USB
         const size_t offset = Utilities::RawStringSize("HID\\VID_");
 
         props.isValid = true;
         props.vendorId = path.Substring(offset, 4).Unwrap().AsNumber(true).Unwrap();
         props.productId = path.Substring(offset + 4 + pidOffset, 4).Unwrap().AsNumber(true).Unwrap();
-    } else if (path.BeginsWith("HID\\{")) {
+    } else if (path.BeginsWith("HID\\{")) { // USB
+        props.isBluetooth = true;
+
         const size_t baseOffset = Utilities::RawStringSize("HID\\{00000000-0000-0000-0000-000000000000}");
         if (path.Substring(baseOffset, 4).Unwrap() == "_Dev") {
             const size_t offset = baseOffset + Utilities::RawStringSize("_Dev_VID&00");
@@ -52,11 +55,11 @@ CELL_FUNCTION_INTERNAL deviceProps parseDevicePathHID(const wchar_t* data) {
     return props;
 }
 
-Wrapped<HID*, Result> HID::Open(const uint16_t vendorId, const uint16_t productId) {
-    GUID hidGUID = {0, 0, 0, {0, 0, 0, 0, 0, 0, 0, 0}};
+Wrapped<Device*, Result> Device::Open(const uint16_t vendorId, const uint16_t productId) {
+    GUID hidGUID = { 0, 0, 0, { 0, 0, 0, 0, 0, 0, 0, 0 } };
     HidD_GetHidGuid(&hidGUID);
 
-    constexpr GUID deviceClassHID = {0x745a17a0, 0x74d3, 0x11d0, {0xb6, 0xfe, 0x00, 0xa0, 0xc9, 0x0f, 0x57, 0xda}};
+    constexpr GUID deviceClassHID = { 0x745a17a0, 0x74d3, 0x11d0, { 0xb6, 0xfe, 0x00, 0xa0, 0xc9, 0x0f, 0x57, 0xda } };
     HDEVINFO info = SetupDiGetClassDevsW(nullptr, nullptr, nullptr, DIGCF_ALLCLASSES | DIGCF_PRESENT | DIGCF_DEVICEINTERFACE);
     if (info == INVALID_HANDLE_VALUE || info == nullptr) {
         System::Panic("SetupDiGetClassDevsW failed");
@@ -64,19 +67,22 @@ Wrapped<HID*, Result> HID::Open(const uint16_t vendorId, const uint16_t productI
 
     SP_DEVINFO_DATA data = {
         .cbSize = sizeof(SP_DEVINFO_DATA),
-        .ClassGuid = {0, 0, 0, {0, 0, 0, 0, 0, 0, 0, 0}},
+        .ClassGuid = { 0, 0, 0, { 0, 0, 0, 0, 0, 0, 0, 0 } },
         .DevInst = 0,
-        .Reserved = 0};
+        .Reserved = 0
+    };
 
     SP_DEVICE_INTERFACE_DATA interfaceData = {
         .cbSize = sizeof(SP_DEVICE_INTERFACE_DATA),
-        .InterfaceClassGuid = {0, 0, 0, {0, 0, 0, 0, 0, 0, 0, 0}},
+        .InterfaceClassGuid = { 0, 0, 0, { 0, 0, 0, 0, 0, 0, 0, 0 } },
         .Flags = 0,
-        .Reserved = 0};
+        .Reserved = 0
+    };
 
     SP_DEVICE_INTERFACE_DETAIL_DATA_W* interfaceDetailData;
     DWORD interfaceDetailDataSize = 0;
 
+    bool isBluetooth = false;
     wchar_t* path = nullptr;
     for (uint32_t index = 0; index < UINT32_MAX; index++) {
         BOOL result = SetupDiEnumDeviceInfo(info, index, &data);
@@ -139,6 +145,7 @@ Wrapped<HID*, Result> HID::Open(const uint16_t vendorId, const uint16_t productI
             System::Panic("SetupDiGetDeviceInterfaceDetailW failed");
         }
 
+        isBluetooth = props.isBluetooth;
         path = System::AllocateMemory<wchar_t>(wcslen(interfaceDetailData->DevicePath) + 1);
         wcscpy(path, interfaceDetailData->DevicePath);
 
@@ -167,7 +174,7 @@ Wrapped<HID*, Result> HID::Open(const uint16_t vendorId, const uint16_t productI
 
     System::FreeMemory(path);
 
-    return new HID((uintptr_t)device);
+    return new Device((uintptr_t)device, isBluetooth ? ConnectionType::Bluetooth : ConnectionType::USB);
 }
 
 }

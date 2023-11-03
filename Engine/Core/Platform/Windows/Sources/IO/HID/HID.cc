@@ -7,9 +7,12 @@
 
 #include <hidsdi.h>
 
-namespace Cell::IO {
+// TODO: Win32 HID doesn't seem to allow non overlapped HID when enabled, which we always have
+//       consider whether we should support ms = 0
 
-HID::~HID() {
+namespace Cell::IO::HID {
+
+Device::~Device() {
     CloseHandle((HANDLE)this->handle);
 }
 
@@ -60,7 +63,7 @@ CELL_FUNCTION_INTERNAL Result handleOverlappedHID(HANDLE handle, OVERLAPPED& ove
     return Result::Success;
 }
 
-Result HID::Read(IBlock& data, const uint32_t milliseconds) {
+Result Device::Read(IBlock& data, const uint32_t milliseconds) {
     if (data.ByteSize() > UINT32_MAX) {
         return Result::InvalidParameters;
     }
@@ -75,6 +78,7 @@ Result HID::Read(IBlock& data, const uint32_t milliseconds) {
             return handleOverlappedHID((HANDLE)this->handle, overlapped, (const DWORD)data.ByteSize(), milliseconds);
         }
 
+        case ERROR_INVALID_PARAMETER:
         case ERROR_INVALID_USER_BUFFER: {
             CloseHandle(overlapped.hEvent);
             return Result::InvalidParameters;
@@ -101,7 +105,7 @@ Result HID::Read(IBlock& data, const uint32_t milliseconds) {
     return Result::Success;
 }
 
-Result HID::Write(const IBlock& data, const uint32_t milliseconds) {
+Result Device::Write(const IBlock& data, const uint32_t milliseconds) {
     if (data.ByteSize() > UINT32_MAX) {
         return Result::InvalidParameters;
     }
@@ -141,7 +145,7 @@ Result HID::Write(const IBlock& data, const uint32_t milliseconds) {
     return Result::Success;
 }
 
-Wrapped<HIDCapabilities, Result> HID::GetCapabilities() {
+Wrapped<Capabilities, Result> Device::GetCapabilities() {
     PHIDP_PREPARSED_DATA data;
     BOOLEAN result = HidD_GetPreparsedData((HANDLE)this->handle, &data);
     if (result == FALSE) {
@@ -159,7 +163,7 @@ Wrapped<HIDCapabilities, Result> HID::GetCapabilities() {
         System::Panic("HidD_FreePreparsedData failed");
     }
 
-    return HIDCapabilities { .InputReportSize = caps.InputReportByteLength, .OutputReportSize = caps.OutputReportByteLength, .FeatureReportSize = caps.FeatureReportByteLength };
+    return Capabilities { .InputReportSize = caps.InputReportByteLength, .OutputReportSize = caps.OutputReportByteLength, .FeatureReportSize = caps.FeatureReportByteLength };
 }
 
 }

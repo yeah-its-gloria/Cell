@@ -24,7 +24,7 @@ CELL_FUNCTION_INTERNAL Example::~Example() {
 void Example::Launch(const String& parameterString) {
     (void)(parameterString);
 
-    const IO::Result ioResult = IO::File::CheckPath(this->GetContentPath(""));
+    const IO::Result ioResult = IO::CheckPath(this->GetContentPath(""));
     if (ioResult != IO::Result::Success) {
         Log("Failed to find the content directory, errors might occur");
     }

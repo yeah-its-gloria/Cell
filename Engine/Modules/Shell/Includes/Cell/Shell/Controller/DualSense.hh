@@ -29,9 +29,9 @@ public:
     }
 
 private:
-    CELL_INLINE DualSense(IO::HID* device) : device(device) { }
+    CELL_INLINE DualSense(IO::HID::Device* device) : device(device) { }
 
-    IO::HID* device;
+    IO::HID::Device* device;
 
     DualSenseProperties properties = { };
     bool hasUpdated = false;

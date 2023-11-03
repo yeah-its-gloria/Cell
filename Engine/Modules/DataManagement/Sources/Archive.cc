@@ -5,15 +5,6 @@
 
 namespace Cell::DataManagement {
 
-struct CELL_PACKED(1) ArchiveHeader {
-    uint32_t entries;
-};
-
-struct CELL_PACKED(1) ArchiveEntry {
-    uint8_t name[20];
-    uint32_t size;
-};
-
 Archive::Archive(IO::File* file) : file(file) {
     // TODO: read stuff
 }

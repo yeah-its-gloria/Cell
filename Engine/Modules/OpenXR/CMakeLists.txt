@@ -13,6 +13,8 @@ add_library(CellOpenXR ${CELL_LIBRARY_TYPE}
     ${MODULE_INCLUDES_DIR}/Cell/OpenXR/Result.hh
     ${MODULE_INCLUDES_DIR}/Cell/OpenXR/VulkanTarget.hh
 
+# ------------------------------------------------------------------------------------------------
+
     ${CMAKE_CURRENT_LIST_DIR}/Sources/CreateRenderTargetsVulkan.cc
     ${CMAKE_CURRENT_LIST_DIR}/Sources/CreateSpace.cc
     ${CMAKE_CURRENT_LIST_DIR}/Sources/FetchViewConfiguration.cc
@@ -44,16 +46,15 @@ target_link_libraries(CellOpenXR PUBLIC
     CellMathematics
     CellVulkan
 
-    ${OpenXR_LIBRARIES}
-    ${Vulkan_LIBRARIES}
+    PRIVATE ${OpenXR_LIBRARIES}
+    PRIVATE ${Vulkan_LIBRARIES}
 )
 
 if (WIN32)
     if (DEFINED OpenXR_BINARIES)
-        add_custom_command(
-            TARGET CellOpenXR PRE_BUILD
-            COMMENT "Copying OpenXR loader..."
-            COMMAND ${CMAKE_COMMAND} -E copy_if_different ${OpenXR_BINARIES} $<TARGET_FILE_DIR:CellOpenXR>
+        add_custom_command(TARGET CellOpenXR POST_BUILD
+                           COMMENT "Copying OpenXR loader..."
+                           COMMAND ${CMAKE_COMMAND} -E copy_if_different ${OpenXR_BINARIES} $<TARGET_FILE_DIR:CellOpenXR>
         )
     endif ()
 elseif (UNIX)

@@ -5,15 +5,12 @@
 
 #include <Cell/Shell/Controller/DualSense.hh>
 #include <Cell/System/BlockImpl.hh>
-#include <Cell/System/Thread.hh>
 #include <Cell/System/Log.hh>
-
-#include <math.h>
 
 namespace Cell::Shell::Controller {
 
 Wrapped<DualSense*, Result> DualSense::Find() {
-    const Wrapped<IO::HID*, IO::Result> hidResult = IO::HID::Open(0x054c, 0x0ce6);
+    const Wrapped<IO::HID::Device*, IO::Result> hidResult = IO::HID::Device::Open(0x054c, 0x0ce6);
     if (!hidResult.IsValid()) {
         switch (hidResult.Result()) {
         case IO::Result::NotFound: {
@@ -25,7 +22,7 @@ Wrapped<DualSense*, Result> DualSense::Find() {
         }
 
         default: {
-            System::Panic("Cell::IO::HID::Open failed");
+            System::Panic("Cell::IO::HID::Device::Open failed");
         }
         }
     }
@@ -44,7 +41,7 @@ Result DualSense::Update() {
     IO::Result result;
 
     // Update controller
-    if (this->hasUpdated) {
+    if (!this->hasUpdated) {
         DualSenseEffects effects = DualSenseEffects::SetLEDs | DualSenseEffects::SetPlayerLEDs;
         DualSenseEffectsEx effectsEx = DualSenseEffectsEx::None;
 
@@ -59,7 +56,7 @@ Result DualSense::Update() {
             .effectToggles = effects,
 
             .rumbleRight = this->properties.rumbleRight,
-            .rumbleLeft  = this->properties.rumbleLeft,
+            .rumbleLeft = this->properties.rumbleLeft,
 
             .effectTogglesEx = effectsEx,
 
@@ -67,9 +64,9 @@ Result DualSense::Update() {
 
             .playerLEDs = this->properties.playerLedOn ? DualSensePlayerLEDs::Player1 : DualSensePlayerLEDs::None,
 
-            .ledRed      = (uint8_t)(this->properties.ledData >> 24),
-            .ledGreen    = (uint8_t)(this->properties.ledData >> 16),
-            .ledBlue     = (uint8_t)(this->properties.ledData >> 8),
+            .ledRed = (uint8_t)(this->properties.ledData >> 24),
+            .ledGreen = (uint8_t)(this->properties.ledData >> 16),
+            .ledBlue = (uint8_t)(this->properties.ledData >> 8),
         };
 
         System::UnownedBlock effectsPacketRef { &effectsPacket };
@@ -79,8 +76,12 @@ Result DualSense::Update() {
             break;
         }
 
+        case IO::Result::Timeout: {
+            return Result::Timeout;
+        }
+
         default: {
-            System::Panic("Cell::IO::HID::Write failed");
+            System::Panic("Cell::IO::HID::Device::Write failed");
         }
         }
 
@@ -97,8 +98,12 @@ Result DualSense::Update() {
         break;
     }
 
+    case IO::Result::Timeout: {
+        return Result::Timeout;
+    }
+
     default: {
-        System::Panic("Cell::IO::HID::Read failed");
+        System::Panic("Cell::IO::HID::Device::Read failed");
     }
     }
 
@@ -209,11 +214,11 @@ Result DualSense::Update() {
 
     // I apologize for the black magic at hand
 
-    this->report.leftStickX   = ((packet.leftStickX / 255.0 - 0.5) * 2.0) / 1.0;
-    this->report.leftStickY   = ((packet.leftStickY / 255.0 - 0.5) * 2.0) / 1.0;
-    this->report.rightStickX  = ((packet.rightStickX / 255.0 - 0.5) * 2.0) / 1.0;
-    this->report.rightStickY  = ((packet.rightStickY / 255.0 - 0.5) * 2.0) / 1.0;
-    this->report.leftTrigger  = packet.leftTrigger / 255.0;
+    this->report.leftStickX = ((packet.leftStickX / 255.0 - 0.5) * 2.0) / 1.0;
+    this->report.leftStickY = ((packet.leftStickY / 255.0 - 0.5) * 2.0) / 1.0;
+    this->report.rightStickX = ((packet.rightStickX / 255.0 - 0.5) * 2.0) / 1.0;
+    this->report.rightStickY = ((packet.rightStickY / 255.0 - 0.5) * 2.0) / 1.0;
+    this->report.leftTrigger = packet.leftTrigger / 255.0;
     this->report.rightTrigger = packet.rightTrigger / 255.0;
 
     /*uint32_t touchData1 = ((uint32_t)packet.touchpadData1[2]) << 16 | ((uint32_t)packet.touchpadData1[1]) << 8 | packet.touchpadData1[0];

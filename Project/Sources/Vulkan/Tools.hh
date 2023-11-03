@@ -11,7 +11,6 @@
 #include <Cell/Vulkan/Image.hh>
 #include <Cell/Vulkan/Pipeline.hh>
 #include <Cell/Vulkan/RenderTarget.hh>
-#include <Cell/Vulkan/Vertex.hh>
 
 struct CELL_PACKED(16) ExampleUBO {
     Cell::Mathematics::Matrix4x4 model;

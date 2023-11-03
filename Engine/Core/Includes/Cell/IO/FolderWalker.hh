@@ -24,7 +24,7 @@ public:
     CELL_FUNCTION ~FolderWalker();
 
     // Returns the data for the current element and advances to the next available element.
-    CELL_FUNCTION Result GetCurrentElementDataAndAdvance(FolderWalkerElementData& output);
+    CELL_FUNCTION Wrapped<FolderWalkerElementData, Result> GetCurrentElementDataAndAdvance();
 
 private:
     CELL_FUNCTION_INTERNAL FolderWalker(const uintptr_t handle) : handle(handle) { };

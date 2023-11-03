@@ -4,6 +4,9 @@
 #pragma once
 
 #include <Cell/Collection/List.hh>
+#include <Cell/Mathematics/Vector2.hh>
+#include <Cell/Mathematics/Vector3.hh>
+#include <Cell/Mathematics/Vector4.hh>
 #include <Cell/System/Block.hh>
 #include <Cell/Vulkan/Buffer.hh>
 #include <Cell/Vulkan/Image.hh>
@@ -35,6 +38,18 @@ struct ResourceDescriptor {
 
     Image* image;
     VkImageLayout imageLayout;
+};
+
+// Represents a single vertex.
+struct Vertex {
+    // X right, Y down, Z forward
+    Mathematics::Vector3 position;
+
+    // RGBA
+    Mathematics::Vector4 color;
+
+    // U right, V down
+    Mathematics::Vector2 textureCoordinates;
 };
 
 class Pipeline : public Object {

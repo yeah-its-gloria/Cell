@@ -13,6 +13,8 @@ add_library(CellMathematics ${CELL_LIBRARY_TYPE}
     ${MODULE_INCLUDES_DIR}/Cell/Mathematics/Vector3.hh
     ${MODULE_INCLUDES_DIR}/Cell/Mathematics/Vector4.hh
 
+# ------------------------------------------------------------------------------------------------
+
     ${CMAKE_CURRENT_LIST_DIR}/Sources/Matrix4x4/Matrix4x4.cc
     ${CMAKE_CURRENT_LIST_DIR}/Sources/Matrix4x4/Functions/Shared.hh
     ${CMAKE_CURRENT_LIST_DIR}/Sources/Matrix4x4/Functions/Affine.cc
@@ -35,9 +37,6 @@ target_link_libraries(CellMathematics PUBLIC CellCore)
 if (WIN32 OR UNIX)
     target_compile_definitions(CellMathematics PUBLIC "CELL_MODULES_MATHEMATICS_HARDWARE_ACCELERATE_X86=1")
     target_compile_options(CellMathematics PRIVATE -mfma)
-    if (UNIX)
-        target_link_libraries(CellMathematics PRIVATE m)
-    endif ()
 else ()
     message(FATAL_ERROR "Unsupported platform")
 endif ()

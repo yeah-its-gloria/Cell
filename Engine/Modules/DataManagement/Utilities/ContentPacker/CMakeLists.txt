@@ -7,6 +7,6 @@ add_executable(CellDataManagementContentPacker
                ${CMAKE_CURRENT_LIST_DIR}/Sources/Main.cc
 )
 
-target_link_libraries(CellDataManagementContentPacker PRIVATE CellCore)
+target_link_libraries(CellDataManagementContentPacker PRIVATE CellCore CellDataManagement)
 
 CellPlatformBootstrapTarget(CellDataManagementContentPacker TRUE)

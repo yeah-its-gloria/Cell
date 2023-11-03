@@ -43,7 +43,7 @@ The editor serves as a creation utility for various workloads.
 | JavaScript     | QuickJS                              | Includes some custom patches                  |
 | Mathematics    | self-contained                       | Has hardware acceleration on x86_64 platforms |
 | OpenXR         | OpenXR 1.0                           | Vulkan implemented                            |
-| Shell          | Windows, Wayland (Linux)             | Often needed by other modules, serves as GUI  |
+| Shell          | Windows, Wayland (Linux), HID, etc   | Serves input implementations                  |
 | Vulkan         | Vulkan 1.2                           | Implemented WSIs: Win32 and Wayland           |
 
 A content packing utility is also available.
