@@ -1,8 +1,7 @@
 // SPDX-FileCopyrightText: Copyright 2023 Gloria G.
 // SPDX-License-Identifier: BSD-2-Clause
 
-#include "CRC.hh"
-
+#include <Cell/DataManagement/Foreign/CRC.hh>
 #include <Cell/DataManagement/Foreign/PNG.hh>
 #include <Cell/System/Log.hh>
 #include <Cell/System/Memory.hh>

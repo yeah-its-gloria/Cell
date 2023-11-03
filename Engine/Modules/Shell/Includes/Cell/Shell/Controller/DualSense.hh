@@ -8,33 +8,16 @@
 
 namespace Cell::Shell::Controller {
 
-struct DualSenseProperties {
-    uint32_t ledData; // RGBb (brightness)
-
-    uint8_t rumbleLeft;
-    uint8_t rumbleRight;
-
-    bool playerLedOn;
-};
-
 class DualSense : public IController {
 public:
     CELL_FUNCTION static Wrapped<DualSense*, Result> Find();
     CELL_FUNCTION ~DualSense() override;
     CELL_FUNCTION Result Update() override;
 
-    CELL_INLINE void UpdateProperties(DualSenseProperties properties) {
-        this->properties = properties;
-        this->hasUpdated = false;
-    }
-
 private:
     CELL_INLINE DualSense(IO::HID::Device* device) : device(device) { }
 
     IO::HID::Device* device;
-
-    DualSenseProperties properties = { };
-    bool hasUpdated = false;
 };
 
 }

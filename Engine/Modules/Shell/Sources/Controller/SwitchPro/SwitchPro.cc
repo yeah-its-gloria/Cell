@@ -25,7 +25,7 @@ Wrapped<SwitchPro*, Result> SwitchPro::Find() {
     SwitchPro* switchPro = new SwitchPro(hidResult.Unwrap());
 
     Result result = Result::Success;
-    if (switchPro->device->GetConnectionType() == IO::HID::ConnectionType::USB) {
+    if (switchPro->type == IO::HID::ConnectionType::USB) {
         result = switchPro->SubmitUSB((uint8_t)SwitchProUSBCommandId::Handshake);
         if (result != Result::Success) {
             delete switchPro;
@@ -80,9 +80,44 @@ Result SwitchPro::Update() {
     this->lastReport = this->report;
     System::ClearMemory(this->report);
 
-    SwitchProFullInputReport report = { };
+    if (!this->hasUpdated) {
+        Result result = Result::Success;
+        switch (this->properties.playerIndex) {
+        case 1: {
+            result = this->SubmitCommand((uint8_t)SwitchProCommandId::SetPlayerLights, (uint8_t)SwitchProPlayerIndex::Player1, true);
+            break;
+        }
 
-    System::UnownedBlock reportRef { &report };
+        case 2: {
+            result = this->SubmitCommand((uint8_t)SwitchProCommandId::SetPlayerLights, (uint8_t)SwitchProPlayerIndex::Player2, true);
+            break;
+        }
+
+        case 3: {
+            result = this->SubmitCommand((uint8_t)SwitchProCommandId::SetPlayerLights, (uint8_t)SwitchProPlayerIndex::Player3, true);
+            break;
+        }
+
+        case 4: {
+            result = this->SubmitCommand((uint8_t)SwitchProCommandId::SetPlayerLights, (uint8_t)SwitchProPlayerIndex::Player4, true);
+            break;
+        }
+
+        default: {
+            break;
+        }
+        }
+
+        // TODO: encode rumble
+
+        if (result != Result::Success) {
+            return result;
+        }
+
+        this->hasUpdated = true;
+    }
+
+    System::OwnedBlock<uint8_t> reportRef(this->type == IO::HID::ConnectionType::Bluetooth ? 362 : 64);
     IO::Result result = this->device->Read(reportRef, 33);
     switch (result) {
     case IO::Result::Success: {
@@ -98,9 +133,18 @@ Result SwitchPro::Update() {
     }
     }
 
-    CELL_ASSERT(report.reportId == SwitchProReportId::FullInput);
+    SwitchProFullInputReport* inputReport = (SwitchProFullInputReport*)reportRef.Pointer();
+    if (inputReport->reportId != SwitchProReportId::FullInput) {
+        if (++this->wrongReportCount > 3) { // sometimes it fucks up reports, but we give chances around here
+            return Result::InvalidReplies;
+        }
 
-    SwitchProButton buttons = SWITCH_BUTTONS_U32(report);
+        return Result::Success;
+    }
+
+    this->wrongReportCount = 0;
+
+    SwitchProButton buttons = SWITCH_BUTTONS_U32(inputReport->buttons);
 
     // TODO: allow flipping A/B and X/Y
 
@@ -176,10 +220,10 @@ Result SwitchPro::Update() {
         this->report.buttons |= ControllerButton::DPadRight;
     }
 
-    uint16_t axisLX = ((report.leftStick[1] & 0xf) << 8) | report.leftStick[0];
-    uint16_t axisLY = (report.leftStick[2] << 4) | ((report.leftStick[1] & 0xf0) >> 4);
-    uint16_t axisRX = ((report.rightStick[1] & 0xf) << 8) | report.rightStick[0];
-    uint16_t axisRY = (report.rightStick[2] << 4) | ((report.rightStick[1] & 0xf0) >> 4);
+    uint16_t axisLX = ((inputReport->leftStick[1] & 0xf) << 8) | inputReport->leftStick[0];
+    uint16_t axisLY = (inputReport->leftStick[2] << 4) | ((inputReport->leftStick[1] & 0xf0) >> 4);
+    uint16_t axisRX = ((inputReport->rightStick[1] & 0xf) << 8) | inputReport->rightStick[0];
+    uint16_t axisRY = (inputReport->rightStick[2] << 4) | ((inputReport->rightStick[1] & 0xf0) >> 4);
 
     this->report.leftStickX = (axisLX / 4096.0 - 0.5) * 2.0;
     this->report.leftStickY = (axisLY / 4096.0 - 0.5) * 2.0 * -1.0;

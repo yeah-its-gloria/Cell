@@ -13,7 +13,7 @@ namespace Cell::Collection {
 template <typename T> class List : public IEnumerable<T> {
 public:
     // Creates a list of empty T elements with the given expected number of elements.
-    CELL_INLINE explicit List(const size_t count = 0) : count(count) {
+    CELL_INLINE explicit List(const size_t count = 0) : data(nullptr), count(count) {
         if (this->count > 0) {
             this->data = System::AllocateMemory<T>(this->count);
         }

@@ -15,9 +15,7 @@ Wrapped<FolderWalker*, Result> FolderWalker::Open(const System::String& path) {
     CELL_UNIMPLEMENTED
 }
 
-Result FolderWalker::GetCurrentElementDataAndAdvance(FolderWalkerElementData& output) {
-    (void)(output);
-
+Wrapped<FolderWalkerElementData, Result>  FolderWalker::GetCurrentElementDataAndAdvance() {
     (void)(this->handle);
 
     CELL_UNIMPLEMENTED

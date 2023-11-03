@@ -7,6 +7,7 @@
 #include <math.h>
 
 namespace Cell::Shell {
+
 Result Input::Poll() {
     if (!this->shell.IsInForeground()) {
         return Result::Success;

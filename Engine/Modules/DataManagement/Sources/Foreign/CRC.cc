@@ -1,9 +1,9 @@
 // SPDX-FileCopyrightText: Copyright 2023 Gloria G.
 // SPDX-License-Identifier: BSD-2-Clause
 
-#pragma once
+#include <Cell/DataManagement/Foreign/CRC.hh>
 
-#include <Cell/Cell.hh>
+namespace Cell::DataManagement::Foreign {
 
 const uint32_t CRCTable[256] = {
     0x00000000, 0x77073096, 0xee0e612c, 0x990951ba,
@@ -72,11 +72,13 @@ const uint32_t CRCTable[256] = {
     0xb40bbe37, 0xc30c8ea1, 0x5a05df1b, 0x2d02ef8d
 };
 
-CELL_INLINE uint32_t GenerateCRC(const uint8_t* data, const size_t size) {
+uint32_t GenerateCRC(const uint8_t* data, const size_t size) {
     uint32_t value = 0xffffffff;
     for (size_t index = 0; index < size; index++) {
         value = CRCTable[(value ^ data[index]) & 0xff] ^ (value >> 8);
     }
 
     return value ^ 0xffffffff;
+}
+
 }

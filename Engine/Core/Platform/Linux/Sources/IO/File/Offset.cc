@@ -4,6 +4,7 @@
 #include <Cell/IO/File.hh>
 #include <Cell/System/Panic.hh>
 
+#include <errno.h>
 #include <stdio.h>
 
 namespace Cell::IO {

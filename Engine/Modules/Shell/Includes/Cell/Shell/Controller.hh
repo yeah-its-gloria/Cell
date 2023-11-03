@@ -21,6 +21,13 @@ struct ControllerReport {
     double rightTrigger;
 };
 
+struct ControllerProperties {
+    uint8_t rumbleLeft;
+    uint8_t rumbleRight;
+
+    uint8_t playerIndex;
+};
+
 class IController : public Object {
 public:
     // Destroys the controller instance.
@@ -39,9 +46,16 @@ public:
         return this->lastReport;
     }
 
+    CELL_INLINE void SetProperties(ControllerProperties properties) {
+        this->properties = properties;
+        this->hasUpdated = false;
+    }
+
 protected:
     ControllerReport report = { };
     ControllerReport lastReport = { };
+    ControllerProperties properties = { };
+    bool hasUpdated = false;
 };
 
 }

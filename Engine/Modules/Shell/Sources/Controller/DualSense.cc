@@ -27,7 +27,12 @@ Wrapped<DualSense*, Result> DualSense::Find() {
         }
     }
 
-    return new DualSense(hidResult.Unwrap());
+    IO::HID::Device* device = hidResult.Unwrap();
+    if (device->GetConnectionType() != IO::HID::ConnectionType::USB) { // TODO: Bluetooth support
+        return Result::NotFound;
+    }
+
+    return new DualSense(device);
 }
 
 DualSense::~DualSense() {
@@ -60,17 +65,58 @@ Result DualSense::Update() {
 
             .effectTogglesEx = effectsEx,
 
-            .ledBrightness = (uint8_t)(this->properties.ledData & 0xff),
+            .ledBrightness = 0xff,
 
-            .playerLEDs = this->properties.playerLedOn ? DualSensePlayerLEDs::Player1 : DualSensePlayerLEDs::None,
+            .playerLEDs = DualSensePlayerLEDs::None,
 
-            .ledRed = (uint8_t)(this->properties.ledData >> 24),
-            .ledGreen = (uint8_t)(this->properties.ledData >> 16),
-            .ledBlue = (uint8_t)(this->properties.ledData >> 8),
+            .ledRed = 0xdd,
+            .ledGreen = 0xdd,
+            .ledBlue = 0xdd,
         };
 
-        System::UnownedBlock effectsPacketRef { &effectsPacket };
-        result = device->Write(effectsPacketRef, 33);
+        switch (this->properties.playerIndex) {
+        case 1: {
+            effectsPacket.playerLEDs = DualSensePlayerLEDs::Player1;
+
+            effectsPacket.ledRed = 0x00;
+            effectsPacket.ledGreen = 0x00;
+            effectsPacket.ledBlue = 0xfe;
+            break;
+        }
+
+        case 2: {
+            effectsPacket.playerLEDs = DualSensePlayerLEDs::Player2;
+
+            effectsPacket.ledRed = 0xfe;
+            effectsPacket.ledGreen = 0x00;
+            effectsPacket.ledBlue = 0x00;
+            break;
+        }
+
+        case 3: {
+            effectsPacket.playerLEDs = DualSensePlayerLEDs::Player3;
+
+            effectsPacket.ledRed = 0x00;
+            effectsPacket.ledGreen = 0xfe;
+            effectsPacket.ledBlue = 0x00;
+            break;
+        }
+
+        case 4: {
+            effectsPacket.playerLEDs = DualSensePlayerLEDs::Player4;
+
+            effectsPacket.ledRed = 0xfe;
+            effectsPacket.ledGreen = 0x00;
+            effectsPacket.ledBlue = 0xfe;
+            break;
+        }
+
+        default: {
+            break;
+        }
+        }
+
+        result = device->Write(System::UnownedBlock { &effectsPacket }, 33);
         switch (result) {
         case IO::Result::Success: {
             break;
@@ -91,6 +137,7 @@ Result DualSense::Update() {
     // Retrieve controller data
 
     DualSenseReportPacket packet;
+
     System::UnownedBlock packetRef { &packet };
     result = device->Read(packetRef, 16);
     switch (result) {
@@ -105,6 +152,10 @@ Result DualSense::Update() {
     default: {
         System::Panic("Cell::IO::HID::Device::Read failed");
     }
+    }
+
+    if (packet.id != 0x01) {
+        return Result::InvalidReplies;
     }
 
     // TODO: find something cleaner than this

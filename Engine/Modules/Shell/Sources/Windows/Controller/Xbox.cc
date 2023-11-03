@@ -61,7 +61,6 @@ Xbox::~Xbox() {
 
 Result Xbox::Update() {
     this->lastReport = this->report;
-
     System::ClearMemory(this->report);
 
     XboxData* data = (XboxData*)this->device;

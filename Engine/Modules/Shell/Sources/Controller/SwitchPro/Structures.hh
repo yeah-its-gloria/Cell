@@ -107,8 +107,6 @@ struct CELL_PACKED(1) SwitchProFullInputReport {
         int16_t gyroscopeY;
         int16_t gyroscopeZ;
     } imuState[3];
-
-    uint8_t padding[15];
 };
 
 struct CELL_PACKED(1) SwitchProCommandReplyReport {
@@ -125,7 +123,7 @@ struct CELL_PACKED(1) SwitchProCommandReplyReport {
     SwitchProCommandId commandId;
 
     union {
-        uint8_t rawData[35];
+        uint8_t rawData[33];
 
         /*struct {
             uint32_t address;
@@ -158,15 +156,13 @@ struct CELL_PACKED(1) SwitchProCommandReplyReport {
             uint8_t rightCalibration[9];
         } stickUserCalibration;*/
     };
-
-    uint8_t padding[13];
 };
 
 CELL_ENUM_CLASS_OPERATORS(SwitchProButton);
 CELL_ENUM_CLASS_OPERATORS(SwitchProState);
 CELL_ENUM_CLASS_OPERATORS(SwitchProPlayerIndex);
 
-#define SWITCH_BUTTONS_U32(report) ((SwitchProButton)((report.buttons[2] << 16 | report.buttons[1] << 8 | report.buttons[0]) ^ (1 << 15)))
+#define SWITCH_BUTTONS_U32(buttonArray) ((SwitchProButton)((buttonArray[2] << 16 | buttonArray[1] << 8 | buttonArray[0]) ^ (1 << 15)))
 #define SWITCH_STATE_BATTERY(state) ((((uint8_t)(state)) & 0xe0) >> 4)
 
 }

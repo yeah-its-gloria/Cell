@@ -15,13 +15,18 @@ public:
     CELL_FUNCTION Result Update() override;
 
 private:
-    CELL_INLINE SwitchPro(IO::HID::Device* device) : device(device) { }
+    CELL_INLINE SwitchPro(IO::HID::Device* device) : device(device) {
+        this->type = device->GetConnectionType();
+    }
 
-    CELL_FUNCTION_INTERNAL Result SubmitCommand(uint8_t cmd, uint8_t data);
+    CELL_FUNCTION_INTERNAL Result SubmitCommand(uint8_t cmd, uint8_t data, const bool allowFailure = false);
     CELL_FUNCTION_INTERNAL Result SubmitUSB(uint8_t cmd, const bool waitForReply = true);
 
     IO::HID::Device* device;
+    IO::HID::ConnectionType type;
+
     uint8_t commandCounter = 0;
+    uint8_t wrongReportCount = 0;
 };
 
 }

@@ -14,23 +14,39 @@ Result Input::DiscoverControllers() {
     if (dualSenseResult.IsValid()) {
         Controller::DualSense* dualSense = dualSenseResult.Unwrap();
 
-        dualSense->UpdateProperties({
-            .ledData = 0x0000feff,
-            .rumbleLeft = 0, .rumbleRight = 0,
-            .playerLedOn = true
+        dualSense->SetProperties({
+            .rumbleLeft = 0,
+            .rumbleRight = 0,
+            .playerIndex = 1
         });
 
         this->controllers.Append(dualSense);
     }
 
-    Wrapped<Controller::SwitchPro*, Result> switchResult = Controller::SwitchPro::Find();
-    if (switchResult.IsValid()) {
-        this->controllers.Append(switchResult.Unwrap());
+    Wrapped<Controller::SwitchPro*, Result> switchProResult = Controller::SwitchPro::Find();
+    if (switchProResult.IsValid()) {
+        Controller::SwitchPro* switchPro = switchProResult.Unwrap();
+
+        switchPro->SetProperties({
+            .rumbleLeft = 0,
+            .rumbleRight = 0,
+            .playerIndex = 2
+        });
+
+        this->controllers.Append(switchPro);
     }
 
     Wrapped<Controller::Xbox*, Result> xboxResult = Controller::Xbox::Find();
     if (xboxResult.IsValid()) {
-        this->controllers.Append(xboxResult.Unwrap());
+        Controller::Xbox* xbox = xboxResult.Unwrap();
+
+        xbox->SetProperties({
+            .rumbleLeft = 0,
+            .rumbleRight = 0,
+            .playerIndex = 3
+        });
+
+        this->controllers.Append(xbox);
     }
 
     return Result::Success;

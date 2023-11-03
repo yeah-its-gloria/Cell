@@ -23,8 +23,8 @@ CELL_FUNCTION_INTERNAL Result handleOverlappedHID(HANDLE handle, OVERLAPPED& ove
         break;
     }
 
-    case WAIT_TIMEOUT: {                // BUG: some Bluetooth devices that disconnect don't always report that / Windows doesn't respect it
-        CancelIo(handle);               //      Instead they keep timing us out, so count this and disconnect automatically
+    case WAIT_TIMEOUT: {                 // BUG: some Bluetooth devices that disconnect don't always report that / Windows doesn't respect it
+        CancelIoEx(handle, &overlapped); //      Instead they keep timing us out, so count this and disconnect automatically
         CloseHandle(overlapped.hEvent);
         return Result::Timeout;
     }
@@ -120,7 +120,8 @@ Result Device::Write(const IBlock& data, const uint32_t milliseconds) {
             return handleOverlappedHID((HANDLE)this->handle, overlapped, (const DWORD)data.ByteSize(), milliseconds);
         }
 
-        case ERROR_INVALID_USER_BUFFER: {
+        case ERROR_INVALID_USER_BUFFER:
+        case ERROR_INVALID_PARAMETER: {
             CloseHandle(overlapped.hEvent);
             return Result::InvalidParameters;
         }

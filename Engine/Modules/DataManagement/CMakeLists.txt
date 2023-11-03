@@ -15,14 +15,16 @@ add_library(CellDataManagement ${CELL_LIBRARY_TYPE}
     ${MODULE_INCLUDES_DIR}/Cell/DataManagement/Archive.hh
     ${MODULE_INCLUDES_DIR}/Cell/DataManagement/Container.hh
     ${MODULE_INCLUDES_DIR}/Cell/DataManagement/Result.hh
+
     ${MODULE_INCLUDES_DIR}/Cell/DataManagement/Foreign/Base64.hh
+    ${MODULE_INCLUDES_DIR}/Cell/DataManagement/Foreign/CRC.hh
     ${MODULE_INCLUDES_DIR}/Cell/DataManagement/Foreign/glTF.hh
     ${MODULE_INCLUDES_DIR}/Cell/DataManagement/Foreign/HTTP.hh
     ${MODULE_INCLUDES_DIR}/Cell/DataManagement/Foreign/JSON.hh
     ${MODULE_INCLUDES_DIR}/Cell/DataManagement/Foreign/PNG.hh
 
     ${CMAKE_CURRENT_LIST_DIR}/Sources/Archive.cc
-    ${CMAKE_CURRENT_LIST_DIR}/Sources/Foreign/CRC.hh
+    ${CMAKE_CURRENT_LIST_DIR}/Sources/Foreign/CRC.cc
     ${CMAKE_CURRENT_LIST_DIR}/Sources/Foreign/Base64.cc
     ${CMAKE_CURRENT_LIST_DIR}/Sources/Foreign/glTF.cc
     ${CMAKE_CURRENT_LIST_DIR}/Sources/Foreign/JSON.cc
