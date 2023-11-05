@@ -112,9 +112,11 @@ void Example::VulkanThread() {
 
         this->inputMutex.Lock();
 
-        ubo.view.LookAt(Vector3 { 0.f, 5.f, 5.f }, Vector3 { 0.f, 0.f, 0.f }, Vector3 { 0.f, 0.f, -1.f });
+        ubo.view.LookAt({ 0.f, 5.f, 5.f }, { 0.f, 0.f, 0.f }, { 0.f, 0.f, -1.f });
         //ubo.view.LookAt(Vector3 { 0.f, 5.f, 5.f }, Mathematics::Utilities::DegreesToRadians(10.f), Mathematics::Utilities::DegreesToRadians(90.f));
         ubo.view.Translate(this->position);
+        ubo.view.Rotate(this->rotationX, { 0.f, 0.f, 1.f });
+        ubo.view.Rotate(this->rotationY, { 1.f, 0.f, 0.f });
 
         this->inputMutex.Unlock();
 

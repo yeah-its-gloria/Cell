@@ -40,14 +40,22 @@ private:
     CELL_FUNCTION_INTERNAL void OnReset(const Cell::Shell::InputType type);
     CELL_FUNCTION_INTERNAL void OnBoing(const Cell::Shell::InputType type);
 
+    CELL_FUNCTION_INTERNAL void TurnCameraXController(const double value);
+    CELL_FUNCTION_INTERNAL void TurnCameraYController(const double value);
+
     Cell::Shell::IShell* shell = nullptr;
     Cell::Shell::Input* input = nullptr;
 
-    float elapsedTime = 0.f;
-    float renderDeltaTime = 0.f;
+    // milliseconds
+    double elapsedTime = 0.f;
+
+    // milliseconds, guaranteed to be at least 0.001
+    double renderDeltaTime = 0.f;
 
     Cell::System::Mutex inputMutex;
-    Cell::Mathematics::Vector3 position { 0.f, 0.f, 0.f };
+    Cell::Mathematics::Vector3 position;
+    double rotationX = 0.f;
+    double rotationY = 0.f;
 
     Cell::System::Channel<uint8_t> audioTrigger { 0 };
 };

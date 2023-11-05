@@ -6,6 +6,8 @@
 #include <Cell/System/Timer.hh>
 #include <Cell/Utilities/MinMaxClamp.hh>
 
+#include <math.h>
+
 using namespace Cell;
 using namespace Cell::Shell;
 
@@ -89,7 +91,9 @@ void Example::OnReset(const InputType type) {
     }
 
     this->inputMutex.Lock();
-    this->position = { 0, 0, 0 };
+    this->position = 0;
+    this->rotationX = 0;
+    this->rotationY = 0;
     this->inputMutex.Unlock();
 }
 
@@ -99,6 +103,18 @@ void Example::OnBoing(const InputType type) {
     }
 
     this->Trigger();
+}
+
+void Example::TurnCameraXController(const double value) {
+    this->inputMutex.Lock();
+    this->rotationX += fmod(10.f * this->renderDeltaTime * value, 360.0);
+    this->inputMutex.Unlock();
+}
+
+void Example::TurnCameraYController(const double value) {
+    this->inputMutex.Lock();
+    this->rotationY += fmod(10.f * this->renderDeltaTime * value, 360.0);
+    this->inputMutex.Unlock();
 }
 
 void Example::InputThread() {
@@ -164,10 +180,16 @@ void Example::InputThread() {
     shellResult = input->RegisterAction(ControllerAxis::LeftStickY, [](const double value, void* inst) { ((Example*)inst)->OnForwardAxis(value); }, this);
     CELL_ASSERT(shellResult == Result::Success);
 
+    shellResult = input->RegisterAction(ControllerAxis::RightStickX, [](const double value, void* inst) { ((Example*)inst)->TurnCameraXController(value); }, this);
+    CELL_ASSERT(shellResult == Result::Success);
+
+    shellResult = input->RegisterAction(ControllerAxis::RightStickY, [](const double value, void* inst) { ((Example*)inst)->TurnCameraYController(value); }, this);
+    CELL_ASSERT(shellResult == Result::Success);
+
     // Polling
 
     while (this->shell->IsStillActive()) {
-        Shell::Result shellResult = input->Poll();
+        shellResult = input->Poll();
         CELL_ASSERT(shellResult == Shell::Result::Success);
 
         System::SleepPrecise(100);
