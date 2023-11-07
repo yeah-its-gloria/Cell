@@ -3,9 +3,14 @@
 
 use std::ffi::{c_char, c_void};
 
-use crate::ffi::constants::{MAX_PHYSICAL_DEVICE_NAME_SIZE, UUID_SIZE};
-use crate::ffi::enumerations::*;
-use crate::ffi::types::*;
+use crate::ffi::{
+    constants::{MAX_PHYSICAL_DEVICE_NAME_SIZE, UUID_SIZE},
+    enumerations::{
+        AttachmentLoadOp, AttachmentStoreOp, ImageLayout, PhysicalDeviceType, RenderingFlag,
+        ResolveModeFlags, SampleCountFlag, StructureType,
+    },
+    types::{Bool32, DeviceSize, ImageView},
+};
 
 #[repr(C)]
 pub struct ApplicationInfo {
@@ -263,7 +268,7 @@ pub struct Rect2D {
 pub union ClearColorValue {
     pub float32: [f32; 4],
     pub int32: [i32; 4],
-    pub uint32: [u32; 4]
+    pub uint32: [u32; 4],
 }
 
 #[repr(C)]
@@ -276,7 +281,7 @@ pub struct ClearDepthStencilValue {
 #[repr(C)]
 pub union ClearValue {
     pub color: ClearColorValue,
-    pub depth_stencil: ClearDepthStencilValue
+    pub depth_stencil: ClearDepthStencilValue,
 }
 
 #[repr(C)]
@@ -294,7 +299,6 @@ pub struct RenderingAttachmentInfo {
 }
 
 #[repr(C)]
-#[allow(dead_code)]
 pub struct RenderingInfo {
     pub s_type: StructureType,
     pub next: *const c_void,
@@ -305,5 +309,5 @@ pub struct RenderingInfo {
     pub attachment_count: u32,
     pub color_attachments: *const RenderingAttachmentInfo,
     pub depth_attachment: *const RenderingAttachmentInfo,
-    pub stencil_attachment: *const RenderingAttachmentInfo
+    pub stencil_attachment: *const RenderingAttachmentInfo,
 }

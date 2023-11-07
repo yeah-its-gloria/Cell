@@ -5,7 +5,6 @@ mod device;
 mod ffi;
 mod instance;
 
-#[allow(dead_code)] // TODO: remove
 pub struct Instance {
     instance: crate::ffi::types::Instance,
     begin_render: crate::ffi::dynamic::CommandBeginRenderingFn,

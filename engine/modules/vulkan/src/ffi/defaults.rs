@@ -1,13 +1,17 @@
-use std::ffi::c_void;
-use std::ptr::null_mut;
+// SPDX-FileCopyrightText: Copyright 2023 Gloria G.
+// SPDX-License-Identifier: BSD-2-Clause
 
-use super::constants::{MAX_PHYSICAL_DEVICE_NAME_SIZE, UUID_SIZE};
-use super::enumerations::{PhysicalDeviceType, SampleCountFlag, StructureType};
-use super::structures::{
-    PhysicalDeviceDynamicRenderingFeatures, PhysicalDeviceFeatures, PhysicalDeviceLimits,
-    PhysicalDeviceProperties, PhysicalDeviceSparseProperties,
+use std::{ffi::c_void, ptr::null_mut};
+
+use super::{
+    constants::{MAX_PHYSICAL_DEVICE_NAME_SIZE, UUID_SIZE},
+    enumerations::{PhysicalDeviceType, SampleCountFlag, StructureType},
+    structures::{
+        PhysicalDeviceDynamicRenderingFeatures, PhysicalDeviceFeatures, PhysicalDeviceLimits,
+        PhysicalDeviceProperties, PhysicalDeviceSparseProperties,
+    },
+    types::VK_FALSE,
 };
-use super::types::VK_FALSE;
 
 impl Default for PhysicalDeviceLimits {
     fn default() -> Self {

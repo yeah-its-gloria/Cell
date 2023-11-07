@@ -1,17 +1,20 @@
 // SPDX-FileCopyrightText: Copyright 2023 Gloria G.
 // SPDX-License-Identifier: BSD-2-Clause
 
-use std::sync::{Arc, Mutex};
-
-use cell_core::platform::Platform;
-use cell_core_helper::title_entry;
+use cell_modules_shell::{create_shell, Shell, Error};
 use cell_modules_vulkan::Instance;
 
-#[title_entry]
-fn entry(_platform: Arc<Mutex<Platform>>) {
+fn main() {
+    let shell = create_shell("Cell - Hi Aurelia").unwrap();
+
     let mut instance = Instance::new().unwrap();
 
     instance.initialize_device().unwrap();
 
-    instance.destroy();
+    loop {
+        let result = shell.run_dispatch();
+        if result.is_err_and(|e| e == Error::RequestedQuit) {
+            break
+        }
+    }
 }

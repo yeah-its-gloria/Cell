@@ -7,8 +7,11 @@ name = "cell_core"
 version = "1.0.0"
 
 [[package]]
-name = "cell_core_helper"
+name = "cell_modules_shell"
 version = "1.0.0"
+dependencies = [
+ "cell_core",
+]
 
 [[package]]
 name = "cell_modules_vulkan"
@@ -22,6 +25,6 @@ name = "cell_title"
 version = "1.0.0"
 dependencies = [
  "cell_core",
- "cell_core_helper",
+ "cell_modules_shell",
  "cell_modules_vulkan",
 ]

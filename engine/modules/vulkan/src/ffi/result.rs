@@ -2,7 +2,6 @@
 // SPDX-License-Identifier: BSD-2-Clause
 
 #[repr(i32)]
-#[allow(dead_code)]
 pub enum VkResult {
     Success = 0,
     NotReady = 1,

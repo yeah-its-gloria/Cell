@@ -2,31 +2,30 @@
 // SPDX-License-Identifier: BSD-2-Clause
 
 use std::{
-    ffi::{c_char, CString},
-    ptr::{null, null_mut}, mem::transmute,
+    ffi::{c_char, c_void, CString},
+    mem::transmute,
+    ptr::{null, null_mut},
 };
-use std::ffi::c_void;
 
 use cell_core::platform::{PlatformId, PLATFORM_ID};
 
-use crate::ffi::{
-    constants::VERSION_1_2,
-    dynamic::{CommandBeginRenderingFn, CommandEndRenderingFn},
-    functions::GetInstanceFunctionAddress,
-    types,
-};
-use crate::ffi::{
-    extensions::{
-        VK_KHR_SURFACE_EXTENSION_NAME, VK_KHR_WAYLAND_SURFACE_EXTENSION_NAME,
-        VK_KHR_WIN32_SURFACE_EXTENSION_NAME,
+use crate::{
+    ffi::{
+        constants::VERSION_1_2,
+        dynamic::{CommandBeginRenderingFn, CommandEndRenderingFn},
+        enumerations::StructureType,
+        extensions::{
+            VK_KHR_SURFACE_EXTENSION_NAME, VK_KHR_WAYLAND_SURFACE_EXTENSION_NAME,
+            VK_KHR_WIN32_SURFACE_EXTENSION_NAME,
+        },
+        functions::GetInstanceFunctionAddress,
+        functions::{CreateInstance, DestroyInstance},
+        result::VkResult,
+        structures::{ApplicationInfo, InstanceCreateInfo},
+        types, versioning,
     },
-    functions::{CreateInstance, DestroyInstance},
-    result::VkResult,
-    structures::{ApplicationInfo, InstanceCreateInfo},
-    versioning,
+    Error, Instance,
 };
-use crate::Instance;
-use crate::{ffi::enumerations::StructureType, Error};
 
 impl Instance {
     pub fn new() -> Result<Self, Error> {
@@ -103,8 +102,10 @@ impl Instance {
             end_render: end_render,
         });
     }
+}
 
-    pub fn destroy(self: &mut Self) {
+impl Drop for Instance {
+    fn drop(self: &mut Self) {
         unsafe {
             DestroyInstance(self.instance, null());
         }

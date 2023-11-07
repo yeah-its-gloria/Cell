@@ -10,7 +10,6 @@ pub enum StructureType {
 }
 
 #[repr(u32)]
-#[allow(dead_code)]
 pub enum PhysicalDeviceType {
     Other = 0,
     IntegratedGPU = 1,
@@ -20,7 +19,6 @@ pub enum PhysicalDeviceType {
 }
 
 #[repr(u32)]
-#[allow(dead_code)]
 pub enum SampleCountFlag {
     None = 0,
     OneBit = 0x01,
@@ -33,7 +31,6 @@ pub enum SampleCountFlag {
 }
 
 #[repr(u32)]
-#[allow(dead_code)]
 pub enum RenderingFlag {
     ContentsSecondaryCommandBuffersBit = 0x00000001,
     SuspendingBit = 0x00000002,
@@ -42,7 +39,6 @@ pub enum RenderingFlag {
 }
 
 #[repr(u32)]
-#[allow(dead_code)]
 pub enum ImageLayout {
     Undefined = 0,
     General = 1,
@@ -65,7 +61,6 @@ pub enum ImageLayout {
 }
 
 #[repr(u32)]
-#[allow(dead_code)]
 pub enum AttachmentLoadOp {
     Load = 0,
     Clear = 1,
@@ -73,7 +68,6 @@ pub enum AttachmentLoadOp {
 }
 
 #[repr(u32)]
-#[allow(dead_code)]
 pub enum AttachmentStoreOp {
     Store = 0,
     DoNotCare = 1,
@@ -81,7 +75,6 @@ pub enum AttachmentStoreOp {
 }
 
 #[repr(u32)]
-#[allow(dead_code)]
 pub enum ResolveModeFlags {
     None = 0,
     SampleZeroBit = 0x00000001,

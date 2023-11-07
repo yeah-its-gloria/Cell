@@ -9,5 +9,5 @@ authors = ["Gloria G"]
 
 [dependencies]
 cell_core = { path = "../engine/core" }
-cell_core_helper = { path = "../engine/core/helper" }
+cell_modules_shell = { path = "../engine/modules/shell" }
 cell_modules_vulkan = { path = "../engine/modules/vulkan" }

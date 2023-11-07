@@ -1,16 +1,21 @@
 use std::ptr::null_mut;
 
-use crate::ffi::enumerations::PhysicalDeviceType;
-use crate::ffi::functions::{
-    EnumeratePhysicalDevices, GetPhysicalDeviceFeatures, GetPhysicalDeviceProperties,
+use crate::{
+    ffi::{
+        enumerations::PhysicalDeviceType,
+        functions::{
+            EnumeratePhysicalDevices, GetPhysicalDeviceFeatures, GetPhysicalDeviceProperties,
+        },
+        result::VkResult,
+        structures::{
+            PhysicalDeviceDynamicRenderingFeatures, PhysicalDeviceFeatures,
+            PhysicalDeviceProperties,
+        },
+        types::{PhysicalDevice, VK_FALSE},
+        versioning,
+    },
+    Error, Instance,
 };
-use crate::ffi::result::VkResult;
-use crate::ffi::structures::{
-    PhysicalDeviceDynamicRenderingFeatures, PhysicalDeviceFeatures, PhysicalDeviceProperties,
-};
-use crate::ffi::types::{PhysicalDevice, VK_FALSE};
-use crate::ffi::versioning;
-use crate::{Error, Instance};
 
 fn score_physical_device(_device: PhysicalDevice) -> u16 {
     let mut properties = PhysicalDeviceProperties::default();

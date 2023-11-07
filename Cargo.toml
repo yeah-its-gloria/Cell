@@ -2,5 +2,13 @@
 # SPDX-License-Identifier: BSD-2-Clause
 
 [workspace]
-members  = ["engine/core", "engine/core/helper", "engine/modules/vulkan", "title" ]
+members  = [
+    "engine/core",
+
+    "engine/modules/shell",
+    "engine/modules/vulkan",
+
+    "title"
+]
+
 resolver = "2"
