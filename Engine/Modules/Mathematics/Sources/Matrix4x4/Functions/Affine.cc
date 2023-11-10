@@ -17,15 +17,15 @@ namespace Cell::Mathematics {
 
 CELL_INLINE void MultiplyAndAdd(Vector4* out, const float value, const Vector4 data) {
 #ifdef CELL_MODULES_MATHEMATICS_HARDWARE_ACCELERATE_X86
-    float out1[4] = { 0.f, 0.f, 0.f, 0.f };
-    float datdat1[4] = { data.x, data.y, data.z, data.w };
+    float outData[4] = { 0.f, 0.f, 0.f, 0.f };
+    float dataRaw[4] = { data.x, data.y, data.z, data.w };
 
-    _mm_store_ps(out1, FusedMultiplyAdd(_mm_load_ps((float*)datdat1), _mm_set1_ps(value), _mm_load_ps((float*)out1)));
+    _mm_store_ps(outData, FusedMultiplyAdd(_mm_load_ps((float*)dataRaw), _mm_set1_ps(value), _mm_load_ps((float*)outData)));
 
-    out->x += out1[0];
-    out->y += out1[1];
-    out->z += out1[2];
-    out->w += out1[3];
+    out->x += outData[0];
+    out->y += outData[1];
+    out->z += outData[2];
+    out->w += outData[3];
 #else
     out->x += data.x * value;
     out->y += data.y * value;
@@ -61,25 +61,25 @@ Matrix4x4 Matrix4x4::Rotate(const float angle, const Vector3 axis) {
     const Vector3 v = axisNormal * (1.f - cosine);
     const Vector3 vs = axisNormal * sinf(angle);
 
-    const Vector3 out_data_1 = axisNormal * v.x;
-    const Vector3 out_data_2 = axisNormal * v.y;
-    const Vector3 out_data_3 = axisNormal * v.z;
+    const Vector3 outData1 = axisNormal * v.x;
+    const Vector3 outData2 = axisNormal * v.y;
+    const Vector3 outData3 = axisNormal * v.z;
 
     Matrix4x4 rotation;
 
-    rotation.data[0][0] = out_data_1.x + cosine;
-    rotation.data[0][1] = out_data_1.y + vs.z;
-    rotation.data[0][2] = out_data_1.z - vs.y;
+    rotation.data[0][0] = outData1.x + cosine;
+    rotation.data[0][1] = outData1.y + vs.z;
+    rotation.data[0][2] = outData1.z - vs.y;
     rotation.data[0][3] = 0.f;
 
-    rotation.data[1][0] = out_data_2.x - vs.z;
-    rotation.data[1][1] = out_data_2.y + cosine;
-    rotation.data[1][2] = out_data_2.z + vs.x;
+    rotation.data[1][0] = outData2.x - vs.z;
+    rotation.data[1][1] = outData2.y + cosine;
+    rotation.data[1][2] = outData2.z + vs.x;
     rotation.data[1][3] = 0.f;
 
-    rotation.data[2][0] = out_data_3.x + vs.y;
-    rotation.data[2][1] = out_data_3.y - vs.x;
-    rotation.data[2][2] = out_data_3.z + cosine;
+    rotation.data[2][0] = outData3.x + vs.y;
+    rotation.data[2][1] = outData3.y - vs.x;
+    rotation.data[2][2] = outData3.z + cosine;
     rotation.data[2][3] = 0.f;
 
     rotation.data[3][0] = 0.f;

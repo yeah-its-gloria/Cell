@@ -12,7 +12,7 @@
 namespace Cell::System {
 
 void Log(const String& message, ...) {
-    CELL_ASSERT(message.GetLength() < 32768);
+    CELL_ASSERT(message.GetSize() < 32768);
 
     char* messageStr = message.ToCharPointer();
 

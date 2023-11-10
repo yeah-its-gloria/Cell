@@ -15,6 +15,7 @@ enum class InputType : uint8_t {
 
 enum class KeyboardButton : uint64_t {
     None = 0ull,
+
     Zero = 1ull << 0,
     One = 1ull << 1,
     Two = 1ull << 2,
@@ -25,6 +26,7 @@ enum class KeyboardButton : uint64_t {
     Seven = 1ull << 7,
     Eight = 1ull << 8,
     Nine = 1ull << 9,
+
     A = 1ull << 10,
     B = 1ull << 11,
     C = 1ull << 12,
@@ -51,6 +53,36 @@ enum class KeyboardButton : uint64_t {
     X = 1ull << 33,
     Y = 1ull << 34,
     Z = 1ull << 35,
+
+    Escape = 1ull << 36,
+    Space = 1ull << 37,
+    Backspace = 1ull << 38,
+    Tab = 1ull << 39,
+    Return = 1ull << 40,
+    LeftShift = 1ull << 41,
+    RightShift = 1ull << 42,
+    LeftControl = 1ull << 43,
+    RightControl = 1ull << 44,
+    LeftAlt = 1ull << 45,
+    RightAlt = 1ull << 46,
+
+    UpArrow = 1ull << 47,
+    DownArrow = 1ull << 48,
+    LeftArrow = 1ull << 49,
+    RightArrow = 1ull << 50,
+
+    F1 = 1ull << 51,
+    F2 = 1ull << 52,
+    F3 = 1ull << 53,
+    F4 = 1ull << 54,
+    F5 = 1ull << 55,
+    F6 = 1ull << 56,
+    F7 = 1ull << 57,
+    F8 = 1ull << 58,
+    F9 = 1ull << 59,
+    F10 = 1ull << 60,
+    F11 = 1ull << 61,
+    F12 = 1ull << 62
 };
 
 enum class MouseButton : uint8_t {

@@ -42,15 +42,22 @@ uint16_t Instance::ScorePhysicalDevice(VkPhysicalDevice device) {
 
     // Feature checks
 
+    VkPhysicalDeviceExtendedDynamicStateFeaturesEXT extendedDynamicStateFeature = {
+        .sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_EXTENDED_DYNAMIC_STATE_FEATURES_EXT,
+        .pNext = nullptr,
+        .extendedDynamicState = VK_FALSE
+    };
+
     VkPhysicalDeviceDynamicRenderingFeaturesKHR dynamicRenderingFeature = {
-        .sType            = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DYNAMIC_RENDERING_FEATURES_KHR,
-        .pNext            = nullptr,
+        .sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DYNAMIC_RENDERING_FEATURES_KHR,
+        .pNext = &extendedDynamicStateFeature,
         .dynamicRendering = VK_FALSE
     };
 
     VkPhysicalDeviceFeatures2 features = {
         .sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FEATURES_2,
-        .pNext = &dynamicRenderingFeature
+        .pNext = &dynamicRenderingFeature,
+        .features = { }
     };
 
     vkGetPhysicalDeviceFeatures2(device, &features);
@@ -67,8 +74,8 @@ uint16_t Instance::ScorePhysicalDevice(VkPhysicalDevice device) {
         !features.features.shaderFloat64 ||
         !features.features.shaderInt64 ||
         !features.features.shaderInt16 ||
-        !dynamicRenderingFeature.dynamicRendering
-    ) {
+        !dynamicRenderingFeature.dynamicRendering ||
+        !extendedDynamicStateFeature.extendedDynamicState) {
         return 0;
     }
 
@@ -83,10 +90,6 @@ uint16_t Instance::ScorePhysicalDevice(VkPhysicalDevice device) {
     const uint64_t queues = Instance::QueryPhysicalDeviceQueues(device);
     uint32_t graphicsQueue = queues >> 32;
     uint32_t transferQueue = queues & 0xffffffff;
-
-    if (graphicsQueue == (uint32_t)-1) {
-        return 0;
-    }
 
     if (transferQueue != (uint32_t)-1 && graphicsQueue != transferQueue) {
         score += 200;

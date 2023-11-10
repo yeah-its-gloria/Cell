@@ -13,12 +13,6 @@
 
 namespace Cell::Vulkan {
 
-enum class CullMode : uint8_t {
-    Front,
-    Back,
-    None
-};
-
 enum class ResourceType : uint8_t {
     Buffer,
     Image
@@ -50,6 +44,8 @@ struct Vertex {
 
     // U right, V down
     Mathematics::Vector2 textureCoordinates;
+
+    uint32_t textureIndex;
 };
 
 class Pipeline : public Object {
@@ -65,9 +61,6 @@ public:
 
     // Adds resources for shaders to this pipeline.
     CELL_FUNCTION Result AddResources(Collection::IEnumerable<ResourceBinding>& resBindings, Collection::IEnumerable<ResourceDescriptor>& resDescriptors);
-
-    // Sets a new culling mode for this pipeline. Default is culling the back of faces.
-    CELL_FUNCTION void SetCullingMode(const CullMode mode);
 
     // Finalizes the pipeline data into a proper pipeline.
     CELL_FUNCTION Result Finalize();
@@ -85,7 +78,7 @@ public:
     CELL_INLINE VkDescriptorSet* GetDescriptorSets(const uint32_t index) { return this->resources[index].sets; }
 
 private:
-    CELL_FUNCTION_INTERNAL Pipeline(Instance* instance, VkFormat renderFormat) : instance(instance), layout(nullptr), pipeline(nullptr), cullMode(VK_CULL_MODE_NONE), renderFormat(renderFormat) { }
+    CELL_FUNCTION_INTERNAL Pipeline(Instance* instance, VkFormat renderFormat) : instance(instance), layout(nullptr), pipeline(nullptr), renderFormat(renderFormat) { }
 
     struct PipelineResource {
         VkDescriptorSetLayout layout;
@@ -97,7 +90,6 @@ private:
     VkPipelineLayout layout;
     VkPipeline pipeline;
 
-    VkCullModeFlags cullMode;
     VkFormat renderFormat;
 
     Collection::List<PipelineResource> resources;

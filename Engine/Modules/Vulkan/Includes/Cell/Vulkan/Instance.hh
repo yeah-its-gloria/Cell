@@ -77,8 +77,8 @@ public:
         const uint32_t height,
         const VkFormat format = VK_FORMAT_R8G8B8A8_SRGB,
         const VkImageTiling tiling = VK_IMAGE_TILING_OPTIMAL,
-        const VkImageAspectFlagBits viewAspectMask = VK_IMAGE_ASPECT_COLOR_BIT,
-        const VkImageUsageFlagBits usage = (VkImageUsageFlagBits)(VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT)
+        const VkImageAspectFlags viewAspectMask = VK_IMAGE_ASPECT_COLOR_BIT,
+        const VkImageUsageFlags usage = VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT
     );
 
     // Creates a managed pipeline.
@@ -91,8 +91,11 @@ public:
     CELL_FUNCTION Result RenderImage(IRenderTarget* CELL_NONNULL target, VkCommandBuffer CELL_NONNULL buffer);
 
 private:
-    CELL_INLINE Instance(VkInstance CELL_NONNULL instance, PFN_vkCmdBeginRenderingKHR CELL_NONNULL beginRendering, PFN_vkCmdEndRenderingKHR CELL_NONNULL endRendering)
-        : instance(instance), beginRendering(beginRendering), endRendering(endRendering) { }
+    CELL_INLINE Instance(VkInstance CELL_NONNULL instance,
+                         PFN_vkCmdBeginRenderingKHR CELL_NONNULL beginRendering,
+                         PFN_vkCmdEndRenderingKHR CELL_NONNULL endRendering,
+                         PFN_vkCmdSetCullModeEXT CELL_NONNULL setCullMode)
+        : instance(instance), beginRendering(beginRendering), endRendering(endRendering), setCullMode(setCullMode) { }
 
     CELL_FUNCTION_INTERNAL Result QueryPhysicalDevice();
     CELL_FUNCTION_INTERNAL Result CreateDevice();
@@ -116,6 +119,7 @@ private:
     VkInstance instance;
     PFN_vkCmdBeginRenderingKHR beginRendering;
     PFN_vkCmdEndRenderingKHR endRendering;
+    PFN_vkCmdSetCullModeEXT setCullMode;
 
     VkPhysicalDevice physicalDevice = nullptr;
     uint32_t physicalDeviceQueueGraphics = (uint32_t)-1;

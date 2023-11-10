@@ -12,28 +12,28 @@ namespace Cell::System {
 
 String::String(const char* CELL_NONNULL utf8, const size_t length) {
     if (length == 0) {
-        this->length = strlen(utf8);
-        if (this->length == 0) {
+        this->size = strlen(utf8);
+        if (this->size == 0) {
             return; // empty
         }
     } else {
-        this->length = length;
+        this->size = length;
     }
 
-    this->data = AllocateMemory<char>(this->length);
-    CopyMemory<char>(this->data, utf8, this->length);
+    this->data = AllocateMemory<char>(this->size);
+    CopyMemory<char>(this->data, utf8, this->size);
 }
 
 String::String(const String& string) {
-    this->length = string.length;
-    if (this->length > 0) {
-        this->data = AllocateMemory<char>(this->length);
-        CopyMemory<char>(this->data, string.data, this->length);
+    this->size = string.size;
+    if (this->size > 0) {
+        this->data = AllocateMemory<char>(this->size);
+        CopyMemory<char>(this->data, string.data, this->size);
     }
 }
 
 String::~String() {
-    if (this->length > 0) {
+    if (this->size > 0) {
         FreeMemory(this->data);
     }
 }
@@ -43,15 +43,15 @@ Result String::Append(const String& string) {
         return Result::IsEmpty;
     }
 
-    if (this->length == 0) {
-        this->data = AllocateMemory<char>(string.length);
+    if (this->size == 0) {
+        this->data = AllocateMemory<char>(string.size);
     } else {
-        ReallocateMemory<char>(&this->data, this->length + string.length);
+        ReallocateMemory<char>(&this->data, this->size + string.size);
     }
 
-    CopyMemory<char>(this->data + this->length, string.data, string.length);
+    CopyMemory<char>(this->data + this->size, string.data, string.size);
 
-    this->length += string.length;
+    this->size += string.size;
     return Result::Success;
 }
 
@@ -61,12 +61,12 @@ Result String::Append(const char* data) {
     if (this->IsEmpty()) {
         this->data = AllocateMemory<char>(dataLength);
     } else {
-        ReallocateMemory<char>(&this->data, this->length + dataLength);
+        ReallocateMemory<char>(&this->data, this->size + dataLength);
     }
 
-    CopyMemory<char>(this->data + this->length, data, dataLength);
+    CopyMemory<char>(this->data + this->size, data, dataLength);
 
-    this->length += dataLength;
+    this->size += dataLength;
 
     return Result::Success;
 }
@@ -74,37 +74,37 @@ Result String::Append(const char* data) {
 void String::Set(const char* data) {
     FreeMemory(this->data);
     if (strncmp(data, "", 2) == 0) {
-        this->length = 0;
+        this->size = 0;
         this->data = nullptr;
         return;
     }
 
-    this->length = strlen(data);
-    this->data = AllocateMemory<char>(this->length);
+    this->size = strlen(data);
+    this->data = AllocateMemory<char>(this->size);
 
-    CopyMemory<char>(this->data, data, this->length);
+    CopyMemory<char>(this->data, data, this->size);
 }
 
 // Checks if this string begins with the given substring.
 bool String::BeginsWith(const String& substring) const {
-    if (substring.length >= this->length) {
+    if (substring.size >= this->size) {
         return false;
     }
 
-    return CompareMemory(this->data, substring.data, substring.length);
+    return CompareMemory(this->data, substring.data, substring.size);
 }
 
 // Checks if this string ends with the given
 bool String::EndsWith(const String& substring) const {
-    if (substring.length >= this->length) {
+    if (substring.size >= this->size) {
         return false;
     }
 
-    return CompareMemory(this->data + (this->length - substring.length), substring.data, substring.length);
+    return CompareMemory(this->data + (this->size - substring.size), substring.data, substring.size);
 }
 
 Wrapped<String, Result> String::Substring(const size_t offset, const size_t length) const {
-    if (offset + length > this->length) {
+    if (offset + length > this->size) {
         return Result::InvalidParameters;
     }
 
@@ -126,18 +126,22 @@ Wrapped<uint64_t, Result> String::AsNumber(const bool isHex) const {
     return number;
 }
 
+size_t String::GetCount() const {
+    CELL_UNIMPLEMENTED; // TODO: uh lol
+}
+
 char* String::ToCharPointer() const {
-    char* dataStr = AllocateMemory<char>(this->length + 1);
-    CopyMemory<char>(dataStr, this->data, this->length);
+    char* dataStr = AllocateMemory<char>(this->size + 1);
+    CopyMemory<char>(dataStr, this->data, this->size);
     return dataStr;
 }
 
 bool String::operator ==(const String& other) {
-    if (this->length != other.length) {
+    if (this->size != other.size) {
         return false;
     }
 
-    return CompareMemory(this->data, other.data, this->length);
+    return CompareMemory(this->data, other.data, this->size);
 }
 
 String& String::operator =(const String& input) {
@@ -145,10 +149,10 @@ String& String::operator =(const String& input) {
         return *this;
     }
 
-    this->length = input.length;
-    if (this->length > 0) {
-        this->data = AllocateMemory<char>(this->length);
-        CopyMemory<char>(this->data, input.data, this->length);
+    this->size = input.size;
+    if (this->size > 0) {
+        this->data = AllocateMemory<char>(this->size);
+        CopyMemory<char>(this->data, input.data, this->size);
     } else if (this->data != nullptr) {
         FreeMemory(this->data);
         this->data = nullptr;

@@ -97,7 +97,10 @@ Wrapped<Instance*, Result> Instance::New(const char** extensions, const uint32_t
     PFN_vkCmdEndRenderingKHR endRendering = (PFN_vkCmdEndRenderingKHR)vkGetInstanceProcAddr(vkInstance, "vkCmdEndRenderingKHR");
     CELL_ASSERT(endRendering != nullptr);
 
-    return new Instance(vkInstance, beginRendering, endRendering);
+    PFN_vkCmdSetCullModeEXT setCullMode = (PFN_vkCmdSetCullModeEXT)vkGetInstanceProcAddr(vkInstance, "vkCmdSetCullModeEXT");
+    CELL_ASSERT(endRendering != nullptr);
+
+    return new Instance(vkInstance, beginRendering, endRendering, setCullMode);
 }
 
 }

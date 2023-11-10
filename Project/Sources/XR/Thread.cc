@@ -74,7 +74,8 @@ void Example::XRThread() {
     ubo.model.SetToIdentity();
     ubo.projection.Perspective(instance->GetFoVForEye(0), (float)resolution.width / (float)resolution.height, 0.1, 1000.f);
 
-    ScopedObject<Vulkan::Image> texture = nullptr;
+    ScopedObject<Vulkan::Image> texture1 = nullptr;
+    ScopedObject<Vulkan::Image> texture2 = nullptr;
     ScopedObject<Vulkan::Buffer> buffer = nullptr;
     ScopedObject<Vulkan::Pipeline> pipeline = nullptr;
 
@@ -82,7 +83,7 @@ void Example::XRThread() {
     Collection::List<Vulkan::Buffer*> uniforms[2];
 
     for (uint8_t i = 0; i < OpenXR::ViewCount; i++) {
-        XRToolsPrepare(this, &instance, ubo, &texture, &buffer, uniforms[i], &pipeline, &commandBuffer[i], instance->GetVulkanTarget(i));
+        XRToolsPrepare(this, &instance, ubo, &texture1, &texture2, &buffer, uniforms[i], &pipeline, &commandBuffer[i], instance->GetVulkanTarget(i));
     }
 
     bool active = false;

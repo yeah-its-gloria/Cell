@@ -120,15 +120,4 @@ Wrapped<Linux*, Result> Linux::New(const System::String& title) {
     return _linux;
 }
 
-Result Linux::RunDispatch() {
-    const int waylandResult = wl_display_dispatch_pending(this->display);
-    CELL_ASSERT(waylandResult > -1);
-
-    if (this->xdgRequestedClose) {
-        return Result::RequestedQuit;
-    }
-
-    return Result::Success;
-}
-
 }

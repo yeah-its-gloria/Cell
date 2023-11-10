@@ -6,7 +6,7 @@
 namespace Cell::Vulkan {
 
 Wrapped<Image*, Result>
-Instance::CreateImage(const uint32_t width, const uint32_t height, const VkFormat format, const VkImageTiling tiling, const VkImageAspectFlagBits viewAspectMask, const VkImageUsageFlagBits usage) {
+Instance::CreateImage(const uint32_t width, const uint32_t height, const VkFormat format, const VkImageTiling tiling, const VkImageAspectFlags viewAspectMask, const VkImageUsageFlags usage) {
     if (this->device == nullptr) {
         return Result::InvalidState;
     }
@@ -116,7 +116,7 @@ Instance::CreateImage(const uint32_t width, const uint32_t height, const VkForma
     }
 
     VkImageView view = nullptr;
-    Result result = this->CreateImageView(view, vkImage, format, VK_IMAGE_VIEW_TYPE_2D, viewAspectMask);
+    Result result = this->CreateImageView(view, vkImage, format, VK_IMAGE_VIEW_TYPE_2D, (VkImageAspectFlagBits)viewAspectMask);
     if (result != Result::Success) {
         vkDestroyImage(this->device, vkImage, nullptr);
         vkFreeMemory(this->device, memory, nullptr);

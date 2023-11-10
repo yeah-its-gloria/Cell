@@ -13,7 +13,8 @@ using namespace Cell;
 void XRToolsPrepare(Example* example,
                     OpenXR::Instance* instance,
                     ExampleUBO& ubo,
-                    Vulkan::Image* texture,
+                    Vulkan::Image* texture1,
+                    Vulkan::Image* texture2,
                     Vulkan::Buffer* buffer,
                     Collection::List<Vulkan::Buffer*>& uniforms,
                     Vulkan::Pipeline* pipeline,
@@ -21,7 +22,8 @@ void XRToolsPrepare(Example* example,
                     OpenXR::VulkanTarget* target) {
     Vulkan::Instance* vkInstance = instance->GetVulkan();
 
-    texture = VulkanToolsLoadTexture(vkInstance, example->GetContentPath("/Textures/Raw/lesbian.bin"));
+    texture1 = VulkanToolsLoadTexture(vkInstance, example->GetContentPath("/Textures/Raw/lesbian.bin"));
+    texture2 = VulkanToolsLoadTexture(vkInstance, example->GetContentPath("/Textures/Raw/lesbian.bin"));
 
     constexpr size_t indexCount = 36;
 
@@ -35,16 +37,17 @@ void XRToolsPrepare(Example* example,
     }
 
     const Vulkan::Vertex vertices[8] = {
-        { { -1.0f, -1.0f, -1.0f }, { 1.f, 1.f, 1.f, 1.f }, { 0.0f, 1.0f } },
-        { { 1.0f, -1.0f, -1.0f }, { 1.f, 1.f, 1.f, 1.f }, { 1.0f, 1.0f } },
-        { { -1.0f, 1.0f, -1.0f }, { 1.f, 1.f, 1.f, 1.f }, { 0.0f, 0.0f } },
-        { { 1.0f, 1.0f, -1.0f }, { 1.f, 1.f, 1.f, 1.f }, { 1.0f, 0.0f } },
+        { { -1.0f, -1.0f, -1.0f }, { 1.f, 1.f, 1.f, 1.f }, { 0.0f, 1.0f }, 0 },
+        { {  1.0f, -1.0f, -1.0f }, { 1.f, 1.f, 1.f, 1.f }, { 1.0f, 1.0f }, 0 },
+        { { -1.0f,  1.0f, -1.0f }, { 1.f, 1.f, 1.f, 1.f }, { 0.0f, 0.0f }, 0 },
+        { {  1.0f,  1.0f, -1.0f }, { 1.f, 1.f, 1.f, 1.f }, { 1.0f, 0.0f }, 0 },
 
-        { { -1.0f, -1.0f, 1.0f }, { 1.f, 1.f, 1.f, 1.f }, { 0.0f, 1.0f } },
-        { { 1.0f, -1.0f, 1.0f }, { 1.f, 1.f, 1.f, 1.f }, { 1.0f, 1.0f } },
-        { { -1.0f, 1.0f, 1.0f }, { 1.f, 1.f, 1.f, 1.f }, { 0.0f, 0.0f } },
-        { { 1.0f, 1.0f, 1.0f }, { 1.f, 1.f, 1.f, 1.f }, { 1.0f, 0.0f } },
+        { { -1.0f, -1.0f,  1.0f }, { 1.f, 1.f, 1.f, 1.f }, { 0.0f, 1.0f }, 0 },
+        { {  1.0f, -1.0f,  1.0f }, { 1.f, 1.f, 1.f, 1.f }, { 1.0f, 1.0f }, 0 },
+        { { -1.0f,  1.0f,  1.0f }, { 1.f, 1.f, 1.f, 1.f }, { 0.0f, 0.0f }, 0 },
+        { {  1.0f,  1.0f,  1.0f }, { 1.f, 1.f, 1.f, 1.f }, { 1.0f, 0.0f }, 0 },
     };
+
 
     const uint16_t indices[indexCount] = {
         // bottom
@@ -80,7 +83,7 @@ void XRToolsPrepare(Example* example,
     pipeline = vkInstance->CreatePipeline(target).Unwrap();
     //pipeline->SetCullingMode(Vulkan::CullMode::Back);
 
-    VulkanToolsSetUpResources(pipeline, &uniforms, texture, target);
+    VulkanToolsSetUpResources(pipeline, &uniforms, texture1, texture2, target);
 
     VulkanToolsLoadShader(pipeline, example->GetContentPath("/Shaders/DefaultVertex.spv"), Vulkan::Stage::Vertex);
     VulkanToolsLoadShader(pipeline, example->GetContentPath("/Shaders/DefaultFragment.spv"), Vulkan::Stage::Fragment);

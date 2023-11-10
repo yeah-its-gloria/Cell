@@ -3,6 +3,8 @@
 
 #include "Example.hh"
 
+#include <Cell/Scoped.hh>
+#include <Cell/Shell/Input.hh>
 #include <Cell/System/Timer.hh>
 #include <Cell/Utilities/MinMaxClamp.hh>
 
@@ -19,7 +21,7 @@ void Example::OnForward(const InputType type) {
     }
 
     this->inputMutex.Lock();
-    this->position.y += MovementSpeed * this->renderDeltaTime;
+    this->position.z += MovementSpeed * this->renderDeltaTime;
     this->inputMutex.Unlock();
 }
 
@@ -29,13 +31,13 @@ void Example::OnBackward(const InputType type) {
     }
 
     this->inputMutex.Lock();
-    this->position.y -= MovementSpeed * this->renderDeltaTime;
+    this->position.z -= MovementSpeed * this->renderDeltaTime;
     this->inputMutex.Unlock();
 }
 
 void Example::OnForwardAxis(const double value) {
     this->inputMutex.Lock();
-    this->position.y -= MovementSpeed * this->renderDeltaTime * value;
+    this->position.z -= MovementSpeed * this->renderDeltaTime * value;
     this->inputMutex.Unlock();
 }
 
@@ -71,7 +73,7 @@ void Example::OnUpward(const InputType type) {
     }
 
     this->inputMutex.Lock();
-    this->position.z -= MovementSpeed * this->renderDeltaTime;
+    this->position.y -= MovementSpeed * this->renderDeltaTime;
     this->inputMutex.Unlock();
 }
 
@@ -81,7 +83,7 @@ void Example::OnDownward(const InputType type) {
     }
 
     this->inputMutex.Lock();
-    this->position.z += MovementSpeed * this->renderDeltaTime;
+    this->position.y += MovementSpeed * this->renderDeltaTime;
     this->inputMutex.Unlock();
 }
 
@@ -105,6 +107,23 @@ void Example::OnBoing(const InputType type) {
     this->Trigger();
 }
 
+
+void Example::OnFlipTextures(const InputType type) {
+    if (type != InputType::Pressed) {
+        return;
+    }
+
+    this->flipTexture = !this->flipTexture;
+}
+
+void Example::OnCloseTitle(const InputType type) {
+    if (type != InputType::Pressed) {
+        return;
+    }
+
+    this->shell->RequestQuit();
+}
+
 void Example::TurnCameraXController(const double value) {
     this->inputMutex.Lock();
     this->rotationX += fmod(10.f * this->renderDeltaTime * value, 360.0);
@@ -113,12 +132,12 @@ void Example::TurnCameraXController(const double value) {
 
 void Example::TurnCameraYController(const double value) {
     this->inputMutex.Lock();
-    this->rotationY += fmod(10.f * this->renderDeltaTime * value, 360.0);
+    this->rotationY -= fmod(10.f * this->renderDeltaTime * value, 360.0);
     this->inputMutex.Unlock();
 }
 
 void Example::InputThread() {
-    this->input = this->shell->CreateInputHandler();
+    ScopedObject input = this->shell->CreateInputHandler();
 
     Result shellResult = input->DiscoverControllers();
     CELL_ASSERT(shellResult == Result::Success);
@@ -146,6 +165,12 @@ void Example::InputThread() {
     CELL_ASSERT(shellResult == Result::Success);
 
     shellResult = input->RegisterAction(KeyboardButton::F, [](const InputType type, void* inst) { ((Example*)inst)->OnBoing(type); }, this);
+    CELL_ASSERT(shellResult == Result::Success);
+
+    shellResult = input->RegisterAction(KeyboardButton::Tab, [](const InputType type, void* inst) { ((Example*)inst)->OnFlipTextures(type); }, this);
+    CELL_ASSERT(shellResult == Result::Success);
+
+    shellResult = input->RegisterAction(KeyboardButton::Escape, [](const InputType type, void* inst) { ((Example*)inst)->OnCloseTitle(type); }, this);
     CELL_ASSERT(shellResult == Result::Success);
 
     // Controller

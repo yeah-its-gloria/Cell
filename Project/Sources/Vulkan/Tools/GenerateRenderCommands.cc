@@ -6,7 +6,13 @@
 using namespace Cell::Vulkan;
 using namespace Cell::Vulkan::CommandParameters;
 
-void VulkanToolsGenerateRenderCommands(const uint32_t vertexCount, const uint32_t drawCount, CommandBufferManager* commandBuffer, Pipeline* pipeline, Buffer* buffer, IRenderTarget* target, const uint32_t frameId) {
+void VulkanToolsGenerateRenderCommands(const uint32_t vertexCount,
+                                       const uint32_t drawCount,
+                                             CommandBufferManager* commandBuffer,
+                                             Pipeline* pipeline,
+                                             Buffer* buffer,
+                                             IRenderTarget* target,
+                                       const uint32_t frameId) {
     Result result = commandBuffer->Reset();
     CELL_ASSERT(result == Result::Success);
 
@@ -137,6 +143,8 @@ void VulkanToolsGenerateRenderCommands(const uint32_t vertexCount, const uint32_
         .extent = extent
     };
 
+    VkCullModeFlags cullMode = VK_CULL_MODE_BACK_BIT;
+
     CommandParameters::DrawIndexed drawParameters = {
         .indexCount = drawCount,
         .instanceCount = 1,
@@ -174,7 +182,7 @@ void VulkanToolsGenerateRenderCommands(const uint32_t vertexCount, const uint32_
         .images = &presentationBarrierImage
     };
 
-    Command commands[11] = {
+    Command commands[12] = {
         { CommandType::InsertBarrier,      &drawingBarrier },
         { CommandType::BeginRendering,     &renderingParameters },
         { CommandType::BindPipeline,       &pipelineParameters },
@@ -183,11 +191,12 @@ void VulkanToolsGenerateRenderCommands(const uint32_t vertexCount, const uint32_
         { CommandType::BindDescriptorSets, &setsParameters },
         { CommandType::SetViewport,        &viewport },
         { CommandType::SetScissor,         &scissor },
+        { CommandType::SetCullMode,        &cullMode },
         { CommandType::DrawIndexed,        &drawParameters },
         { CommandType::EndRendering,       nullptr },
         { CommandType::InsertBarrier,      &presentationBarrier }
     };
 
-    result = commandBuffer->WriteCommandsSingle(frameId, commands, 10);
+    result = commandBuffer->WriteCommandsSingle(frameId, commands, 12);
     CELL_ASSERT(result == Result::Success);
 }

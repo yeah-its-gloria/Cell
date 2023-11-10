@@ -2,7 +2,6 @@
 // SPDX-License-Identifier: BSD-2-Clause
 
 #include <Cell/Shell/Implementations/Windows.hh>
-#include <Cell/System/Panic.hh>
 #include <Cell/System/Timer.hh>
 
 #include <dwmapi.h>
@@ -31,7 +30,7 @@ LRESULT Windows::WindowLoop(HWND window, UINT message, WPARAM paramHigh, LPARAM 
             }
         }
 
-        break;
+        return 0;
     }
 
     case WM_CLOSE: {
@@ -78,18 +77,14 @@ LRESULT Windows::WindowLoop(HWND window, UINT message, WPARAM paramHigh, LPARAM 
         CELL_ASSERT(windows != nullptr);
 
         switch (paramHigh) {
-        case VK_ESCAPE: {
-            PostQuitMessage(0);
-            return 0;
-        }
-
         case VK_LWIN:
         case VK_RWIN: {
+            // TODO: don't record input
             break;
         }
 
         default: {
-            windows->HandleKeyInput(paramHigh, true);
+            windows->HandleKeyInput(paramHigh, paramLow, true);
             return 0;
         }
         }
@@ -101,18 +96,13 @@ LRESULT Windows::WindowLoop(HWND window, UINT message, WPARAM paramHigh, LPARAM 
         CELL_ASSERT(windows != nullptr);
 
         switch (paramHigh) {
-        case VK_ESCAPE: {
-            PostQuitMessage(0);
-            return 0;
-        }
-
         case VK_LWIN:
         case VK_RWIN: {
             break;
         }
 
         default: {
-            windows->HandleKeyInput(paramHigh, false);
+            windows->HandleKeyInput(paramHigh, paramLow, false);
             return 0;
         }
         }

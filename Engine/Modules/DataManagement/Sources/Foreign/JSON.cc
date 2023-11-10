@@ -42,32 +42,167 @@ seekResult seekNextToken(size_t& position, const char token, const char* documen
     return seekResult::Success;
 }
 
-Wrapped<Collection::List<Value>, Result> Parse(const System::String& string) {
-    if (string.IsEmpty()) {
-        return Result::InvalidParameters;
+CELL_FUNCTION_INTERNAL size_t parseObject(Collection::List<Value>& values, const char* document, const size_t size, uint8_t& recursionCounter);
+
+CELL_FUNCTION_INTERNAL size_t parseValue(Value& value, const char* document, const size_t size, uint8_t& recursionCounter) {
+    // TODO: instead of panicking, we should inform the caller that this JSON is kinda garbage
+    CELL_ASSERT(recursionCounter < 25);
+
+    recursionCounter++;
+
+    size_t position = 0;
+    seekResult seekResult = seekResult::Success;
+
+    switch (document[position]) {
+    case '"': { // string
+        size_t string_end = 0;
+        seekResult = seekNextToken(string_end, '"', document, position + 1, false);
+        CELL_ASSERT(seekResult == seekResult::Success);
+
+        value.type = Type::String;
+        value.size = string_end - position - 1;
+        value.string = new System::String(document + position + 1, value.size);
+
+        position = string_end + 1;
+        break;
     }
 
-    const char* document = string.ToRawPointer();
+    case 't': { // true boolean
+        CELL_ASSERT(strncmp(document + position, "true", 4) == 0);
 
-    Collection::List<Value> values;
+        value.type = Type::Boolean;
+        value.size = 0;
+        value.boolean = true;
 
-    // seek to beginning
+        position += Utilities::RawStringSize("true");
+        break;
+    }
+
+    case 'f': { // false boolean
+        CELL_ASSERT(strncmp(document + position, "false", 5) == 0);
+
+        value.type = Type::Boolean;
+        value.size = 0;
+        value.boolean = false;
+
+        position += Utilities::RawStringSize("false");
+        break;
+    }
+
+    case 'n': { // null
+        CELL_ASSERT(strncmp(document + position, "null", 4) == 0);
+
+        value.type = Type::Null;
+        value.size = 0;
+        value.object = nullptr;
+
+        position += Utilities::RawStringSize("null");
+        break;
+    }
+
+    case '[': { // array
+        while (document[position] != ' ') { // skip past the opening bracket and anything like a newline
+            position++;
+        }
+
+        size_t endPosition = position;
+        while (document[endPosition] != ']') {
+            CELL_ASSERT(document[endPosition] != '['); // TODO: allow sub arrays
+            endPosition++;
+        }
+
+        position += endPosition - position;
+
+        //Collection::List<Value> elements;
+
+        value.type = Type::Array;
+        value.size = 0; //elements.GetCount();
+        value.array = nullptr;
+
+        /*value.array = System::AllocateMemory<Value>(elements.GetCount());
+        for (size_t i = 0; i < elements.GetCount(); i++) {
+            value.array[i] = elements[i];
+        }*/
+
+        position++;
+        break;
+    }
+
+    case '{': { // object
+        while (document[position] != ' ') { // skip past the opening brace and anything like a newline
+            position++;
+        }
+
+        Collection::List<Value> elements;
+        size_t endPosition = parseObject(elements, document + position, size - position, recursionCounter);
+
+        value.type = Type::Object;
+        value.size = elements.GetCount();
+
+        value.object = System::AllocateMemory<Value>(elements.GetCount());
+        for (size_t i = 0; i < elements.GetCount(); i++) {
+            value.object[i] = elements[i];
+        }
+
+        position += endPosition + 1;
+        break;
+    }
+
+    default: { // assume number, fail if not
+        size_t numberEnd = 0;
+        seekResult = seekNextToken(numberEnd, ',', document, position + 1, false);
+        switch (seekResult) {
+        case seekResult::Success: {
+            break;
+        }
+
+        case seekResult::ReachedEOF: {
+            seekResult = seekNextToken(numberEnd, ' ', document, position + 1, false); // this fails if there's no empty space or newline
+            CELL_ASSERT(seekResult == seekResult::Success);
+            break;
+        }
+
+        default: {
+            CELL_UNREACHABLE;
+        }
+        }
+
+        System::OwnedBlock<char> numberString(numberEnd - position + 1);
+        System::CopyMemory(numberString, document + position, numberEnd - position);
+
+        value.type = Type::Number;
+        value.size = 0;
+        value.number = strtod(numberString, nullptr);
+
+        position = numberEnd + 1;
+        break;
+    }
+    }
+
+    recursionCounter--;
+
+    return position;
+}
+
+// Assumes position is past opening brace
+size_t parseObject(Collection::List<Value>& values, const char* document, const size_t size, uint8_t& recursionCounter) {
+    // TODO: instead of panicking, we should inform the caller that this JSON is kinda garbage
+    CELL_ASSERT(recursionCounter < 25);
+
+    recursionCounter++;
+
     size_t position = 0;
-    seekResult seek_result = seekNextToken(position, '{', document);
-    CELL_ASSERT(seek_result == seekResult::Success);
+    while (position < size) {
+        Value value;
 
-    position++;
-
-    Value value {};
-    while (true) {
         // find the beginning of the key
-        seek_result = seekNextToken(position, '"', document, position);
-        CELL_ASSERT(seek_result == seekResult::Success);
+        seekResult seekResult = seekNextToken(position, '"', document, position);
+        CELL_ASSERT(seekResult == seekResult::Success);
 
         // find its end
         size_t end = 0;
-        seek_result = seekNextToken(end, '"', document, position + 1, false);
-        CELL_ASSERT(seek_result == seekResult::Success);
+        seekResult = seekNextToken(end, '"', document, position + 1, false);
+        CELL_ASSERT(seekResult == seekResult::Success);
 
         // allocate it
         value.name = System::AllocateMemory<char>(end - position + 1);
@@ -82,159 +217,58 @@ Wrapped<Collection::List<Value>, Result> Parse(const System::String& string) {
             position++;
         }
 
-        // check the value
-        switch (document[position]) {
-        // string
-        case '"': {
-            size_t string_end = 0;
-            seek_result = seekNextToken(string_end, '"', document, position + 1, false);
-            CELL_ASSERT(seek_result == seekResult::Success);
-
-            value.type = Type::String;
-            value.size = string_end - position - 1;
-            value.string = new System::String(document + position + 1, value.size);
-
-            position = string_end + 1;
-            break;
-        }
-
-        // true boolean
-        case 't': {
-            CELL_ASSERT(strncmp(document + position, "true", 4) == 0);
-
-            value.type = Type::Boolean;
-            value.size = 0;
-            value.boolean = true;
-
-            position += Utilities::RawStringSize("true");
-            break;
-        }
-
-        // false boolean
-        case 'f': {
-            CELL_ASSERT(strncmp(document + position, "false", 5) == 0);
-
-            value.type = Type::Boolean;
-            value.size = 0;
-            value.boolean = false;
-
-            position += Utilities::RawStringSize("false");
-            break;
-        }
-
-        // null
-        case 'n': {
-            CELL_ASSERT(strncmp(document + position, "null", 4) == 0);
-
-            value.type = Type::Null;
-            value.size = 0;
-            value.object = nullptr;
-
-            position += Utilities::RawStringSize("null");
-            break;
-        }
-
-        // array
-        case '[': {
-            System::Panic("ow ow");
-        }
-
-        // object
-        case '{': {
-            System::Panic("ouch");
-        }
-
-        // assume number, fail if not
-        default: {
-            size_t numberEnd = 0;
-            seek_result = seekNextToken(numberEnd, ',', document, position + 1, false);
-            switch (seek_result) {
-            case seekResult::Success: {
-                break;
-            }
-
-            case seekResult::ReachedEOF: {
-                seek_result = seekNextToken(numberEnd, ' ', document, position + 1, false); // this fails if there's no empty space or newline
-                CELL_ASSERT(seek_result == seekResult::Success);
-                break;
-            }
-
-            default: {
-                CELL_UNIMPLEMENTED
-            }
-            }
-
-            System::OwnedBlock<char> numberString(numberEnd - position + 1);
-            System::CopyMemory(numberString, document + position, numberEnd - position);
-
-            value.type = Type::Number;
-            value.size = 0;
-            value.number = strtod(numberString, nullptr);
-
-            CELL_ASSERT(errno != ERANGE);
-
-            position = numberEnd + 1;
-            break;
-        }
-        }
+        position += parseValue(value, document + position, size - position, recursionCounter);
 
         values.Append(value);
 
         CELL_ASSERT(document[position] == ',' || document[position] == ' ' || document[position] == '\n');
         position++;
 
-        if (document[position] == '}') {
-            break;
-        }
-
         while (document[position] == ' ' || document[position] == '\n') {
             position++;
         }
-    }
 
-    return values;
-}
-
-CELL_INLINE void Free(Value* child) {
-    if ((child->type == Type::Object || child->type == Type::Array) && child->size > 0) {
-        for (size_t i = 0; i < child->size; i++) {
-            Free(child->object);
+        if (document[position] == '}') {
+            break;
         }
     }
 
-    switch (child->type) {
-    case Type::Object: {
-        System::FreeMemory(child->name);
-        System::FreeMemory(child->object);
-        break;
-    }
-
-    case Type::Array: {
-        System::FreeMemory(child->array);
-        break;
-    }
-
-    case Type::String: {
-        delete child->string;
-        break;
-    }
-
-    case Type::Number:
-    case Type::Boolean:
-    case Type::Null: {
-        break;
-    }
-
-    default: {
-        CELL_UNREACHABLE;
-    }
-    }
+    recursionCounter--;
+    return position;
 }
 
-void Free(Collection::List<Value>& data) {
-    for (Value value : data) {
-        Free(&value);
+Wrapped<Document*, Result> Document::Parse(const System::String& string) {
+    if (string.IsEmpty()) {
+        return Result::InvalidParameters;
     }
+
+    const char* document = string.ToRawPointer();
+
+    // seek to beginning
+    size_t position = 0;
+    seekResult seekResult = seekNextToken(position, '{', document);
+    if (seekResult != seekResult::Success) {
+        return Result::InvalidData;
+    }
+
+    position++;
+
+    Collection::List<Value> values;
+    uint8_t recursionCounter = 0;
+    parseObject(values, document + position, string.GetSize() - position, recursionCounter);
+
+    Value root = { .name = nullptr, .type = Type::Object, .object = nullptr, .size = values.GetCount() };
+
+    root.object = System::AllocateMemory<Value>(values.GetCount());
+    for (size_t i = 0; i < values.GetCount(); i++) {
+        root.object[i] = values[i];
+    }
+
+    return new Document(root);
+}
+
+Document::~Document() {
+    System::FreeMemory(this->root.object);
 }
 
 }

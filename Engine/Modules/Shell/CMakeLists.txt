@@ -44,16 +44,14 @@ target_link_libraries(CellShell PUBLIC CellCore)
 
 if (WIN32)
     target_sources(CellShell PRIVATE
-        ${CMAKE_CURRENT_LIST_DIR}/Sources/Windows/DrawableExtentForWindow.cc
-        ${CMAKE_CURRENT_LIST_DIR}/Sources/Windows/SetNewTitleForWindow.cc
-
-        ${CMAKE_CURRENT_LIST_DIR}/Sources/Windows/Shell/Manifest.rc.h
+        ${CMAKE_CURRENT_LIST_DIR}/Sources/Windows/Manifest.rc.h
 
         ${CMAKE_CURRENT_LIST_DIR}/Sources/Windows/Controller/Xbox.cc
 
-        ${CMAKE_CURRENT_LIST_DIR}/Sources/Windows/Shell/KeyboardHandler.cc
-        ${CMAKE_CURRENT_LIST_DIR}/Sources/Windows/Shell/WindowLoop.cc
-        ${CMAKE_CURRENT_LIST_DIR}/Sources/Windows/Shell/Windows.cc
+        ${CMAKE_CURRENT_LIST_DIR}/Sources/Windows/KeyboardHandler.cc
+        ${CMAKE_CURRENT_LIST_DIR}/Sources/Windows/NewDestruct.cc
+        ${CMAKE_CURRENT_LIST_DIR}/Sources/Windows/WindowLoop.cc
+        ${CMAKE_CURRENT_LIST_DIR}/Sources/Windows/Windows.cc
     )
 
     target_compile_options(CellShell PRIVATE -Wno-language-extension-token)
@@ -62,21 +60,20 @@ elseif (UNIX)
     find_package(wayland REQUIRED FATAL_ERROR)
 
     target_sources(CellShell PRIVATE
-        ${CMAKE_CURRENT_LIST_DIR}/Sources/Linux/DrawableExtent.cc
-        ${CMAKE_CURRENT_LIST_DIR}/Sources/Linux/SetNewTitle.cc
+        ${CMAKE_CURRENT_LIST_DIR}/Sources/Linux/Linux.cc
+        ${CMAKE_CURRENT_LIST_DIR}/Sources/Linux/NewDestruct.cc
 
-        ${CMAKE_CURRENT_LIST_DIR}/Sources/Linux/Shell/WaylandProtocols/idle-inhibit-protocol.c
-        ${CMAKE_CURRENT_LIST_DIR}/Sources/Linux/Shell/WaylandProtocols/xdg-decoration-protocol.c
-        ${CMAKE_CURRENT_LIST_DIR}/Sources/Linux/Shell/WaylandProtocols/xdg-shell-protocol.c
+        ${CMAKE_CURRENT_LIST_DIR}/Sources/Linux/WaylandEvents/Events.cc
+        ${CMAKE_CURRENT_LIST_DIR}/Sources/Linux/WaylandEvents/Keyboard.cc
+        ${CMAKE_CURRENT_LIST_DIR}/Sources/Linux/WaylandEvents/Registry.cc
+        ${CMAKE_CURRENT_LIST_DIR}/Sources/Linux/WaylandEvents/Seat.cc
+        ${CMAKE_CURRENT_LIST_DIR}/Sources/Linux/WaylandEvents/XDGToplevel.cc
+
+        ${CMAKE_CURRENT_LIST_DIR}/Sources/Linux/WaylandProtocols/idle-inhibit-protocol.c
+        ${CMAKE_CURRENT_LIST_DIR}/Sources/Linux/WaylandProtocols/xdg-decoration-protocol.c
+        ${CMAKE_CURRENT_LIST_DIR}/Sources/Linux/WaylandProtocols/xdg-shell-protocol.c
 
         ${CMAKE_CURRENT_LIST_DIR}/Sources/Linux/Controller/Xbox.cc
-
-        ${CMAKE_CURRENT_LIST_DIR}/Sources/Linux/Shell/Linux.cc
-        ${CMAKE_CURRENT_LIST_DIR}/Sources/Linux/Shell/Wayland.cc
-        ${CMAKE_CURRENT_LIST_DIR}/Sources/Linux/Shell/WaylandKeyboard.cc
-        ${CMAKE_CURRENT_LIST_DIR}/Sources/Linux/Shell/WaylandRegistry.cc
-        ${CMAKE_CURRENT_LIST_DIR}/Sources/Linux/Shell/WaylandSeat.cc
-        ${CMAKE_CURRENT_LIST_DIR}/Sources/Linux/Shell/WaylandXDGToplevel.cc
     )
 
     target_include_directories(CellShell PRIVATE ${wayland_INCLUDE_DIRS} ${xkbcommon_INCLUDE_DIRS})

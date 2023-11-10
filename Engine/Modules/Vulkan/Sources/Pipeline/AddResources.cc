@@ -4,6 +4,8 @@
 #include <Cell/Collection/Dictionary.hh>
 #include <Cell/Vulkan/Pipeline.hh>
 
+#include <stdio.h>
+
 namespace Cell::Vulkan {
 
 using namespace Collection;
@@ -191,6 +193,7 @@ Result Pipeline::AddResources(IEnumerable<ResourceBinding>& resBindings, IEnumer
     Collection::List<VkDescriptorBufferInfo> bufferInfos;
     Collection::List<VkDescriptorImageInfo> imageInfos;
 
+    const uint32_t bindingCount = bindings.GetCount();
     for (uint32_t setIndex = 0; setIndex < setCount; setIndex++) {
         for (uint32_t resourceIndex = 0; resourceIndex < resBindings.GetCount(); resourceIndex++) {
             VkWriteDescriptorSet set = {
@@ -208,10 +211,21 @@ Result Pipeline::AddResources(IEnumerable<ResourceBinding>& resBindings, IEnumer
 
             switch (bindings[resourceIndex].descriptorType) {
             case VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER: {
+                for (size_t i = 0; i < bufferInfos.GetCount(); i++) {
+                    if (resDescriptors[setIndex * bindingCount + resourceIndex].buffer->buffer == bufferInfos[i].buffer) {
+                        set.pBufferInfo = bufferInfos.GetPointer(i);
+                        break;
+                    }
+                }
+
+                if (set.pBufferInfo != nullptr) {
+                    break;
+                }
+
                 const VkDescriptorBufferInfo bufferInfo = {
-                    .buffer = resDescriptors[setIndex * 2 + resourceIndex].buffer->buffer,
-                    .offset = resDescriptors[setIndex * 2 + resourceIndex].bufferOffset,
-                    .range = resDescriptors[setIndex * 2 + resourceIndex].bufferRange
+                    .buffer = resDescriptors[setIndex * bindingCount + resourceIndex].buffer->buffer,
+                    .offset = resDescriptors[setIndex * bindingCount + resourceIndex].bufferOffset,
+                    .range = resDescriptors[setIndex * bindingCount + resourceIndex].bufferRange
                 };
 
                 const size_t bufferInfoPos = bufferInfos.Append(bufferInfo);
@@ -220,11 +234,24 @@ Result Pipeline::AddResources(IEnumerable<ResourceBinding>& resBindings, IEnumer
             }
 
             case VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER: {
+                for (size_t i = 0; i < imageInfos.GetCount(); i++) {
+                    if (resDescriptors[setIndex * bindingCount + resourceIndex].image->view == imageInfos[i].imageView) {
+                        set.pImageInfo = imageInfos.GetPointer(i);
+                        break;
+                    }
+                }
+
+                if (set.pImageInfo != nullptr) {
+                    break;
+                }
+
                 const VkDescriptorImageInfo imageInfo = {
-                    .sampler     = resDescriptors[setIndex * 2 + resourceIndex].image->sampler,
-                    .imageView   = resDescriptors[setIndex * 2 + resourceIndex].image->view,
-                    .imageLayout = resDescriptors[setIndex * 2 + resourceIndex].imageLayout
+                    .sampler     = resDescriptors[setIndex * bindingCount + resourceIndex].image->sampler,
+                    .imageView   = resDescriptors[setIndex * bindingCount + resourceIndex].image->view,
+                    .imageLayout = resDescriptors[setIndex * bindingCount + resourceIndex].imageLayout
                 };
+
+                CELL_ASSERT(imageInfo.imageView != nullptr);
 
                 const size_t imageInfoPos = imageInfos.Append(imageInfo);
                 set.pImageInfo = imageInfos.GetPointer(imageInfoPos);
@@ -232,7 +259,7 @@ Result Pipeline::AddResources(IEnumerable<ResourceBinding>& resBindings, IEnumer
             }
 
             default: {
-                CELL_UNIMPLEMENTED
+                CELL_UNREACHABLE;
             }
             }
 
@@ -240,7 +267,6 @@ Result Pipeline::AddResources(IEnumerable<ResourceBinding>& resBindings, IEnumer
         }
     }
 
-    // BUG: (Linux) this crashes with a page fault, TEST AGAIN
     vkUpdateDescriptorSets(this->instance->device, writeSets.GetCount(), &writeSets, 0, nullptr);
 
     // collecting data

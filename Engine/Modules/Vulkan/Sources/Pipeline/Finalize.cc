@@ -58,7 +58,7 @@ Result Pipeline::Finalize() {
         .inputRate = VK_VERTEX_INPUT_RATE_VERTEX
     };
 
-    const VkVertexInputAttributeDescription vertexInputAttributeDescriptions[3] = {
+    const VkVertexInputAttributeDescription vertexInputAttributeDescriptions[4] = {
         // position
         {
             .location = 0,
@@ -81,6 +81,14 @@ Result Pipeline::Finalize() {
             .binding  = 0,
             .format   = VK_FORMAT_R32G32_SFLOAT,
             .offset   = offsetof(Vertex, textureCoordinates)
+        },
+
+        // texture index
+        {
+            .location = 3,
+            .binding  = 0,
+            .format   = VK_FORMAT_R32_UINT,
+            .offset   = offsetof(Vertex, textureIndex)
         }
     };
 
@@ -92,7 +100,7 @@ Result Pipeline::Finalize() {
         .vertexBindingDescriptionCount   = 1,
         .pVertexBindingDescriptions      = &vertexInputBindingDescription,
 
-        .vertexAttributeDescriptionCount = 3,
+        .vertexAttributeDescriptionCount = 4,
         .pVertexAttributeDescriptions    = vertexInputAttributeDescriptions,
     };
 
@@ -142,7 +150,7 @@ Result Pipeline::Finalize() {
         .depthClampEnable        = VK_TRUE,
         .rasterizerDiscardEnable = VK_FALSE,
         .polygonMode             = VK_POLYGON_MODE_FILL,
-        .cullMode                = this->cullMode,
+        .cullMode                = VK_CULL_MODE_BACK_BIT,
         .frontFace               = VK_FRONT_FACE_CLOCKWISE,
         .depthBiasEnable         = VK_FALSE,
         .depthBiasConstantFactor = 0.f,
@@ -214,9 +222,10 @@ Result Pipeline::Finalize() {
 
     // dynamic states
 
-    const VkDynamicState dynamicStates[2] = {
+    const VkDynamicState dynamicStates[3] = {
         VK_DYNAMIC_STATE_VIEWPORT,
-        VK_DYNAMIC_STATE_SCISSOR
+        VK_DYNAMIC_STATE_SCISSOR,
+        VK_DYNAMIC_STATE_CULL_MODE
     };
 
     const VkPipelineDynamicStateCreateInfo dynamicStateInfo = {
@@ -224,7 +233,7 @@ Result Pipeline::Finalize() {
         .pNext             = nullptr,
         .flags             = 0,
 
-        .dynamicStateCount = 2,
+        .dynamicStateCount = 3,
         .pDynamicStates    = dynamicStates
     };
 

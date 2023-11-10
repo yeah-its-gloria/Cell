@@ -25,7 +25,7 @@ Wrapped<String, Result> String::FromPlatformWideString(const wchar_t* input) {
 }
 
 wchar_t* String::ToPlatformWideString() const {
-    CELL_ASSERT(this->data != nullptr && this->length > 0);
+    CELL_ASSERT(this->data != nullptr && this->size > 0);
 
     // mbstowcs desires null termination
     ScopedBlock<char> dataStr = this->ToCharPointer();

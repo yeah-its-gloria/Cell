@@ -4,7 +4,7 @@
 #pragma once
 
 #include <Cell/Mathematics/Vector3.hh>
-#include <Cell/Shell/Input.hh>
+#include <Cell/Shell/Shell.hh>
 #include <Cell/System/Channel.hh>
 #include <Cell/System/Thread.hh>
 
@@ -39,12 +39,13 @@ private:
     CELL_FUNCTION_INTERNAL void OnDownward(const Cell::Shell::InputType type);
     CELL_FUNCTION_INTERNAL void OnReset(const Cell::Shell::InputType type);
     CELL_FUNCTION_INTERNAL void OnBoing(const Cell::Shell::InputType type);
+    CELL_FUNCTION_INTERNAL void OnFlipTextures(const Cell::Shell::InputType type);
+    CELL_FUNCTION_INTERNAL void OnCloseTitle(const Cell::Shell::InputType type);
 
     CELL_FUNCTION_INTERNAL void TurnCameraXController(const double value);
     CELL_FUNCTION_INTERNAL void TurnCameraYController(const double value);
 
     Cell::Shell::IShell* shell = nullptr;
-    Cell::Shell::Input* input = nullptr;
 
     // milliseconds
     double elapsedTime = 0.f;
@@ -56,6 +57,7 @@ private:
     Cell::Mathematics::Vector3 position;
     double rotationX = 0.f;
     double rotationY = 0.f;
+    bool flipTexture = true;
 
     Cell::System::Channel<uint8_t> audioTrigger { 0 };
 };

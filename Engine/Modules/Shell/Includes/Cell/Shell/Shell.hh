@@ -53,6 +53,9 @@ public:
     // Runs all updates.
     virtual Result RunDispatch() = 0;
 
+    // Tells the shell that we'd like to stop running.
+    virtual Result RequestQuit() = 0;
+
     // Gets the count of the drawable area of the current window.
     virtual Wrapped<Extent, Result> GetDrawableExtent() = 0;
 

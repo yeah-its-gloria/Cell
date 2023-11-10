@@ -75,6 +75,12 @@ Result CommandBufferManager::WriteCommands(const uint32_t index, const Command* 
             break;
         }
 
+        case CommandType::SetCullMode: {
+            VkCullModeFlags cullMode = *(VkCullModeFlags*)commands[i].parameters;
+            this->instance->setCullMode(this->buffers[index], cullMode);
+            break;
+        }
+
         case CommandType::Draw: {
             Draw* parameters = (Draw*)commands[i].parameters;
             if (parameters == nullptr) {

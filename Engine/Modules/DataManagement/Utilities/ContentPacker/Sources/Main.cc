@@ -62,7 +62,7 @@ void CellEntry(Reference<System::String> parameterString) {
         .size = (uint32_t)importedFile->GetSize().Unwrap()
     };
 
-    //System::CopyMemory(archiveEntry.name, elements[0].ToRawPointer(), Utilities::Minimum<size_t>(elements[0].GetLength(), 20));
+    //System::CopyMemory(archiveEntry.name, elements[0].ToRawPointer(), Utilities::Minimum<size_t>(elements[0].GetSize(), 20));
     System::CopyMemory(archiveEntry.name, "data.bin", 8);
 
     System::OwnedBlock<uint8_t> importedFileData(archiveEntry.size);

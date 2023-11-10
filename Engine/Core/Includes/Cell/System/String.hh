@@ -12,7 +12,7 @@ namespace Cell::System {
 class String : public Object {
 public:
     // Creates an empty string.
-    CELL_INLINE String() : data(nullptr), length(0) { }
+    CELL_INLINE String() : data(nullptr), size(0) { }
 
     // Creates a string from UTF-8 encoded data. Leaving length 0 makes it check for null termination instead.
     CELL_FUNCTION String(const char* CELL_NONNULL utf8, size_t length = 0);
@@ -38,8 +38,8 @@ public:
     // Replaces the contents of the string. By default, it empties it.
     CELL_FUNCTION void Set(const char* CELL_NONNULL data = "");
 
-    // Returns the length of the string. 0 equals empty.
-    CELL_NODISCARD CELL_INLINE size_t GetLength() const { return this->length; }
+    // Returns the number of bytes inside the string. 0 equals empty.
+    CELL_NODISCARD CELL_INLINE size_t GetSize() const { return this->size; }
 
     // Returns a null terminated C char buffer, UTF-8 encoded. The buffer lifetime is caller managed.
     CELL_NODISCARD CELL_FUNCTION char* CELL_NONNULL ToCharPointer() const;
@@ -50,8 +50,8 @@ public:
     // Returns a null terminated wide string buffer, generally UTF-16 encoded. The buffer lifetime is caller managed.
     CELL_NODISCARD CELL_FUNCTION wchar_t* CELL_NONNULL ToPlatformWideString() const;
 
-    // Utility function to check whether the string is currently empty
-    CELL_NODISCARD CELL_INLINE bool IsEmpty() const { return this->GetLength() == 0; };
+    // Utility function to check whether the string is currently empty.
+    CELL_NODISCARD CELL_INLINE bool IsEmpty() const { return this->GetSize() == 0; };
 
     // Checks if this string begins with the given substring.
     CELL_NODISCARD CELL_FUNCTION bool BeginsWith(const String& substring) const;
@@ -65,6 +65,9 @@ public:
     // Converts the string in its entirety to a number.
     CELL_NODISCARD CELL_FUNCTION Wrapped<uint64_t, Result> AsNumber(const bool isHex = false) const;
 
+    // Returns the number of characters in this string.
+    CELL_NODISCARD CELL_FUNCTION size_t GetCount() const;
+
     // Comparison operator.
     CELL_FUNCTION bool operator ==(const String& other);
 
@@ -72,10 +75,10 @@ public:
     CELL_INLINE bool operator !=(const String& other) { return !(*this == other); }
 
     // Appending operator.
-    CELL_INLINE String operator +(const String& input) { String str(this->data, this->length); str.Append(input); return str; }
+    CELL_INLINE String operator +(const String& input) { String str(this->data, this->size); str.Append(input); return str; }
 
     // Appending operator for UTF-8 encoded data.
-    CELL_INLINE String operator +(const char* input) { String str(this->data, this->length); str.Append(input); return str; }
+    CELL_INLINE String operator +(const char* input) { String str(this->data, this->size); str.Append(input); return str; }
 
     // Appending operator.
     CELL_INLINE void operator +=(const String& input) { this->Append(input); }
@@ -94,7 +97,7 @@ public:
 
 private:
     char* data;
-    size_t length;
+    size_t size;
 };
 
 }

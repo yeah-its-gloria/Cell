@@ -66,7 +66,6 @@ add_library(CellVulkan ${CELL_LIBRARY_TYPE}
     ${CMAKE_CURRENT_LIST_DIR}/Sources/Pipeline/AddShader.cc
     ${CMAKE_CURRENT_LIST_DIR}/Sources/Pipeline/Finalize.cc
     ${CMAKE_CURRENT_LIST_DIR}/Sources/Pipeline/Pipeline.cc
-    ${CMAKE_CURRENT_LIST_DIR}/Sources/Pipeline/SetCullingMode.cc
 
 # ------------------------------------------------------------------------------------------------
 

@@ -44,7 +44,7 @@ void Engine::AddFunction(Function& function, const System::String& name) {
 Value Engine::Execute(const System::String& content) {
     ScopedBlock<char> contentStr = content.ToCharPointer();
 
-    JSValue value = JS_Eval((JSContext*)this->context, contentStr, content.GetLength(), "EngineScript.js", 0);
+    JSValue value = JS_Eval((JSContext*)this->context, contentStr, content.GetSize(), "EngineScript.js", 0);
     (void)(value);
     return Value(this, nullptr);
 }

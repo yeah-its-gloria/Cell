@@ -11,7 +11,7 @@
 namespace Cell::System {
 
 void Log(const String& message, ...) {
-    CELL_ASSERT(message.GetLength() < 1025);
+    CELL_ASSERT(message.GetSize() < 1025);
 
     va_list parameters;
     va_start(parameters, message.ToCharPointer());

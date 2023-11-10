@@ -9,7 +9,7 @@
 
 namespace Cell::DataManagement::Foreign::JSON {
 
-enum class Type {
+enum class Type : uint8_t {
     Object,
     Array,
     String,
@@ -24,7 +24,7 @@ struct Value {
 
     union {
         Value* object;
-        Value* array;  // values are unnamed
+        Value* array; // values are unnamed
         System::String* string; // UTF-8
         double number;
         bool boolean;
@@ -33,10 +33,19 @@ struct Value {
     size_t size; // length for string, 0 for num/bool/null, count for object/array
 };
 
-// Parses a complete JSON document.
-CELL_FUNCTION Wrapped<Collection::List<Value>, Result> Parse(const System::String& document);
+class Document : public Object {
+public:
+    CELL_FUNCTION static Wrapped<Document*, Result> Parse(const System::String& document);
+    CELL_FUNCTION ~Document();
 
-// Frees a JSON list.
-CELL_FUNCTION void Free(Collection::List<Value>& data);
+    CELL_INLINE Value GetRoot() {
+        return this->root;
+    }
+
+private:
+    CELL_INLINE Document(Value root) : root(root) { }
+
+    Value root;
+};
 
 }

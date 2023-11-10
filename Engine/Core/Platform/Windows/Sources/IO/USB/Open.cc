@@ -35,7 +35,7 @@ CELL_FUNCTION_INTERNAL deviceProps parseDevicePath(const wchar_t* data) {
         props.vendorId = path.Substring(offset, 4).Unwrap().AsNumber(true).Unwrap();
         props.productId = path.Substring(offset + 4 + pidOffset, 4).Unwrap().AsNumber(true).Unwrap();
 
-        if (path.GetLength() >= offset + pidOffset + interfaceOffset + 8 + 2) {
+        if (path.GetSize() >= offset + pidOffset + interfaceOffset + 8 + 2) {
             props.interface = path.Substring(offset + pidOffset + interfaceOffset + 8, 2).Unwrap().AsNumber(true).Unwrap();
         }
     } else if (path.BeginsWith("USB\\{")) {
@@ -45,7 +45,7 @@ CELL_FUNCTION_INTERNAL deviceProps parseDevicePath(const wchar_t* data) {
         props.vendorId = path.Substring(offset, 4).Unwrap().AsNumber(true).Unwrap();
         props.productId = path.Substring(offset + 4 + pidOffset, 4).Unwrap().AsNumber(true).Unwrap();
 
-        if (path.GetLength() >= offset + pidOffset + interfaceOffset + 8 + 2) {
+        if (path.GetSize() >= offset + pidOffset + interfaceOffset + 8 + 2) {
             props.interface = path.Substring(offset + pidOffset + interfaceOffset + 8, 2).Unwrap().AsNumber(true).Unwrap();
         }
     }

@@ -17,6 +17,6 @@ void CellEntry(Reference<System::String> parameterString) {
 
     ScopedBlock<uint8_t> data = (uint8_t*)httpResponse.ToCharPointer();
 
-    Wrapped<HTTP::Request*, Result> result = HTTP::Request::FromRaw(System::UnownedBlock<uint8_t> {data, httpResponse.GetLength()});
+    Wrapped<HTTP::Request*, Result> result = HTTP::Request::FromRaw(System::UnownedBlock<uint8_t> {data, httpResponse.GetSize()});
     CELL_ASSERT(result.IsValid());
 }

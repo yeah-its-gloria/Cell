@@ -2,28 +2,12 @@
 // SPDX-License-Identifier: BSD-2-Clause
 
 #include "Manifest.rc.h"
+
 #include <Cell/Scoped.hh>
 #include <Cell/Shell/Implementations/Windows.hh>
 #include <Cell/System/Panic.hh>
 
 namespace Cell::Shell::Implementations {
-
-Windows::~Windows() {
-    BOOL win32Result = DestroyWindow(this->window);
-    CELL_ASSERT(win32Result);
-
-    win32Result = DestroyIcon(this->_class.hIcon);
-    CELL_ASSERT(win32Result);
-
-    win32Result = DestroyCursor(this->_class.hCursor);
-    CELL_ASSERT(win32Result);
-
-    win32Result = DeleteObject(this->_class.hbrBackground);
-    CELL_ASSERT(win32Result);
-
-    win32Result = UnregisterClassW(this->_class.lpszClassName, this->instance);
-    CELL_ASSERT(win32Result);
-}
 
 Wrapped<Windows*, Result> Windows::New(const System::String& title) {
     HINSTANCE instance = GetModuleHandleW(nullptr);
@@ -45,13 +29,7 @@ Wrapped<Windows*, Result> Windows::New(const System::String& title) {
 
     const ATOM atom = RegisterClassExW(&windowClass);
     if (atom == 0) {
-        switch (GetLastError()) {
-        // TODO: error checking
-
-        default: {
-            System::Panic("RegisterClassExW failed");
-        }
-        }
+        System::Panic("RegisterClassExW failed");
     }
 
     const DWORD exWindowStyle = WS_EX_WINDOWEDGE;
@@ -65,7 +43,7 @@ Wrapped<Windows*, Result> Windows::New(const System::String& title) {
     };
 
     const BOOL win32Result = AdjustWindowRectExForDpi(&defaultResolution, windowStyle, FALSE, exWindowStyle, GetDpiForSystem());
-    CELL_ASSERT(win32Result == TRUE); // why would this shit fail?
+    CELL_ASSERT(win32Result == TRUE);
 
     wchar_t* titleWide = title.IsEmpty() ? (wchar_t*)L"Cell" : title.ToPlatformWideString();
     HWND window = CreateWindowExW(exWindowStyle,
@@ -87,50 +65,35 @@ Wrapped<Windows*, Result> Windows::New(const System::String& title) {
     }
 
     if (window == nullptr) {
-        // TODO: error checking
         System::Panic("CreateWindowExW failed");
     }
 
     Windows* windows = new Windows(instance, window, windowClass);
 
-    SetLastError(0); // SetWindowLongPtr does not clear errors
+    SetLastError(ERROR_SUCCESS); // SetWindowLongPtr does not clear errors
     SetWindowLongPtrW(window, GWLP_USERDATA, (LONG_PTR)windows);
-    switch (GetLastError()) {
-    case ERROR_SUCCESS: {
-        break;
-    }
-
-    // TODO: error checking
-
-    default: {
+    if (GetLastError() != ERROR_SUCCESS) {
         System::Panic("SetWindowLongPtrW failed");
-    }
     }
 
     return windows;
 }
 
-Result Windows::RunDispatch() {
-    bool hasProcessed = false;
+Windows::~Windows() {
+    BOOL win32Result = DestroyWindow(this->window);
+    CELL_ASSERT(win32Result == TRUE);
 
-    MSG message;
-    while (PeekMessageW(&message, nullptr, 0, 0, PM_REMOVE) == TRUE) {
-        hasProcessed = true;
+    win32Result = DestroyIcon(this->windowClass.hIcon);
+    CELL_ASSERT(win32Result == TRUE);
 
-        TranslateMessage(&message);
-        DispatchMessageW(&message);
-    }
+    win32Result = DestroyCursor(this->windowClass.hCursor);
+    CELL_ASSERT(win32Result == TRUE);
 
-    if (!hasProcessed) {
-        return Result::NoUpdates;
-    }
+    win32Result = DeleteObject(this->windowClass.hbrBackground);
+    CELL_ASSERT(win32Result == TRUE);
 
-    if (message.message == WM_QUIT) {
-        this->isDone = true;
-        return Result::RequestedQuit;
-    }
-
-    return Result::Success;
+    win32Result = UnregisterClassW(this->windowClass.lpszClassName, this->instance);
+    CELL_ASSERT(win32Result == TRUE);
 }
 
 }

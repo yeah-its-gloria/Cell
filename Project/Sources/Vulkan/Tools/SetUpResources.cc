@@ -6,24 +6,28 @@
 using namespace Cell;
 using namespace Cell::Vulkan;
 
-void VulkanToolsSetUpResources(Pipeline* pipeline, Buffer** uniforms, Image* texture, IRenderTarget* target) {
-    ResourceBinding bindings[2] = {
+void VulkanToolsSetUpResources(Pipeline* pipeline, Buffer** uniforms, Image* texture1, Image* texture2, IRenderTarget* target) {
+    ResourceBinding bindings[3] = {
         { .type = ResourceType::Buffer, .stage = Stage::Vertex },
+        { .type = ResourceType::Image, .stage = Stage::Fragment },
         { .type = ResourceType::Image, .stage = Stage::Fragment }
     };
 
-    Collection::List<ResourceDescriptor> descriptors(2 * target->GetImageCount()); // 2 resources per image
+    Collection::List<ResourceDescriptor> descriptors(3 * target->GetImageCount()); // 3 resources per image
 
-    for (size_t i = 0; i < descriptors.GetCount(); i += 2) {
-        descriptors[i].buffer = uniforms[i / 2];
+    for (size_t i = 0; i < descriptors.GetCount(); i += 3) {
+        descriptors[i].buffer = uniforms[i / 3];
         descriptors[i].bufferOffset = 0;
         descriptors[i].bufferRange = sizeof(ExampleUBO);
 
-        descriptors[i + 1].image = texture;
+        descriptors[i + 1].image = texture1;
         descriptors[i + 1].imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+
+        descriptors[i + 2].image = texture2;
+        descriptors[i + 2].imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
     }
 
-    Collection::Array bindingsArray(bindings, 2);
+    Collection::Array bindingsArray(bindings, 3);
     const Result result = pipeline->AddResources(bindingsArray, descriptors);
     CELL_ASSERT(result == Result::Success);
 }

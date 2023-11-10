@@ -35,9 +35,12 @@ CELL_FUNCTION_INTERNAL void VulkanToolsGenerateRenderCommands(const uint32_t ver
                                                               Cell::Vulkan::Pipeline* CELL_NONNULL pipeline,
                                                               Cell::Vulkan::Buffer* CELL_NONNULL buffer,
                                                               Cell::Vulkan::IRenderTarget* CELL_NONNULL target,
-                                                              const uint32_t frameId);
+                                                              const uint32_t frameId
+);
 
 CELL_FUNCTION_INTERNAL void VulkanToolsSetUpResources(Cell::Vulkan::Pipeline* CELL_NONNULL pipeline,
                                                       Cell::Vulkan::Buffer* CELL_NONNULL* CELL_NONNULL uniforms,
-                                                      Cell::Vulkan::Image* CELL_NONNULL texture,
-                                                      Cell::Vulkan::IRenderTarget* CELL_NONNULL target);
+                                                      Cell::Vulkan::Image* CELL_NONNULL texture1,
+                                                      Cell::Vulkan::Image* CELL_NONNULL texture2,
+                                                      Cell::Vulkan::IRenderTarget* CELL_NONNULL target
+);

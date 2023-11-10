@@ -21,6 +21,7 @@ enum class CommandType : uint8_t {
     BindDescriptorSets, // BindDescriptorSets
     SetViewport,        // VkViewport
     SetScissor,         // VkRect2D
+    SetCullMode,        // VkCullModeFlags
     Draw,               // Draw
     DrawIndexed,        // DrawIndexed
     InsertBarrier,      // InsertBarrier

@@ -6,12 +6,14 @@
 namespace Cell::Vulkan {
 
 Result Instance::CreateDevice() {
-    const char* extensions[2] = {
+    const char* extensions[4] = {
         VK_KHR_SWAPCHAIN_EXTENSION_NAME,
-        VK_KHR_DYNAMIC_RENDERING_EXTENSION_NAME
+        VK_KHR_DYNAMIC_RENDERING_EXTENSION_NAME,
+        VK_KHR_SHADER_NON_SEMANTIC_INFO_EXTENSION_NAME,
+        VK_EXT_EXTENDED_DYNAMIC_STATE_EXTENSION_NAME
     };
 
-    return this->CreateDevice(extensions, 2);
+    return this->CreateDevice(extensions, 4);
 }
 
 Result Instance::CreateDevice(const char** extensions, const uint32_t count) {
@@ -107,9 +109,15 @@ Result Instance::CreateDevice(const char** extensions, const uint32_t count) {
 
     // Device creation
 
+    const VkPhysicalDeviceExtendedDynamicStateFeaturesEXT extendedDynamicStateFeature = {
+        .sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_EXTENDED_DYNAMIC_STATE_FEATURES_EXT,
+        .pNext = nullptr,
+        .extendedDynamicState = VK_TRUE
+    };
+
     const VkPhysicalDeviceDynamicRenderingFeaturesKHR dynamicRenderingFeature = {
         .sType            = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DYNAMIC_RENDERING_FEATURES_KHR,
-        .pNext            = nullptr,
+        .pNext            = (void*)&extendedDynamicStateFeature,
         .dynamicRendering = VK_TRUE
     };
 

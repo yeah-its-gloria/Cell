@@ -1,6 +1,7 @@
 // SPDX-FileCopyrightText: Copyright 2023 Gloria G.
 // SPDX-License-Identifier: BSD-2-Clause
 
+#include <Cell/Scoped.hh>
 #include <Cell/DataManagement/Foreign/JSON.hh>
 #include <Cell/DataManagement/Foreign/glTF.hh>
 #include <Cell/System/Panic.hh>
@@ -42,8 +43,8 @@ Result ParseGlTF(const uint8_t* data, const size_t size) {
 
     System::String jsonData((const char*)data + sizeof(glTFHeader) + sizeof(glTFChunkHeader), jsonChunkHeader->chunkSize * sizeof(char));
 
-    Collection::List<JSON::Value> values = JSON::Parse(jsonData).Unwrap();
-    (void)(values);
+    ScopedObject document = JSON::Document::Parse(jsonData).Unwrap();
+    (void)(document);
 
     // ...
 

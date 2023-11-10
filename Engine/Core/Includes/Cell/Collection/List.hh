@@ -124,7 +124,7 @@ public:
     CELL_NODISCARD CELL_INLINE T* GetPointer(const size_t index) {
         CELL_ASSERT(index < this->count);
 
-        return __builtin_addressof(this->data[index]);
+        return this->data + index;
     }
 
     // Retrieves the element at the specific index.

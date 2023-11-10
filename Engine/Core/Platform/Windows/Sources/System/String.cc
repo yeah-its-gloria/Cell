@@ -37,11 +37,11 @@ wchar_t* String::ToPlatformWideString() const {
     // Win32 APIs require null termination
     ScopedBlock<char> data = this->ToCharPointer();
 
-    int outputSize = MultiByteToWideChar(CP_UTF8, MB_ERR_INVALID_CHARS, &data, (int)this->GetLength(), nullptr, 0);
+    int outputSize = MultiByteToWideChar(CP_UTF8, MB_ERR_INVALID_CHARS, &data, (int)this->GetSize(), nullptr, 0);
     CELL_ASSERT(outputSize > 0);
 
     wchar_t* output = System::AllocateMemory<wchar_t>(outputSize + 1);
-    outputSize = MultiByteToWideChar(CP_UTF8, MB_ERR_INVALID_CHARS, &data, (int)this->GetLength(), output, outputSize);
+    outputSize = MultiByteToWideChar(CP_UTF8, MB_ERR_INVALID_CHARS, &data, (int)this->GetSize(), output, outputSize);
     CELL_ASSERT(outputSize > 0);
 
     return output;

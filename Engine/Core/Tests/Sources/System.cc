@@ -33,4 +33,9 @@ void CellEntry(Reference<String> parameterString) {
     CELL_ASSERT(a == "Hello");
     CELL_ASSERT(b == " World");
     CELL_ASSERT(c == "Hello World");
+
+    //String euro = "€";
+
+    //CELL_ASSERT(euro.GetSize() == 3);
+    //CELL_ASSERT(euro.GetCount() == 1);
 }

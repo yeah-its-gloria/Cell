@@ -30,7 +30,7 @@ void Example::VulkanThread() {
     ScopedObject<Image> lesbianTexture = VulkanToolsLoadTexture(&instance, this->GetContentPath("/Textures/Raw/lesbian.bin"));
     ScopedObject<Image> transTexture = VulkanToolsLoadTexture(&instance, this->GetContentPath("/Textures/Raw/trans.bin"));
 
-    constexpr size_t vertexCount = 8;
+    constexpr size_t vertexCount = 16;
     constexpr size_t indexCount = 36;
 
     ScopedObject<Buffer> buffer = instance->CreateBuffer(sizeof(Vertex) * vertexCount + sizeof(uint16_t) * indexCount,
@@ -43,33 +43,43 @@ void Example::VulkanThread() {
     }
 
     const Vertex vertices[vertexCount] = {
-        { { -1.0f, -1.0f, -1.0f }, { 1.f, 1.f, 1.f, 1.f }, { 0.0f, 1.0f } },
-        { { 1.0f, -1.0f, -1.0f }, { 1.f, 1.f, 1.f, 1.f }, { 1.0f, 1.0f } },
-        { { -1.0f, 1.0f, -1.0f }, { 1.f, 1.f, 1.f, 1.f }, { 0.0f, 0.0f } },
-        { { 1.0f, 1.0f, -1.0f }, { 1.f, 1.f, 1.f, 1.f }, { 1.0f, 0.0f } },
+        { { -1.0f, -1.0f, -1.0f }, { 1.f, 1.f, 1.f, 1.f }, { 0.0f, 1.0f }, 0 },
+        { {  1.0f, -1.0f, -1.0f }, { 1.f, 1.f, 1.f, 1.f }, { 1.0f, 1.0f }, 0 },
+        { { -1.0f,  1.0f, -1.0f }, { 1.f, 1.f, 1.f, 1.f }, { 0.0f, 0.0f }, 0 },
+        { {  1.0f,  1.0f, -1.0f }, { 1.f, 1.f, 1.f, 1.f }, { 1.0f, 0.0f }, 0 },
 
-        { { -1.0f, -1.0f, 1.0f }, { 1.f, 1.f, 1.f, 1.f }, { 0.0f, 1.0f } },
-        { { 1.0f, -1.0f, 1.0f }, { 1.f, 1.f, 1.f, 1.f }, { 1.0f, 1.0f } },
-        { { -1.0f, 1.0f, 1.0f }, { 1.f, 1.f, 1.f, 1.f }, { 0.0f, 0.0f } },
-        { { 1.0f, 1.0f, 1.0f }, { 1.f, 1.f, 1.f, 1.f }, { 1.0f, 0.0f } },
+        { { -1.0f, -1.0f,  1.0f }, { 1.f, 1.f, 1.f, 1.f }, { 0.0f, 1.0f }, 0 },
+        { {  1.0f, -1.0f,  1.0f }, { 1.f, 1.f, 1.f, 1.f }, { 1.0f, 1.0f }, 0 },
+        { { -1.0f,  1.0f,  1.0f }, { 1.f, 1.f, 1.f, 1.f }, { 0.0f, 0.0f }, 0 },
+        { {  1.0f,  1.0f,  1.0f }, { 1.f, 1.f, 1.f, 1.f }, { 1.0f, 0.0f }, 0 },
+
+        { { -1.0f, -1.0f, -1.0f }, { 1.f, 1.f, 1.f, 1.f }, { 0.0f, 0.0f }, 1 },
+        { {  1.0f, -1.0f, -1.0f }, { 1.f, 1.f, 1.f, 1.f }, { 1.0f, 0.0f }, 1 },
+        { { -1.0f, -1.0f,  1.0f }, { 1.f, 1.f, 1.f, 1.f }, { 0.0f, 1.0f }, 1 },
+        { {  1.0f, -1.0f,  1.0f }, { 1.f, 1.f, 1.f, 1.f }, { 1.0f, 1.0f }, 1 },
+
+        { { -1.0f,  1.0f, -1.0f }, { 1.f, 1.f, 1.f, 1.f }, { 0.0f, 0.0f }, 1 },
+        { {  1.0f,  1.0f, -1.0f }, { 1.f, 1.f, 1.f, 1.f }, { 1.0f, 0.0f }, 1 },
+        { { -1.0f,  1.0f,  1.0f }, { 1.f, 1.f, 1.f, 1.f }, { 0.0f, 1.0f }, 1 },
+        { {  1.0f,  1.0f,  1.0f }, { 1.f, 1.f, 1.f, 1.f }, { 1.0f, 1.0f }, 1 },
     };
 
     const uint16_t indices[indexCount] = {
-        // bottom
+        // front
         0, 2, 1,
         1, 2, 3,
 
-        // back
-        0, 1, 4,
-        4, 1, 5,
+        // bottom
+        8, 9, 10,
+        10, 9, 11,
 
         // left
         0, 4, 6,
         6, 2, 0,
 
-        // front
-        6, 7, 2,
-        2, 7, 3,
+        // top
+        14, 15, 12,
+        12, 15, 13,
 
         // right
         3, 7, 5,
@@ -81,12 +91,11 @@ void Example::VulkanThread() {
     };
 
     buffer->Copy(System::UnownedBlock { vertices, vertexCount });
-    buffer->Copy(System::UnownedBlock { indices, indexCount }, sizeof(Vertex) * 8);
+    buffer->Copy(System::UnownedBlock { indices, indexCount }, sizeof(Vertex) * vertexCount);
 
     ScopedObject<Pipeline> pipeline = instance->CreatePipeline(&target).Unwrap();
-    pipeline->SetCullingMode(CullMode::Back);
 
-    VulkanToolsSetUpResources(&pipeline, &uniforms, &lesbianTexture, &target);
+    VulkanToolsSetUpResources(&pipeline, &uniforms, &lesbianTexture, &transTexture, &target);
 
     VulkanToolsLoadShader(&pipeline, this->GetContentPath("/Shaders/DefaultVertex.spv"), Stage::Vertex);
     VulkanToolsLoadShader(&pipeline, this->GetContentPath("/Shaders/DefaultFragment.spv"), Stage::Fragment);
@@ -100,23 +109,24 @@ void Example::VulkanThread() {
     CELL_ASSERT(result == Result::Success);
 
     ExampleUBO ubo;
-    ubo.projection.Perspective(Mathematics::Utilities::DegreesToRadians(45.f), (float)extent.width / (float)extent.height, 0.1, 1000.f);
+
+    ubo.model.SetToIdentity();
+
+    //ubo.view.LookAt(Vector3 { 0.f, 5.f, 5.f }, Mathematics::Utilities::DegreesToRadians(10.f), Mathematics::Utilities::DegreesToRadians(90.f));
+    ubo.view.LookAt({ 0.f, 0.1f, -5.f }, { 0.f, 0.f, 0.f }, { 0.f, 0.f, -1.f });
 
     uint64_t finishedTick = System::GetPreciseTickerValue();
     while (this->shell->IsStillActive()) {
         this->renderDeltaTime = Cell::Utilities::Minimum((System::GetPreciseTickerValue() - finishedTick) / 1000.f, 0.001f);
 
         ubo.timeMilliseconds = this->elapsedTime;
-
-        ubo.model.SetToIdentity();
+        ubo.projection.Perspective(Mathematics::Utilities::DegreesToRadians(45.f), (float)extent.width / (float)extent.height, 0.1, 1000.f);
 
         this->inputMutex.Lock();
 
-        ubo.view.LookAt({ 0.f, 5.f, 5.f }, { 0.f, 0.f, 0.f }, { 0.f, 0.f, -1.f });
-        //ubo.view.LookAt(Vector3 { 0.f, 5.f, 5.f }, Mathematics::Utilities::DegreesToRadians(10.f), Mathematics::Utilities::DegreesToRadians(90.f));
-        ubo.view.Translate(this->position);
-        ubo.view.Rotate(this->rotationX, { 0.f, 0.f, 1.f });
-        ubo.view.Rotate(this->rotationY, { 1.f, 0.f, 0.f });
+        ubo.projection.Translate(this->position);
+        ubo.projection.Rotate(this->rotationX, { 0.f, 1.f, 0.f });
+        ubo.projection.Rotate(this->rotationY, { 1.f, 0.f, 0.f });
 
         this->inputMutex.Unlock();
 
@@ -135,7 +145,6 @@ void Example::VulkanThread() {
             CELL_ASSERT(result == Result::Success);
 
             extent = target->GetExtent();
-            ubo.projection.Perspective(Mathematics::Utilities::DegreesToRadians(45.f), (float)extent.width / (float)extent.height, 0.1, 10.f);
             break;
         }
 
