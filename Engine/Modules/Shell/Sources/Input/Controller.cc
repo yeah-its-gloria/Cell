@@ -4,6 +4,7 @@
 #include <Cell/Shell/Input.hh>
 
 #include <Cell/Shell/Controller/DualSense.hh>
+#include <Cell/Shell/Controller/DualShock4.hh>
 #include <Cell/Shell/Controller/SwitchPro.hh>
 #include <Cell/Shell/Controller/Xbox.hh>
 
@@ -23,6 +24,19 @@ Result Input::DiscoverControllers() {
         this->controllers.Append(dualSense);
     }
 
+    Wrapped<Controller::DualShock4*, Result> dualShock4Result = Controller::DualShock4::Find();
+    if (dualShock4Result.IsValid()) {
+        Controller::DualShock4* dualShock4 = dualShock4Result.Unwrap();
+
+        dualShock4->SetProperties({
+            .rumbleLeft = 0,
+            .rumbleRight = 0,
+            .playerIndex = 2
+        });
+
+        this->controllers.Append(dualShock4);
+    }
+
     Wrapped<Controller::SwitchPro*, Result> switchProResult = Controller::SwitchPro::Find();
     if (switchProResult.IsValid()) {
         Controller::SwitchPro* switchPro = switchProResult.Unwrap();
@@ -30,7 +44,7 @@ Result Input::DiscoverControllers() {
         switchPro->SetProperties({
             .rumbleLeft = 0,
             .rumbleRight = 0,
-            .playerIndex = 2
+            .playerIndex = 3
         });
 
         this->controllers.Append(switchPro);
@@ -43,7 +57,7 @@ Result Input::DiscoverControllers() {
         xbox->SetProperties({
             .rumbleLeft = 0,
             .rumbleRight = 0,
-            .playerIndex = 3
+            .playerIndex = 4
         });
 
         this->controllers.Append(xbox);

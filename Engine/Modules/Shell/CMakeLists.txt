@@ -13,6 +13,7 @@ add_library(CellShell ${CELL_LIBRARY_TYPE}
     ${MODULE_INCLUDES_DIR}/Cell/Shell/Shell.hh
 
     ${MODULE_INCLUDES_DIR}/Cell/Shell/Controller/DualSense.hh
+    ${MODULE_INCLUDES_DIR}/Cell/Shell/Controller/DualShock4.hh
     ${MODULE_INCLUDES_DIR}/Cell/Shell/Controller/SwitchPro.hh
     ${MODULE_INCLUDES_DIR}/Cell/Shell/Controller/Xbox.hh
 
@@ -31,6 +32,7 @@ add_library(CellShell ${CELL_LIBRARY_TYPE}
 
     ${CMAKE_CURRENT_LIST_DIR}/Sources/Controller/DualSenseStructures.hh
     ${CMAKE_CURRENT_LIST_DIR}/Sources/Controller/DualSense.cc
+    ${CMAKE_CURRENT_LIST_DIR}/Sources/Controller/DualShock4.cc
 
     ${CMAKE_CURRENT_LIST_DIR}/Sources/Controller/SwitchPro/Structures.hh
     ${CMAKE_CURRENT_LIST_DIR}/Sources/Controller/SwitchPro/Commands.cc

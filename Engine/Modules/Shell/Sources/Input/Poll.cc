@@ -19,12 +19,22 @@ Result Input::Poll() {
     if (this->controllers.GetCount() > 0) {
         for (IController* controller : this->controllers) {
             Result result = controller->Update();
-            if (result != Result::Success) {
-                return result;
+            switch (result) {
+            case Result::Success: {
+                reports.Append(controller->GetReport());
+                previousReports.Append(controller->GetPreviousReport());
+                break;
             }
 
-            reports.Append(controller->GetReport());
-            previousReports.Append(controller->GetPreviousReport());
+            case Result::Timeout: {
+                System::Log("controller failed to respond");
+                break;
+            }
+
+            default: {
+                System::Panic("Cell::Shell::IController::Update failed");
+            }
+            }
         }
     }
 
