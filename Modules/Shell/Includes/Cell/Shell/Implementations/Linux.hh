@@ -36,10 +36,11 @@ public:
     // Returns a handle to the current XDG toplevel instance.
     CELL_NODISCARD CELL_INLINE struct xdg_toplevel* GetWaylandXDGToplevel() const { return this->xdgToplevel; }
 
-    Result RunDispatch() override;
-    Wrapped<Extent, Result> GetDrawableExtent() override;
-    Result SetDrawableExtent(const Extent extent) override;
-    Result SetNewTitle(const System::String& title) override;
+    CELL_FUNCTION Result RunDispatch() override;
+    CELL_FUNCTION Result RequestQuit() override;
+    CELL_FUNCTION Wrapped<Extent, Result> GetDrawableExtent() override;
+    CELL_FUNCTION Result SetDrawableExtent(const Extent extent) override;
+    CELL_FUNCTION Result SetNewTitle(const System::String& title) override;
 
 private:
     CELL_INLINE Linux(struct wl_display* display, struct wl_registry* registry) : display(display), registry(registry) { }

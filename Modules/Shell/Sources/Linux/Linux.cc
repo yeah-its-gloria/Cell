@@ -17,6 +17,11 @@ Result Linux::RunDispatch() {
     return Result::Success;
 }
 
+Result Linux::RequestQuit() {
+    this->xdgRequestedClose = true;
+    return Result::Success;
+}
+
 Wrapped<Extent, Result> Linux::GetDrawableExtent() {
     // TODO: don't hardcode this lol
 
