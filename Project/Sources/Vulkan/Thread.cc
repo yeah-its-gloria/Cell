@@ -6,6 +6,7 @@
 #include <Cell/Scoped.hh>
 #include <Cell/Mathematics/Utilities.hh>
 #include <Cell/System/BlockImpl.hh>
+#include <Cell/System/Log.hh>
 #include <Cell/System/Timer.hh>
 #include <Cell/Utilities/MinMaxClamp.hh>
 #include <Cell/Vulkan/WSITarget.hh>
@@ -95,7 +96,7 @@ void Example::VulkanThread() {
 
     ScopedObject<Pipeline> pipeline = instance->CreatePipeline(&target).Unwrap();
 
-    VulkanToolsSetUpResources(&pipeline, &uniforms, &lesbianTexture, &transTexture, &target);
+    VulkanToolsSetUpResources(&pipeline, uniforms, &lesbianTexture, &transTexture, &target);
 
     VulkanToolsLoadShader(&pipeline, this->GetContentPath("/Shaders/DefaultVertex.spv"), Stage::Vertex);
     VulkanToolsLoadShader(&pipeline, this->GetContentPath("/Shaders/DefaultFragment.spv"), Stage::Fragment);
@@ -117,24 +118,24 @@ void Example::VulkanThread() {
 
     uint64_t finishedTick = System::GetPreciseTickerValue();
     while (this->shell->IsStillActive()) {
-        this->renderDeltaTime = Cell::Utilities::Minimum((System::GetPreciseTickerValue() - finishedTick) / 1000.f, 0.001f);
+        this->renderDeltaTime = Cell::Utilities::Minimum(( System::GetPreciseTickerValue() - finishedTick) / 1000.f, 0.001f);
 
         ubo.timeMilliseconds = this->elapsedTime;
         ubo.projection.Perspective(Mathematics::Utilities::DegreesToRadians(45.f), (float)extent.width / (float)extent.height, 0.1, 1000.f);
 
         this->inputMutex.Lock();
 
-        ubo.projection.Translate(this->position);
         ubo.projection.Rotate(this->rotationX, { 0.f, 1.f, 0.f });
         ubo.projection.Rotate(this->rotationY, { 1.f, 0.f, 0.f });
+        ubo.projection.Translate(this->position);
 
         this->inputMutex.Unlock();
 
-        uniforms[target->GetFrameCount()]->Copy(System::UnownedBlock { &ubo });
+        uniforms[target->GetFrameCounter()]->Copy(System::UnownedBlock { &ubo });
 
-        VulkanToolsGenerateRenderCommands(vertexCount, indexCount, &cmdBufferManager, &pipeline, &buffer, &target, target->GetFrameCount());
+        VulkanToolsGenerateRenderCommands(vertexCount, indexCount, &cmdBufferManager, &pipeline, &buffer, &target, target->GetFrameCounter());
 
-        result = instance->RenderImage(&target, cmdBufferManager->GetCommandBufferHandle(target->GetFrameCount()));
+        result = instance->RenderImage(&target, cmdBufferManager->GetCommandBufferHandle(target->GetFrameCounter()));
         switch (result) {
         case Result::Success: {
             break;

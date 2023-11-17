@@ -4,6 +4,7 @@
 #pragma once
 
 #include "../Vulkan/Tools.hh"
+
 #include <Cell/OpenXR/Instance.hh>
 #include <Cell/Vulkan/Buffer.hh>
 #include <Cell/Vulkan/CommandBufferManager.hh>

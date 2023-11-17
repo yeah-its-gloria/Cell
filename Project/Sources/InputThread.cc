@@ -5,6 +5,7 @@
 
 #include <Cell/Scoped.hh>
 #include <Cell/Shell/Input.hh>
+#include <Cell/System/Log.hh>
 #include <Cell/System/Timer.hh>
 #include <Cell/Utilities/MinMaxClamp.hh>
 
@@ -20,6 +21,7 @@ void Example::OnForward(const InputType type) {
         return;
     }
 
+    this->renderDeltaTime = 0.001;
     this->inputMutex.Lock();
     this->position.z += MovementSpeed * this->renderDeltaTime;
     this->inputMutex.Unlock();
@@ -30,18 +32,21 @@ void Example::OnBackward(const InputType type) {
         return;
     }
 
+    this->renderDeltaTime = 0.001;
     this->inputMutex.Lock();
     this->position.z -= MovementSpeed * this->renderDeltaTime;
     this->inputMutex.Unlock();
 }
 
 void Example::OnForwardAxis(const double value) {
+    this->renderDeltaTime = 0.001;
     this->inputMutex.Lock();
     this->position.z -= MovementSpeed * this->renderDeltaTime * value;
     this->inputMutex.Unlock();
 }
 
 void Example::OnRightwardAxis(const double value) {
+    this->renderDeltaTime = 0.001;
     this->inputMutex.Lock();
     this->position.x -= MovementSpeed * this->renderDeltaTime * value;
     this->inputMutex.Unlock();
@@ -52,6 +57,7 @@ void Example::OnLeftward(const InputType type) {
         return;
     }
 
+    this->renderDeltaTime = 0.001;
     this->inputMutex.Lock();
     this->position.x += MovementSpeed * this->renderDeltaTime;
     this->inputMutex.Unlock();
@@ -62,6 +68,7 @@ void Example::OnRightward(const InputType type) {
         return;
     }
 
+    this->renderDeltaTime = 0.001;
     this->inputMutex.Lock();
     this->position.x -= MovementSpeed * this->renderDeltaTime;
     this->inputMutex.Unlock();
@@ -72,6 +79,7 @@ void Example::OnUpward(const InputType type) {
         return;
     }
 
+    this->renderDeltaTime = 0.001;
     this->inputMutex.Lock();
     this->position.y -= MovementSpeed * this->renderDeltaTime;
     this->inputMutex.Unlock();
@@ -82,6 +90,7 @@ void Example::OnDownward(const InputType type) {
         return;
     }
 
+    this->renderDeltaTime = 0.001;
     this->inputMutex.Lock();
     this->position.y += MovementSpeed * this->renderDeltaTime;
     this->inputMutex.Unlock();
@@ -125,12 +134,14 @@ void Example::OnCloseTitle(const InputType type) {
 }
 
 void Example::TurnCameraXController(const double value) {
+    this->renderDeltaTime = 0.001;
     this->inputMutex.Lock();
     this->rotationX += fmod(10.f * this->renderDeltaTime * value, 360.0);
     this->inputMutex.Unlock();
 }
 
 void Example::TurnCameraYController(const double value) {
+    this->renderDeltaTime = 0.001;
     this->inputMutex.Lock();
     this->rotationY -= fmod(10.f * this->renderDeltaTime * value, 360.0);
     this->inputMutex.Unlock();
@@ -217,6 +228,6 @@ void Example::InputThread() {
         shellResult = input->Poll();
         CELL_ASSERT(shellResult == Shell::Result::Success);
 
-        System::SleepPrecise(100);
+        System::Thread::Yield();
     }
 }

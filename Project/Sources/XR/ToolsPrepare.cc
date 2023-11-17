@@ -81,9 +81,8 @@ void XRToolsPrepare(Example* example,
     CELL_ASSERT(result == Vulkan::Result::Success);
 
     pipeline = vkInstance->CreatePipeline(target).Unwrap();
-    //pipeline->SetCullingMode(Vulkan::CullMode::Back);
 
-    VulkanToolsSetUpResources(pipeline, &uniforms, texture1, texture2, target);
+    VulkanToolsSetUpResources(pipeline, uniforms, texture1, texture2, target);
 
     VulkanToolsLoadShader(pipeline, example->GetContentPath("/Shaders/DefaultVertex.spv"), Vulkan::Stage::Vertex);
     VulkanToolsLoadShader(pipeline, example->GetContentPath("/Shaders/DefaultFragment.spv"), Vulkan::Stage::Fragment);

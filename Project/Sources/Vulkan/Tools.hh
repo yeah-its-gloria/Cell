@@ -5,6 +5,7 @@
 
 #include "../Example.hh"
 
+#include <Cell/Collection/List.hh>
 #include <Cell/Mathematics/Matrix4x4.hh>
 #include <Cell/Vulkan/Buffer.hh>
 #include <Cell/Vulkan/CommandBufferManager.hh>
@@ -39,7 +40,7 @@ CELL_FUNCTION_INTERNAL void VulkanToolsGenerateRenderCommands(const uint32_t ver
 );
 
 CELL_FUNCTION_INTERNAL void VulkanToolsSetUpResources(Cell::Vulkan::Pipeline* CELL_NONNULL pipeline,
-                                                      Cell::Vulkan::Buffer* CELL_NONNULL* CELL_NONNULL uniforms,
+                                                      Cell::Collection::List<Cell::Vulkan::Buffer*>& uniforms,
                                                       Cell::Vulkan::Image* CELL_NONNULL texture1,
                                                       Cell::Vulkan::Image* CELL_NONNULL texture2,
                                                       Cell::Vulkan::IRenderTarget* CELL_NONNULL target

@@ -8,10 +8,10 @@ using namespace Cell::Vulkan::CommandParameters;
 
 void VulkanToolsGenerateRenderCommands(const uint32_t vertexCount,
                                        const uint32_t drawCount,
-                                             CommandBufferManager* commandBuffer,
-                                             Pipeline* pipeline,
-                                             Buffer* buffer,
-                                             IRenderTarget* target,
+                                       CommandBufferManager* commandBuffer,
+                                       Pipeline* pipeline,
+                                       Buffer* buffer,
+                                       IRenderTarget* target,
                                        const uint32_t frameId) {
     Result result = commandBuffer->Reset();
     CELL_ASSERT(result == Result::Success);

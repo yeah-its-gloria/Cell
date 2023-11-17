@@ -3,10 +3,13 @@
 
 #include "../Tools.hh"
 
+#include <Cell/Collection/Array.hh>
+#include <Cell/System/Log.hh>
+
 using namespace Cell;
 using namespace Cell::Vulkan;
 
-void VulkanToolsSetUpResources(Pipeline* pipeline, Buffer** uniforms, Image* texture1, Image* texture2, IRenderTarget* target) {
+void VulkanToolsSetUpResources(Pipeline* pipeline, Collection::List<Buffer*>& uniforms, Image* texture1, Image* texture2, IRenderTarget* target) {
     ResourceBinding bindings[3] = {
         { .type = ResourceType::Buffer, .stage = Stage::Vertex },
         { .type = ResourceType::Image, .stage = Stage::Fragment },
