@@ -208,15 +208,6 @@ void Windows::HandleKeyInput(const WPARAM key, const LPARAM extInfo, const bool 
 #endif
 
     const Shell::KeyboardButton value = KeyLUT[newKey - 1];
-    uint8_t bit = 0;
-    if (value != KeyboardButton::None) {
-        for (; bit < 64; bit++) {
-            if (((uint64_t)value >> bit) & 0x1) {
-                break;
-            }
-        }
-    }
-
     if (isPressed) {
         this->keys |= value;
     } else {

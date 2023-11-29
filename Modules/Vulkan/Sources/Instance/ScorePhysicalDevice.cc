@@ -81,12 +81,6 @@ uint16_t Instance::ScorePhysicalDevice(VkPhysicalDevice device) {
 
     // Queue family checks
 
-    uint32_t queueFamilyPropertiesCount = 0;
-    vkGetPhysicalDeviceQueueFamilyProperties(device, &queueFamilyPropertiesCount, nullptr);
-
-    System::OwnedBlock<VkQueueFamilyProperties> queueFamilyProperties(queueFamilyPropertiesCount);
-    vkGetPhysicalDeviceQueueFamilyProperties(device, &queueFamilyPropertiesCount, queueFamilyProperties);
-
     const uint64_t queues = Instance::QueryPhysicalDeviceQueues(device);
     uint32_t graphicsQueue = queues >> 32;
     uint32_t transferQueue = queues & 0xffffffff;
