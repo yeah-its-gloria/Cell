@@ -21,7 +21,6 @@ void Example::OnForward(const InputType type) {
         return;
     }
 
-    this->renderDeltaTime = 0.001;
     this->inputMutex.Lock();
     this->position.z += MovementSpeed * this->renderDeltaTime;
     this->inputMutex.Unlock();
@@ -32,21 +31,18 @@ void Example::OnBackward(const InputType type) {
         return;
     }
 
-    this->renderDeltaTime = 0.001;
     this->inputMutex.Lock();
     this->position.z -= MovementSpeed * this->renderDeltaTime;
     this->inputMutex.Unlock();
 }
 
 void Example::OnForwardAxis(const double value) {
-    this->renderDeltaTime = 0.001;
     this->inputMutex.Lock();
     this->position.z -= MovementSpeed * this->renderDeltaTime * value;
     this->inputMutex.Unlock();
 }
 
 void Example::OnRightwardAxis(const double value) {
-    this->renderDeltaTime = 0.001;
     this->inputMutex.Lock();
     this->position.x -= MovementSpeed * this->renderDeltaTime * value;
     this->inputMutex.Unlock();
@@ -57,7 +53,6 @@ void Example::OnLeftward(const InputType type) {
         return;
     }
 
-    this->renderDeltaTime = 0.001;
     this->inputMutex.Lock();
     this->position.x += MovementSpeed * this->renderDeltaTime;
     this->inputMutex.Unlock();
@@ -68,7 +63,6 @@ void Example::OnRightward(const InputType type) {
         return;
     }
 
-    this->renderDeltaTime = 0.001;
     this->inputMutex.Lock();
     this->position.x -= MovementSpeed * this->renderDeltaTime;
     this->inputMutex.Unlock();
@@ -79,9 +73,8 @@ void Example::OnUpward(const InputType type) {
         return;
     }
 
-    this->renderDeltaTime = 0.001;
     this->inputMutex.Lock();
-    this->position.y -= MovementSpeed * this->renderDeltaTime;
+    this->position.y += MovementSpeed * this->renderDeltaTime;
     this->inputMutex.Unlock();
 }
 
@@ -90,9 +83,8 @@ void Example::OnDownward(const InputType type) {
         return;
     }
 
-    this->renderDeltaTime = 0.001;
     this->inputMutex.Lock();
-    this->position.y += MovementSpeed * this->renderDeltaTime;
+    this->position.y -= MovementSpeed * this->renderDeltaTime;
     this->inputMutex.Unlock();
 }
 
