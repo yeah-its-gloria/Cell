@@ -104,16 +104,16 @@ Result Pipeline::AddResources(IEnumerable<ResourceBinding>& resBindings, IEnumer
     for (VkDescriptorSetLayoutBinding binding : bindings) {
         Optional<size_t> position = countPerType.Has(binding.descriptorType);
         if (position) {
-            countPerType.Set(position, (countPerType.GetValue(position) + 1) * setCount);
+            countPerType.Set(position, countPerType.GetValue(position) + 1);
             continue;
         }
 
-        countPerType.Append(binding.descriptorType, setCount);
+        countPerType.Append(binding.descriptorType, 1);
     }
 
     Collection::List<VkDescriptorPoolSize> poolSizes(countPerType.GetCount());
     for (size_t i = 0; i < countPerType.GetCount(); i++) {
-        poolSizes[i].descriptorCount = countPerType.GetValue(i);
+        poolSizes[i].descriptorCount = countPerType.GetValue(i) * setCount;
         poolSizes[i].type = countPerType.GetKey(i);
     }
 

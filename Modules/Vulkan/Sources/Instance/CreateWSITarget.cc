@@ -8,9 +8,9 @@
 
 using namespace Cell;
 
-CELL_INLINE VkSurfaceFormatKHR selectFormat(VkSurfaceFormatKHR* CELL_NONNULL formats, uint32_t count) {
+CELL_INLINE VkSurfaceFormatKHR selectFormat(const VkSurfaceFormatKHR* CELL_NONNULL formats, const uint32_t count) {
     for (uint32_t index = 0; index < count; index++) {
-        if (formats[index].format == VK_FORMAT_B8G8R8A8_SRGB && formats[index].colorSpace == VK_COLOR_SPACE_SRGB_NONLINEAR_KHR) {
+        if (formats[index].format == VK_FORMAT_R8G8B8A8_SRGB && formats[index].colorSpace == VK_COLOR_SPACE_SRGB_NONLINEAR_KHR) {
             return formats[index];
         }
     }
@@ -18,7 +18,7 @@ CELL_INLINE VkSurfaceFormatKHR selectFormat(VkSurfaceFormatKHR* CELL_NONNULL for
     return formats[0];
 }
 
-CELL_INLINE VkPresentModeKHR selectPresentMode(VkPresentModeKHR* CELL_NONNULL modes, uint32_t count) {
+CELL_INLINE VkPresentModeKHR selectPresentMode(const VkPresentModeKHR* CELL_NONNULL modes, const uint32_t count) {
     for (uint32_t index = 0; index < count; index++) {
         if (modes[index] == VK_PRESENT_MODE_MAILBOX_KHR) {
             return VK_PRESENT_MODE_MAILBOX_KHR;

@@ -52,7 +52,6 @@ public:
     CELL_INLINE void Append(const K& key, const V& value) {
         if (this->count == 0) {
             this->pairBlock = System::AllocateMemory<pair>();
-            this->count++;
         } else {
             System::ReallocateMemory<pair>(&this->pairBlock, this->count + 1);
         }

@@ -174,6 +174,15 @@ Result Pipeline::Finalize() {
 
     // color, depth and stencil attachments
 
+    const VkStencilOpState stencilState = {
+        .failOp = VK_STENCIL_OP_KEEP,
+        .passOp = VK_STENCIL_OP_KEEP,
+        .depthFailOp = VK_STENCIL_OP_KEEP,
+        .compareOp = VK_COMPARE_OP_ALWAYS,
+        .compareMask = 0,
+        .writeMask = 0,
+    };
+
     const VkPipelineDepthStencilStateCreateInfo depthStencilInfo = {
         .sType                 = VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO,
         .pNext                 = nullptr,
@@ -186,9 +195,9 @@ Result Pipeline::Finalize() {
 
         .depthBoundsTestEnable = VK_FALSE,
 
-        .stencilTestEnable     = VK_FALSE,
-        .front                 = { },
-        .back                  = { },
+        .stencilTestEnable     = VK_TRUE,
+        .front                 = stencilState,
+        .back                  = stencilState,
 
         .minDepthBounds        = 0.0f,
         .maxDepthBounds        = 1.0f
@@ -246,7 +255,7 @@ Result Pipeline::Finalize() {
         .viewMask                = 0,
         .colorAttachmentCount    = 1,
         .pColorAttachmentFormats = &this->renderFormat,
-        .depthAttachmentFormat   = VK_FORMAT_D32_SFLOAT,
+        .depthAttachmentFormat   = VK_FORMAT_D24_UNORM_S8_UINT,
         .stencilAttachmentFormat = VK_FORMAT_UNDEFINED
     };
 

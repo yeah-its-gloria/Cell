@@ -11,10 +11,10 @@ namespace Cell::Vulkan {
 Result WSITarget::SetUpDepthBuffer() {
     Wrapped<Image*, Result> imageResult = this->instance->CreateImage(this->extent.width,
                                                                       this->extent.height,
-                                                                      VK_FORMAT_D32_SFLOAT,
+                                                                      VK_FORMAT_D24_UNORM_S8_UINT,
                                                                       VK_IMAGE_TILING_OPTIMAL,
-                                                                      (VkImageAspectFlagBits)(VK_IMAGE_ASPECT_DEPTH_BIT),
-                                                                      VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT); /* VK_IMAGE_ASPECT_STENCIL_BIT */
+                                                                      (VkImageAspectFlagBits)(VK_IMAGE_ASPECT_DEPTH_BIT | VK_IMAGE_ASPECT_STENCIL_BIT),
+                                                                      VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT);
     if (!imageResult.IsValid()) {
         return imageResult.Result();
     }
@@ -44,7 +44,7 @@ Result WSITarget::SetUpDepthBuffer() {
         .srcQueueFamilyIndex             = 0,
         .dstQueueFamilyIndex             = 0,
         .image                           = depthImage->GetHandle(),
-        .subresourceRange.aspectMask     = VK_IMAGE_ASPECT_DEPTH_BIT, /* VK_IMAGE_ASPECT_STENCIL_BIT */
+        .subresourceRange.aspectMask     = VK_IMAGE_ASPECT_DEPTH_BIT | VK_IMAGE_ASPECT_STENCIL_BIT,
         .subresourceRange.baseMipLevel   = 0,
         .subresourceRange.levelCount     = 1,
         .subresourceRange.baseArrayLayer = 0,
