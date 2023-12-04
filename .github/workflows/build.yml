@@ -35,6 +35,7 @@ jobs:
           -DCMAKE_C_COMPILER=clang
           -DCMAKE_CXX_COMPILER=clang++
           -Dglslc_PROGRAM=${{ github.workspace }}/install/bin/glslc
+          -Dspirv-link_PROGRAM=${{ github.workspace }}/install/bin/spirv-link
 
       - name: Build
         run: cmake --build ${{ github.workspace }}/build -j4
@@ -106,6 +107,7 @@ jobs:
           -DOpenXR_LIBRARY=${{ github.workspace }}/openxr-sdk/build/src/loader/openxr_loader.lib
           -DOpenXR_INCLUDE_DIR=${{ github.workspace }}/openxr-sdk/include
           -Dglslc_PROGRAM=${{ github.workspace }}/install/bin/glslc.exe
+          -Dspirv-link_PROGRAM=${{ github.workspace }}/install/bin/spirv-link.exe
 
       - name: Build
         run: cmake --build ${{ github.workspace }}/build -j4
