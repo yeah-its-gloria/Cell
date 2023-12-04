@@ -21,10 +21,10 @@ float oscillate(float x) {
     return (x % 1.0) * (1.0 - 2.0 * (floor(x) % 2.0)) + (floor(x) % 2.0);
 }
 
-VertexShaderOutput main ([[vk::location(0)]] float3 position : POSITION0,
-                         [[vk::location(1)]] float4 color : COLOR0,
-                         [[vk::location(2)]] float2 texCoords : TEXCOORD,
-                         [[vk::location(3)]] uint texIndex
+VertexShaderOutput vertexMain([[vk::location(0)]] float3 position : POSITION0,
+                              [[vk::location(1)]] float4 color : COLOR0,
+                              [[vk::location(2)]] float2 texCoords : TEXCOORD,
+                              [[vk::location(3)]] uint texIndex
 ) {
     VertexShaderOutput output = (VertexShaderOutput)0;
 

@@ -13,12 +13,11 @@ layout (location = 0) out vec4 outColor;
 layout (location = 1) out vec2 outTexCoords;
 layout (location = 2) out uint outTexIndex;
 
-layout (binding = 0) uniform vsubo {
+layout (set = 0, binding = 0) uniform vsubo {
     mat4x4 model;
     mat4x4 view;
     mat4x4 projection;
-
-    float  timeMs;
+    float timeMs;
 };
 
 float oscillate(float x) {

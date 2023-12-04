@@ -59,6 +59,9 @@ public:
     // By default, it's a vertex shader.
     CELL_FUNCTION Result AddShader(const IBlock& data, const Stage stage = Stage::Vertex);
 
+    // Adds a shader with vertex and fragment stages to the pipeline. The module is owned by the pipeline manager.
+    CELL_FUNCTION Result AddMultiShader(const IBlock& data);
+
     // Adds resources for shaders to this pipeline.
     CELL_FUNCTION Result AddResources(Collection::IEnumerable<ResourceBinding>& resBindings, Collection::IEnumerable<ResourceDescriptor>& resDescriptors);
 

@@ -26,6 +26,6 @@ float4 sampleTex(uint index, float2 coords) {
     return 1.0;
 }
 
-float4 main(FragmentShaderInput input) : SV_TARGET {
+float4 fragMain(FragmentShaderInput input) : SV_TARGET {
     return input.color * sampleTex(input.texIndex, input.texCoords);
 }

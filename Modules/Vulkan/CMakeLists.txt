@@ -65,6 +65,7 @@ add_library(CellVulkan ${CELL_LIBRARY_TYPE}
 
 # ------------------------------------------------------------------------------------------------
 
+    ${CMAKE_CURRENT_LIST_DIR}/Sources/Pipeline/AddMultiShader.cc
     ${CMAKE_CURRENT_LIST_DIR}/Sources/Pipeline/AddResources.cc
     ${CMAKE_CURRENT_LIST_DIR}/Sources/Pipeline/AddShader.cc
     ${CMAKE_CURRENT_LIST_DIR}/Sources/Pipeline/Finalize.cc

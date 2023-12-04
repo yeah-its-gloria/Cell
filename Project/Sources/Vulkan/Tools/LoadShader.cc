@@ -9,7 +9,7 @@
 using namespace Cell;
 using namespace Cell::Vulkan;
 
-void VulkanToolsLoadShader(Pipeline* pipeline, const System::String& path, const Stage stage) {
+void VulkanToolsLoadShader(Pipeline* pipeline, const System::String& path) {
     ScopedObject<IO::File> file = IO::File::Open(path).Unwrap();
 
     const size_t size = file->GetSize().Unwrap();
@@ -19,6 +19,6 @@ void VulkanToolsLoadShader(Pipeline* pipeline, const System::String& path, const
     const IO::Result ioResult = file->Read(buffer);
     CELL_ASSERT(ioResult == IO::Result::Success);
 
-    const Result result = pipeline->AddShader(buffer, stage);
+    const Result result = pipeline->AddMultiShader(buffer);
     CELL_ASSERT(result == Result::Success);
 }

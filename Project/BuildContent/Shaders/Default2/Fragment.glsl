@@ -10,8 +10,8 @@ layout (location = 2) in flat uint inTexIndex;
 
 layout (location = 0) out vec4 outColor;
 
-layout (binding = 1) uniform sampler2D texSampler1;
-layout (binding = 2) uniform sampler2D texSampler2;
+layout (set = 0, binding = 1) uniform sampler2D texSampler1;
+layout (set = 0, binding = 2) uniform sampler2D texSampler2;
 
 void main() {
     outColor = inColor * (inTexIndex == 0 ? texture(texSampler1, inTexCoords) : texture(texSampler2, inTexCoords));
