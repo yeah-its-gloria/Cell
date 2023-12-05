@@ -46,5 +46,4 @@ CellVulkanLinkShaders(CellExample Default ${GENERATE_DIR}/Shaders/DefaultVertex.
 CellVulkanAddShader(CellExample Default2Vertex ${BUILDCONTENT_DIR}/Shaders/Default2/Vertex.glsl ${CONTENT_DIR}/Shaders VERTEX TRUE)
 CellVulkanAddShader(CellExample Default2Fragment ${BUILDCONTENT_DIR}/Shaders/Default2/Fragment.glsl ${CONTENT_DIR}/Shaders FRAGMENT TRUE)
 
-
 CellAddContentToPack(CellExample Content ${CONTENT_DIR})

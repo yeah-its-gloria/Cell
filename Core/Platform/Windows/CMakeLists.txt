@@ -107,12 +107,12 @@ function(Cell_Platform_Windows_Generate_Manifests target type)
         set(FILETYPE "VFT_DLL")
     endif ()
 
-    configure_file(${PLATFORM_DIR}/Manifests/Manifest.manifest.in ${GENERATE_DIR}/Manifests/${target}/Manifest.manifest)
-    configure_file(${PLATFORM_DIR}/Manifests/Manifest.rc.in ${GENERATE_DIR}/Manifests/${target}/Manifest.rc)
+    configure_file(${PLATFORM_DIR}/BuildContent/Manifest.manifest.in ${GENERATE_DIR}/${target}.manifest)
+    configure_file(${PLATFORM_DIR}/BuildContent/Manifest.rc.in ${GENERATE_DIR}/${target}.rc)
 
     target_sources(${target} PRIVATE
-        ${GENERATE_DIR}/Manifests/${target}/Manifest.manifest
-        ${GENERATE_DIR}/Manifests/${target}/Manifest.rc
+        ${GENERATE_DIR}/${target}.manifest
+        ${GENERATE_DIR}/${target}.rc
     )
 endfunction()
 

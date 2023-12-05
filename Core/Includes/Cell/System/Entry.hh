@@ -14,4 +14,4 @@ typedef void (* EntryFunction)(Reference<String>);
 }
 
 // Title entry prototype. Needs to be defined by every title, test and utility.
-CELL_FUNCTION void CellEntry(Cell::Reference<Cell::System::String> parameterString);
+CELL_FUNCTION_INTERNAL void CellEntry(Cell::Reference<Cell::System::String> parameterString);
