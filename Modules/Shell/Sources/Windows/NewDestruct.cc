@@ -83,12 +83,6 @@ Windows::~Windows() {
     BOOL win32Result = DestroyWindow(this->window);
     CELL_ASSERT(win32Result == TRUE);
 
-    win32Result = DestroyIcon(this->windowClass.hIcon);
-    CELL_ASSERT(win32Result == TRUE);
-
-    win32Result = DestroyCursor(this->windowClass.hCursor);
-    CELL_ASSERT(win32Result == TRUE);
-
     win32Result = DeleteObject(this->windowClass.hbrBackground);
     CELL_ASSERT(win32Result == TRUE);
 
