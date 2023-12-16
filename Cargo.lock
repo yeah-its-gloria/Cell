@@ -3,28 +3,42 @@
 version = 3
 
 [[package]]
+name = "bitflags"
+version = "2.4.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "327762f6e5a765692301e5bb513e0d9fef63be86bbc14528052b1cd3e6f03e07"
+
+[[package]]
+name = "cell_buildtools"
+version = "1.0.0"
+
+[[package]]
 name = "cell_core"
 version = "1.0.0"
 
 [[package]]
-name = "cell_modules_shell"
+name = "cell_example"
 version = "1.0.0"
 dependencies = [
+ "cell_buildtools",
  "cell_core",
+ "cell_module_shell",
+ "cell_module_vulkan",
 ]
 
 [[package]]
-name = "cell_modules_vulkan"
+name = "cell_module_shell"
 version = "1.0.0"
 dependencies = [
+ "bitflags",
  "cell_core",
+ "cell_module_vulkan",
 ]
 
 [[package]]
-name = "cell_title"
+name = "cell_module_vulkan"
 version = "1.0.0"
 dependencies = [
+ "bitflags",
  "cell_core",
- "cell_modules_shell",
- "cell_modules_vulkan",
 ]

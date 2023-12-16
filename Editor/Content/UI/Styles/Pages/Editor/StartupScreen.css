@@ -1,0 +1,38 @@
+button
+{
+    padding-left: 3rem;
+    width:        100%;
+    text-align:   left;
+}
+
+.version
+{
+    position: fixed;
+    bottom:   0.5rem;
+    right:    1rem;
+}
+
+.cellLogo
+{
+    position: fixed;
+    top:      1rem;
+    right:    -2rem;
+    width:    20rem;
+    height:   20rem;
+}
+
+.buttons
+{
+    position:  fixed;
+    left:      0rem;
+    top:       50%;
+    transform: translateY(-50%);
+    width:     20rem;
+}
+
+.editorTitle
+{
+    font-size:    6rem;
+    padding-top:  1rem;
+    padding-left: 3rem;
+}

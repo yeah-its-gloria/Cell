@@ -1,0 +1,11 @@
+# SPDX-FileCopyrightText: Copyright 2023 Gloria G.
+# SPDX-License-Identifier: BSD-2-Clause
+
+[package]
+name = "cell_buildtools"
+version = "1.0.0"
+edition = "2021"
+authors = ["Gloria G."]
+
+[lib]
+path = "Sources/mod.rs"

@@ -1,4 +1,9 @@
+# IDEs
 .idea
 .vscode
 
+# Build directories
 /target
+
+# Private content
+/Project/PrivateContent

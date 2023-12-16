@@ -1,0 +1,44 @@
+// SPDX-FileCopyrightText: Copyright 2023 Gloria G.
+// SPDX-License-Identifier: BSD-2-Clause
+
+#define APSTUDIO_HIDDEN_SYMBOLS
+#include <Windows.h>
+#undef APSTUDIO_HIDDEN_SYMBOLS
+
+100 ICON "CellLogo.ico"
+
+1 VERSIONINFO
+FILEVERSION @VMAJOR@,@VMINOR@,@VPATCH@,0
+PRODUCTVERSION @VMAJOR@,@VMINOR@,@VPATCH@,0
+FILEFLAGSMASK 0x3f
+#ifdef DEBUG
+FILEFLAGS VS_FF_DEBUG
+#else
+FILEFLAGS 0
+#endif
+FILEOS VOS_NT_WINDOWS32
+FILETYPE VFT_APP
+FILESUBTYPE VFT2_UNKNOWN
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904b0"
+        BEGIN
+            VALUE "CompanyName", "@AUTHORS@"
+            VALUE "FileDescription", "@DESC@"
+            VALUE "FileVersion", "@VMAJOR@.@VMINOR@.@VPATCH@"
+            VALUE "InternalName", "@NAME@"
+            VALUE "LegalCopyright", "Copyright 2023 @AUTHORS@"
+            VALUE "LegalTrademarks", ""
+            VALUE "OriginalFilename", "@NAME@.exe"
+            VALUE "PrivateBuild", ""
+            VALUE "ProductName", "@NAME@"
+            VALUE "ProductVersion", "@VMAJOR@.@VMINOR@.@VPATCH@"
+            VALUE "SpecialBuild", ""
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x0409, 0x04e4
+    END
+END

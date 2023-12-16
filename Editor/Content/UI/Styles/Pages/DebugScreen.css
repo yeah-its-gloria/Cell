@@ -1,0 +1,30 @@
+body
+{
+    transition: 250ms;
+}
+
+iframe
+{
+    border:         none;
+    position:       fixed;
+    transition:     250ms;
+}
+
+.debugLoadIndicator
+{
+    width:  22rem;
+    height: 6rem;
+    bottom: 0;
+    right:  -22rem;
+}
+
+.debugModal
+{
+    border:        solid 10px transparent;
+    border-radius: 1rem;
+    left:          50%;
+    top:           50%;
+    transform:     translate(-50%, -50%);
+    width:         42rem;
+    height:        22rem;
+}

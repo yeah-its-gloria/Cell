@@ -1,0 +1,10 @@
+// SPDX-FileCopyrightText: Copyright 2023 Gloria G.
+// SPDX-License-Identifier: BSD-2-Clause
+
+[[vk::location(0)]]
+struct FragmentShaderInput
+{
+    float4 color : COLOR0;
+    float2 texCoords : TEXCOORD;
+    uint texIndex;
+};
