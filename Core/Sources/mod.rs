@@ -17,7 +17,8 @@ pub use platform::*;
 pub use logging::*;
 
 #[cfg_attr(windows, path = "platform/windows/mod.rs")]
+#[cfg_attr(unix, path = "platform/linux/mod.rs")]
 mod os_impl;
 
-#[cfg(not(any(windows)))]
+#[cfg(not(any(windows, unix)))]
 compile_error!("No core implementation!");

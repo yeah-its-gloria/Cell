@@ -16,6 +16,8 @@ fn main() {
             println!("cargo:rustc-link-lib={}", library);
         }
     } else {
-        println!("cargo:rustc-link-lib=vulkan");
+        for library in ["wayland-client", "vulkan"] {
+            println!("cargo:rustc-link-lib={}", library);
+        }
     }
 }

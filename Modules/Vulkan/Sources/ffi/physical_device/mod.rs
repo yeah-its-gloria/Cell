@@ -10,7 +10,6 @@ mod features;
 mod functions;
 mod structures;
 
-pub use defaults::*;
 pub use features::*;
 pub use functions::*;
 pub use structures::*;
