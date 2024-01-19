@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: Copyright 2023 Gloria G.
+// SPDX-FileCopyrightText: Copyright 2023-2024 Gloria G.
 // SPDX-License-Identifier: BSD-2-Clause
 
 #include "../Internal.hh"
@@ -8,11 +8,6 @@
 #include <unistd.h>
 
 namespace Cell::Network {
-
-Socket::~Socket() {
-    const int result = close((int)this->handle);
-    CELL_ASSERT(result == 0);
-}
 
 Wrapped<Socket*, Result> Socket::New(const Transport transport, const ConnectionType type, const Protocol protocol) {
     Wrapped<systemTypes, Result> result = convertPropertiesToSystemTypes(transport, type, protocol);
@@ -28,6 +23,11 @@ Wrapped<Socket*, Result> Socket::New(const Transport transport, const Connection
     }
 
     return new Socket((uintptr_t)_socket);
+}
+
+Socket::~Socket() {
+    const int result = close((int)this->handle);
+    CELL_ASSERT(result == 0);
 }
 
 }

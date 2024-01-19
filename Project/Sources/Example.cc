@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: Copyright 2023 Gloria G.
+// SPDX-FileCopyrightText: Copyright 2023-2024 Gloria G.
 // SPDX-License-Identifier: BSD-2-Clause
 
 #include "Example.hh"
@@ -37,7 +37,7 @@ void Example::Launch(const String& parameterString) {
     //Thread xr([](void* p) { ((Example*)p)->XRThread(); }, this, "XR Thread");
 
     const uint64_t startTick = GetPreciseTickerValue();
-    while (audio.IsActive() || input.IsActive() || /*network.IsActive() ||*/ renderer.IsActive() /*|| xr.IsActive()*/) {
+    while (audio.IsActive() || input.IsActive() /*|| network.IsActive()*/ || renderer.IsActive() /*|| xr.IsActive()*/) {
         const Shell::Result result = this->shell->RunDispatch();
         if (result == Shell::Result::RequestedQuit) {
             break;
@@ -49,9 +49,9 @@ void Example::Launch(const String& parameterString) {
         this->elapsedTime = (GetPreciseTickerValue() - startTick) / 1000.f;
     }
 
-    audio.Join();
-    input.Join();
+    audio.Join(500);
+    input.Join(500);
     //network.Join();
-    renderer.Join();
+    renderer.Join(500);
     //xr.Join();
 }

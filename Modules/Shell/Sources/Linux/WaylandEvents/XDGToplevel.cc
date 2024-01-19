@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: Copyright 2023 Gloria G.
+// SPDX-FileCopyrightText: Copyright 2023-2024 Gloria G.
 // SPDX-License-Identifier: BSD-2-Clause
 
 #include <Cell/Shell/Implementations/Linux.hh>
@@ -19,7 +19,7 @@ void Linux::WaylandXDGToplevelClose(void* data, struct xdg_toplevel* toplevel) {
     Linux* _linux = (Linux*)data;
     CELL_ASSERT(_linux != nullptr && toplevel != nullptr);
 
-    _linux->xdgRequestedClose = true;
+    _linux->isDone = true;
 }
 
 void Linux::WaylandXDGToplevelConfigureBounds(void* data, struct xdg_toplevel* toplevel, const int32_t width, const int32_t height) {

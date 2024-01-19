@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: Copyright 2023 Gloria G.
+// SPDX-FileCopyrightText: Copyright 2023-2024 Gloria G.
 // SPDX-License-Identifier: BSD-2-Clause
 
 #pragma once
@@ -130,8 +130,6 @@ private:
         .modifiers = &Linux::WaylandKeyboardModifiers,
         .repeat_info = &Linux::WaylandKeyboardRepeatInfo
     };
-
-    bool xdgRequestedClose = false;
 };
 
 }

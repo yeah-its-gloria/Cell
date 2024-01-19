@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: Copyright 2023 Gloria G.
+# SPDX-FileCopyrightText: Copyright 2023-2024 Gloria G.
 # SPDX-License-Identifier: BSD-2-Clause
 
 project(CellCoreTests LANGUAGES CXX VERSION 1.0.0 DESCRIPTION "Cell - Tests")

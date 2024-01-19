@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: Copyright 2023 Gloria G.
+# SPDX-FileCopyrightText: Copyright 2023-2024 Gloria G.
 # SPDX-License-Identifier: BSD-2-Clause
 
 cmake_minimum_required(VERSION 3.20.0 FATAL_ERROR)
@@ -46,7 +46,7 @@ if (NOT WIN32 AND NOT UNIX)
 endif ()
 
 if (UNIX)
-    message(WARNING "Linux support is currently somewhat broken, and other Unix-likes are generally incompatible.")
+    message(AUTHOR_WARNING "Several interfaces on Linux aren't yet implemented fully.")
 endif ()
 
 if (NOT ${CMAKE_GENERATOR} STREQUAL "Ninja Multi-Config"

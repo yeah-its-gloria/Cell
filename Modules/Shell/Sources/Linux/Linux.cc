@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: Copyright 2023 Gloria G.
+// SPDX-FileCopyrightText: Copyright 2023-2024 Gloria G.
 // SPDX-License-Identifier: BSD-2-Clause
 
 #include <Cell/Scoped.hh>
@@ -10,7 +10,7 @@ Result Linux::RunDispatch() {
     const int waylandResult = wl_display_dispatch_pending(this->display);
     CELL_ASSERT(waylandResult > -1);
 
-    if (this->xdgRequestedClose) {
+    if (this->isDone) {
         return Result::RequestedQuit;
     }
 
@@ -18,7 +18,7 @@ Result Linux::RunDispatch() {
 }
 
 Result Linux::RequestQuit() {
-    this->xdgRequestedClose = true;
+    this->isDone = true;
     return Result::Success;
 }
 

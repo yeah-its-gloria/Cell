@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: Copyright 2023 Gloria G.
+// SPDX-FileCopyrightText: Copyright 2023-2024 Gloria G.
 // SPDX-License-Identifier: BSD-2-Clause
 
 #include <Cell/IO/File.hh>
@@ -12,8 +12,8 @@ namespace Cell::IO {
 Result File::Read(IBlock& data) {
     FILE* file = (FILE*)this->handle;
 
-    const size_t readCount = fread(data.Pointer(), 1, data.ByteSize(), file);
-    if (readCount != data.ByteSize()) {
+    const size_t readCount = fread(data.Pointer(), data.BlockSize(), data.Count(), file);
+    if (readCount != data.Count()) {
         if (feof(file) != 0) {
             return Result::ReachedEnd;
         }

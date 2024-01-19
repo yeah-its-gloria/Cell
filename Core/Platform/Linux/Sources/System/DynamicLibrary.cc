@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: Copyright 2023 Gloria G.
+// SPDX-FileCopyrightText: Copyright 2023-2024 Gloria G.
 // SPDX-License-Identifier: BSD-2-Clause
 
 #include <Cell/Scoped.hh>
@@ -9,10 +9,6 @@
 #include <errno.h>
 
 namespace Cell::System {
-
-DynamicLibrary::~DynamicLibrary() {
-    dlclose((void*)this->handle);
-}
 
 Wrapped<DynamicLibrary*, Result> DynamicLibrary::New(const String& path) {
     if (path.IsEmpty()) {
@@ -28,6 +24,10 @@ Wrapped<DynamicLibrary*, Result> DynamicLibrary::New(const String& path) {
     }
 
     return new DynamicLibrary((uintptr_t)handle);
+}
+
+DynamicLibrary::~DynamicLibrary() {
+    dlclose((void*)this->handle);
 }
 
 }

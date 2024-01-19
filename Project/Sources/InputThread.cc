@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: Copyright 2023 Gloria G.
+// SPDX-FileCopyrightText: Copyright 2023-2024 Gloria G.
 // SPDX-License-Identifier: BSD-2-Clause
 
 #include "Example.hh"
@@ -10,11 +10,19 @@
 #include <Cell/Utilities/MinMaxClamp.hh>
 
 #include <math.h>
+#include <stdio.h>
 
 using namespace Cell;
 using namespace Cell::Shell;
 
-const float MovementSpeed = 15.f;
+const float MovementSpeed = 15.0f;
+
+// I don't know what's going on but this is the only thing that makes it functional on Wayland without going way too fast
+#ifdef CELL_PLATFORM_LINUX
+const float globalSpeedSetting = 0.0005f;
+#else
+const float globalSpeedSetting = 1.f;
+#endif
 
 void Example::OnForward(const InputType type) {
     if (type == InputType::Released) {
@@ -22,7 +30,7 @@ void Example::OnForward(const InputType type) {
     }
 
     this->inputMutex.Lock();
-    this->position.z += MovementSpeed * this->renderDeltaTime;
+    this->position.z += MovementSpeed * this->renderDeltaTime * globalSpeedSetting;
     this->inputMutex.Unlock();
 }
 
@@ -32,19 +40,19 @@ void Example::OnBackward(const InputType type) {
     }
 
     this->inputMutex.Lock();
-    this->position.z -= MovementSpeed * this->renderDeltaTime;
+    this->position.z -= MovementSpeed * this->renderDeltaTime * globalSpeedSetting;
     this->inputMutex.Unlock();
 }
 
 void Example::OnForwardAxis(const double value) {
     this->inputMutex.Lock();
-    this->position.z -= MovementSpeed * this->renderDeltaTime * value;
+    this->position.z -= MovementSpeed * this->renderDeltaTime * value * globalSpeedSetting;
     this->inputMutex.Unlock();
 }
 
 void Example::OnRightwardAxis(const double value) {
     this->inputMutex.Lock();
-    this->position.x -= MovementSpeed * this->renderDeltaTime * value;
+    this->position.x -= MovementSpeed * this->renderDeltaTime * value * globalSpeedSetting;
     this->inputMutex.Unlock();
 }
 
@@ -54,7 +62,7 @@ void Example::OnLeftward(const InputType type) {
     }
 
     this->inputMutex.Lock();
-    this->position.x += MovementSpeed * this->renderDeltaTime;
+    this->position.x += MovementSpeed * this->renderDeltaTime * globalSpeedSetting;
     this->inputMutex.Unlock();
 }
 
@@ -64,7 +72,7 @@ void Example::OnRightward(const InputType type) {
     }
 
     this->inputMutex.Lock();
-    this->position.x -= MovementSpeed * this->renderDeltaTime;
+    this->position.x -= MovementSpeed * this->renderDeltaTime * globalSpeedSetting;
     this->inputMutex.Unlock();
 }
 
@@ -74,7 +82,7 @@ void Example::OnUpward(const InputType type) {
     }
 
     this->inputMutex.Lock();
-    this->position.y += MovementSpeed * this->renderDeltaTime;
+    this->position.y += MovementSpeed * this->renderDeltaTime * globalSpeedSetting;
     this->inputMutex.Unlock();
 }
 
@@ -84,7 +92,7 @@ void Example::OnDownward(const InputType type) {
     }
 
     this->inputMutex.Lock();
-    this->position.y -= MovementSpeed * this->renderDeltaTime;
+    this->position.y -= MovementSpeed * this->renderDeltaTime * globalSpeedSetting;
     this->inputMutex.Unlock();
 }
 
@@ -126,14 +134,12 @@ void Example::OnCloseTitle(const InputType type) {
 }
 
 void Example::TurnCameraXController(const double value) {
-    this->renderDeltaTime = 0.001;
     this->inputMutex.Lock();
     this->rotationX += fmod(10.f * this->renderDeltaTime * value, 360.0);
     this->inputMutex.Unlock();
 }
 
 void Example::TurnCameraYController(const double value) {
-    this->renderDeltaTime = 0.001;
     this->inputMutex.Lock();
     this->rotationY -= fmod(10.f * this->renderDeltaTime * value, 360.0);
     this->inputMutex.Unlock();
@@ -144,6 +150,7 @@ void Example::InputThread() {
 
     Result shellResult = input->DiscoverControllers();
     CELL_ASSERT(shellResult == Result::Success);
+
     // Keyboard
 
     shellResult = input->RegisterAction(KeyboardButton::W, [](const InputType type, void* inst) { ((Example*)inst)->OnForward(type); }, this);

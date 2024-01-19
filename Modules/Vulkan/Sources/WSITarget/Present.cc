@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: Copyright 2023 Gloria G.
+// SPDX-FileCopyrightText: Copyright 2023-2024 Gloria G.
 // SPDX-License-Identifier: BSD-2-Clause
 
 #include <Cell/Vulkan/WSITarget.hh>
@@ -20,17 +20,16 @@ Result WSITarget::Present() {
         .pResults           = nullptr
     };
 
-    VkResult result = vkQueuePresentKHR(this->instance->deviceQueueGraphics, &presentationInfo);
-
-    this->renderFrameCounter = (this->renderFrameCounter + 1) % this->swapchainDepth;
-
+    const VkResult result = vkQueuePresentKHR(this->instance->deviceQueueGraphics, &presentationInfo);
     switch (result) {
     case VK_SUCCESS: {
+        this->renderFrameCounter = (this->renderFrameCounter + 1) % this->swapchainDepth;
         break;
     }
 
     case VK_SUBOPTIMAL_KHR:
     case VK_ERROR_OUT_OF_DATE_KHR: {
+        this->renderFrameCounter = (this->renderFrameCounter + 1) % this->swapchainDepth;
         return Result::Suboptimal;
     }
 

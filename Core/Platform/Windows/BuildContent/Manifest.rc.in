@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: Copyright 2023 Gloria G.
+// SPDX-FileCopyrightText: Copyright 2023-2024 Gloria G.
 // SPDX-License-Identifier: BSD-2-Clause
 
 #define APSTUDIO_HIDDEN_SYMBOLS
@@ -30,7 +30,7 @@ BEGIN
             VALUE "FileDescription", "@NAME@"
             VALUE "FileVersion", "@VMAJOR@.@VMINOR@.@VPATCH@"
             VALUE "InternalName", "@NAME@"
-            VALUE "LegalCopyright", "Copyright 2023 Gloria G."
+            VALUE "LegalCopyright", "Copyright 2023-2024 Gloria G."
             VALUE "LegalTrademarks", ""
             VALUE "OriginalFilename", "@FILENAME@"
             VALUE "PrivateBuild", ""

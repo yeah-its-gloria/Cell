@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: Copyright 2023 Gloria G.
+// SPDX-FileCopyrightText: Copyright 2023-2024 Gloria G.
 // SPDX-License-Identifier: BSD-2-Clause
 
 #include <Cell/Shell/Implementations/Linux.hh>
@@ -9,34 +9,6 @@
 
 namespace Cell::Shell::Implementations {
 using namespace System;
-
-Linux::~Linux() {
-    if (this->idleInhibitor != nullptr) {
-        zwp_idle_inhibitor_v1_destroy(this->idleInhibitor);
-    }
-
-    if (this->xdgDecoration != nullptr) {
-        zxdg_toplevel_decoration_v1_destroy(this->xdgDecoration);
-    }
-
-    xdg_toplevel_destroy(this->xdgToplevel);
-    xdg_surface_destroy(this->xdgSurface);
-    wl_surface_destroy(this->surface);
-
-    if (this->idleInhibitManager != nullptr) {
-        zwp_idle_inhibit_manager_v1_destroy(this->idleInhibitManager);
-    }
-
-    if (this->xdgDecorationManager != nullptr) {
-        zxdg_decoration_manager_v1_destroy(this->xdgDecorationManager);
-    }
-
-    xdg_wm_base_destroy(this->xdgManager);
-    wl_compositor_destroy(this->compositor);
-
-    wl_registry_destroy(this->registry);
-    wl_display_disconnect(this->display);
-}
 
 Wrapped<Linux*, Result> Linux::New(const System::String& title) {
     struct wl_display* display = wl_display_connect(nullptr);
@@ -118,6 +90,34 @@ Wrapped<Linux*, Result> Linux::New(const System::String& title) {
     }
 
     return _linux;
+}
+
+Linux::~Linux() {
+    if (this->idleInhibitor != nullptr) {
+        zwp_idle_inhibitor_v1_destroy(this->idleInhibitor);
+    }
+
+    if (this->xdgDecoration != nullptr) {
+        zxdg_toplevel_decoration_v1_destroy(this->xdgDecoration);
+    }
+
+    xdg_toplevel_destroy(this->xdgToplevel);
+    xdg_surface_destroy(this->xdgSurface);
+    wl_surface_destroy(this->surface);
+
+    if (this->idleInhibitManager != nullptr) {
+        zwp_idle_inhibit_manager_v1_destroy(this->idleInhibitManager);
+    }
+
+    if (this->xdgDecorationManager != nullptr) {
+        zxdg_decoration_manager_v1_destroy(this->xdgDecorationManager);
+    }
+
+    xdg_wm_base_destroy(this->xdgManager);
+    wl_compositor_destroy(this->compositor);
+
+    wl_registry_destroy(this->registry);
+    wl_display_disconnect(this->display);
 }
 
 }

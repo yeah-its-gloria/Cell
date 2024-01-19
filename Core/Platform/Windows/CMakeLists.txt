@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: Copyright 2023 Gloria G.
+# SPDX-FileCopyrightText: Copyright 2023-2024 Gloria G.
 # SPDX-License-Identifier: BSD-2-Clause
 
 option(CELL_PLATFORM_WINDOWS_LOG_TO_CONSOLE "Whether to log to the console or via OutputDebugStringW" OFF)

@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: Copyright 2023 Gloria G.
+# SPDX-FileCopyrightText: Copyright 2023-2024 Gloria G.
 # SPDX-License-Identifier: BSD-2-Clause
 
 target_sources(CellCore PRIVATE
@@ -19,7 +19,7 @@ target_sources(CellCore PRIVATE
 
                ${PLATFORM_DIR}/Sources/Network/Internal.hh
                ${PLATFORM_DIR}/Sources/Network/AddressInfo.cc
-               ${PLATFORM_DIR}/Sources/Network/Socket/DestructAndNew.cc
+               ${PLATFORM_DIR}/Sources/Network/Socket/NewDestruct.cc
                ${PLATFORM_DIR}/Sources/Network/Socket/Socket.cc
 
                ${PLATFORM_DIR}/Sources/System/DynamicLibrary.cc

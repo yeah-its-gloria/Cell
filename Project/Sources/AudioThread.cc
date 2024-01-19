@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: Copyright 2023 Gloria G.
+// SPDX-FileCopyrightText: Copyright 2023-2024 Gloria G.
 // SPDX-License-Identifier: BSD-2-Clause
 
 #include "Example.hh"
@@ -14,7 +14,7 @@ using namespace Cell;
 using namespace Cell::Audio;
 
 void Example::AudioThread() {
-    ScopedObject<IEngine> instance = CreateEngine().Unwrap();
+    ScopedObject instance = CreateEngine().Unwrap();
 
     Format format = {
         .type = FormatType::Float32PCM,
@@ -25,7 +25,7 @@ void Example::AudioThread() {
     Result result = instance->SetUpRendering(format);
     CELL_ASSERT(result == Result::Success);
 
-    ScopedObject<IO::File> file = IO::File::Open(this->GetContentPath("/Sounds/boing.bin")).Unwrap();
+    ScopedObject file = IO::File::Open(this->GetContentPath("/Sounds/boing.bin")).Unwrap();
 
     const size_t size = file->GetSize().Unwrap();
     CELL_ASSERT(size % 4 == 0);

@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: Copyright 2023 Gloria G.
+// SPDX-FileCopyrightText: Copyright 2023-2024 Gloria G.
 // SPDX-License-Identifier: BSD-2-Clause
 
 #include <Cell/Shell/Implementations/Linux.hh>
@@ -98,6 +98,16 @@ void Linux::WaylandKeyboardKey(void* data, struct wl_keyboard* keyboard, const u
         break;
     }
 
+    case 114: { // R
+        if (state & WL_KEYBOARD_KEY_STATE_PRESSED) {
+            _linux->keys |= Shell::KeyboardButton::R;
+        } else {
+            _linux->keys ^= Shell::KeyboardButton::R;
+        }
+
+        break;
+    }
+
     case 101: { // E
         if (state & WL_KEYBOARD_KEY_STATE_PRESSED) {
             _linux->keys |= Shell::KeyboardButton::E;
@@ -133,6 +143,16 @@ void Linux::WaylandKeyboardKey(void* data, struct wl_keyboard* keyboard, const u
             _linux->keys |= Shell::KeyboardButton::D;
         } else {
             _linux->keys ^= Shell::KeyboardButton::D;
+        }
+
+        break;
+    }
+
+    case 102: { // F
+        if (state & WL_KEYBOARD_KEY_STATE_PRESSED) {
+            _linux->keys |= Shell::KeyboardButton::F;
+        } else {
+            _linux->keys ^= Shell::KeyboardButton::F;
         }
 
         break;
