@@ -28,4 +28,8 @@ Vector3 Vector3::Normalize() const {
     return *this * (1.f / mag);
 }
 
+Vector3 Vector3::Lerp(const Vector3 target, const float multiplier) const {
+    return *this + ((target - *this) * multiplier);
+}
+
 }

@@ -59,6 +59,11 @@ public:
 
     // Calculates the dot product for this vector.
     CELL_NODISCARD CELL_INLINE float Dot() const { return this->Dot(*this); }
+
+    // Linearly interpolates the current vector towards the target vector with the given multiplier.
+    CELL_NODISCARD CELL_FUNCTION Vector3 Lerp(const Vector3 target, const float multiplier = 0.5f) const;
+
+    CELL_NODISCARD CELL_INLINE bool IsZero() const { return this->x == 0.f && this->y == 0.f && this->z == 0.f; }
 };
 
 }

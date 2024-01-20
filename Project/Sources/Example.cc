@@ -34,10 +34,20 @@ void Example::Launch(const String& parameterString) {
     Thread input([](void* p) { ((Example*)p)->InputThread(); }, this, "Input Thread");
     //Thread network([](void* p) { ((Example*)p)->NetworkThread(); }, this, "Network Thread");
     Thread renderer([](void* p) { ((Example*)p)->VulkanThread(); }, this, "Renderer Thread");
-    //Thread xr([](void* p) { ((Example*)p)->XRThread(); }, this, "XR Thread");
+
+#ifdef CELL_MODULES_OPENXR_AVAILABLE
+    Thread xr([](void* p) { ((Example*)p)->XRThread(); }, this, "XR Thread");
+#endif
 
     const uint64_t startTick = GetPreciseTickerValue();
-    while (audio.IsActive() || input.IsActive() /*|| network.IsActive()*/ || renderer.IsActive() /*|| xr.IsActive()*/) {
+    while (audio.IsActive()
+           || input.IsActive()
+           // || network.IsActive()
+           || renderer.IsActive()
+#ifdef CELL_MODULES_OPENXR_AVAILABLE
+           || xr.IsActive()
+#endif
+    ) {
         const Shell::Result result = this->shell->RunDispatch();
         if (result == Shell::Result::RequestedQuit) {
             break;
@@ -53,5 +63,8 @@ void Example::Launch(const String& parameterString) {
     input.Join(500);
     //network.Join();
     renderer.Join(500);
-    //xr.Join();
+
+#ifdef CELL_MODULES_OPENXR_AVAILABLE
+    xr.Join();
+#endif
 }

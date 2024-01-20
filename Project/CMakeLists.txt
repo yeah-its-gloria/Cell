@@ -21,10 +21,6 @@ add_executable(CellExample
     ${SOURCES_DIR}/Vulkan/Tools/LoadShader.cc
     ${SOURCES_DIR}/Vulkan/Tools/LoadTexture.cc
     ${SOURCES_DIR}/Vulkan/Tools/SetUpResources.cc
-
-    ${SOURCES_DIR}/XR/Thread.cc
-    ${SOURCES_DIR}/XR/Tools.hh
-    ${SOURCES_DIR}/XR/ToolsPrepare.cc
 )
 
 target_link_libraries(CellExample PRIVATE
@@ -32,10 +28,19 @@ target_link_libraries(CellExample PRIVATE
     CellAudio
     CellDataManagement
     CellMathematics
-    CellOpenXR
     CellShell
     CellVulkan
 )
+
+if(TARGET CellOpenXR)
+    target_sources(CellExample PRIVATE
+        ${SOURCES_DIR}/XR/Thread.cc
+        ${SOURCES_DIR}/XR/Tools.hh
+        ${SOURCES_DIR}/XR/ToolsPrepare.cc
+    )
+
+    target_link_libraries(CellExample PRIVATE CellOpenXR)
+endif()
 
 CellPlatformBootstrapTarget(CellExample)
 

@@ -3,7 +3,13 @@
 
 project(CellOpenXR LANGUAGES CXX VERSION 1.0.0 DESCRIPTION "Cell - Modules - OpenXR")
 
-find_package(OpenXR REQUIRED FATAL_ERROR)
+find_package(OpenXR)
+
+if(NOT OpenXR_FOUND)
+    message(STATUS "OpenXR not found, disabling CellOpenXR.")
+    return()
+endif()
+
 find_package(Vulkan REQUIRED FATAL_ERROR)
 
 set(MODULE_INCLUDES_DIR ${CMAKE_CURRENT_LIST_DIR}/Includes)
@@ -50,17 +56,17 @@ target_link_libraries(CellOpenXR PUBLIC
     PRIVATE ${Vulkan_LIBRARIES}
 )
 
-if (WIN32)
-    if (DEFINED OpenXR_BINARIES)
+if(WIN32)
+    if(DEFINED OpenXR_BINARIES)
         add_custom_command(TARGET CellOpenXR POST_BUILD
                            COMMENT "Copying OpenXR loader..."
                            COMMAND ${CMAKE_COMMAND} -E copy_if_different ${OpenXR_BINARIES} $<TARGET_FILE_DIR:CellOpenXR>
         )
-    endif ()
-elseif (UNIX)
+    endif()
+elseif(UNIX)
     # ...
-else ()
+else()
     message(FATAL_ERROR "Unsupported platform")
-endif ()
+endif()
 
 CellPlatformBootstrapTarget(CellOpenXR)
