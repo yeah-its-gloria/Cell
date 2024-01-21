@@ -8,6 +8,7 @@
 #include <Cell/System/Log.hh>
 #include <Cell/System/Thread.hh>
 #include <Cell/System/Timer.hh>
+#include <Cell/Utilities/MinMaxClamp.hh>
 
 using namespace Cell;
 using namespace Cell::System;
@@ -28,41 +29,40 @@ void Example::Launch(const String& parameterString) {
         Log("Failed to find the content directory, errors might occur");
     }
 
-    this->shell = Shell::CreateShell("Cell - Hi Aurelia").Unwrap();
+    this->ShellSetup();
 
-    Thread audio([](void* p) { ((Example*)p)->AudioThread(); }, this, "Audio Thread");
-    Thread input([](void* p) { ((Example*)p)->InputThread(); }, this, "Input Thread");
-    //Thread network([](void* p) { ((Example*)p)->NetworkThread(); }, this, "Network Thread");
-    Thread renderer([](void* p) { ((Example*)p)->VulkanThread(); }, this, "Renderer Thread");
+    Thread audio(CELL_THREAD_CLASS_FUNC(Example, AudioThread), "Audio Thread");
+    //Thread network(CELL_THREAD_CLASS_FUNC(Example, NetworkThread), "Network Thread");
+    Thread renderer(CELL_THREAD_CLASS_FUNC(Example, VulkanThread), "Renderer Thread");
 
 #ifdef CELL_MODULES_OPENXR_AVAILABLE
     Thread xr([](void* p) { ((Example*)p)->XRThread(); }, this, "XR Thread");
 #endif
 
-    const uint64_t startTick = GetPreciseTickerValue();
+    uint64_t finishedTick = GetPreciseTickerValue();
     while (audio.IsActive()
-           || input.IsActive()
            // || network.IsActive()
            || renderer.IsActive()
 #ifdef CELL_MODULES_OPENXR_AVAILABLE
            || xr.IsActive()
 #endif
     ) {
+        this->shellDeltaTime = Utilities::Minimum((System::GetPreciseTickerValue() - finishedTick) / 1000.f, 0.001f);
+
         const Shell::Result result = this->shell->RunDispatch();
         if (result == Shell::Result::RequestedQuit) {
             break;
         }
 
-        CELL_ASSERT(result == Shell::Result::Success || result == Shell::Result::NoUpdates);
-        Thread::Yield();
+        CELL_ASSERT(result == Shell::Result::Success);
 
-        this->elapsedTime = (GetPreciseTickerValue() - startTick) / 1000.f;
+        finishedTick = GetPreciseTickerValue();
+        System::Thread::Yield();
     }
 
-    audio.Join(500);
-    input.Join(500);
+    audio.Join();
     //network.Join();
-    renderer.Join(500);
+    renderer.Join();
 
 #ifdef CELL_MODULES_OPENXR_AVAILABLE
     xr.Join();

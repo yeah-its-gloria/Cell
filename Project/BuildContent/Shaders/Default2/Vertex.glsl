@@ -17,7 +17,7 @@ layout (set = 0, binding = 0) uniform vsubo {
     mat4x4 model;
     mat4x4 view;
     mat4x4 projection;
-    float timeMs;
+    float delta;
 };
 
 float oscillate(float x) {

@@ -8,6 +8,7 @@ namespace Cell::Shell::Controller {
 
 Wrapped<Xbox*, Result> Xbox::Find() {
     //CELL_UNIMPLEMENTED
+
     return Result::NotFound;
 }
 

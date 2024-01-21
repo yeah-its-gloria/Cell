@@ -23,9 +23,9 @@ add_library(QuickJS STATIC
 
 target_compile_definitions(QuickJS PUBLIC "CONFIG_BIGNUM=1")
 
-if(WIN32)
+if (WIN32)
     target_compile_definitions(QuickJS PUBLIC "_CRT_SECURE_NO_WARNINGS=1")
-endif()
+endif ()
 
 # Why do I bother?
 target_compile_options(QuickJS PRIVATE

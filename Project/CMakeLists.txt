@@ -10,9 +10,9 @@ set(SOURCES_DIR ${CMAKE_CURRENT_LIST_DIR}/Sources)
 add_executable(CellExample
     ${SOURCES_DIR}/Example.hh
     ${SOURCES_DIR}/Example.cc
+    ${SOURCES_DIR}/ShellSetup.cc
 
     ${SOURCES_DIR}/AudioThread.cc
-    ${SOURCES_DIR}/InputThread.cc
     ${SOURCES_DIR}/NetworkThread.cc
 
     ${SOURCES_DIR}/Vulkan/Thread.cc
@@ -32,7 +32,7 @@ target_link_libraries(CellExample PRIVATE
     CellVulkan
 )
 
-if(TARGET CellOpenXR)
+if (TARGET CellOpenXR)
     target_sources(CellExample PRIVATE
         ${SOURCES_DIR}/XR/Thread.cc
         ${SOURCES_DIR}/XR/Tools.hh
@@ -40,7 +40,7 @@ if(TARGET CellOpenXR)
     )
 
     target_link_libraries(CellExample PRIVATE CellOpenXR)
-endif()
+endif ()
 
 CellPlatformBootstrapTarget(CellExample)
 

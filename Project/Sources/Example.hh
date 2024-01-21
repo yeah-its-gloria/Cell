@@ -23,8 +23,9 @@ public:
     }
 
 private:
+    CELL_FUNCTION_INTERNAL void ShellSetup();
+
     CELL_FUNCTION_INTERNAL void AudioThread();
-    CELL_FUNCTION_INTERNAL void InputThread();
     CELL_FUNCTION_INTERNAL void NetworkThread();
     CELL_FUNCTION_INTERNAL void XRThread();
     CELL_FUNCTION_INTERNAL void VulkanThread();
@@ -47,11 +48,10 @@ private:
 
     Cell::Shell::IShell* shell = nullptr;
 
-    // milliseconds
-    double elapsedTime = 0.f;
-
     // milliseconds, guaranteed to be at least 0.001
+
     double renderDeltaTime = 0.f;
+    double shellDeltaTime = 0.f;
 
     Cell::System::Mutex inputMutex;
     Cell::Mathematics::Vector3 position;

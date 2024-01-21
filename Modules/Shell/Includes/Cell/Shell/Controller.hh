@@ -55,6 +55,7 @@ protected:
     ControllerReport report = { };
     ControllerReport lastReport = { };
     ControllerProperties properties = { };
+
     bool hasUpdated = false;
 };
 

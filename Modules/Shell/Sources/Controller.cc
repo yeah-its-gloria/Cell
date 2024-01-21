@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: Copyright 2023-2024 Gloria G.
 // SPDX-License-Identifier: BSD-2-Clause
 
-#include <Cell/Shell/Input.hh>
+#include <Cell/Shell/Shell.hh>
 
 #include <Cell/Shell/Controller/DualSense.hh>
 #include <Cell/Shell/Controller/DualShock4.hh>
@@ -10,7 +10,7 @@
 
 namespace Cell::Shell {
 
-Result Input::DiscoverControllers() {
+Result IShell::DiscoverPeripherals() {
     Wrapped<Controller::DualSense*, Result> dualSenseResult = Controller::DualSense::Find();
     if (dualSenseResult.IsValid()) {
         Controller::DualSense* dualSense = dualSenseResult.Unwrap();

@@ -7,7 +7,7 @@
 
 namespace Cell::System {
 
-// Returns a precise timer value in microseconds.
+// Returns a precise timer value with microseconds accuracy (at least 100 ns).
 CELL_FUNCTION uint64_t GetPreciseTickerValue();
 
 // Sleeps for the given amount of milliseconds.

@@ -3,7 +3,6 @@
 
 #pragma once
 
-#include <Cell/Shell/InputTypes.hh>
 #include <Cell/Shell/Shell.hh>
 #include <Cell/System/Mutex.hh>
 
@@ -18,8 +17,6 @@ namespace Cell::Shell::Implementations {
 
 // Platform implementation for Linux. Should support both glibc and musl.
 class Linux : public IShell {
-friend Input;
-
 public:
     // Creates a new shell instance.
     CELL_FUNCTION static Wrapped<Linux*, Result> New(const System::String& title = "");
@@ -36,7 +33,6 @@ public:
     // Returns a handle to the current XDG toplevel instance.
     CELL_NODISCARD CELL_INLINE struct xdg_toplevel* GetWaylandXDGToplevel() const { return this->xdgToplevel; }
 
-    CELL_FUNCTION Result RunDispatch() override;
     CELL_FUNCTION Result RequestQuit() override;
     CELL_FUNCTION Wrapped<Extent, Result> GetDrawableExtent() override;
     CELL_FUNCTION Result SetDrawableExtent(const Extent extent) override;
@@ -44,6 +40,8 @@ public:
 
 private:
     CELL_INLINE Linux(struct wl_display* display, struct wl_registry* registry) : display(display), registry(registry) { }
+
+    CELL_FUNCTION_INTERNAL Result RunDispatchImpl() override;
 
     CELL_FUNCTION_INTERNAL static void WaylandXDGManagerPing(void* data, struct xdg_wm_base* manager, const uint32_t serial);
     CELL_FUNCTION_INTERNAL static void WaylandXDGSurfaceConfigure(void* data, struct xdg_surface* surface, const uint32_t serial);

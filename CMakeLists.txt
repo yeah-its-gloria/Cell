@@ -29,35 +29,35 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 
-if(WIN32)
+if (WIN32)
     set(CMAKE_PDB_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
-endif()
+endif ()
 
-if(NOT ${CMAKE_C_COMPILER_ID} STREQUAL "Clang")
+if (NOT ${CMAKE_C_COMPILER_ID} STREQUAL "Clang")
     message(WARNING "The C compiler \"${CMAKE_C_COMPILER_ID}\" is not supported. Using LLVM/clang is strongly recommended instead.")
-endif()
+endif ()
 
-if(NOT ${CMAKE_CXX_COMPILER_ID} STREQUAL "Clang")
+if (NOT ${CMAKE_CXX_COMPILER_ID} STREQUAL "Clang")
     message(WARNING "The C++ compiler \"${CMAKE_CXX_COMPILER_ID}\" is not supported. Using LLVM/clang is strongly recommended instead.")
-endif()
+endif ()
 
-if(NOT WIN32 AND NOT UNIX)
+if (NOT WIN32 AND NOT UNIX)
     message(WARNING "Support for platforms other than Windows or Linux is considered experimental at the moment.")
-endif()
+endif ()
 
-if(UNIX)
+if (UNIX)
     message(NOTICE "Several interfaces on Linux aren't yet implemented fully.")
-endif()
+endif ()
 
-if(NOT ${CMAKE_GENERATOR} STREQUAL "Ninja Multi-Config"
+if (NOT ${CMAKE_GENERATOR} STREQUAL "Ninja Multi-Config"
     AND NOT ${CMAKE_GENERATOR} STREQUAL "Ninja"
     AND (NOT MSVC AND NOT ${CMAKE_GENERATOR} STREQUAL "Visual Studio 17 2022"))
     message(AUTHOR_WARNING "Using Ninja or Ninja Multi-Config as the generator is recommended over \"${CMAKE_GENERATOR}\".")
-endif()
+endif ()
 
-if(MSVC AND NOT ${CMAKE_VS_PLATFORM_TOOLSET} STREQUAL "ClangCL")
+if (MSVC AND NOT ${CMAKE_VS_PLATFORM_TOOLSET} STREQUAL "ClangCL")
     message(WARNING "CL is basically guaranteed to break. It's recommended that you use the ClangCL tookit instead of \"${CMAKE_VS_PLATFORM_TOOLSET}\".")
-endif()
+endif ()
 
 option(CELL_ENABLE_EDITOR "Whether the editor should be built. Defaults to ON." ON)
 option(CELL_ENABLE_PROJECT "Whether the in tree project should be built. Defaults to ON." ON)
@@ -67,15 +67,15 @@ option(CELL_ENABLE_UTILITIES "Whether utilities should be built. Defaults to ON.
 
 option(CELL_ENABLE_STATIC_BUILD "Whether the libraries (core, modules, etc) should be build statically. Defaults to OFF." OFF)
 
-if(CELL_ENABLE_STATIC_BUILD)
+if (CELL_ENABLE_STATIC_BUILD)
     set(CELL_LIBRARY_TYPE STATIC)
 else ()
     set(CELL_LIBRARY_TYPE SHARED)
-endif()
+endif ()
 
-if(CELL_ENABLE_TESTS)
+if (CELL_ENABLE_TESTS)
     enable_testing()
-endif()
+endif ()
 
 file(MAKE_DIRECTORY ${GENERATE_DIR})
 
@@ -89,14 +89,14 @@ CellAddModule(OpenXR)
 CellAddModule(Shell)
 CellAddModule(Vulkan)
 
-if(WIN32)
+if (WIN32)
     CellAddModule(D3D12)
-endif()
+endif ()
 
-if(CELL_ENABLE_EDITOR)
+if (CELL_ENABLE_EDITOR)
     add_subdirectory(${PROJECT_ROOT_DIR}/Editor)
-endif()
+endif ()
 
-if(CELL_ENABLE_PROJECT)
+if (CELL_ENABLE_PROJECT)
     add_subdirectory(${PROJECT_ROOT_DIR}/Project)
-endif()
+endif ()

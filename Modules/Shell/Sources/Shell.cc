@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: Copyright 2023-2024 Gloria G.
 // SPDX-License-Identifier: BSD-2-Clause
 
-#include <Cell/Shell/Input.hh>
+#include <Cell/Shell/Shell.hh>
 
 #if CELL_PLATFORM_WINDOWS
 #include <Cell/Shell/Implementations/Windows.hh>
@@ -28,10 +28,6 @@ Wrapped<IShell*, Result> CreateShell(const System::String& title) {
     }
 
     return result.Unwrap();
-}
-
-Input* IShell::CreateInputHandler() {
-    return new Input(*this);
 }
 
 }

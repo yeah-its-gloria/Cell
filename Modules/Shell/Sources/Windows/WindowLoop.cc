@@ -110,6 +110,16 @@ LRESULT Windows::WindowLoop(HWND window, UINT message, WPARAM paramHigh, LPARAM 
         break;
     }
 
+    case WM_MOVE: {
+        if (windows != nullptr) {
+            // prevent window moves from gluing keys
+            windows->keys = KeyboardButton::None;
+        }
+
+        // otherwise unhandled
+        break;
+    }
+
     default: {
         break;
     }

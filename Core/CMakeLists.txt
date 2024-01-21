@@ -160,7 +160,16 @@ add_subdirectory(${PLATFORM_DIR})
 CellPlatformBootstrapTarget(CellCore)
 
 if (CELL_ENABLE_TESTS)
-    add_subdirectory(${CORE_DIR}/Tests)
+    function(cell_add_test name)
+        add_executable(CellCore${name}Test ${CMAKE_CURRENT_LIST_DIR}/Tests/${name}.cc)
+        target_link_libraries(CellCore${name}Test PRIVATE CellCore)
+        add_test(NAME CellCore${name}Test COMMAND CellCore${name}Test WORKING_DIRECTORY ${PROJECT_ROOT_DIR})
+        CellPlatformBootstrapTarget(CellCore${name}Test TRUE)
+    endfunction()
+
+    cell_add_test(Enumerables)
+    cell_add_test(System)
+    cell_add_test(Utilities)
 endif ()
 
 add_custom_command(TARGET CellCore POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_if_different ${CORE_DIR}/Content/NOTICE $<TARGET_FILE_DIR:CellCore>)

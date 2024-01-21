@@ -7,7 +7,6 @@ set(MODULE_INCLUDES_DIR ${CMAKE_CURRENT_LIST_DIR}/Includes)
 
 add_library(CellShell ${CELL_LIBRARY_TYPE}
     ${MODULE_INCLUDES_DIR}/Cell/Shell/Controller.hh
-    ${MODULE_INCLUDES_DIR}/Cell/Shell/Input.hh
     ${MODULE_INCLUDES_DIR}/Cell/Shell/InputTypes.hh
     ${MODULE_INCLUDES_DIR}/Cell/Shell/Result.hh
     ${MODULE_INCLUDES_DIR}/Cell/Shell/Shell.hh
@@ -24,11 +23,10 @@ add_library(CellShell ${CELL_LIBRARY_TYPE}
     ${MODULE_INCLUDES_DIR}/Cell/Shell/Implementations/Linux/WaylandProtocols/xdg-decoration-client-protocol.h
     ${MODULE_INCLUDES_DIR}/Cell/Shell/Implementations/Linux/WaylandProtocols/xdg-shell-client-protocol.h
 
+    ${CMAKE_CURRENT_LIST_DIR}/Sources/Actions.cc
+    ${CMAKE_CURRENT_LIST_DIR}/Sources/Controller.cc
+    ${CMAKE_CURRENT_LIST_DIR}/Sources/RunDispatch.cc
     ${CMAKE_CURRENT_LIST_DIR}/Sources/Shell.cc
-
-    ${CMAKE_CURRENT_LIST_DIR}/Sources/Input/Actions.cc
-    ${CMAKE_CURRENT_LIST_DIR}/Sources/Input/Controller.cc
-    ${CMAKE_CURRENT_LIST_DIR}/Sources/Input/Poll.cc
 
     ${CMAKE_CURRENT_LIST_DIR}/Sources/Controller/DualSenseStructures.hh
     ${CMAKE_CURRENT_LIST_DIR}/Sources/Controller/DualSense.cc

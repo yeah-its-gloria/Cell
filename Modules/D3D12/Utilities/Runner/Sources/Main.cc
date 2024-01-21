@@ -24,7 +24,7 @@ void CellEntry(Reference<System::String> parameterString) {
             break;
         }
 
-        CELL_ASSERT(result == Shell::Result::Success || result == Shell::Result::NoUpdates);
+        CELL_ASSERT(result == Shell::Result::Success);
         System::Thread::Yield();
     }
 

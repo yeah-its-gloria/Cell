@@ -115,26 +115,18 @@ void Example::VulkanThread() {
     //ubo.view.LookAt(Vector3 { 0.f, 5.f, 5.f }, Mathematics::Utilities::DegreesToRadians(10.f), Mathematics::Utilities::DegreesToRadians(90.f));
     ubo.view.LookAt({ 0.f, 0.1f, -5.f }, { 0.f, 0.f, 0.f }, { 0.f, 0.f, -1.f });
 
-    Vector3 currentPosition;
-
     uint64_t finishedTick = System::GetPreciseTickerValue();
     while (this->shell->IsStillActive()) {
-        this->renderDeltaTime = Cell::Utilities::Minimum(( System::GetPreciseTickerValue() - finishedTick) / 1000.f, 0.001f);
+        this->renderDeltaTime = Cell::Utilities::Minimum((System::GetPreciseTickerValue() - finishedTick) / 1000.f, 0.001f);
 
-        ubo.timeMilliseconds = this->elapsedTime;
+        ubo.delta = this->renderDeltaTime;
         ubo.projection.Perspective(Mathematics::Utilities::DegreesToRadians(45.f), (float)extent.width / (float)extent.height, 0.1, 1000.f);
 
         this->inputMutex.Lock();
 
-        //if (this->position.IsZero()) {
-            currentPosition = this->position;
-        /*} else {
-            currentPosition = currentPosition.Lerp(this->position, this->renderDeltaTime);
-        }*/
-
         ubo.projection.Rotate(this->rotationX, { 0.f, 1.f, 0.f });
         ubo.projection.Rotate(this->rotationY, { 1.f, 0.f, 0.f });
-        ubo.projection.Translate(currentPosition);
+        ubo.projection.Translate(this->position);
 
         this->inputMutex.Unlock();
 
@@ -162,7 +154,6 @@ void Example::VulkanThread() {
         }
 
         finishedTick = System::GetPreciseTickerValue();
-
         System::Thread::Yield();
     }
 

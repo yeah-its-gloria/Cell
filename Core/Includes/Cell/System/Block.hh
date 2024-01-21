@@ -3,7 +3,7 @@
 
 #pragma once
 
-#include "Cell/Cell.hh"
+#include <Cell/Cell.hh>
 
 namespace Cell {
 

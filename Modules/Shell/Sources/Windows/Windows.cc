@@ -6,18 +6,10 @@
 
 namespace Cell::Shell::Implementations {
 
-Result Windows::RunDispatch() {
-    bool hasProcessed = false;
-
+Result Windows::RunDispatchImpl() {
     MSG message = { nullptr, 0, 0, 0, 0, { 0, 0 } };
     while (PeekMessageW(&message, nullptr, 0, 0, PM_REMOVE) != FALSE) {
-        hasProcessed = true;
-
         DispatchMessageW(&message);
-    }
-
-    if (!hasProcessed) {
-        return Result::NoUpdates;
     }
 
     if (message.message == WM_QUIT) {

@@ -13,8 +13,6 @@ namespace Cell::Shell::Implementations {
 
 // Shell implementation for Windows.
 class Windows : public IShell {
-friend Input;
-
 public:
     // Creates a new shell instance.
     CELL_FUNCTION static Wrapped<Windows*, Result> New(const System::String& title = "");
@@ -28,7 +26,6 @@ public:
     // Returns a handle to the engine window.
     CELL_INLINE HWND GetWindow() { return this->window; }
 
-    CELL_FUNCTION Result RunDispatch() override;
     CELL_FUNCTION Result RequestQuit() override;
     CELL_FUNCTION Wrapped<Extent, Result> GetDrawableExtent() override;
     CELL_FUNCTION Result SetDrawableExtent(const Extent extent) override;
@@ -36,6 +33,8 @@ public:
 
 private:
     CELL_INLINE Windows(HINSTANCE CELL_NONNULL instance, HWND CELL_NONNULL window, WNDCLASSEXW windowClass) : instance(instance), window(window), windowClass(windowClass) { }
+
+    CELL_FUNCTION_INTERNAL Result RunDispatchImpl() override;
 
     CELL_FUNCTION_INTERNAL static LRESULT WindowLoop(HWND window, UINT message, WPARAM paramHigh, LPARAM paramLow);
     CELL_FUNCTION_INTERNAL void HandleKeyInput(const WPARAM key, const LPARAM extInfo, const bool isPressed);

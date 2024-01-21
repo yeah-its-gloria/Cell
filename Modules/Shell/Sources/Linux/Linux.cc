@@ -6,9 +6,9 @@
 
 namespace Cell::Shell::Implementations {
 
-Result Linux::RunDispatch() {
-    const int waylandResult = wl_display_dispatch_pending(this->display);
-    CELL_ASSERT(waylandResult > -1);
+Result Linux::RunDispatchImpl() {
+    const int result = wl_display_dispatch_pending(this->display);
+    CELL_ASSERT(result > -1);
 
     if (this->isDone) {
         return Result::RequestedQuit;

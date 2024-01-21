@@ -1,11 +1,11 @@
 // SPDX-FileCopyrightText: Copyright 2023-2024 Gloria G.
 // SPDX-License-Identifier: BSD-2-Clause
 
-#include <Cell/Shell/Input.hh>
+#include <Cell/Shell/Shell.hh>
 
 namespace Cell::Shell {
 
-Result Input::RegisterAction(const KeyboardButton button, const ButtonFunction function, void* userData) {
+Result IShell::RegisterAction(const KeyboardButton button, const ButtonFunction function, void* userData) {
     const RegisterInfo info = {
         .type = 0,
         .userData = userData,
@@ -17,7 +17,7 @@ Result Input::RegisterAction(const KeyboardButton button, const ButtonFunction f
     return Result::Success;
 }
 
-Result Input::RegisterAction(const MouseButton button, const ButtonFunction function, void* userData) {
+Result IShell::RegisterAction(const MouseButton button, const ButtonFunction function, void* userData) {
     const RegisterInfo info = {
         .type = 1,
         .userData = userData,
@@ -29,7 +29,7 @@ Result Input::RegisterAction(const MouseButton button, const ButtonFunction func
     return Result::Success;
 }
 
-Result Input::RegisterAction(const ControllerButton button, const ButtonFunction function, void* userData) {
+Result IShell::RegisterAction(const ControllerButton button, const ButtonFunction function, void* userData) {
     const RegisterInfo info = {
         .type = 2,
         .userData = userData,
@@ -41,7 +41,7 @@ Result Input::RegisterAction(const ControllerButton button, const ButtonFunction
     return Result::Success;
 }
 
-Result Input::RegisterAction(const MouseAxis axis, const AxisFunction function, void* userData) {
+Result IShell::RegisterAction(const MouseAxis axis, const AxisFunction function, void* userData) {
     const RegisterInfo info = {
         .type = 3,
         .userData = userData,
@@ -53,7 +53,7 @@ Result Input::RegisterAction(const MouseAxis axis, const AxisFunction function, 
     return Result::Success;
 }
 
-Result Input::RegisterAction(const ControllerAxis axis, const AxisFunction function, void* userData) {
+Result IShell::RegisterAction(const ControllerAxis axis, const AxisFunction function, void* userData) {
     const RegisterInfo info = {
         .type = 4,
         .userData = userData,
