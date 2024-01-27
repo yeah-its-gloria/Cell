@@ -49,10 +49,9 @@ Result Instance::QueryPhysicalDevice() {
 
     uint32_t index = (uint32_t)-1;
     uint16_t score = 0;
-    uint16_t temp_score = 0;
 
     for (uint32_t i = 0; i < deviceCount; i++) {
-        temp_score = Instance::ScorePhysicalDevice(devices[i]);
+        const uint16_t temp_score = Instance::ScorePhysicalDevice(devices[i]);
         if (temp_score > score) {
             score = temp_score;
             index = i;

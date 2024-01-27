@@ -8,9 +8,12 @@ namespace Cell::Vulkan {
 Result Instance::CreateDevice() {
     const char* extensions[4] = {
         VK_KHR_SWAPCHAIN_EXTENSION_NAME,
+
         VK_KHR_DYNAMIC_RENDERING_EXTENSION_NAME,
         VK_KHR_SHADER_NON_SEMANTIC_INFO_EXTENSION_NAME,
-        VK_EXT_EXTENDED_DYNAMIC_STATE_EXTENSION_NAME
+
+        VK_EXT_EXTENDED_DYNAMIC_STATE_EXTENSION_NAME,
+        // VK_EXT_SHADER_OBJECT_EXTENSION_NAME
     };
 
     return this->CreateDevice(extensions, 4);
@@ -109,9 +112,15 @@ Result Instance::CreateDevice(const char** extensions, const uint32_t count) {
 
     // Device creation
 
+    /*const VkPhysicalDeviceShaderObjectFeaturesEXT shaderObjectFeature = {
+        .sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_OBJECT_FEATURES_EXT,
+        .pNext = nullptr,
+        .shaderObject = VK_TRUE
+    };*/
+
     const VkPhysicalDeviceExtendedDynamicStateFeaturesEXT extendedDynamicStateFeature = {
         .sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_EXTENDED_DYNAMIC_STATE_FEATURES_EXT,
-        .pNext = nullptr,
+        .pNext = nullptr, // (void*)&shaderObjectFeature,
         .extendedDynamicState = VK_TRUE
     };
 

@@ -11,6 +11,16 @@
 
 namespace Cell::Shell {
 
+// Indicates the state of the application currently running.
+// This can have different effects depending on the platform, e.g on desktops, a spinning cursor is shown for working.
+enum class ShellStatus : uint8_t {
+    // Indicates that the application is acting as normal.
+    Default,
+
+    // Indicates that the application is currently very busy.
+    Working
+};
+
 // Defines a 2 dimensional size.
 struct Extent {
     uint32_t width;
@@ -42,6 +52,9 @@ public:
 
     // Sets a new window title.
     virtual Result SetNewTitle(const System::String& title) = 0;
+
+    // Sets a new status to be indicated to the user.
+    virtual Result IndicateStatus(const ShellStatus status) = 0;
 
     // Dispatches all updates and fetches new data.
     CELL_FUNCTION Result RunDispatch();

@@ -70,4 +70,29 @@ Result Windows::SetNewTitle(const System::String& title) {
     return Result::Success;
 }
 
+Result Windows::IndicateStatus(const ShellStatus status) {
+    HCURSOR cursor = nullptr;
+
+    switch (status) {
+    case ShellStatus::Default: {
+        cursor = LoadCursorW(nullptr, IDC_ARROW);
+        break;
+    }
+
+    case ShellStatus::Working: {
+        cursor = LoadCursorW(nullptr, IDC_WAIT);
+        break;
+    }
+
+    default: {
+        CELL_UNREACHABLE;
+    }
+    }
+
+    CELL_ASSERT(cursor != nullptr);
+
+    SetCursor(cursor);
+    return Result::Success;
+}
+
 }

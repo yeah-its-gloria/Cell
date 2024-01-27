@@ -3,10 +3,8 @@
 
 #include "Example.hh"
 
-#include <Cell/Network/AddressInfo.hh>
 #include <Cell/Network/Socket.hh>
 #include <Cell/Scoped.hh>
-#include <Cell/System/BlockImpl.hh>
 #include <Cell/Utilities/RawString.hh>
 
 using namespace Cell;

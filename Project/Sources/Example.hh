@@ -11,6 +11,7 @@
 class Example : public Cell::Object {
 public:
     CELL_INLINE Example() { }
+
     CELL_FUNCTION_INTERNAL ~Example();
     CELL_FUNCTION_INTERNAL void Launch(const Cell::System::String& parameterString);
 

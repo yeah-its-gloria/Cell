@@ -6,15 +6,13 @@
 #include <Cell/Audio/Engine.hh>
 #include <Cell/IO/File.hh>
 #include <Cell/Scoped.hh>
-#include <Cell/System/BlockImpl.hh>
 #include <Cell/System/Timer.hh>
-#include <Cell/System/Thread.hh>
 
 using namespace Cell;
 using namespace Cell::Audio;
 
 void Example::AudioThread() {
-    ScopedObject instance = CreateEngine().Unwrap();
+    ScopedObject engine = CreateEngine().Unwrap();
 
     Format format = {
         .type = FormatType::Float32PCM,
@@ -22,17 +20,17 @@ void Example::AudioThread() {
         .rate = 48000
     };
 
-    Result result = instance->SetUpRendering(format);
+    Result result = engine->SetUpRendering(format);
     CELL_ASSERT(result == Result::Success);
 
-    ScopedObject file = IO::File::Open(this->GetContentPath("/Sounds/boing.bin")).Unwrap();
+    ScopedObject file = IO::File::Open(this->GetContentPath("/SoundEffects/Boing.bin")).Unwrap();
 
     const size_t size = file->GetSize().Unwrap();
     CELL_ASSERT(size % 4 == 0);
 
-    const uint32_t count = instance->GetBufferSize().Unwrap();
+    const uint32_t count = engine->GetBufferSize().Unwrap();
 
-    result = instance->PlaybackBegin();
+    result = engine->PlaybackBegin();
     CELL_ASSERT(result == Result::Success);
 
     const uint32_t sampleSize = ((2 * 32) / 8);
@@ -45,14 +43,14 @@ void Example::AudioThread() {
     while (this->shell->IsStillActive()) {
         if (this->audioTrigger.IsDataAvailable()) {
             while (this->shell->IsStillActive()) {
-                System::SleepPrecise(instance->GetLatencyMicroseconds());
+                System::SleepPrecise(engine->GetLatencyMicroseconds());
 
                 // prevents stupidly small sample sizes from underflowing us
                 if (dataOffset >= size) {
                     break;
                 }
 
-                const uint32_t offset = instance->GetCurrentBufferFillCount().Unwrap();
+                const uint32_t offset = engine->GetCurrentBufferFillCount().Unwrap();
                 if (offset > 0) {
                     System::Thread::Yield();
                     continue;
@@ -72,7 +70,7 @@ void Example::AudioThread() {
                 IO::Result ioResult = file->Read(buffer, dataOffset);
                 CELL_ASSERT(ioResult == IO::Result::Success);
 
-                result = instance->WriteSamples(buffer, framesToWrite);
+                result = engine->WriteSamples(buffer, framesToWrite);
                 CELL_ASSERT(result == Result::Success);
 
                 dataOffset += framesToWrite * sampleSize;
@@ -85,6 +83,6 @@ void Example::AudioThread() {
         System::Thread::Yield();
     }
 
-    result = instance->PlaybackEnd();
+    result = engine->PlaybackEnd();
     CELL_ASSERT(result == Result::Success || result == Result::NotYetFinished);
 }

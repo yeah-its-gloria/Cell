@@ -15,12 +15,12 @@ add_executable(CellExample
     ${SOURCES_DIR}/AudioThread.cc
     ${SOURCES_DIR}/NetworkThread.cc
 
-    ${SOURCES_DIR}/Vulkan/Thread.cc
-    ${SOURCES_DIR}/Vulkan/Tools.hh
-    ${SOURCES_DIR}/Vulkan/Tools/GenerateRenderCommands.cc
-    ${SOURCES_DIR}/Vulkan/Tools/LoadShader.cc
-    ${SOURCES_DIR}/Vulkan/Tools/LoadTexture.cc
-    ${SOURCES_DIR}/Vulkan/Tools/SetUpResources.cc
+    ${SOURCES_DIR}/Renderer/Thread.cc
+    ${SOURCES_DIR}/Renderer/Tools.hh
+    ${SOURCES_DIR}/Renderer/Tools/GenerateRenderCommands.cc
+    ${SOURCES_DIR}/Renderer/Tools/LoadShader.cc
+    ${SOURCES_DIR}/Renderer/Tools/LoadTexture.cc
+    ${SOURCES_DIR}/Renderer/Tools/SetUpResources.cc
 )
 
 target_link_libraries(CellExample PRIVATE

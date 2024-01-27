@@ -5,33 +5,46 @@
 
 #include "Shared.hlslh"
 
-struct VertexShaderOutput {
+struct VertexInput {
+    [[vk::location(0)]]
+    float3 position : POSITION0;
+
+    [[vk::location(1)]]
+    float4 color : COLOR0;
+
+    [[vk::location(2)]]
+    float2 texCoords : TEXCOORD;
+
+    [[vk::location(3)]]
+    uint texIndex;
+
+    uint index : SV_VertexID;
+};
+
+struct VertexOutput {
     float4 position : SV_POSITION;
-    FragmentShaderInput fragmentInput;
+
+    FragmentInput fragInput;
 };
 
 cbuffer : register(b0) {
-    float4x4 model;
-    float4x4 view;
-    float4x4 projection;
-    float delta;
+    struct {
+        float4x4 model;
+        float4x4 view;
+        float4x4 projection;
+
+        float delta;
+    } MainUBO;
 };
 
-float oscillate(float x) {
-    return (x % 1.0) * (1.0 - 2.0 * (floor(x) % 2.0)) + (floor(x) % 2.0);
-}
+VertexOutput vertexMain(VertexInput input) {
+    VertexOutput output = (VertexOutput)0;
 
-VertexShaderOutput vertexMain([[vk::location(0)]] float3 position : POSITION0,
-                              [[vk::location(1)]] float4 color : COLOR0,
-                              [[vk::location(2)]] float2 texCoords : TEXCOORD,
-                              [[vk::location(3)]] uint texIndex
-) {
-    VertexShaderOutput output = (VertexShaderOutput)0;
+    output.position = float4(input.position.xyz, 1.0) * MainUBO.model * MainUBO.view * MainUBO.projection;
 
-    output.position = mul(projection, mul(view, mul(model, float4(position.xyz, 1.0))));
-    output.fragmentInput.color = color;
-    output.fragmentInput.texCoords = texCoords;
-    output.fragmentInput.texIndex = texIndex;
+    output.fragInput.color     = input.color;
+    output.fragInput.texCoords = input.texCoords;
+    output.fragInput.texIndex  = input.texIndex;
 
     return output;
 }

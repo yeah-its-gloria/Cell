@@ -94,7 +94,6 @@ bool String::BeginsWith(const String& substring) const {
     return CompareMemory(this->data, substring.data, substring.size);
 }
 
-// Checks if this string ends with the given
 bool String::EndsWith(const String& substring) const {
     if (substring.size >= this->size) {
         return false;
@@ -127,7 +126,7 @@ Wrapped<uint64_t, Result> String::AsNumber(const bool isHex) const {
 }
 
 size_t String::GetCount() const {
-    CELL_UNIMPLEMENTED; // TODO: uh lol
+    CELL_UNIMPLEMENTED // TODO: uh lol
 }
 
 char* String::ToCharPointer() const {
@@ -136,7 +135,7 @@ char* String::ToCharPointer() const {
     return dataStr;
 }
 
-bool String::operator ==(const String& other) {
+bool String::operator == (const String& other) {
     if (this->size != other.size) {
         return false;
     }
@@ -144,7 +143,7 @@ bool String::operator ==(const String& other) {
     return CompareMemory(this->data, other.data, this->size);
 }
 
-String& String::operator =(const String& input) {
+String& String::operator = (const String& input) {
     if (this == &input) {
         return *this;
     }

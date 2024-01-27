@@ -16,25 +16,28 @@ using namespace Cell::Mathematics;
 using namespace Cell::Vulkan;
 
 void Example::VulkanThread() {
-    ScopedObject<Instance> instance = Instance::New().Unwrap();
+    Shell::Result shellResult = this->shell->IndicateStatus(Shell::ShellStatus::Working);
+    CELL_ASSERT(shellResult == Shell::Result::Success);
+
+    ScopedObject instance = Instance::New().Unwrap();
 
     Result result = instance->InitializeDevice();
     CELL_ASSERT(result == Result::Success);
 
-    ScopedObject<WSITarget> target = instance->CreateWSITarget(this->shell).Unwrap();
+    ScopedObject target = instance->CreateWSITarget(this->shell).Unwrap();
 
     result = target->SetUpRendering();
     CELL_ASSERT(result == Result::Success);
 
     VkExtent2D extent = target->GetExtent();
 
-    ScopedObject<Image> lesbianTexture = VulkanToolsLoadTexture(&instance, this->GetContentPath("/Textures/Raw/lesbian.bin"));
-    ScopedObject<Image> transTexture = VulkanToolsLoadTexture(&instance, this->GetContentPath("/Textures/Raw/trans.bin"));
+    ScopedObject lesbianTexture = VulkanToolsLoadTexture(&instance, this->GetContentPath("/Textures/LesbianTex.bin"));
+    ScopedObject transTexture = VulkanToolsLoadTexture(&instance, this->GetContentPath("/Textures/TransTex.bin"));
 
     constexpr size_t vertexCount = 16;
     constexpr size_t indexCount = 36;
 
-    ScopedObject<Buffer> buffer = instance->CreateBuffer(sizeof(Vertex) * vertexCount + sizeof(uint16_t) * indexCount,
+    ScopedObject buffer = instance->CreateBuffer(sizeof(Vertex) * vertexCount + sizeof(uint16_t) * indexCount,
                                                          VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT,
                                                          VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT).Unwrap();
 
@@ -94,7 +97,7 @@ void Example::VulkanThread() {
     buffer->Copy(System::UnownedBlock { vertices, vertexCount });
     buffer->Copy(System::UnownedBlock { indices, indexCount }, sizeof(Vertex) * vertexCount);
 
-    ScopedObject<Pipeline> pipeline = instance->CreatePipeline(&target).Unwrap();
+    ScopedObject pipeline = instance->CreatePipeline(&target).Unwrap();
 
     VulkanToolsSetUpResources(&pipeline, uniforms, &lesbianTexture, &transTexture, &target);
 
@@ -103,7 +106,7 @@ void Example::VulkanThread() {
     result = pipeline->Finalize();
     CELL_ASSERT(result == Result::Success);
 
-    ScopedObject<CommandBufferManager> cmdBufferManager = instance->CreateCommandBufferManager().Unwrap();
+    ScopedObject cmdBufferManager = instance->CreateCommandBufferManager().Unwrap();
 
     result = cmdBufferManager->CreateBuffers(target->GetImageCount());
     CELL_ASSERT(result == Result::Success);
@@ -114,6 +117,9 @@ void Example::VulkanThread() {
 
     //ubo.view.LookAt(Vector3 { 0.f, 5.f, 5.f }, Mathematics::Utilities::DegreesToRadians(10.f), Mathematics::Utilities::DegreesToRadians(90.f));
     ubo.view.LookAt({ 0.f, 0.1f, -5.f }, { 0.f, 0.f, 0.f }, { 0.f, 0.f, -1.f });
+
+    shellResult = this->shell->IndicateStatus(Shell::ShellStatus::Default);
+    CELL_ASSERT(shellResult == Shell::Result::Success);
 
     uint64_t finishedTick = System::GetPreciseTickerValue();
     while (this->shell->IsStillActive()) {

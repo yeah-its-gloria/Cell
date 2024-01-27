@@ -6,10 +6,6 @@
 
 namespace Cell::Audio {
 
-WASAPI::WASAPI(IMMDeviceEnumerator* enumerator) {
-    this->enumerator = enumerator;
-}
-
 WASAPI::~WASAPI() {
     if (this->renderClientService != nullptr) {
         this->renderClientService->Release();
@@ -73,4 +69,5 @@ Wrapped<uint32_t, Result> WASAPI::GetCurrentBufferFillCount() {
 
     return offset;
 }
+
 }

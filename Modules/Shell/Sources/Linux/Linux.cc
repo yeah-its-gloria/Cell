@@ -47,4 +47,12 @@ Result Linux::SetNewTitle(const System::String& title) {
     return Result::Success;
 }
 
+Result Linux::IndicateStatus(const ShellStatus status) {
+    (void)(status);
+
+    // TODO: implement using wp_cursor_shape_manager_v1
+
+    return Result::Success;
+}
+
 }

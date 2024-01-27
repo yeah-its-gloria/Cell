@@ -20,7 +20,7 @@ On Linux, Cell requires Wayland and `libxkbcommon`. There is no support for x11,
 
 You can additionally configure the engine further through CMake. I recommend using a multi-configuration generator, like `Ninja Multi-Config`.
  
-| Property                   | Default Value | Intent                                                                    |
+| Setting                    | Default Value | Intent                                                                    |
 |----------------------------|---------------|---------------------------------------------------------------------------|
 | `CELL_ENABLE_EDITOR`       | ON            | Enables the editor being built.                                           |
 | `CELL_ENABLE_PROJECT`      | ON            | Enables the in tree project being built.                                  |
@@ -30,6 +30,14 @@ You can additionally configure the engine further through CMake. I recommend usi
 
 ## Core
 The core implements a platform-agnostic interface for the editor, all modules, titles and utilities.
+
+| Setting                    | Default Value | Intent                                                                                   |
+|----------------------------|---------------|------------------------------------------------------------------------------------------|
+| `CELL_SKIP_ASSERT`         | OFF           | Disables checking assertions. Takes priority over all assertion options.                 |
+| `CELL_USE_EXTERNAL_ASSERT` | OFF           | Calls `assert()` in case an assertion fails. Takes priority over `CELL_USE_PANIC_ASSERT` |
+| `CELL_USE_PANIC_ASSERT`    | ON            | Calls `Cell::System::Panic()` in case an assertion fails.                                |
+| `CELL_ENABLE_UTILITIES`    | ON            | Enables utilities being built.                                            |
+| `CELL_ENABLE_STATIC_BUILD` | OFF           | Builds all library components statically. Recommended for release builds. |
 
 ## Editor
 The editor serves as a creation utility for various workloads.

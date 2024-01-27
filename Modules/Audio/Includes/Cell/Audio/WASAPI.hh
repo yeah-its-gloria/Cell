@@ -29,17 +29,17 @@ public:
     }
 
 private:
-    CELL_FUNCTION_INTERNAL WASAPI(IMMDeviceEnumerator* CELL_NONNULL enumerator);
+    CELL_FUNCTION_INTERNAL WASAPI(IMMDeviceEnumerator* CELL_NONNULL e) : enumerator(e) { }
 
     CELL_FUNCTION_INTERNAL Result FindRenderDevice();
     CELL_FUNCTION_INTERNAL Result CreateRenderClient(Format format);
 
-    IMMDeviceEnumerator* enumerator = nullptr;
+    IMMDeviceEnumerator* enumerator;
     IMMDevice* renderDevice = nullptr;
     IAudioClient3* renderClient = nullptr;
     IAudioRenderClient* renderClientService = nullptr;
 
-    uint32_t sampleSize = ((2 * 32) / 8); // TODO: determine through format
+    uint32_t sampleSize = 0;
 };
 
 }

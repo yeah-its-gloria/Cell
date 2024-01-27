@@ -37,6 +37,7 @@ public:
     CELL_FUNCTION Wrapped<Extent, Result> GetDrawableExtent() override;
     CELL_FUNCTION Result SetDrawableExtent(const Extent extent) override;
     CELL_FUNCTION Result SetNewTitle(const System::String& title) override;
+    CELL_FUNCTION Result IndicateStatus(const ShellStatus status) override;
 
 private:
     CELL_INLINE Linux(struct wl_display* display, struct wl_registry* registry) : display(display), registry(registry) { }
@@ -76,6 +77,8 @@ private:
     struct wl_registry* registry;
 
     struct wl_seat* seat = nullptr;
+    struct wl_pointer* pointer = nullptr;
+
     struct wl_keyboard* keyboard = nullptr;
     struct xkb_context* keyboardContext = nullptr;
     struct xkb_keymap* keyboardKeymap = nullptr;

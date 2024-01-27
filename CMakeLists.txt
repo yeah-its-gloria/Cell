@@ -34,24 +34,32 @@ if (WIN32)
 endif ()
 
 if (NOT ${CMAKE_C_COMPILER_ID} STREQUAL "Clang")
-    message(WARNING "The C compiler \"${CMAKE_C_COMPILER_ID}\" is not supported. Using LLVM/clang is strongly recommended instead.")
+    message(WARNING "The C compiler \"${CMAKE_C_COMPILER_ID}\" is not supported, using LLVM/clang is strongly recommended instead")
 endif ()
 
 if (NOT ${CMAKE_CXX_COMPILER_ID} STREQUAL "Clang")
-    message(WARNING "The C++ compiler \"${CMAKE_CXX_COMPILER_ID}\" is not supported. Using LLVM/clang is strongly recommended instead.")
+    message(WARNING "The C++ compiler \"${CMAKE_CXX_COMPILER_ID}\" is not supported, using LLVM/clang is strongly recommended instead")
 endif ()
 
-if (NOT WIN32 AND NOT UNIX)
-    message(WARNING "Support for platforms other than Windows or Linux is considered experimental at the moment.")
-endif ()
-
-if (UNIX)
-    message(NOTICE "Several interfaces on Linux aren't yet implemented fully.")
+if (WIN32)
+    if (NOT ${CMAKE_SYSTEM_NAME} STREQUAL "Windows")
+        message(WARNING "\"${CMAKE_SYSTEM_NAME}\" is not a known Win32 implementation")
+    endif ()
+elseif (UNIX)
+    if (${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
+        message(NOTICE "Several interfaces on Linux aren't yet implemented fully")
+    else ()
+        message(WARNING "Cell mainly targets Linux, other \"Unix-likes\" (${CMAKE_SYSTEM_NAME}) may or may not be compatible")
+    endif ()
+else()
+    message(WARNING "Unknown environment")
 endif ()
 
 if (NOT ${CMAKE_GENERATOR} STREQUAL "Ninja Multi-Config"
-    AND NOT ${CMAKE_GENERATOR} STREQUAL "Ninja"
-    AND (NOT MSVC AND NOT ${CMAKE_GENERATOR} STREQUAL "Visual Studio 17 2022"))
+        AND NOT ${CMAKE_GENERATOR} STREQUAL "Ninja"
+        AND (NOT MSVC AND NOT ${CMAKE_GENERATOR} STREQUAL "Visual Studio 17 2022")
+    )
+
     message(AUTHOR_WARNING "Using Ninja or Ninja Multi-Config as the generator is recommended over \"${CMAKE_GENERATOR}\".")
 endif ()
 

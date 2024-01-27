@@ -3,12 +3,6 @@
 
 #include "Example.hh"
 
-#include <Cell/Scoped.hh>
-#include <Cell/Shell/Shell.hh>
-#include <Cell/System/Log.hh>
-#include <Cell/System/Timer.hh>
-#include <Cell/Utilities/MinMaxClamp.hh>
-
 #include <math.h>
 
 using namespace Cell;

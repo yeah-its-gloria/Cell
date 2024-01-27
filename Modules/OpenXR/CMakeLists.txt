@@ -3,7 +3,7 @@
 
 project(CellOpenXR LANGUAGES CXX VERSION 1.0.0 DESCRIPTION "Cell - Modules - OpenXR")
 
-find_package(OpenXR)
+find_package(OpenXR QUIET)
 
 if (NOT OpenXR_FOUND)
     message(STATUS "OpenXR not found, disabling CellOpenXR.")
@@ -18,8 +18,6 @@ add_library(CellOpenXR ${CELL_LIBRARY_TYPE}
     ${MODULE_INCLUDES_DIR}/Cell/OpenXR/Instance.hh
     ${MODULE_INCLUDES_DIR}/Cell/OpenXR/Result.hh
     ${MODULE_INCLUDES_DIR}/Cell/OpenXR/VulkanTarget.hh
-
-# ------------------------------------------------------------------------------------------------
 
     ${CMAKE_CURRENT_LIST_DIR}/Sources/CreateRenderTargetsVulkan.cc
     ${CMAKE_CURRENT_LIST_DIR}/Sources/CreateSpace.cc
@@ -42,7 +40,6 @@ target_compile_definitions(CellOpenXR PUBLIC
     "CELL_MODULES_OPENXR_AVAILABLE=1"
 
     "XR_USE_GRAPHICS_API_VULKAN=1"
-    # "XR_EXTENSION_PROTOTYPES=1"
 )
 
 target_include_directories(CellOpenXR PUBLIC ${MODULE_INCLUDES_DIR} ${OpenXR_INCLUDE_DIRS} ${Vulkan_INCLUDE_DIRS})
@@ -63,9 +60,7 @@ if (WIN32)
                            COMMAND ${CMAKE_COMMAND} -E copy_if_different ${OpenXR_BINARIES} $<TARGET_FILE_DIR:CellOpenXR>
         )
     endif ()
-elseif (UNIX)
-    # ...
-else ()
+elseif (NOT UNIX)
     message(FATAL_ERROR "Unsupported platform")
 endif ()
 

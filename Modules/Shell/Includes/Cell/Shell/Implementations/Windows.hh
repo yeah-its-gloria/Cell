@@ -30,6 +30,7 @@ public:
     CELL_FUNCTION Wrapped<Extent, Result> GetDrawableExtent() override;
     CELL_FUNCTION Result SetDrawableExtent(const Extent extent) override;
     CELL_FUNCTION Result SetNewTitle(const System::String& title) override;
+    CELL_FUNCTION Result IndicateStatus(const ShellStatus status) override;
 
 private:
     CELL_INLINE Windows(HINSTANCE CELL_NONNULL instance, HWND CELL_NONNULL window, WNDCLASSEXW windowClass) : instance(instance), window(window), windowClass(windowClass) { }

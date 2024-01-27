@@ -10,7 +10,7 @@ uint16_t Instance::ScorePhysicalDevice(VkPhysicalDevice device) {
     VkPhysicalDeviceProperties properties;
     vkGetPhysicalDeviceProperties(device, &properties);
 
-    if (VK_API_VERSION_MAJOR(properties.apiVersion) < 1 || VK_API_VERSION_MINOR(properties.apiVersion) < 3) {
+    if (VK_API_VERSION_MAJOR(properties.apiVersion) < 1 || VK_API_VERSION_MINOR(properties.apiVersion) < 2) {
         return 0;
     }
 
@@ -42,9 +42,15 @@ uint16_t Instance::ScorePhysicalDevice(VkPhysicalDevice device) {
 
     // Feature checks
 
+    VkPhysicalDeviceShaderObjectFeaturesEXT shaderObjectFeature = {
+        .sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_OBJECT_FEATURES_EXT,
+        .pNext = nullptr,
+        .shaderObject = VK_FALSE
+    };
+
     VkPhysicalDeviceExtendedDynamicStateFeaturesEXT extendedDynamicStateFeature = {
         .sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_EXTENDED_DYNAMIC_STATE_FEATURES_EXT,
-        .pNext = nullptr,
+        .pNext = &shaderObjectFeature,
         .extendedDynamicState = VK_FALSE
     };
 
@@ -62,30 +68,32 @@ uint16_t Instance::ScorePhysicalDevice(VkPhysicalDevice device) {
 
     vkGetPhysicalDeviceFeatures2(device, &features);
 
-    if (!features.features.fullDrawIndexUint32 ||
-        !features.features.independentBlend ||
-        !features.features.geometryShader ||
-        !features.features.tessellationShader ||
-        !features.features.logicOp ||
-        !features.features.depthClamp ||
-        !features.features.fillModeNonSolid ||
-        !features.features.wideLines ||
-        !features.features.multiViewport ||
-        !features.features.shaderFloat64 ||
-        !features.features.shaderInt64 ||
-        !features.features.shaderInt16 ||
-        !dynamicRenderingFeature.dynamicRendering ||
-        !extendedDynamicStateFeature.extendedDynamicState) {
+    if (features.features.fullDrawIndexUint32            == VK_FALSE ||
+        features.features.independentBlend               == VK_FALSE ||
+        features.features.geometryShader                 == VK_FALSE ||
+        features.features.tessellationShader             == VK_FALSE ||
+        features.features.logicOp                        == VK_FALSE ||
+        features.features.depthClamp                     == VK_FALSE ||
+        features.features.fillModeNonSolid               == VK_FALSE ||
+        features.features.wideLines                      == VK_FALSE ||
+        features.features.multiViewport                  == VK_FALSE ||
+        features.features.shaderFloat64                  == VK_FALSE ||
+        features.features.shaderInt64                    == VK_FALSE ||
+        features.features.shaderInt16                    == VK_FALSE ||
+        dynamicRenderingFeature.dynamicRendering         == VK_FALSE ||
+        extendedDynamicStateFeature.extendedDynamicState == VK_FALSE
+    ) {
         return 0;
+    }
+
+    if (shaderObjectFeature.shaderObject == VK_TRUE) {
+        score += 100;
     }
 
     // Queue family checks
 
     const uint64_t queues = Instance::QueryPhysicalDeviceQueues(device);
-    uint32_t graphicsQueue = queues >> 32;
-    uint32_t transferQueue = queues & 0xffffffff;
-
-    if (transferQueue != (uint32_t)-1 && graphicsQueue != transferQueue) {
+    if ((queues & 0xffffffff) != (uint32_t)-1) {
         score += 200;
     }
 

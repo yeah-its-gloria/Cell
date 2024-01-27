@@ -10,13 +10,16 @@ void Linux::WaylandSeatCapabilities(void* data, struct wl_seat* seat, const uint
     Linux* _linux = (Linux*)data;
     CELL_ASSERT(_linux != nullptr);
 
-    const bool have_keyboard = capabilities & WL_SEAT_CAPABILITY_KEYBOARD;
-    if (have_keyboard && _linux->keyboard == nullptr) {
+    if ((capabilities & WL_SEAT_CAPABILITY_KEYBOARD) && _linux->keyboard == nullptr) {
         _linux->keyboard = wl_seat_get_keyboard(seat);
         CELL_ASSERT(_linux->keyboard != nullptr);
 
         wl_keyboard_add_listener(_linux->keyboard, &Linux::KeyboardListener, _linux);
-        return;
+    }
+
+    if ((capabilities & WL_SEAT_CAPABILITY_POINTER) && _linux->pointer == nullptr) {
+        _linux->pointer = wl_seat_get_pointer(seat);
+        CELL_ASSERT(_linux->pointer != nullptr);
     }
 }
 

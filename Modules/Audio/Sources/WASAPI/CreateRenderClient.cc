@@ -11,10 +11,6 @@ Result WASAPI::CreateRenderClient(Format format) {
         return Result::InvalidState;
     }
 
-    if (format.rate != 48000 || format.channels != 2) {
-        return Result::InvalidParameters;
-    }
-
     uint8_t bits = 32;
     switch (format.type) {
     case FormatType::Float32PCM: {
@@ -145,6 +141,7 @@ Result WASAPI::CreateRenderClient(Format format) {
     }
     }
 
+    this->sampleSize = (format.channels * bits) / 8;
     return Result::Success;
 }
 

@@ -6,7 +6,6 @@
 #include <Cell/IO/File.hh>
 #include <Cell/System/Entry.hh>
 #include <Cell/System/Log.hh>
-#include <Cell/System/Thread.hh>
 #include <Cell/System/Timer.hh>
 #include <Cell/Utilities/MinMaxClamp.hh>
 

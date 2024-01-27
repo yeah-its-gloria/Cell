@@ -2,8 +2,7 @@
 // SPDX-License-Identifier: BSD-2-Clause
 
 [[vk::location(0)]]
-struct FragmentShaderInput
-{
+struct FragmentInput {
     float4 color : COLOR0;
     float2 texCoords : TEXCOORD;
     uint texIndex;

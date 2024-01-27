@@ -3,9 +3,9 @@
 
 project(CellCore LANGUAGES CXX VERSION 1.0.0 DESCRIPTION "Cell - Core")
 
-option(CELL_USE_EXTERNAL_ASSERT "Whether to use assert from the C standard library implementation. Defaults to OFF." OFF)
-option(CELL_USE_PANIC_ASSERT "Whether to use a built in engine assert implementation. Calls Cell::System::Panic. Defaults to ON." ON)
 option(CELL_SKIP_ASSERT "Whether to skip assert checks and simply continue. Defaults to OFF." OFF)
+option(CELL_USE_PANIC_ASSERT "Whether to use a built in engine assert implementation. Calls Cell::System::Panic. Defaults to ON." ON)
+option(CELL_USE_EXTERNAL_ASSERT "Whether to use assert from the C standard library implementation. Defaults to OFF." OFF)
 
 configure_file(${CORE_DIR}/GeneratedIncludes/Cell/Version.h.in ${GENERATE_DIR}/Includes/Cell/Version.h)
 
@@ -68,24 +68,22 @@ target_compile_definitions(CellCore PUBLIC
                            "CELL_UNMANGLED=extern \"C\""
 )
 
-if (CELL_USE_EXTERNAL_ASSERT)
-    target_compile_definitions(CellCore PUBLIC "CELL_USE_EXTERNAL_ASSERT=1")
-endif ()
-
-if (CELL_USE_PANIC_ASSERT)
-    if (CELL_USE_EXTERNAL_ASSERT)
-        message(AUTHOR_WARNING "External assert overrides the Core implementation")
-    endif ()
-
-    target_compile_definitions(CellCore PUBLIC "CELL_USE_PANIC_ASSERT=1")
-endif ()
-
 if (CELL_SKIP_ASSERT)
     if (CELL_USE_EXTERNAL_ASSERT OR CELL_USE_PANIC_ASSERT)
-        message(AUTHOR_WARNING "Asserts disabled")
+        message(STATUS "Assertions stubbed")
     endif ()
 
     target_compile_definitions(CellCore PUBLIC "CELL_SKIP_ASSERT=1")
+elseif (CELL_USE_EXTERNAL_ASSERT)
+    if (CELL_USE_PANIC_ASSERT)
+        message(STATUS "External assert overrides using Cell::System::Panic")
+    endif ()
+
+    target_compile_definitions(CellCore PUBLIC "CELL_USE_EXTERNAL_ASSERT=1")
+elseif (CELL_USE_PANIC_ASSERT)
+    target_compile_definitions(CellCore PUBLIC "CELL_USE_PANIC_ASSERT=1")
+else ()
+    message(STATUS "Redirecting assertion failures to a basic message box handler")
 endif ()
 
 target_include_directories(CellCore PUBLIC ${CORE_INCLUDES_DIR} ${GENERATE_DIR}/Includes)
