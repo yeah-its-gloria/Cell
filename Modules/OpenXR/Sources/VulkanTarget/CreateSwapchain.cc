@@ -3,13 +3,10 @@
 
 #include <Cell/OpenXR/VulkanTarget.hh>
 
-namespace Cell::OpenXR
-{
+namespace Cell::OpenXR {
 
-Result VulkanTarget::CreateSwapchains()
-{
-    XrSwapchainCreateInfo swapchainInfo =
-    {
+Result VulkanTarget::CreateSwapchains() {
+    XrSwapchainCreateInfo swapchainInfo = {
         .type        = XR_TYPE_SWAPCHAIN_CREATE_INFO,
         .next        = nullptr,
 
@@ -28,15 +25,12 @@ Result VulkanTarget::CreateSwapchains()
     };
 
     XrResult result = xrCreateSwapchain(this->instance->session, &swapchainInfo, &this->colorSwapchain);
-    switch (result)
-    {
-    case XR_SUCCESS:
-    {
+    switch (result) {
+    case XR_SUCCESS: {
         break;
     }
 
-    default:
-    {
+    default: {
         System::Panic("xrCreateSwapchain failed");
     }
     }
@@ -45,45 +39,36 @@ Result VulkanTarget::CreateSwapchains()
     swapchainInfo.format     = VK_FORMAT_D32_SFLOAT;
 
     result = xrCreateSwapchain(this->instance->session, &swapchainInfo, &this->depthSwapchain);
-    switch (result)
-    {
-    case XR_SUCCESS:
-    {
+    switch (result) {
+    case XR_SUCCESS: {
         break;
     }
 
-    default:
-    {
+    default: {
         System::Panic("xrCreateSwapchain failed");
     }
     }
 
     uint32_t count = 0;
     result = xrEnumerateSwapchainImages(this->colorSwapchain, 0, &count, nullptr);
-    switch (result)
-    {
-    case XR_SUCCESS:
-    {
+    switch (result) {
+    case XR_SUCCESS: {
         break;
     }
 
-    default:
-    {
+    default: {
         System::Panic("xrEnumerateSwapchainImages failed");
     }
     }
 
     uint32_t depthCount = 0;
     result = xrEnumerateSwapchainImages(this->depthSwapchain, 0, &depthCount, nullptr);
-    switch (result)
-    {
-    case XR_SUCCESS:
-    {
+    switch (result) {
+    case XR_SUCCESS: {
         break;
     }
 
-    default:
-    {
+    default: {
         System::Panic("xrEnumerateSwapchainImages failed");
     }
     }
@@ -96,83 +81,66 @@ Result VulkanTarget::CreateSwapchains()
     this->swapchainColorImageViews.SetCount(count);
     this->swapchainDepthImageViews.SetCount(count);
 
-    for (XrSwapchainImageVulkanKHR image : this->swapchainColorImages)
-    {
+    for (XrSwapchainImageVulkanKHR image : this->swapchainColorImages) {
         image.type = XR_TYPE_SWAPCHAIN_IMAGE_VULKAN_KHR;
     }
 
-    for (XrSwapchainImageVulkanKHR image : this->swapchainDepthImages)
-    {
+    for (XrSwapchainImageVulkanKHR image : this->swapchainDepthImages) {
         image.type = XR_TYPE_SWAPCHAIN_IMAGE_VULKAN_KHR;
     }
 
     result = xrEnumerateSwapchainImages(this->colorSwapchain, count, &count, (XrSwapchainImageBaseHeader*)&this->swapchainColorImages);
-    switch (result)
-    {
-    case XR_SUCCESS:
-    {
+    switch (result) {
+    case XR_SUCCESS: {
         break;
     }
 
-    default:
-    {
+    default: {
         System::Panic("xrEnumerateSwapchainImages failed");
     }
     }
 
     result = xrEnumerateSwapchainImages(this->depthSwapchain, count, &count, (XrSwapchainImageBaseHeader*)&this->swapchainDepthImages);
-    switch (result)
-    {
-    case XR_SUCCESS:
-    {
+    switch (result) {
+    case XR_SUCCESS: {
         break;
     }
 
-    default:
-    {
+    default: {
         System::Panic("xrEnumerateSwapchainImages failed");
     }
     }
 
-    for (uint8_t i= 0; i < this->swapchainColorImages.GetCount(); i++)
-    {
-        Vulkan::Result vkResult = this->instance->vulkan->CreateImageView(this->swapchainColorImageViews[i], this->swapchainColorImages[i].image, VK_FORMAT_R8G8B8A8_SRGB);
-        switch (vkResult)
-        {
-        case Vulkan::Result::Success:
-        {
+    for (uint8_t i= 0; i < this->swapchainColorImages.GetCount(); i++) {
+        Vulkan::Result vkResult = this->instance->vulkanDevice->CreateImageView(this->swapchainColorImageViews[i], this->swapchainColorImages[i].image, VK_FORMAT_R8G8B8A8_SRGB);
+        switch (vkResult) {
+        case Vulkan::Result::Success: {
             break;
         }
 
         case Vulkan::Result::OutOfHostMemory:
-        case Vulkan::Result::OutOfDeviceMemory:
-        {
+        case Vulkan::Result::OutOfDeviceMemory: {
             return Result::OutOfMemory;
         }
 
-        default:
-        {
-            System::Panic("Cell::Vulkan::Instance::CreateImageView failed");
+        default: {
+            System::Panic("Cell::Vulkan::Device::CreateImageView failed");
         }
         }
 
-        vkResult = this->instance->vulkan->CreateImageView(this->swapchainDepthImageViews[i], this->swapchainDepthImages[i].image, VK_FORMAT_D32_SFLOAT, VK_IMAGE_VIEW_TYPE_2D, VK_IMAGE_ASPECT_DEPTH_BIT);
-        switch (vkResult)
-        {
-        case Vulkan::Result::Success:
-        {
+        vkResult = this->instance->vulkanDevice->CreateImageView(this->swapchainDepthImageViews[i], this->swapchainDepthImages[i].image, VK_FORMAT_D32_SFLOAT, VK_IMAGE_VIEW_TYPE_2D, VK_IMAGE_ASPECT_DEPTH_BIT);
+        switch (vkResult) {
+        case Vulkan::Result::Success: {
             break;
         }
 
         case Vulkan::Result::OutOfHostMemory:
-        case Vulkan::Result::OutOfDeviceMemory:
-        {
+        case Vulkan::Result::OutOfDeviceMemory: {
             return Result::OutOfMemory;
         }
 
-        default:
-        {
-            System::Panic("Cell::Vulkan::Instance::CreateImageView failed");
+        default: {
+            System::Panic("Cell::Vulkan::Device::CreateImageView failed");
         }
         }
     }

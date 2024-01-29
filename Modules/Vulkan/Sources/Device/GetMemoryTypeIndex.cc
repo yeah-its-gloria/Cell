@@ -1,11 +1,11 @@
 // SPDX-FileCopyrightText: Copyright 2023-2024 Gloria G.
 // SPDX-License-Identifier: BSD-2-Clause
 
-#include <Cell/Vulkan/Instance.hh>
+#include <Cell/Vulkan/Device.hh>
 
 namespace Cell::Vulkan {
 
-uint32_t Instance::GetMemoryTypeIndex(VkBuffer buffer, const VkMemoryPropertyFlags type) {
+uint32_t Device::GetMemoryTypeIndex(VkBuffer buffer, const VkMemoryPropertyFlags type) {
     VkMemoryRequirements requirements;
     vkGetBufferMemoryRequirements(this->device, buffer, &requirements);
 
@@ -22,7 +22,7 @@ uint32_t Instance::GetMemoryTypeIndex(VkBuffer buffer, const VkMemoryPropertyFla
     return typeIndex;
 }
 
-uint32_t Instance::GetMemoryTypeIndex(VkImage image, const VkMemoryPropertyFlags type) {
+uint32_t Device::GetMemoryTypeIndex(VkImage image, const VkMemoryPropertyFlags type) {
     VkMemoryRequirements requirements;
     vkGetImageMemoryRequirements(this->device, image, &requirements);
 

@@ -6,11 +6,7 @@
 
 namespace Cell::Vulkan {
 
-Wrapped<Pipeline*, Result> Instance::CreatePipeline(IRenderTarget* target) {
-    if (this->device == nullptr) {
-        return Result::InvalidState;
-    }
-
+Wrapped<Pipeline*, Result> Device::CreatePipeline(IRenderTarget* target) {
     return new Pipeline(this, target->GetColorFormat());
 }
 

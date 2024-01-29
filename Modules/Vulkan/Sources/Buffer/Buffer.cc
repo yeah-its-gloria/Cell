@@ -7,8 +7,8 @@
 namespace Cell::Vulkan {
 
 Buffer::~Buffer() {
-    vkDestroyBuffer(this->instance->device, this->buffer, nullptr);
-    vkFreeMemory(this->instance->device, this->memory, nullptr);
+    vkDestroyBuffer(this->device->device, this->buffer, nullptr);
+    vkFreeMemory(this->device->device, this->memory, nullptr);
 }
 
 Result Buffer::Map(void*& address, const uint64_t size, const uint64_t offset) {
@@ -20,7 +20,7 @@ Result Buffer::Map(void*& address, const uint64_t size, const uint64_t offset) {
         return Result::InvalidParameters;
     }
 
-    VkResult result = vkMapMemory(this->instance->device, this->memory, offset, size, 0, &address);
+    VkResult result = vkMapMemory(this->device->device, this->memory, offset, size, 0, &address);
     switch (result) {
     case VK_SUCCESS: {
         break;
@@ -48,7 +48,7 @@ void Buffer::Unmap() {
         return;
     }
 
-    vkUnmapMemory(this->instance->device, this->memory);
+    vkUnmapMemory(this->device->device, this->memory);
 
     this->isMapped = false;
 }

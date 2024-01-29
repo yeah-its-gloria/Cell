@@ -13,6 +13,7 @@ include(VulkanShader)
 add_library(CellVulkan ${CELL_LIBRARY_TYPE}
     ${MODULE_INCLUDES_DIR}/Cell/Vulkan/Buffer.hh
     ${MODULE_INCLUDES_DIR}/Cell/Vulkan/CommandBufferManager.hh
+    ${MODULE_INCLUDES_DIR}/Cell/Vulkan/Device.hh
     ${MODULE_INCLUDES_DIR}/Cell/Vulkan/Image.hh
     ${MODULE_INCLUDES_DIR}/Cell/Vulkan/Instance.hh
     ${MODULE_INCLUDES_DIR}/Cell/Vulkan/Pipeline.hh
@@ -40,27 +41,30 @@ add_library(CellVulkan ${CELL_LIBRARY_TYPE}
 
 # ------------------------------------------------------------------------------------------------
 
+    ${CMAKE_CURRENT_LIST_DIR}/Sources/Device/Platform.hh
+
+    ${CMAKE_CURRENT_LIST_DIR}/Sources/Device/CreateBuffer.cc
+    ${CMAKE_CURRENT_LIST_DIR}/Sources/Device/CreateCommandBuffer.cc
+    ${CMAKE_CURRENT_LIST_DIR}/Sources/Device/CreateImage.cc
+    ${CMAKE_CURRENT_LIST_DIR}/Sources/Device/CreateImageView.cc
+    ${CMAKE_CURRENT_LIST_DIR}/Sources/Device/CreatePipeline.cc
+    ${CMAKE_CURRENT_LIST_DIR}/Sources/Device/CreateWSITarget.cc
+    ${CMAKE_CURRENT_LIST_DIR}/Sources/Device/Device.cc
+    ${CMAKE_CURRENT_LIST_DIR}/Sources/Device/GetMemoryTypeIndex.cc
+    ${CMAKE_CURRENT_LIST_DIR}/Sources/Device/RenderImage.cc
+
+# ------------------------------------------------------------------------------------------------
+
     ${CMAKE_CURRENT_LIST_DIR}/Sources/Image/Image.cc
     ${CMAKE_CURRENT_LIST_DIR}/Sources/Image/CopyDataFromBuffer.cc
 
 # ------------------------------------------------------------------------------------------------
 
-    ${CMAKE_CURRENT_LIST_DIR}/Sources/Instance/Internal.hh
-
-    ${CMAKE_CURRENT_LIST_DIR}/Sources/Instance/CreateBuffer.cc
-    ${CMAKE_CURRENT_LIST_DIR}/Sources/Instance/CreateCommandBuffer.cc
     ${CMAKE_CURRENT_LIST_DIR}/Sources/Instance/CreateDevice.cc
-    ${CMAKE_CURRENT_LIST_DIR}/Sources/Instance/CreateImage.cc
-    ${CMAKE_CURRENT_LIST_DIR}/Sources/Instance/CreateImageView.cc
-    ${CMAKE_CURRENT_LIST_DIR}/Sources/Instance/CreatePipeline.cc
-    ${CMAKE_CURRENT_LIST_DIR}/Sources/Instance/CreateWSITarget.cc
-    ${CMAKE_CURRENT_LIST_DIR}/Sources/Instance/GetMemoryTypeIndex.cc
-    ${CMAKE_CURRENT_LIST_DIR}/Sources/Instance/InitializeDevice.cc
     ${CMAKE_CURRENT_LIST_DIR}/Sources/Instance/Instance.cc
     ${CMAKE_CURRENT_LIST_DIR}/Sources/Instance/New.cc
     ${CMAKE_CURRENT_LIST_DIR}/Sources/Instance/QueryPhysicalDevice.cc
     ${CMAKE_CURRENT_LIST_DIR}/Sources/Instance/QueryPhysicalDeviceQueues.cc
-    ${CMAKE_CURRENT_LIST_DIR}/Sources/Instance/RenderImage.cc
     ${CMAKE_CURRENT_LIST_DIR}/Sources/Instance/ScorePhysicalDevice.cc
 
 # ------------------------------------------------------------------------------------------------
@@ -90,7 +94,7 @@ target_include_directories(CellVulkan PUBLIC ${MODULE_INCLUDES_DIR} ${Vulkan_INC
 target_link_libraries(CellVulkan PUBLIC CellCore CellMathematics CellShell PRIVATE ${Vulkan_LIBRARIES})
 
 if (WIN32)
-    target_sources(CellVulkan PRIVATE ${CMAKE_CURRENT_LIST_DIR}/Sources/Instance/CreatePlatformSurfaceWindows.cc)
+    target_sources(CellVulkan PRIVATE ${CMAKE_CURRENT_LIST_DIR}/Sources/Device/Platform/Windows.cc)
 
     if (DEFINED Vulkan_BINARIES)
         add_custom_command(TARGET CellVulkan POST_BUILD
@@ -99,7 +103,7 @@ if (WIN32)
         )
     endif ()
 elseif (UNIX)
-    target_sources(CellVulkan PRIVATE ${CMAKE_CURRENT_LIST_DIR}/Sources/Instance/CreatePlatformSurfaceLinux.cc)
+    target_sources(CellVulkan PRIVATE ${CMAKE_CURRENT_LIST_DIR}/Sources/Device/Platform/Linux.cc)
 else ()
     message(FATAL_ERROR "Unsupported platform")
 endif ()

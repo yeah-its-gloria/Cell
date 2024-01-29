@@ -10,7 +10,7 @@ Wrapped<AcquiredImage, Result> WSITarget::AcquireNext() {
         return Result::InvalidState;
     }
 
-    VkResult result = vkWaitForFences(this->instance->device, 1, &this->inFlightFrames[this->renderFrameCounter], VK_TRUE, UINT64_MAX);
+    VkResult result = vkWaitForFences(this->device->device, 1, &this->inFlightFrames[this->renderFrameCounter], VK_TRUE, UINT64_MAX);
     switch (result) {
     case VK_SUCCESS: {
         break;
@@ -33,7 +33,7 @@ Wrapped<AcquiredImage, Result> WSITarget::AcquireNext() {
     }
     }
 
-    result = vkAcquireNextImageKHR(this->instance->device, this->swapchain, UINT64_MAX, this->imageAvailable[this->renderFrameCounter], nullptr, &this->renderImageIndex);
+    result = vkAcquireNextImageKHR(this->device->device, this->swapchain, UINT64_MAX, this->imageAvailable[this->renderFrameCounter], nullptr, &this->renderImageIndex);
     switch (result) {
     case VK_SUCCESS:
     case VK_SUBOPTIMAL_KHR: {
@@ -65,7 +65,7 @@ Wrapped<AcquiredImage, Result> WSITarget::AcquireNext() {
     }
     }
 
-    result = vkResetFences(this->instance->device, 1, &this->inFlightFrames[this->renderFrameCounter]);
+    result = vkResetFences(this->device->device, 1, &this->inFlightFrames[this->renderFrameCounter]);
     switch (result) {
     case VK_SUCCESS: {
         break;

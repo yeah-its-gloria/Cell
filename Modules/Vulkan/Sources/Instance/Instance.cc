@@ -6,12 +6,6 @@
 namespace Cell::Vulkan {
 
 Instance::~Instance() {
-    if (this->device != nullptr) {
-        vkDeviceWaitIdle(this->device);
-
-        vkDestroyDevice(this->device, nullptr);
-    }
-
     vkDestroyInstance(this->instance, nullptr);
 }
 

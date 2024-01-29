@@ -5,11 +5,7 @@
 
 namespace Cell::Vulkan {
 
-Wrapped<Buffer*, Result> Instance::CreateBuffer(const size_t size, const VkBufferUsageFlags usage, const VkMemoryPropertyFlags type, const VkSharingMode mode) {
-    if (this->device == nullptr) {
-        return Result::InvalidState;
-    }
-
+Wrapped<Buffer*, Result> Device::CreateBuffer(const size_t size, const VkBufferUsageFlags usage, const VkMemoryPropertyFlags type, const VkSharingMode mode) {
     const VkBufferCreateInfo bufferInfo = {
         .sType                 = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO,
         .pNext                 = nullptr,

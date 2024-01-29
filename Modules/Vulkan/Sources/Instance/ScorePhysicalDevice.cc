@@ -19,10 +19,12 @@ uint16_t Instance::ScorePhysicalDevice(VkPhysicalDevice device) {
     switch (properties.deviceType) {
     case VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU: {
         score += 300;
+        break;
     }
 
     case VK_PHYSICAL_DEVICE_TYPE_INTEGRATED_GPU: {
         score += 200;
+        break;
     }
 
     case VK_PHYSICAL_DEVICE_TYPE_VIRTUAL_GPU:
@@ -42,15 +44,9 @@ uint16_t Instance::ScorePhysicalDevice(VkPhysicalDevice device) {
 
     // Feature checks
 
-    VkPhysicalDeviceShaderObjectFeaturesEXT shaderObjectFeature = {
-        .sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_OBJECT_FEATURES_EXT,
-        .pNext = nullptr,
-        .shaderObject = VK_FALSE
-    };
-
     VkPhysicalDeviceExtendedDynamicStateFeaturesEXT extendedDynamicStateFeature = {
         .sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_EXTENDED_DYNAMIC_STATE_FEATURES_EXT,
-        .pNext = &shaderObjectFeature,
+        .pNext = nullptr,
         .extendedDynamicState = VK_FALSE
     };
 
@@ -67,6 +63,8 @@ uint16_t Instance::ScorePhysicalDevice(VkPhysicalDevice device) {
     };
 
     vkGetPhysicalDeviceFeatures2(device, &features);
+
+    // TODO: check which features we actually want lol
 
     if (features.features.fullDrawIndexUint32            == VK_FALSE ||
         features.features.independentBlend               == VK_FALSE ||
@@ -86,14 +84,10 @@ uint16_t Instance::ScorePhysicalDevice(VkPhysicalDevice device) {
         return 0;
     }
 
-    if (shaderObjectFeature.shaderObject == VK_TRUE) {
-        score += 100;
-    }
-
     // Queue family checks
 
-    const uint64_t queues = Instance::QueryPhysicalDeviceQueues(device);
-    if ((queues & 0xffffffff) != (uint32_t)-1) {
+    const Instance::PhysicalDeviceQueues queues = Instance::QueryPhysicalDeviceQueues(device);
+    if (queues.transfer != (uint32_t)-1) {
         score += 200;
     }
 

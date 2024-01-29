@@ -1,10 +1,9 @@
 // SPDX-FileCopyrightText: Copyright 2023-2024 Gloria G.
 // SPDX-License-Identifier: BSD-2-Clause
 
-#include "Internal.hh"
+#include "Platform.hh"
 
 #include <Cell/System/BlockImpl.hh>
-#include <Cell/Vulkan/WSITarget.hh>
 
 using namespace Cell;
 
@@ -30,11 +29,7 @@ CELL_INLINE VkPresentModeKHR selectPresentMode(const VkPresentModeKHR* CELL_NONN
 
 namespace Cell::Vulkan {
 
-Wrapped<WSITarget*, Result> Instance::CreateWSITarget(Shell::IShell* shell) {
-    if (this->device == nullptr) {
-        return Result::InvalidState;
-    }
-
+Wrapped<WSITarget*, Result> Device::CreateWSITarget(Shell::IShell* shell) {
     VkSurfaceKHR surface = nullptr;
     const Result result = createPlatformSurface(&surface, this->instance, shell);
     if (result != Result::Success) {

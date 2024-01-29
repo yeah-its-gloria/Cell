@@ -3,9 +3,9 @@
 
 #pragma once
 
-#include <Cell/Shell/Shell.hh>
-#include <Cell/Vulkan/Result.hh>
 #include <Cell/Wrapped.hh>
+#include <Cell/Vulkan/Result.hh>
+
 #include <vulkan/vulkan.h>
 
 namespace Cell {
@@ -18,33 +18,13 @@ class VulkanTarget;
 #endif
 
 namespace Vulkan {
-class Buffer;
-class CommandBufferManager;
-class Image;
-class Pipeline;
-class IRenderTarget;
-class WSITarget;
-
-enum class QueueType : uint8_t {
-    Graphics,
-    Transfer
-};
-
-enum class Stage : uint8_t {
-    Vertex,
-    Fragment
-};
+class Device;
 
 class Instance : public Object {
-friend Buffer;
-friend CommandBufferManager;
-friend Image;
-friend Pipeline;
-friend WSITarget;
+friend Device;
 
 #if CELL_MODULES_OPENXR_AVAILABLE
 friend OpenXR::Instance;
-friend OpenXR::VulkanTarget;
 #endif
 
 public:
@@ -57,38 +37,12 @@ public:
     // Destructor for instances.
     CELL_FUNCTION ~Instance();
 
-    // Initializes the physical and logical device. Generally only needed for standalone instances.
-    CELL_FUNCTION Result InitializeDevice();
+    // Initializes the best available device.
+    CELL_FUNCTION Wrapped<Device*, Result> CreateDevice();
 
-    // Creates a managed buffer.
-    CELL_FUNCTION Wrapped<Buffer*, Result> CreateBuffer(
-        const size_t size,
-        const VkBufferUsageFlags usage,
-        const VkMemoryPropertyFlags memoryType,
-        const VkSharingMode shareMode = VK_SHARING_MODE_EXCLUSIVE
-    );
-
-    // Creates a command buffer manager.
-    CELL_FUNCTION Wrapped<CommandBufferManager*, Result> CreateCommandBufferManager(const QueueType queue = QueueType::Graphics, const bool resetIndividually = false);
-
-    // Creates a managed image.
-    CELL_FUNCTION Wrapped<Image*, Result> CreateImage(
-        const uint32_t width,
-        const uint32_t height,
-        const VkFormat format = VK_FORMAT_R8G8B8A8_SRGB,
-        const VkImageTiling tiling = VK_IMAGE_TILING_OPTIMAL,
-        const VkImageAspectFlags viewAspectMask = VK_IMAGE_ASPECT_COLOR_BIT,
-        const VkImageUsageFlags usage = VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT
-    );
-
-    // Creates a managed pipeline.
-    CELL_FUNCTION Wrapped<Pipeline*, Result> CreatePipeline(IRenderTarget* CELL_NONNULL target);
-
-    // Creates a WSI render target.
-    CELL_FUNCTION Wrapped<WSITarget*, Result> CreateWSITarget(Shell::IShell* CELL_NONNULL shell);
-
-    // Rendering utility - Renders to the next swapchain image index with the given buffer.
-    CELL_FUNCTION Result RenderImage(IRenderTarget* CELL_NONNULL target, VkCommandBuffer CELL_NONNULL buffer);
+    // Initializes the best available device.
+    // Allows supplying an existing physical device.
+    CELL_FUNCTION Wrapped<Device*, Result> CreateDevice(const char* CELL_NONNULL* CELL_NONNULL extensions, const uint32_t count, VkPhysicalDevice CELL_NULLABLE physicalDevice = nullptr);
 
 private:
     CELL_INLINE Instance(VkInstance CELL_NONNULL instance,
@@ -97,44 +51,27 @@ private:
                          PFN_vkCmdSetCullModeEXT CELL_NONNULL setCullMode)
         : instance(instance), beginRendering(beginRendering), endRendering(endRendering), setCullMode(setCullMode) { }
 
-    CELL_FUNCTION_INTERNAL Result QueryPhysicalDevice();
-    CELL_FUNCTION_INTERNAL Result CreateDevice();
+    struct PhysicalDeviceQueues {
+        uint32_t graphics;
+        uint32_t transfer;
+    };
+
+    struct QueryPhysicalDeviceResult {
+        VkPhysicalDevice device;
+        VkPhysicalDeviceMemoryProperties properties;
+        PhysicalDeviceQueues queues;
+    };
+
+    CELL_FUNCTION_INTERNAL Wrapped<QueryPhysicalDeviceResult, Result> QueryPhysicalDevice(VkPhysicalDevice CELL_NULLABLE device);
+
     CELL_FUNCTION_INTERNAL static uint16_t ScorePhysicalDevice(VkPhysicalDevice CELL_NONNULL device);
-    CELL_FUNCTION_INTERNAL uint32_t GetMemoryTypeIndex(VkBuffer buffer, const VkMemoryPropertyFlags type);
-    CELL_FUNCTION_INTERNAL uint32_t GetMemoryTypeIndex(VkImage image, const VkMemoryPropertyFlags type);
-
-    CELL_FUNCTION Result CreateDevice(const char* CELL_NONNULL* CELL_NONNULL extensions, const uint32_t count);
-
-    // UPPER BITS: graphics LOWER BITS: transfer
-    CELL_FUNCTION static uint64_t QueryPhysicalDeviceQueues(VkPhysicalDevice CELL_NONNULL device);
-
-    CELL_FUNCTION Result CreateImageView(
-        VkImageView& view,
-        VkImage CELL_NONNULL image,
-        const VkFormat format,
-        const VkImageViewType type = VK_IMAGE_VIEW_TYPE_2D,
-        const VkImageAspectFlagBits aspectMask = VK_IMAGE_ASPECT_COLOR_BIT
-    );
+    CELL_FUNCTION_INTERNAL static PhysicalDeviceQueues QueryPhysicalDeviceQueues(VkPhysicalDevice CELL_NONNULL device);
 
     VkInstance instance;
+
     PFN_vkCmdBeginRenderingKHR beginRendering;
     PFN_vkCmdEndRenderingKHR endRendering;
     PFN_vkCmdSetCullModeEXT setCullMode;
-
-    VkPhysicalDevice physicalDevice = nullptr;
-    uint32_t physicalDeviceQueueGraphics = (uint32_t)-1;
-    uint32_t physicalDeviceQueueTransfer = (uint32_t)-1;
-
-    VkPhysicalDeviceMemoryProperties physicalDeviceProperties = {
-        .memoryTypeCount = 0,
-        .memoryTypes = { },
-        .memoryHeapCount = 0,
-        .memoryHeaps = { }
-    };
-
-    VkDevice device = nullptr;
-    VkQueue deviceQueueGraphics = nullptr;
-    VkQueue deviceQueueTransfer = nullptr;
 };
 
 }

@@ -4,7 +4,7 @@
 #pragma once
 
 #include <Cell/Collection/List.hh>
-#include <Cell/Vulkan/Instance.hh>
+#include <Cell/Vulkan/Device.hh>
 
 #include <Cell/Vulkan/CommandParameters/Binding.hh>
 #include <Cell/Vulkan/CommandParameters/Copy.hh>
@@ -42,7 +42,7 @@ struct Command {
 
 // Manages a command pool and its buffers.
 class CommandBufferManager : public Object {
-friend Instance;
+friend Device;
 
 public:
     // Destructs the command pool and all its buffers.
@@ -70,8 +70,8 @@ public:
     // Synchronously queues the buffer for execution.
     CELL_FUNCTION Result Submit(const uint32_t index);
 
-    // Returns the owning instance of this manager.
-    CELL_INLINE Instance* GetOwningInstance() { return this->instance; }
+    // Returns the owning device of this manager.
+    CELL_INLINE Device* GetDevice() { return this->device; }
 
     // Returns the buffer for the given index.
     CELL_INLINE VkCommandBuffer GetCommandBufferHandle(const uint32_t index) {
@@ -81,9 +81,9 @@ public:
     }
 
 private:
-    CommandBufferManager(Instance* instance, VkCommandPool pool, VkQueue queue) : instance(instance), pool(pool), queue(queue) { }
+    CommandBufferManager(Device* dev, VkCommandPool pool, VkQueue queue) : device(dev), pool(pool), queue(queue) { }
 
-    Instance* instance;
+    Device* device;
     VkCommandPool pool;
     VkQueue queue;
 

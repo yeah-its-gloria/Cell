@@ -9,7 +9,7 @@
 namespace Cell::Vulkan {
 
 Result WSITarget::SetUpDepthBuffer() {
-    Wrapped<Image*, Result> imageResult = this->instance->CreateImage(this->extent.width,
+    Wrapped<Image*, Result> imageResult = this->device->CreateImage(this->extent.width,
                                                                       this->extent.height,
                                                                       VK_FORMAT_D24_UNORM_S8_UINT,
                                                                       VK_IMAGE_TILING_OPTIMAL,
@@ -21,7 +21,7 @@ Result WSITarget::SetUpDepthBuffer() {
 
     Image* depthImage = imageResult.Unwrap();
 
-    Wrapped<CommandBufferManager*, Result> cmdBufferManagerResult = this->instance->CreateCommandBufferManager();
+    Wrapped<CommandBufferManager*, Result> cmdBufferManagerResult = this->device->CreateCommandBufferManager();
     if (!cmdBufferManagerResult.IsValid()) {
         return cmdBufferManagerResult.Result();
     }

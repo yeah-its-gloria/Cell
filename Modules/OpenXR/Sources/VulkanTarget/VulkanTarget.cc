@@ -3,18 +3,14 @@
 
 #include <Cell/OpenXR/VulkanTarget.hh>
 
-namespace Cell::OpenXR
-{
+namespace Cell::OpenXR {
 
-VulkanTarget::~VulkanTarget()
-{
-    for (VkImageView view : swapchainDepthImageViews)
-    {
+VulkanTarget::~VulkanTarget() {
+    for (VkImageView view : swapchainDepthImageViews) {
         vkDestroyImageView(this->instance->GetVulkan()->device, view, nullptr);
     }
 
-    for (VkImageView view : swapchainColorImageViews)
-    {
+    for (VkImageView view : swapchainColorImageViews) {
         vkDestroyImageView(this->instance->GetVulkan()->device, view, nullptr);
     }
 

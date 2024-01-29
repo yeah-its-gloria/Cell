@@ -79,7 +79,7 @@ Result Pipeline::AddResources(IEnumerable<ResourceBinding>& resBindings, IEnumer
     };
 
     VkDescriptorSetLayout layout = nullptr;
-    VkResult result = vkCreateDescriptorSetLayout(this->instance->device, &layoutInfo, nullptr, &layout);
+    VkResult result = vkCreateDescriptorSetLayout(this->device->device, &layoutInfo, nullptr, &layout);
     switch (result) {
     case VK_SUCCESS: {
         break;
@@ -128,19 +128,19 @@ Result Pipeline::AddResources(IEnumerable<ResourceBinding>& resBindings, IEnumer
     };
 
     VkDescriptorPool pool = nullptr;
-    result = vkCreateDescriptorPool(this->instance->device, &poolInfo, nullptr, &pool);
+    result = vkCreateDescriptorPool(this->device->device, &poolInfo, nullptr, &pool);
     switch (result) {
     case VK_SUCCESS: {
         break;
     }
 
     case VK_ERROR_OUT_OF_HOST_MEMORY: {
-        vkDestroyDescriptorSetLayout(this->instance->device, layout, nullptr);
+        vkDestroyDescriptorSetLayout(this->device->device, layout, nullptr);
         return Result::OutOfHostMemory;
     }
 
     case VK_ERROR_OUT_OF_DEVICE_MEMORY: {
-        vkDestroyDescriptorSetLayout(this->instance->device, layout, nullptr);
+        vkDestroyDescriptorSetLayout(this->device->device, layout, nullptr);
         return Result::OutOfDeviceMemory;
     }
 
@@ -163,21 +163,21 @@ Result Pipeline::AddResources(IEnumerable<ResourceBinding>& resBindings, IEnumer
     };
 
     VkDescriptorSet* sets = System::AllocateMemory<VkDescriptorSet>(setCount);
-    result = vkAllocateDescriptorSets(this->instance->device, &setAllocateInfo, sets);
+    result = vkAllocateDescriptorSets(this->device->device, &setAllocateInfo, sets);
     switch (result) {
     case VK_SUCCESS: {
         break;
     }
 
     case VK_ERROR_OUT_OF_HOST_MEMORY: {
-        vkDestroyDescriptorPool(this->instance->device, pool, nullptr);
-        vkDestroyDescriptorSetLayout(this->instance->device, layout, nullptr);
+        vkDestroyDescriptorPool(this->device->device, pool, nullptr);
+        vkDestroyDescriptorSetLayout(this->device->device, layout, nullptr);
         return Result::OutOfHostMemory;
     }
 
     case VK_ERROR_OUT_OF_DEVICE_MEMORY: {
-        vkDestroyDescriptorPool(this->instance->device, pool, nullptr);
-        vkDestroyDescriptorSetLayout(this->instance->device, layout, nullptr);
+        vkDestroyDescriptorPool(this->device->device, pool, nullptr);
+        vkDestroyDescriptorSetLayout(this->device->device, layout, nullptr);
         return Result::OutOfDeviceMemory;
     }
 
@@ -263,7 +263,7 @@ Result Pipeline::AddResources(IEnumerable<ResourceBinding>& resBindings, IEnumer
         }
     }
 
-    vkUpdateDescriptorSets(this->instance->device, writeSets.GetCount(), writeSets.AsRaw(), 0, nullptr);
+    vkUpdateDescriptorSets(this->device->device, writeSets.GetCount(), writeSets.AsRaw(), 0, nullptr);
 
     // collecting data
 

@@ -9,13 +9,13 @@ namespace Cell::Vulkan {
 WSITarget::~WSITarget() {
     if (this->inFlightFrames.GetCount() > 0) {
         for (VkFence fence : this->inFlightFrames) {
-            vkDestroyFence(this->instance->device, fence, nullptr);
+            vkDestroyFence(this->device->device, fence, nullptr);
         }
     }
 
     if (this->renderFinished.GetCount() > 0) {
         for (VkSemaphore semaphore : this->renderFinished) {
-            vkDestroySemaphore(this->instance->device, semaphore, nullptr);
+            vkDestroySemaphore(this->device->device, semaphore, nullptr);
         }
     }
 
@@ -25,19 +25,19 @@ WSITarget::~WSITarget() {
 
     if (this->imageAvailable.GetCount() > 0) {
         for (VkSemaphore semaphore : this->imageAvailable) {
-            vkDestroySemaphore(this->instance->device, semaphore, nullptr);
+            vkDestroySemaphore(this->device->device, semaphore, nullptr);
         }
     }
 
     if (this->swapchain != nullptr) {
         for (VkImageView view : this->swapchainImageViews) {
-            vkDestroyImageView(this->instance->device, view, nullptr);
+            vkDestroyImageView(this->device->device, view, nullptr);
         }
 
-        vkDestroySwapchainKHR(this->instance->device, this->swapchain, nullptr);
+        vkDestroySwapchainKHR(this->device->device, this->swapchain, nullptr);
     }
 
-    vkDestroySurfaceKHR(this->instance->instance, this->surface, nullptr);
+    vkDestroySurfaceKHR(this->device->instance, this->surface, nullptr);
 }
 
 }

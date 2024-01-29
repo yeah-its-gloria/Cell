@@ -4,7 +4,7 @@
 #pragma once
 
 #include <Cell/System/Block.hh>
-#include <Cell/Vulkan/Instance.hh>
+#include <Cell/Vulkan/Device.hh>
 
 namespace Cell::Vulkan {
 
@@ -12,7 +12,7 @@ class Pipeline;
 
 // Represents an arbitrary data buffer.
 class Buffer : public Object {
-friend Instance;
+friend Device;
 friend Pipeline;
 
 public:
@@ -28,16 +28,16 @@ public:
     // Utility function to copy a whole block at once.
     CELL_FUNCTION Result Copy(const IBlock& data, const uint64_t offset = 0);
 
-    // Returns the owning Vulkan instance.
-    CELL_INLINE Instance* GetOwningInstance() { return this->instance; }
+    // Returns the owning device.
+    CELL_INLINE Device* GetDevice() { return this->device; }
 
     // Returns a handle to the buffer object.
     CELL_INLINE VkBuffer GetBufferHandle() { return this->buffer; }
 
 private:
-    Buffer(Instance* instance, VkBuffer buffer, VkDeviceMemory memory) : instance(instance), buffer(buffer), memory(memory), isMapped(false) { }
+    Buffer(Device* dev, VkBuffer buffer, VkDeviceMemory mem) : device(dev), buffer(buffer), memory(mem), isMapped(false) { }
 
-    Instance* instance;
+    Device* device;
     VkBuffer buffer;
     VkDeviceMemory memory;
 

@@ -6,7 +6,7 @@
 #include <Cell/Mathematics/Vector3.hh>
 #include <Cell/Mathematics/Vector4.hh>
 #include <Cell/OpenXR/Result.hh>
-#include <Cell/Vulkan/Instance.hh>
+#include <Cell/Vulkan/Device.hh>
 
 #include <openxr/openxr.h>
 #include <openxr/openxr_platform.h>
@@ -81,8 +81,8 @@ public:
     // Returns the state of the session.
     CELL_FUNCTION SessionState GetSessionState();
 
-    // Returns a handle to the Vulkan instance.
-    CELL_INLINE Vulkan::Instance* GetVulkan() { return this->vulkan; }
+    // Returns a handle to the Vulkan device.
+    CELL_INLINE Vulkan::Device* GetVulkan() { return this->vulkanDevice; }
 
     // Returns a handle to a Vulkan render target.
     CELL_INLINE VulkanTarget* GetVulkanTarget(const uint8_t index) { return this->vulkanTargets[index]; }
@@ -126,7 +126,8 @@ private:
     XrSession session = nullptr;
     XrSessionState state = XR_SESSION_STATE_UNKNOWN;
 
-    Vulkan::Instance* vulkan = nullptr;
+    Vulkan::Instance* vulkanInstance = nullptr;
+    Vulkan::Device* vulkanDevice = nullptr;
     VulkanTarget* vulkanTargets[ViewCount] = { nullptr, nullptr };
 
     XrFrameState frameState = { XR_TYPE_FRAME_STATE, nullptr, 0, 0, XR_FALSE };

@@ -28,12 +28,12 @@ Result WSITarget::SetUpSynchronization() {
 
     VkResult result = VK_ERROR_UNKNOWN;
     for (size_t i = 0; i < this->swapchainDepth; i++) {
-        result = vkCreateSemaphore(this->instance->device, &semaphoreInfo, nullptr, &this->imageAvailable[i]);
+        result = vkCreateSemaphore(this->device->device, &semaphoreInfo, nullptr, &this->imageAvailable[i]);
         if (result != VK_SUCCESS) {
             break;
         }
 
-        result = vkCreateSemaphore(this->instance->device, &semaphoreInfo, nullptr, &this->renderFinished[i]);
+        result = vkCreateSemaphore(this->device->device, &semaphoreInfo, nullptr, &this->renderFinished[i]);
         if (result != VK_SUCCESS) {
             break;
         }
@@ -47,13 +47,13 @@ Result WSITarget::SetUpSynchronization() {
     case VK_ERROR_OUT_OF_HOST_MEMORY: {
         for (VkSemaphore semaphore : this->imageAvailable) {
             if (semaphore != nullptr) {
-                vkDestroySemaphore(this->instance->device, semaphore, nullptr);
+                vkDestroySemaphore(this->device->device, semaphore, nullptr);
             }
         }
 
         for (VkSemaphore semaphore : this->renderFinished) {
             if (semaphore != nullptr) {
-                vkDestroySemaphore(this->instance->device, semaphore, nullptr);
+                vkDestroySemaphore(this->device->device, semaphore, nullptr);
             }
         }
 
@@ -63,13 +63,13 @@ Result WSITarget::SetUpSynchronization() {
     case VK_ERROR_OUT_OF_DEVICE_MEMORY: {
         for (VkSemaphore semaphore : this->imageAvailable) {
             if (semaphore != nullptr) {
-                vkDestroySemaphore(this->instance->device, semaphore, nullptr);
+                vkDestroySemaphore(this->device->device, semaphore, nullptr);
             }
         }
 
         for (VkSemaphore semaphore : this->renderFinished) {
             if (semaphore != nullptr) {
-                vkDestroySemaphore(this->instance->device, semaphore, nullptr);
+                vkDestroySemaphore(this->device->device, semaphore, nullptr);
             }
         }
 
@@ -82,7 +82,7 @@ Result WSITarget::SetUpSynchronization() {
     }
 
     for (size_t i = 0; i < this->swapchainDepth; i++) {
-        result = vkCreateFence(this->instance->device, &fenceInfo, nullptr, &this->inFlightFrames[i]);
+        result = vkCreateFence(this->device->device, &fenceInfo, nullptr, &this->inFlightFrames[i]);
         if (result != VK_SUCCESS) {
             break;
         }
@@ -96,19 +96,19 @@ Result WSITarget::SetUpSynchronization() {
     case VK_ERROR_OUT_OF_HOST_MEMORY: {
         for (VkSemaphore semaphore : this->imageAvailable) {
             if (semaphore != nullptr) {
-                vkDestroySemaphore(this->instance->device, semaphore, nullptr);
+                vkDestroySemaphore(this->device->device, semaphore, nullptr);
             }
         }
 
         for (VkSemaphore semaphore : this->renderFinished) {
             if (semaphore != nullptr) {
-                vkDestroySemaphore(this->instance->device, semaphore, nullptr);
+                vkDestroySemaphore(this->device->device, semaphore, nullptr);
             }
         }
 
         for (VkFence fence : this->inFlightFrames) {
             if (fence != nullptr) {
-                vkDestroyFence(this->instance->device, fence, nullptr);
+                vkDestroyFence(this->device->device, fence, nullptr);
             }
         }
 
@@ -118,19 +118,19 @@ Result WSITarget::SetUpSynchronization() {
     case VK_ERROR_OUT_OF_DEVICE_MEMORY: {
         for (VkSemaphore semaphore : this->imageAvailable) {
             if (semaphore != nullptr) {
-                vkDestroySemaphore(this->instance->device, semaphore, nullptr);
+                vkDestroySemaphore(this->device->device, semaphore, nullptr);
             }
         }
 
         for (VkSemaphore semaphore : this->renderFinished) {
             if (semaphore != nullptr) {
-                vkDestroySemaphore(this->instance->device, semaphore, nullptr);
+                vkDestroySemaphore(this->device->device, semaphore, nullptr);
             }
         }
 
         for (VkFence fence : this->inFlightFrames) {
             if (fence != nullptr) {
-                vkDestroyFence(this->instance->device, fence, nullptr);
+                vkDestroyFence(this->device->device, fence, nullptr);
             }
         }
 

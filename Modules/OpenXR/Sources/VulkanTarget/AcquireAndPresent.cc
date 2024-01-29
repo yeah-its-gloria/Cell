@@ -4,35 +4,27 @@
 #include <Cell/OpenXR/VulkanTarget.hh>
 #include <Cell/System/Panic.hh>
 
-namespace Cell::OpenXR
-{
+namespace Cell::OpenXR {
 
-CELL_INLINE Vulkan::Result convertResult(XrResult result, const char* functionName)
-{
-    switch (result)
-    {
-    case XR_SUCCESS:
-    {
+CELL_INLINE Vulkan::Result convertResult(XrResult result, const char* functionName) {
+    switch (result) {
+    case XR_SUCCESS: {
         break;
     }
 
-    case XR_ERROR_RUNTIME_FAILURE:
-    {
+    case XR_ERROR_RUNTIME_FAILURE: {
         return Vulkan::Result::InstanceFailure;
     }
 
-    case XR_ERROR_INSTANCE_LOST:
-    {
+    case XR_ERROR_INSTANCE_LOST: {
         return Vulkan::Result::DeviceLost;
     }
 
-    case XR_ERROR_SESSION_LOST:
-    {
+    case XR_ERROR_SESSION_LOST: {
         return Vulkan::Result::SurfaceLost;
     }
 
-    default:
-    {
+    default: {
         System::Panic("%s failed", functionName);
     }
     }
@@ -40,16 +32,13 @@ CELL_INLINE Vulkan::Result convertResult(XrResult result, const char* functionNa
     return Vulkan::Result::Success;
 }
 
-Wrapped<Vulkan::AcquiredImage, Vulkan::Result> VulkanTarget::AcquireNext()
-{
-    const XrSwapchainImageAcquireInfo acquireInfo =
-    {
+Wrapped<Vulkan::AcquiredImage, Vulkan::Result> VulkanTarget::AcquireNext() {
+    const XrSwapchainImageAcquireInfo acquireInfo = {
         .type = XR_TYPE_SWAPCHAIN_IMAGE_ACQUIRE_INFO,
         .next = nullptr
     };
 
-    const XrSwapchainImageWaitInfo imageWaitInfo =
-    {
+    const XrSwapchainImageWaitInfo imageWaitInfo = {
         .type    = XR_TYPE_SWAPCHAIN_IMAGE_WAIT_INFO,
         .next    = nullptr,
         .timeout = 1000
@@ -60,29 +49,25 @@ Wrapped<Vulkan::AcquiredImage, Vulkan::Result> VulkanTarget::AcquireNext()
 
     XrResult result = xrAcquireSwapchainImage(this->colorSwapchain, &acquireInfo, &colorAcquiredIndex);
     Vulkan::Result vkResult = convertResult(result, "xrAcquireSwapchainImage");
-    if (vkResult != Vulkan::Result::Success)
-    {
+    if (vkResult != Vulkan::Result::Success) {
         return vkResult;
     }
 
     result = xrWaitSwapchainImage(this->colorSwapchain, &imageWaitInfo);
     vkResult = convertResult(result, "xrWaitSwapchainImage");
-    if (vkResult != Vulkan::Result::Success)
-    {
+    if (vkResult != Vulkan::Result::Success) {
         return vkResult;
     }
 
     result = xrAcquireSwapchainImage(this->depthSwapchain, &acquireInfo, &depthAcquiredIndex);
     vkResult = convertResult(result, "xrAcquireSwapchainImage");
-    if (vkResult != Vulkan::Result::Success)
-    {
+    if (vkResult != Vulkan::Result::Success) {
         return vkResult;
     }
 
     result = xrWaitSwapchainImage(this->depthSwapchain, &imageWaitInfo);
     vkResult = convertResult(result, "xrWaitSwapchainImage");
-    if (vkResult != Vulkan::Result::Success)
-    {
+    if (vkResult != Vulkan::Result::Success) {
         return vkResult;
     }
 
@@ -93,8 +78,7 @@ Wrapped<Vulkan::AcquiredImage, Vulkan::Result> VulkanTarget::AcquireNext()
 
     this->imageIndex = colorAcquiredIndex;
 
-    return Vulkan::AcquiredImage
-    {
+    return Vulkan::AcquiredImage {
         .image     = this->swapchainColorImages[this->imageIndex].image,
         .usesSync  = false,
         .available = nullptr,
@@ -103,18 +87,15 @@ Wrapped<Vulkan::AcquiredImage, Vulkan::Result> VulkanTarget::AcquireNext()
     };
 }
 
-Vulkan::Result VulkanTarget::Present()
-{
-    const XrSwapchainImageReleaseInfo releaseInfo =
-    {
+Vulkan::Result VulkanTarget::Present() {
+    const XrSwapchainImageReleaseInfo releaseInfo = {
         .type = XR_TYPE_SWAPCHAIN_IMAGE_RELEASE_INFO,
         .next = nullptr
     };
 
     XrResult result = xrReleaseSwapchainImage(this->colorSwapchain, &releaseInfo);
     Vulkan::Result vkResult = convertResult(result, "xrReleaseSwapchainImage");
-    if (vkResult != Vulkan::Result::Success)
-    {
+    if (vkResult != Vulkan::Result::Success) {
         return vkResult;
     }
 

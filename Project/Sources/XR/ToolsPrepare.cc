@@ -20,20 +20,20 @@ void XRToolsPrepare(Example* example,
                     Vulkan::Pipeline* pipeline,
                     Vulkan::CommandBufferManager* commandBuffer,
                     OpenXR::VulkanTarget* target) {
-    Vulkan::Instance* vkInstance = instance->GetVulkan();
+    Vulkan::Device* rendererDevice = instance->GetVulkan();
 
-    texture1 = VulkanToolsLoadTexture(vkInstance, example->GetContentPath("/Textures/Raw/lesbian.bin"));
-    texture2 = VulkanToolsLoadTexture(vkInstance, example->GetContentPath("/Textures/Raw/lesbian.bin"));
+    texture1 = VulkanToolsLoadTexture(rendererDevice, example->GetContentPath("/Textures/Raw/lesbian.bin"));
+    texture2 = VulkanToolsLoadTexture(rendererDevice, example->GetContentPath("/Textures/Raw/lesbian.bin"));
 
     constexpr size_t indexCount = 36;
 
-    buffer = vkInstance->CreateBuffer(sizeof(Vulkan::Vertex) * 8 + sizeof(uint16_t) * indexCount,
+    buffer = rendererDevice->CreateBuffer(sizeof(Vulkan::Vertex) * 8 + sizeof(uint16_t) * indexCount,
                                       VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT,
                                       VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT).Unwrap();
 
     uniforms.SetCount(target->GetImageCount());
     for (uint32_t index = 0; index < uniforms.GetCount(); index++) {
-        uniforms[index] = vkInstance->CreateBuffer(sizeof(ExampleUBO), VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT).Unwrap();
+        uniforms[index] = rendererDevice->CreateBuffer(sizeof(ExampleUBO), VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT).Unwrap();
     }
 
     const Vulkan::Vertex vertices[8] = {
@@ -80,7 +80,7 @@ void XRToolsPrepare(Example* example,
     result = buffer->Copy(System::UnownedBlock { indices, indexCount }, sizeof(Vulkan::Vertex) * 8);
     CELL_ASSERT(result == Vulkan::Result::Success);
 
-    pipeline = vkInstance->CreatePipeline(target).Unwrap();
+    pipeline = rendererDevice->CreatePipeline(target).Unwrap();
 
     VulkanToolsSetUpResources(pipeline, uniforms, texture1, texture2, target);
 
@@ -89,7 +89,7 @@ void XRToolsPrepare(Example* example,
     result = pipeline->Finalize();
     CELL_ASSERT(result == Vulkan::Result::Success);
 
-    commandBuffer = vkInstance->CreateCommandBufferManager().Unwrap();
+    commandBuffer = rendererDevice->CreateCommandBufferManager().Unwrap();
 
     result = commandBuffer->CreateBuffers(target->GetImageCount());
     CELL_ASSERT(result == Vulkan::Result::Success);

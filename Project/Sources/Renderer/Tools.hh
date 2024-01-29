@@ -22,7 +22,7 @@ struct CELL_PACKED(16) ExampleUBO {
 };
 
 CELL_FUNCTION_INTERNAL void VulkanToolsLoadShader(Cell::Vulkan::Pipeline* CELL_NONNULL pipeline, const Cell::System::String& path);
-CELL_FUNCTION_INTERNAL Cell::Vulkan::Image* VulkanToolsLoadTexture(Cell::Vulkan::Instance* CELL_NONNULL instance, const Cell::System::String& texturePath);
+CELL_FUNCTION_INTERNAL Cell::Vulkan::Image* VulkanToolsLoadTexture(Cell::Vulkan::Device* CELL_NONNULL device, const Cell::System::String& texturePath);
 
 CELL_FUNCTION_INTERNAL void VulkanToolsGenerateRenderCommands(const uint32_t vertexCount,
                                                               const uint32_t drawCount,

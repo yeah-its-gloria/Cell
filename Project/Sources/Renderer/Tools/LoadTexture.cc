@@ -9,12 +9,12 @@
 using namespace Cell;
 using namespace Cell::Vulkan;
 
-Image* VulkanToolsLoadTexture(Instance* instance, const System::String& texturePath) {
+Image* VulkanToolsLoadTexture(Device* device, const System::String& texturePath) {
     ScopedObject<IO::File> file = IO::File::Open(texturePath).Unwrap();
 
-    Image* image = instance->CreateImage(1024, 1024).Unwrap();
+    Image* image = device->CreateImage(1024, 1024).Unwrap();
 
-    ScopedObject<Buffer> buffer = instance->CreateBuffer(1024 * 1024 * 4, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT).Unwrap();
+    ScopedObject buffer = device->CreateBuffer(1024 * 1024 * 4, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT).Unwrap();
 
     const size_t imageSize = file->GetSize().Unwrap();
     CELL_ASSERT(imageSize == 1024 * 1024 * 4);

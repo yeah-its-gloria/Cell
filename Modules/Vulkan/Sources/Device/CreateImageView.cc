@@ -1,15 +1,11 @@
 // SPDX-FileCopyrightText: Copyright 2023-2024 Gloria G.
 // SPDX-License-Identifier: BSD-2-Clause
 
-#include <Cell/Vulkan/Instance.hh>
+#include <Cell/Vulkan/Device.hh>
 
 namespace Cell::Vulkan {
 
-Result Instance::CreateImageView(VkImageView& view, VkImage image, const VkFormat format, const VkImageViewType type, const VkImageAspectFlagBits aspectMask) {
-    if (this->device == nullptr) {
-        return Result::InvalidState;
-    }
-
+Result Device::CreateImageView(VkImageView& view, VkImage image, const VkFormat format, const VkImageViewType type, const VkImageAspectFlagBits aspectMask) {
     if (type > VK_IMAGE_VIEW_TYPE_CUBE_ARRAY) {
         return Result::InvalidParameters;
     }

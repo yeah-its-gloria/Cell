@@ -4,11 +4,8 @@
 #include <Cell/Vulkan/Instance.hh>
 
 #ifdef CELL_PLATFORM_WINDOWS
-
 #include <Cell/System/Platform/Windows/Includes.h>
-
 #include <vulkan/vulkan_win32.h>
-
 #elif CELL_PLATFORM_LINUX
 #include <vulkan/vulkan_wayland.h>
 #else
@@ -39,7 +36,7 @@ Wrapped<Instance*, Result> Instance::New(const char** extensions, const uint32_t
         .pApplicationName   = "Cell",
         .applicationVersion = VK_MAKE_API_VERSION(0, 1, 0, 0),
 
-        .pEngineName        = "Cell",
+        .pEngineName        = "CellVulkan",
         .engineVersion      = VK_MAKE_API_VERSION(0, 1, 0, 0),
 
         .apiVersion         = VK_API_VERSION_1_2
@@ -59,8 +56,8 @@ Wrapped<Instance*, Result> Instance::New(const char** extensions, const uint32_t
         .ppEnabledExtensionNames = extensions
     };
 
-    VkInstance vkInstance = nullptr;
-    const VkResult result = vkCreateInstance(&instanceInfo, nullptr, &vkInstance);
+    VkInstance inst = nullptr;
+    const VkResult result = vkCreateInstance(&instanceInfo, nullptr, &inst);
     switch (result) {
     case VK_SUCCESS: {
         break;
@@ -91,16 +88,16 @@ Wrapped<Instance*, Result> Instance::New(const char** extensions, const uint32_t
     }
     }
 
-    PFN_vkCmdBeginRenderingKHR beginRendering = (PFN_vkCmdBeginRenderingKHR)vkGetInstanceProcAddr(vkInstance, "vkCmdBeginRenderingKHR");
+    const PFN_vkCmdBeginRenderingKHR beginRendering = (PFN_vkCmdBeginRenderingKHR)vkGetInstanceProcAddr(inst, "vkCmdBeginRenderingKHR");
     CELL_ASSERT(beginRendering != nullptr);
 
-    PFN_vkCmdEndRenderingKHR endRendering = (PFN_vkCmdEndRenderingKHR)vkGetInstanceProcAddr(vkInstance, "vkCmdEndRenderingKHR");
+    const PFN_vkCmdEndRenderingKHR endRendering = (PFN_vkCmdEndRenderingKHR)vkGetInstanceProcAddr(inst, "vkCmdEndRenderingKHR");
     CELL_ASSERT(endRendering != nullptr);
 
-    PFN_vkCmdSetCullModeEXT setCullMode = (PFN_vkCmdSetCullModeEXT)vkGetInstanceProcAddr(vkInstance, "vkCmdSetCullModeEXT");
+    const PFN_vkCmdSetCullModeEXT setCullMode = (PFN_vkCmdSetCullModeEXT)vkGetInstanceProcAddr(inst, "vkCmdSetCullModeEXT");
     CELL_ASSERT(endRendering != nullptr);
 
-    return new Instance(vkInstance, beginRendering, endRendering, setCullMode);
+    return new Instance(inst, beginRendering, endRendering, setCullMode);
 }
 
 }

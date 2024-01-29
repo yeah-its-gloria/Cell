@@ -5,11 +5,7 @@
 
 namespace Cell::Vulkan {
 
-Wrapped<CommandBufferManager*, Result> Instance::CreateCommandBufferManager(const QueueType type, const bool resetIndividually) {
-    if (this->device == nullptr) {
-        return Result::InvalidState;
-    }
-
+Wrapped<CommandBufferManager*, Result> Device::CreateCommandBufferManager(const QueueType type, const bool resetIndividually) {
     uint32_t index = this->physicalDeviceQueueGraphics;
     VkQueue queue = this->deviceQueueGraphics;
 

@@ -8,7 +8,7 @@
 namespace Cell::Vulkan {
 
 Result WSITarget::PrepareSwapchain() {
-    Wrapped<CommandBufferManager*, Result> cmdBufferManagerResult = this->instance->CreateCommandBufferManager();
+    Wrapped<CommandBufferManager*, Result> cmdBufferManagerResult = this->device->CreateCommandBufferManager();
     if (!cmdBufferManagerResult.IsValid()) {
         return cmdBufferManagerResult.Result();
     }

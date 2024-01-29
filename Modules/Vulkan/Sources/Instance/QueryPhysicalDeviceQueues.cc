@@ -6,7 +6,7 @@
 
 namespace Cell::Vulkan {
 
-uint64_t Instance::QueryPhysicalDeviceQueues(VkPhysicalDevice device) {
+Instance::PhysicalDeviceQueues Instance::QueryPhysicalDeviceQueues(VkPhysicalDevice device) {
     uint32_t graphicsQueue = (uint32_t)-1;
     uint32_t transferQueue = (uint32_t)-1;
 
@@ -32,7 +32,7 @@ uint64_t Instance::QueryPhysicalDeviceQueues(VkPhysicalDevice device) {
 
     CELL_ASSERT(graphicsQueue != (uint32_t)-1);
 
-    return (((uint64_t)graphicsQueue) << 32) | transferQueue;
+    return Instance::PhysicalDeviceQueues { .graphics = graphicsQueue, .transfer = transferQueue };
 }
 
 }

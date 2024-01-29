@@ -20,7 +20,7 @@ Result WSITarget::Present() {
         .pResults           = nullptr
     };
 
-    const VkResult result = vkQueuePresentKHR(this->instance->deviceQueueGraphics, &presentationInfo);
+    const VkResult result = vkQueuePresentKHR(this->device->deviceQueueGraphics, &presentationInfo);
     switch (result) {
     case VK_SUCCESS: {
         this->renderFrameCounter = (this->renderFrameCounter + 1) % this->swapchainDepth;

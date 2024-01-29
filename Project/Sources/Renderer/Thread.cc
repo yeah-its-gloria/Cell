@@ -20,30 +20,27 @@ void Example::VulkanThread() {
     CELL_ASSERT(shellResult == Shell::Result::Success);
 
     ScopedObject instance = Instance::New().Unwrap();
+    ScopedObject device = instance->CreateDevice().Unwrap();
+    ScopedObject target = device->CreateWSITarget(this->shell).Unwrap();
 
-    Result result = instance->InitializeDevice();
-    CELL_ASSERT(result == Result::Success);
-
-    ScopedObject target = instance->CreateWSITarget(this->shell).Unwrap();
-
-    result = target->SetUpRendering();
+    Result result = target->SetUpRendering();
     CELL_ASSERT(result == Result::Success);
 
     VkExtent2D extent = target->GetExtent();
 
-    ScopedObject lesbianTexture = VulkanToolsLoadTexture(&instance, this->GetContentPath("/Textures/LesbianTex.bin"));
-    ScopedObject transTexture = VulkanToolsLoadTexture(&instance, this->GetContentPath("/Textures/TransTex.bin"));
+    ScopedObject lesbianTexture = VulkanToolsLoadTexture(&device, this->GetContentPath("/Textures/LesbianTex.bin"));
+    ScopedObject transTexture = VulkanToolsLoadTexture(&device, this->GetContentPath("/Textures/TransTex.bin"));
 
     constexpr size_t vertexCount = 16;
     constexpr size_t indexCount = 36;
 
-    ScopedObject buffer = instance->CreateBuffer(sizeof(Vertex) * vertexCount + sizeof(uint16_t) * indexCount,
+    ScopedObject buffer = device->CreateBuffer(sizeof(Vertex) * vertexCount + sizeof(uint16_t) * indexCount,
                                                          VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT,
                                                          VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT).Unwrap();
 
     Collection::List<Buffer*> uniforms(target->GetImageCount());
     for (uint32_t index = 0; index < uniforms.GetCount(); index++) {
-        uniforms[index] = instance->CreateBuffer(sizeof(ExampleUBO), VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT).Unwrap();
+        uniforms[index] = device->CreateBuffer(sizeof(ExampleUBO), VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT).Unwrap();
     }
 
     const Vertex vertices[vertexCount] = {
@@ -97,7 +94,7 @@ void Example::VulkanThread() {
     buffer->Copy(System::UnownedBlock { vertices, vertexCount });
     buffer->Copy(System::UnownedBlock { indices, indexCount }, sizeof(Vertex) * vertexCount);
 
-    ScopedObject pipeline = instance->CreatePipeline(&target).Unwrap();
+    ScopedObject pipeline = device->CreatePipeline(&target).Unwrap();
 
     VulkanToolsSetUpResources(&pipeline, uniforms, &lesbianTexture, &transTexture, &target);
 
@@ -106,7 +103,7 @@ void Example::VulkanThread() {
     result = pipeline->Finalize();
     CELL_ASSERT(result == Result::Success);
 
-    ScopedObject cmdBufferManager = instance->CreateCommandBufferManager().Unwrap();
+    ScopedObject cmdBufferManager = device->CreateCommandBufferManager().Unwrap();
 
     result = cmdBufferManager->CreateBuffers(target->GetImageCount());
     CELL_ASSERT(result == Result::Success);
@@ -140,7 +137,7 @@ void Example::VulkanThread() {
 
         VulkanToolsGenerateRenderCommands(vertexCount, indexCount, &cmdBufferManager, &pipeline, &buffer, &target, target->GetFrameCounter());
 
-        result = instance->RenderImage(&target, cmdBufferManager->GetCommandBufferHandle(target->GetFrameCounter()));
+        result = device->RenderImage(&target, cmdBufferManager->GetCommandBufferHandle(target->GetFrameCounter()));
         switch (result) {
         case Result::Success: {
             break;

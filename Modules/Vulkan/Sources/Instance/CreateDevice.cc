@@ -1,11 +1,11 @@
 // SPDX-FileCopyrightText: Copyright 2023-2024 Gloria G.
 // SPDX-License-Identifier: BSD-2-Clause
 
-#include <Cell/Vulkan/Instance.hh>
+#include <Cell/Vulkan/Device.hh>
 
 namespace Cell::Vulkan {
 
-Result Instance::CreateDevice() {
+Wrapped<Device*, Result> Instance::CreateDevice() {
     const char* extensions[4] = {
         VK_KHR_SWAPCHAIN_EXTENSION_NAME,
 
@@ -19,10 +19,13 @@ Result Instance::CreateDevice() {
     return this->CreateDevice(extensions, 4);
 }
 
-Result Instance::CreateDevice(const char** extensions, const uint32_t count) {
-    if (this->physicalDevice == nullptr) {
-        return Result::InvalidState;
+Wrapped<Device*, Result> Instance::CreateDevice(const char** extensions, const uint32_t count, VkPhysicalDevice physicalDevice) {
+    Wrapped<QueryPhysicalDeviceResult, Result> queryResult = this->QueryPhysicalDevice(physicalDevice);
+    if (!queryResult.IsValid()) {
+        return queryResult.Result();
     }
+
+    QueryPhysicalDeviceResult physDev = queryResult.Unwrap();
 
     // Queues
 
@@ -34,7 +37,7 @@ Result Instance::CreateDevice(const char** extensions, const uint32_t count) {
             .pNext            = nullptr,
             .flags            = 0,
 
-            .queueFamilyIndex = this->physicalDeviceQueueGraphics,
+            .queueFamilyIndex = physDev.queues.graphics,
             .queueCount       = 1,
             .pQueuePriorities = &queuePriority
         },
@@ -44,7 +47,7 @@ Result Instance::CreateDevice(const char** extensions, const uint32_t count) {
             .pNext            = nullptr,
             .flags            = 0,
 
-            .queueFamilyIndex = this->physicalDeviceQueueTransfer,
+            .queueFamilyIndex = physDev.queues.transfer,
             .queueCount       = 1,
             .pQueuePriorities = &queuePriority
         }
@@ -112,15 +115,9 @@ Result Instance::CreateDevice(const char** extensions, const uint32_t count) {
 
     // Device creation
 
-    /*const VkPhysicalDeviceShaderObjectFeaturesEXT shaderObjectFeature = {
-        .sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_OBJECT_FEATURES_EXT,
-        .pNext = nullptr,
-        .shaderObject = VK_TRUE
-    };*/
-
     const VkPhysicalDeviceExtendedDynamicStateFeaturesEXT extendedDynamicStateFeature = {
         .sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_EXTENDED_DYNAMIC_STATE_FEATURES_EXT,
-        .pNext = nullptr, // (void*)&shaderObjectFeature,
+        .pNext = nullptr,
         .extendedDynamicState = VK_TRUE
     };
 
@@ -135,7 +132,7 @@ Result Instance::CreateDevice(const char** extensions, const uint32_t count) {
         .pNext                   = &dynamicRenderingFeature,
         .flags                   = 0,
 
-        .queueCreateInfoCount    = (uint32_t)(this->physicalDeviceQueueTransfer != (uint32_t)-1 ? 2 : 1),
+        .queueCreateInfoCount    = (uint32_t)(physDev.queues.transfer != (uint32_t)-1 ? 2 : 1),
         .pQueueCreateInfos       = queueCreateInfo,
 
         .enabledLayerCount       = 0,
@@ -147,7 +144,8 @@ Result Instance::CreateDevice(const char** extensions, const uint32_t count) {
         .pEnabledFeatures        = &deviceFeatures
     };
 
-    const VkResult result = vkCreateDevice(this->physicalDevice, &deviceInfo, nullptr, &this->device);
+    VkDevice device = nullptr;
+    const VkResult result = vkCreateDevice(physDev.device, &deviceInfo, nullptr, &device);
     switch (result) {
     case VK_SUCCESS: {
         break;
@@ -177,13 +175,25 @@ Result Instance::CreateDevice(const char** extensions, const uint32_t count) {
 
     // Queue retrieval
 
-    vkGetDeviceQueue(this->device, this->physicalDeviceQueueGraphics, 0, &this->deviceQueueGraphics);
+    VkQueue graphics = nullptr;
+    vkGetDeviceQueue(device, physDev.queues.graphics, 0, &graphics);
 
-    if (this->physicalDeviceQueueTransfer != (uint32_t)-1) {
-        vkGetDeviceQueue(this->device, this->physicalDeviceQueueTransfer, 0, &this->deviceQueueTransfer);
+    VkQueue transfer = nullptr;
+    if (physDev.queues.transfer != (uint32_t)-1) {
+        vkGetDeviceQueue(device, physDev.queues.transfer, 0, &transfer);
     }
 
-    return Result::Success;
+    return new Device(physDev.device,
+                      physDev.queues.graphics,
+                      physDev.queues.transfer,
+                      physDev.properties,
+                      device,
+                      graphics,
+                      transfer,
+                      this->instance,
+                      this->beginRendering,
+                      this->endRendering,
+                      this->setCullMode);
 }
 
 }

@@ -1,16 +1,14 @@
 // SPDX-FileCopyrightText: Copyright 2023-2024 Gloria G.
 // SPDX-License-Identifier: BSD-2-Clause
 
-#include "Internal.hh"
+#include "../Platform.hh"
 
 #include <Cell/Shell/Implementations/Windows.hh>
-
 #include <vulkan/vulkan_win32.h>
 
-using namespace Cell;
-using namespace Cell::Vulkan;
+namespace Cell::Vulkan {
 
-CELL_FUNCTION_INTERNAL Result createPlatformSurface(VkSurfaceKHR* surface, VkInstance instance, Shell::IShell* platform) {
+Result createPlatformSurface(VkSurfaceKHR* surface, VkInstance instance, Shell::IShell* platform) {
     Shell::Implementations::Windows* windows = (Shell::Implementations::Windows*)platform;
 
     const VkWin32SurfaceCreateInfoKHR surfaceInfo = {
@@ -42,4 +40,6 @@ CELL_FUNCTION_INTERNAL Result createPlatformSurface(VkSurfaceKHR* surface, VkIns
     }
 
     return Result::Success;
+}
+
 }

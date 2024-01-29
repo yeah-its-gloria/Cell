@@ -6,8 +6,8 @@
 namespace Cell::Vulkan {
 
 CommandBufferManager::~CommandBufferManager() {
-    vkFreeCommandBuffers(this->instance->device, this->pool, this->buffers.GetCount(), this->buffers.AsRaw());
-    vkDestroyCommandPool(this->instance->device, this->pool, nullptr);
+    vkFreeCommandBuffers(this->device->device, this->pool, this->buffers.GetCount(), this->buffers.AsRaw());
+    vkDestroyCommandPool(this->device->device, this->pool, nullptr);
 }
 
 }

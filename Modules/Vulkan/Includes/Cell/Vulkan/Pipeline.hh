@@ -49,7 +49,7 @@ struct Vertex {
 };
 
 class Pipeline : public Object {
-friend Instance;
+friend Device;
 
 public:
     // Destructor for pipelines.
@@ -68,8 +68,8 @@ public:
     // Finalizes the pipeline data into a proper pipeline.
     CELL_FUNCTION Result Finalize();
 
-    // Returns the owning instance.
-    CELL_INLINE Instance* GetOwningInstance() { return this->instance; }
+    // Returns the owning device.
+    CELL_INLINE Device* GetDevice() { return this->device; }
 
     // Returns a handle to the pipeline object.
     CELL_INLINE VkPipeline GetPipelineHandle() { return this->pipeline; }
@@ -81,7 +81,7 @@ public:
     CELL_INLINE VkDescriptorSet* GetDescriptorSets(const uint32_t index) { return this->resources[index].sets; }
 
 private:
-    CELL_FUNCTION_INTERNAL Pipeline(Instance* instance, VkFormat renderFormat) : instance(instance), layout(nullptr), pipeline(nullptr), renderFormat(renderFormat) { }
+    CELL_FUNCTION_INTERNAL Pipeline(Device* dev, VkFormat fmt) : device(dev), renderFormat(fmt) { }
 
     struct PipelineResource {
         VkDescriptorSetLayout layout;
@@ -89,11 +89,11 @@ private:
         VkDescriptorSet* sets;
     };
 
-    Instance* instance;
-    VkPipelineLayout layout;
-    VkPipeline pipeline;
-
+    Device* device;
     VkFormat renderFormat;
+
+    VkPipelineLayout layout = nullptr;
+    VkPipeline pipeline = nullptr;
 
     Collection::List<PipelineResource> resources;
     Collection::List<VkPipelineShaderStageCreateInfo> stages;

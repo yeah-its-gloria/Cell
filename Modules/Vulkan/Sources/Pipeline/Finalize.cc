@@ -31,7 +31,7 @@ Result Pipeline::Finalize() {
         .pPushConstantRanges    = nullptr
     };
 
-    VkResult result = vkCreatePipelineLayout(this->instance->device, &pipelineLayoutInfo, nullptr, &this->layout);
+    VkResult result = vkCreatePipelineLayout(this->device->device, &pipelineLayoutInfo, nullptr, &this->layout);
     switch (result) {
     case VK_SUCCESS: {
         break;
@@ -287,7 +287,7 @@ Result Pipeline::Finalize() {
         .basePipelineIndex   = -1
     };
 
-    result = vkCreateGraphicsPipelines(this->instance->device, nullptr, 1, &pipelineInfo, nullptr, &this->pipeline);
+    result = vkCreateGraphicsPipelines(this->device->device, nullptr, 1, &pipelineInfo, nullptr, &this->pipeline);
     switch (result) {
     case VK_SUCCESS: {
         break;

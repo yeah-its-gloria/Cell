@@ -42,7 +42,7 @@ Result WSITarget::CreateSwapchain() {
         .oldSwapchain          = nullptr
     };
 
-    VkResult vkResult = vkCreateSwapchainKHR(this->instance->device, &swapchainInfo, nullptr, &this->swapchain);
+    VkResult vkResult = vkCreateSwapchainKHR(this->device->device, &swapchainInfo, nullptr, &this->swapchain);
     switch (vkResult) {
     case VK_SUCCESS: {
         break;
@@ -72,19 +72,19 @@ Result WSITarget::CreateSwapchain() {
     // Image retrieval
 
     uint32_t imageCount = 0;
-    vkResult = vkGetSwapchainImagesKHR(this->instance->device, this->swapchain, &imageCount, nullptr);
+    vkResult = vkGetSwapchainImagesKHR(this->device->device, this->swapchain, &imageCount, nullptr);
     switch (vkResult) {
     case VK_SUCCESS: {
         break;
     }
 
     case VK_ERROR_OUT_OF_HOST_MEMORY: {
-        vkDestroySwapchainKHR(this->instance->device, this->swapchain, nullptr);
+        vkDestroySwapchainKHR(this->device->device, this->swapchain, nullptr);
         return Result::OutOfHostMemory;
     }
 
     case VK_ERROR_OUT_OF_DEVICE_MEMORY: {
-        vkDestroySwapchainKHR(this->instance->device, this->swapchain, nullptr);
+        vkDestroySwapchainKHR(this->device->device, this->swapchain, nullptr);
         return Result::OutOfDeviceMemory;
     }
 
@@ -95,7 +95,7 @@ Result WSITarget::CreateSwapchain() {
 
     this->swapchainImages.SetCount(imageCount);
 
-    vkResult = vkGetSwapchainImagesKHR(this->instance->device, this->swapchain, &imageCount, this->swapchainImages.AsRaw());
+    vkResult = vkGetSwapchainImagesKHR(this->device->device, this->swapchain, &imageCount, this->swapchainImages.AsRaw());
     switch (vkResult) {
     case VK_SUCCESS: {
         break;
@@ -103,13 +103,13 @@ Result WSITarget::CreateSwapchain() {
 
     case VK_ERROR_OUT_OF_HOST_MEMORY: {
         this->swapchainImages.Reset();
-        vkDestroySwapchainKHR(this->instance->device, this->swapchain, nullptr);
+        vkDestroySwapchainKHR(this->device->device, this->swapchain, nullptr);
         return Result::OutOfHostMemory;
     }
 
     case VK_ERROR_OUT_OF_DEVICE_MEMORY: {
         this->swapchainImages.Reset();
-        vkDestroySwapchainKHR(this->instance->device, this->swapchain, nullptr);
+        vkDestroySwapchainKHR(this->device->device, this->swapchain, nullptr);
         return Result::OutOfDeviceMemory;
     }
 
@@ -124,7 +124,7 @@ Result WSITarget::CreateSwapchain() {
 
     Result result = Result::Success;
     for (uint32_t index = 0; index < imageCount; index++) {
-        result = this->instance->CreateImageView(this->swapchainImageViews[index], this->swapchainImages[index], this->format.format);
+        result = this->device->CreateImageView(this->swapchainImageViews[index], this->swapchainImages[index], this->format.format);
         if (result != Result::Success) {
             break;
         }
@@ -134,7 +134,7 @@ Result WSITarget::CreateSwapchain() {
         this->swapchainImageViews.Reset();
         this->swapchainImages.Reset();
 
-        vkDestroySwapchainKHR(this->instance->device, this->swapchain, nullptr);
+        vkDestroySwapchainKHR(this->device->device, this->swapchain, nullptr);
         return result;
     }
 

@@ -12,7 +12,7 @@ namespace Cell::Vulkan {
 
 // Vulkan WSI implementation.
 class WSITarget final : public IRenderTarget {
-friend Instance;
+friend Device;
 
 public:
     CELL_FUNCTION ~WSITarget() override;
@@ -37,12 +37,18 @@ public:
     CELL_INLINE VkImageView GetDepthImageView(const uint32_t index) override { (void)(index); return this->depthImage->GetViewHandle(); }
 
 private:
-    WSITarget(Vulkan::Instance* instance, Shell::IShell* shell,
-              VkSurfaceKHR surface, const VkSurfaceFormatKHR format,
-              const VkPresentModeKHR presentMode, const uint32_t swapchainDepth = 4) :
-              instance(instance), shell(shell),
-              surface(surface), format(format),
-              presentMode(presentMode), swapchainDepth(swapchainDepth) { }
+    WSITarget(Vulkan::Device* dev,
+              Shell::IShell* shell,
+              VkSurfaceKHR surf,
+              const VkSurfaceFormatKHR fmt,
+              const VkPresentModeKHR mode,
+              const uint32_t depth = 4)
+        : device(dev),
+          shell(shell),
+          surface(surf),
+          format(fmt),
+          presentMode(mode),
+          swapchainDepth(depth) { }
 
     CELL_FUNCTION_INTERNAL Result RetrieveProperties();
     CELL_FUNCTION_INTERNAL Result CreateSwapchain();
@@ -50,7 +56,7 @@ private:
     CELL_FUNCTION_INTERNAL Result SetUpDepthBuffer();
     CELL_FUNCTION_INTERNAL Result SetUpSynchronization();
 
-    Vulkan::Instance* instance;
+    Vulkan::Device* device;
     Shell::IShell* shell;
 
     VkSurfaceCapabilitiesKHR capabilities = {

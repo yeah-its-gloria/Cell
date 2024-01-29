@@ -103,7 +103,7 @@ Result Instance::InitializeSessionVulkan() {
         "VK_KHR_win32_surface"
     };
 
-    this->vulkan = Vulkan::Instance::New(instanceExtensionNames, 4).Unwrap();
+    this->vulkanInstance = Vulkan::Instance::New(instanceExtensionNames, 4).Unwrap();
 
     PFN_xrGetVulkanGraphicsDeviceKHR getVkPhysDev = nullptr;
     result = this->GetFunctionPointer("xrGetVulkanGraphicsDeviceKHR", (PFN_xrVoidFunction*)&getVkPhysDev);
@@ -111,7 +111,8 @@ Result Instance::InitializeSessionVulkan() {
         return result;
     }
 
-    xrResult = getVkPhysDev(this->instance, this->systemId, this->vulkan->instance, &this->vulkan->physicalDevice);
+    VkPhysicalDevice physicalDevice = nullptr;
+    xrResult = getVkPhysDev(this->instance, this->systemId, this->vulkanInstance->instance, &physicalDevice);
     switch (xrResult) {
     case XR_SUCCESS: {
         break;
@@ -129,12 +130,6 @@ Result Instance::InitializeSessionVulkan() {
         System::Panic("xrGetVulkanGraphicsDeviceKHR failed");
     }
     }
-
-    const uint64_t queues = Vulkan::Instance::QueryPhysicalDeviceQueues(this->vulkan->physicalDevice);
-    this->vulkan->physicalDeviceQueueGraphics = queues >> 32;
-    this->vulkan->physicalDeviceQueueTransfer = queues & 0xffffffff;
-
-    vkGetPhysicalDeviceMemoryProperties(this->vulkan->physicalDevice, &this->vulkan->physicalDeviceProperties);
 
     PFN_xrGetVulkanDeviceExtensionsKHR getVkDevExt = nullptr;
     result = this->GetFunctionPointer("xrGetVulkanDeviceExtensionsKHR", (PFN_xrVoidFunction*)&getVkDevExt);
@@ -200,27 +195,24 @@ Result Instance::InitializeSessionVulkan() {
         VK_KHR_DYNAMIC_RENDERING_EXTENSION_NAME
     };
 
-    Vulkan::Result vulkanResult = this->vulkan->CreateDevice(deviceExtensionNames, 7);
-    CELL_ASSERT(vulkanResult == Vulkan::Result::Success);
+    this->vulkanDevice = this->vulkanInstance->CreateDevice(deviceExtensionNames, 7, physicalDevice).Unwrap();
 
-    const XrGraphicsBindingVulkanKHR vulkanBinding =
-        {
-            .type             = XR_TYPE_GRAPHICS_BINDING_VULKAN_KHR,
-            .next             = nullptr,
-            .instance         = this->vulkan->instance,
-            .physicalDevice   = this->vulkan->physicalDevice,
-            .device           = this->vulkan->device,
-            .queueFamilyIndex = this->vulkan->physicalDeviceQueueGraphics,
-            .queueIndex       = this->vulkan->physicalDeviceQueueGraphics,
-        };
+    const XrGraphicsBindingVulkanKHR vulkanBinding = {
+        .type             = XR_TYPE_GRAPHICS_BINDING_VULKAN_KHR,
+        .next             = nullptr,
+        .instance         = this->vulkanInstance->instance,
+        .physicalDevice   = this->vulkanDevice->physicalDevice,
+        .device           = this->vulkanDevice->device,
+        .queueFamilyIndex = this->vulkanDevice->physicalDeviceQueueGraphics,
+        .queueIndex       = this->vulkanDevice->physicalDeviceQueueGraphics,
+    };
 
-    const XrSessionCreateInfo sessionInfo =
-        {
-            .type        = XR_TYPE_SESSION_CREATE_INFO,
-            .next        = &vulkanBinding,
-            .createFlags = 0,
-            .systemId    = this->systemId
-        };
+    const XrSessionCreateInfo sessionInfo = {
+        .type        = XR_TYPE_SESSION_CREATE_INFO,
+        .next        = &vulkanBinding,
+        .createFlags = 0,
+        .systemId    = this->systemId
+    };
 
     xrResult = xrCreateSession(this->instance, &sessionInfo, &this->session);
     switch (xrResult) {

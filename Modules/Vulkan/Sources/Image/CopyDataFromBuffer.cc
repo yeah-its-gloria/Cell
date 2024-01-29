@@ -9,7 +9,7 @@
 namespace Cell::Vulkan {
 
 Result Image::CopyDataFromBuffer(Buffer* buffer) {
-    Wrapped<CommandBufferManager*, Result> cmdBufferManagerResult = this->instance->CreateCommandBufferManager();
+    Wrapped<CommandBufferManager*, Result> cmdBufferManagerResult = this->device->CreateCommandBufferManager();
     if (!cmdBufferManagerResult.IsValid()) {
         return cmdBufferManagerResult.Result();
     }

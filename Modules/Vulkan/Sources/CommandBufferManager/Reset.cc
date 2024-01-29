@@ -6,7 +6,7 @@
 namespace Cell::Vulkan {
 
 Result CommandBufferManager::Reset(const bool releaseResources) {
-    const VkResult result = vkResetCommandPool(this->instance->device, this->pool, releaseResources ? VK_COMMAND_POOL_RESET_RELEASE_RESOURCES_BIT : 0);
+    const VkResult result = vkResetCommandPool(this->device->device, this->pool, releaseResources ? VK_COMMAND_POOL_RESET_RELEASE_RESOURCES_BIT : 0);
     switch (result) {
     case VK_SUCCESS: {
         break;

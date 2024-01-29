@@ -5,12 +5,12 @@
 
 namespace Cell::Vulkan {
 
-Wrapped<Image*, Result>
-Instance::CreateImage(const uint32_t width, const uint32_t height, const VkFormat format, const VkImageTiling tiling, const VkImageAspectFlags viewAspectMask, const VkImageUsageFlags usage) {
-    if (this->device == nullptr) {
-        return Result::InvalidState;
-    }
-
+Wrapped<Image*, Result> Device::CreateImage(const uint32_t width,
+                                            const uint32_t height,
+                                            const VkFormat format,
+                                            const VkImageTiling tiling,
+                                            const VkImageAspectFlags viewAspectMask,
+                                            const VkImageUsageFlags usage) {
     if (width == 0 || height == 0) {
         return Result::InvalidParameters;
     }

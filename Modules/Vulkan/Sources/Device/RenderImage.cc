@@ -6,7 +6,7 @@
 
 namespace Cell::Vulkan {
 
-Result Instance::RenderImage(IRenderTarget* target, VkCommandBuffer CELL_NONNULL buffer) {
+Result Device::RenderImage(IRenderTarget* target, VkCommandBuffer CELL_NONNULL buffer) {
     Wrapped <AcquiredImage, Result> acquiredResult = target->AcquireNext();
     if (!acquiredResult.IsValid()) {
         return acquiredResult.Result();

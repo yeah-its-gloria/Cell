@@ -16,7 +16,7 @@ Result Pipeline::AddMultiShader(const IBlock& block) {
     };
 
     VkShaderModule module = nullptr;
-    const VkResult result = vkCreateShaderModule(this->instance->device, &moduleInfo, nullptr, &module);
+    const VkResult result = vkCreateShaderModule(this->device->device, &moduleInfo, nullptr, &module);
     switch (result) {
     case VK_SUCCESS: {
         break;

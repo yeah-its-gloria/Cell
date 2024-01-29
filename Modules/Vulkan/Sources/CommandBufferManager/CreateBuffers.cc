@@ -17,7 +17,7 @@ Result CommandBufferManager::CreateBuffers(const uint32_t count) {
 
     this->buffers.SetCount(count);
 
-    const VkResult result = vkAllocateCommandBuffers(this->instance->device, &bufferInfo, this->buffers.AsRaw());
+    const VkResult result = vkAllocateCommandBuffers(this->device->device, &bufferInfo, this->buffers.AsRaw());
     switch (result) {
     case VK_SUCCESS: {
         break;

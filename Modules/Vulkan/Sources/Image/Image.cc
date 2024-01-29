@@ -6,10 +6,10 @@
 namespace Cell::Vulkan {
 
 Image::~Image() {
-    vkDestroySampler(this->instance->device, this->sampler, nullptr);
-    vkDestroyImageView(this->instance->device, this->view, nullptr);
-    vkDestroyImage(this->instance->device, this->image, nullptr);
-    vkFreeMemory(this->instance->device, this->memory, nullptr);
+    vkDestroySampler(this->device->device, this->sampler, nullptr);
+    vkDestroyImageView(this->device->device, this->view, nullptr);
+    vkDestroyImage(this->device->device, this->image, nullptr);
+    vkFreeMemory(this->device->device, this->memory, nullptr);
 }
 
 }
