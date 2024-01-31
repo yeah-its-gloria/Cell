@@ -9,7 +9,7 @@ on:
 jobs:
   build-ubuntu:
     name: Ubuntu Release
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -19,6 +19,7 @@ jobs:
           sudo apt update
           sudo apt install -y cmake ninja-build libvulkan-dev libwayland-dev libopenxr-dev libxkbcommon-dev libpulse-dev clang lld llvm
 
+        # Required as Ubuntu 22.04 doesn't have a good glslc package (we normally require 24.04)
       - name: Fetch glslc
         run: |
           curl -L -O https://storage.googleapis.com/shaderc/artifacts/prod/graphics_shader_compiler/shaderc/linux/continuous_clang_release/435/20230810-123653/install.tgz

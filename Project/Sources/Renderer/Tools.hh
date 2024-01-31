@@ -18,7 +18,7 @@ struct CELL_PACKED(16) ExampleUBO {
     Cell::Mathematics::Matrix4x4 view;
     Cell::Mathematics::Matrix4x4 projection;
 
-    float delta = 0.f;
+    float delta;
 };
 
 CELL_FUNCTION_INTERNAL void VulkanToolsLoadShader(Cell::Vulkan::Pipeline* CELL_NONNULL pipeline, const Cell::System::String& path);

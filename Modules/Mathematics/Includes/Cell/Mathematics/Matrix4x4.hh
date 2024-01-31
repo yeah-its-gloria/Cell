@@ -67,32 +67,32 @@ public:
     CELL_FUNCTION Matrix4x4 Multiply(const Matrix4x4 matrix);
 
     // Adds the scalar value to this matrix.
-    CELL_INLINE Matrix4x4 operator +(const float scalar) {
+    CELL_INLINE Matrix4x4 operator + (const float scalar) {
         return this->Add(scalar);
     }
 
     // Adds the other matrix to this matrix.
-    CELL_INLINE Matrix4x4 operator +(const Matrix4x4 matrix) {
+    CELL_INLINE Matrix4x4 operator + (const Matrix4x4 matrix) {
         return this->Add(matrix);
     }
 
     // Subtracts the scalar value from this matrix.
-    CELL_INLINE Matrix4x4 operator -(const float scalar) {
+    CELL_INLINE Matrix4x4 operator - (const float scalar) {
         return this->Subtract(scalar);
     }
 
     // Subtracts the other matrix from this matrix.
-    CELL_INLINE Matrix4x4 operator -(const Matrix4x4 matrix) {
+    CELL_INLINE Matrix4x4 operator - (const Matrix4x4 matrix) {
         return this->Subtract(matrix);
     }
 
     // Multiplies the scalar value with this matrix.
-    CELL_INLINE Matrix4x4 operator *(const float scalar) {
+    CELL_INLINE Matrix4x4 operator * (const float scalar) {
         return this->Multiply(scalar);
     }
 
     // Multiplies the other matrix with this matrix.
-    CELL_INLINE Matrix4x4 operator *(const Matrix4x4 matrix) {
+    CELL_INLINE Matrix4x4 operator * (const Matrix4x4 matrix) {
         return this->Multiply(matrix);
     }
 };

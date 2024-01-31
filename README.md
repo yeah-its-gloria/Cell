@@ -5,18 +5,30 @@ Please note that this project is in an incredibly early state, and that breaking
 There is no guarantee that any application component currently in tree will even launch across all supported platforms.
 
 ## Building
-Cell supports Windows and Linux.  
+Cell supports Windows and Linux, in particular Arch Linux and Ubuntu. 
 Note that some platform implementations might be less functional than others (I try my best to keep them all on the same page, at least API wise), i.e., the engine might abort for certain functionality (as an example, folder walking is not yet implemented on Linux, but somewhat implemented on Windows).
 
-Cell requires the following components to be built:
+Cell has the following dependencies:
+| Name | Minimum Version | Platform | Notes | Ubuntu Package | Arch Linux Package |
+|-|-|-|-|-|-|
+| [Vulkan](https://www.vulkan.org/) [headers](https://github.com/KhronosGroup/Vulkan-Headers) and [loader](https://github.com/KhronosGroup/Vulkan-Loader) | 1.3.268 | All | LunarG offers an [SDK package](https://vulkan.lunarg.com/sdk/home#windows) for Windows. | `libvulkan-dev` | `vulkan-headers`, `vulkan-loader` |
+| `spirv-link` from [SPIR-V Tools](https://github.com/KhronosGroup/SPIRV-Tools) | 2023.3 | All | | `spirv-tools` | `spirv-tools` |
+| `glslc` from [shaderc](https://github.com/google/shaderc/) | 2023.2 | All | | `glslc` | `shaderc` |
+| | | | | | |
+| [OpenXR](https://www.khronos.org/openxr/) [SDK](https://github.com/KhronosGroup/OpenXR-SDK) | 1.0.33 | All | Not required; if OpenXR isn't found, Cell will build without VR support. | `libopenxr-dev` | `openxr` |
+| | | | | | |
+| [LLVM](https://llvm.org) | 16.0.0 | All | Specifically clang and lld are needed. clang-cl can be used on Windows, if desired. Other compilers are **not officially** supported. | `clang`, `lld`, `llvm` | `clang`, `lld`, `llvm` |
+| [CMake](https://cmake.org/) | 3.20.0 | All | Requires a generator of some kind. | `cmake` | `cmake` |
+| [Ninja](https://ninja-build.org/) | 1.11.1 | All | Recommended generator for CMake. | `ninja-build` | `ninja` |
+| | | | | | |
+| [Windows SDK](https://developer.microsoft.com/en-us/windows/downloads/windows-sdk/) | 10.0.22621.0 | Windows | Should be installed alongside MSVC v143. | | |
+| | | | | | |
+| [Wayland](https://wayland.freedesktop.org/) | 1.22 | Linux | Official support for compositors is currently limited to [KDE (KWin)](https://kde.org/). | `libwayland-dev` | `wayland` | 
+| [xkbcommon](https://xkbcommon.org/) | 1.6.0 | Linux | | `libxkbcommon-dev` | `libxkbcommon` |
+| [PulseAudio](https://www.freedesktop.org/wiki/Software/PulseAudio/) | 16.1 | Linux | Official support for server implementations is limited to [pipewire](https://pipewire.org/). | `libpulse-dev` | `libpulse` |
 
-| Name                        | Version    | Notes                                                                                                                                                                                                          |
-|-----------------------------|------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| [LLVM](https://llvm.org)    | \>= 16.0.0 | Specifically clang and lld are needed. clang-cl can be used on Windows, if desired. Other compilers are **not officially** supported. clang-format and clang-tidy are recommended tools to keep code in order. |
-| [CMake](https://cmake.org/) | \>= 3.20.0 | Requires an underlying generator; I recommend [Ninja](https://ninja-build.org/).                                                                                                                               |
-
-Cell also requires the Windows SDK on Windows.  
-On Linux, Cell requires Wayland and `libxkbcommon`. There is no support for x11, and I do not intend on implementing any.
+Requires either Windows 10 or newer, Ubuntu 24.04 or newer, or an up-to-date Arch Linux installation.  
+Other Linux distributions might not be as well supported, and Unix-likes are likely broken and do not receive full support.
 
 You can additionally configure the engine further through CMake. I recommend using a multi-configuration generator, like `Ninja Multi-Config`.
  
