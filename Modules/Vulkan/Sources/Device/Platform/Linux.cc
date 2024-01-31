@@ -16,8 +16,8 @@ CELL_FUNCTION_INTERNAL Result createPlatformSurface(VkSurfaceKHR* surface, VkIns
         .pNext     = nullptr,
         .flags     = 0,
 
-        .display   = _linux->GetWaylandDisplay(),
-        .surface   = _linux->GetWaylandSurface()
+        .display   = _linux->GetDisplay(),
+        .surface   = _linux->GetSurface()
     };
 
     const VkResult vkResult = vkCreateWaylandSurfaceKHR(instance, &surfaceInfo, nullptr, surface);

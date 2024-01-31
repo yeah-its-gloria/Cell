@@ -6,21 +6,21 @@
 
 namespace Cell::Shell::Implementations {
 
-void Linux::WaylandXDGManagerPing(void* data, struct xdg_wm_base* manager, const uint32_t serial) {
+void Linux::XDGManagerPing(void* data, struct xdg_wm_base* manager, const uint32_t serial) {
     Linux* _linux = (Linux*)data;
     CELL_ASSERT(_linux != nullptr);
 
     xdg_wm_base_pong(manager, serial);
 }
 
-void Linux::WaylandXDGSurfaceConfigure(void* data, struct xdg_surface* surface, const uint32_t serial) {
+void Linux::XDGSurfaceConfigure(void* data, struct xdg_surface* surface, const uint32_t serial) {
     Linux* _linux = (Linux*)data;
     CELL_ASSERT(_linux != nullptr);
 
     xdg_surface_ack_configure(surface, serial);
 }
 
-void Linux::WaylandXDGDecorationConfigure(void* data, struct zxdg_toplevel_decoration_v1* decoration, const uint32_t mode) {
+void Linux::XDGDecorationConfigure(void* data, struct zxdg_toplevel_decoration_v1* decoration, const uint32_t mode) {
     (void)(decoration);
     (void)(mode);
 

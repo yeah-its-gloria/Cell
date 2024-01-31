@@ -89,7 +89,7 @@ Result Thread::SetName(const String& name) {
     }
 
     if (!this->IsActive()) {
-        return Result::ElementHasDied;
+        return Result::Expired;
     }
 
     ScopedBlock<wchar_t> nameWide = name.ToPlatformWideString();

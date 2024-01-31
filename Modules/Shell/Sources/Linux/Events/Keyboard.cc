@@ -10,7 +10,7 @@
 
 namespace Cell::Shell::Implementations {
 
-void Linux::WaylandKeyboardKeymap(void* data, struct wl_keyboard* keyboard, const uint32_t format, const int32_t fd, const uint32_t size) {
+void Linux::KeyboardKeymap(void* data, struct wl_keyboard* keyboard, const uint32_t format, const int32_t fd, const uint32_t size) {
     (void)(keyboard);
     (void)(fd);
     (void)(size);
@@ -20,25 +20,20 @@ void Linux::WaylandKeyboardKeymap(void* data, struct wl_keyboard* keyboard, cons
 
     CELL_ASSERT(format == WL_KEYBOARD_KEYMAP_FORMAT_XKB_V1);
 
-    void* mapped = mmap(NULL, size, PROT_READ, MAP_SHARED, fd, 0);
+    void* mapped = mmap(NULL, size, PROT_READ, MAP_PRIVATE, fd, 0);
     CELL_ASSERT(mapped != MAP_FAILED);
 
-    struct xkb_keymap* keymap = xkb_keymap_new_from_string(_linux->keyboardContext, (char*)mapped, XKB_KEYMAP_FORMAT_TEXT_V1, XKB_KEYMAP_COMPILE_NO_FLAGS);
-    CELL_ASSERT(keymap != nullptr);
+    _linux->keyboardKeymap = xkb_keymap_new_from_string(_linux->keyboardContext, (char*)mapped, XKB_KEYMAP_FORMAT_TEXT_V1, XKB_KEYMAP_COMPILE_NO_FLAGS);
+    CELL_ASSERT(_linux->keyboardKeymap != nullptr);
 
     munmap(mapped, size);
     close(fd);
 
-    struct xkb_state* state = xkb_state_new(keymap);
-
-    xkb_keymap_unref(_linux->keyboardKeymap);
-    xkb_state_unref(_linux->keyboardState);
-
-    _linux->keyboardKeymap = keymap;
-    _linux->keyboardState = state;
+    _linux->keyboardState = xkb_state_new(_linux->keyboardKeymap);
+    CELL_ASSERT(_linux->keyboardState != nullptr);
 }
 
-void Linux::WaylandKeyboardEnter(void* data, struct wl_keyboard* keyboard, uint32_t serial, struct wl_surface* surface, struct wl_array* keys) {
+void Linux::KeyboardEnter(void* data, struct wl_keyboard* keyboard, uint32_t serial, struct wl_surface* surface, struct wl_array* keys) {
     (void)(keyboard);
     (void)(serial);
     (void)(surface);
@@ -47,10 +42,10 @@ void Linux::WaylandKeyboardEnter(void* data, struct wl_keyboard* keyboard, uint3
     Linux* _linux = (Linux*)data;
     CELL_ASSERT(_linux != nullptr);
 
-    _linux->isActivated = true;  // TODO: verify this behavior
+    _linux->keyboardActive = true;
 }
 
-void Linux::WaylandKeyboardLeave(void* data, struct wl_keyboard* keyboard, uint32_t serial, struct wl_surface* surface) {
+void Linux::KeyboardLeave(void* data, struct wl_keyboard* keyboard, uint32_t serial, struct wl_surface* surface) {
     (void)(keyboard);
     (void)(serial);
     (void)(surface);
@@ -58,10 +53,10 @@ void Linux::WaylandKeyboardLeave(void* data, struct wl_keyboard* keyboard, uint3
     Linux* _linux = (Linux*)data;
     CELL_ASSERT(_linux != nullptr);
 
-    _linux->isActivated = false;  // TODO: verify this behavior
+    _linux->keyboardActive = false;
 }
 
-void Linux::WaylandKeyboardKey(void* data, struct wl_keyboard* keyboard, const uint32_t serial, const uint32_t time, const uint32_t key, const uint32_t state) {
+void Linux::KeyboardKey(void* data, struct wl_keyboard* keyboard, const uint32_t serial, const uint32_t time, const uint32_t key, const uint32_t state) {
     (void)(keyboard);
     (void)(serial);
     (void)(time);
@@ -72,13 +67,23 @@ void Linux::WaylandKeyboardKey(void* data, struct wl_keyboard* keyboard, const u
     // TODO: build a LUT
 
     xkb_keysym_t sym = xkb_state_key_get_one_sym(_linux->keyboardState, key + 8);
-    switch (sym) {
-    case 65307: {// Escape
+    switch (xkb_keysym_to_upper(sym)) {
+    case XKB_KEY_Escape: {
         _linux->isDone = true;
         break;
     }
 
-    case 113: { // Q
+    case XKB_KEY_Tab: {
+        if (state & WL_KEYBOARD_KEY_STATE_PRESSED) {
+            _linux->keys |= Shell::KeyboardButton::Tab;
+        } else {
+            _linux->keys ^= Shell::KeyboardButton::Tab;
+        }
+
+        break;
+    }
+
+    case XKB_KEY_Q: {
         if (state & WL_KEYBOARD_KEY_STATE_PRESSED) {
             _linux->keys |= Shell::KeyboardButton::Q;
         } else {
@@ -88,7 +93,7 @@ void Linux::WaylandKeyboardKey(void* data, struct wl_keyboard* keyboard, const u
         break;
     }
 
-    case 119: { // W
+    case XKB_KEY_W: {
         if (state & WL_KEYBOARD_KEY_STATE_PRESSED) {
             _linux->keys |= Shell::KeyboardButton::W;
         } else {
@@ -98,7 +103,7 @@ void Linux::WaylandKeyboardKey(void* data, struct wl_keyboard* keyboard, const u
         break;
     }
 
-    case 114: { // R
+    case XKB_KEY_R: {
         if (state & WL_KEYBOARD_KEY_STATE_PRESSED) {
             _linux->keys |= Shell::KeyboardButton::R;
         } else {
@@ -108,7 +113,7 @@ void Linux::WaylandKeyboardKey(void* data, struct wl_keyboard* keyboard, const u
         break;
     }
 
-    case 101: { // E
+    case XKB_KEY_E: {
         if (state & WL_KEYBOARD_KEY_STATE_PRESSED) {
             _linux->keys |= Shell::KeyboardButton::E;
         } else {
@@ -118,7 +123,7 @@ void Linux::WaylandKeyboardKey(void* data, struct wl_keyboard* keyboard, const u
         break;
     }
 
-    case 97: { // A
+    case XKB_KEY_A: {
         if (state & WL_KEYBOARD_KEY_STATE_PRESSED) {
             _linux->keys |= Shell::KeyboardButton::A;
         } else {
@@ -128,7 +133,7 @@ void Linux::WaylandKeyboardKey(void* data, struct wl_keyboard* keyboard, const u
         break;
     }
 
-    case 115: { // S
+    case XKB_KEY_S: {
         if (state & WL_KEYBOARD_KEY_STATE_PRESSED) {
             _linux->keys |= Shell::KeyboardButton::S;
         } else {
@@ -138,7 +143,7 @@ void Linux::WaylandKeyboardKey(void* data, struct wl_keyboard* keyboard, const u
         break;
     }
 
-    case 100: { // D
+    case XKB_KEY_D: {
         if (state & WL_KEYBOARD_KEY_STATE_PRESSED) {
             _linux->keys |= Shell::KeyboardButton::D;
         } else {
@@ -148,7 +153,7 @@ void Linux::WaylandKeyboardKey(void* data, struct wl_keyboard* keyboard, const u
         break;
     }
 
-    case 102: { // F
+    case XKB_KEY_F: {
         if (state & WL_KEYBOARD_KEY_STATE_PRESSED) {
             _linux->keys |= Shell::KeyboardButton::F;
         } else {
@@ -170,7 +175,7 @@ void Linux::WaylandKeyboardKey(void* data, struct wl_keyboard* keyboard, const u
     }
 }
 
-void Linux::WaylandKeyboardModifiers(void* data,
+void Linux::KeyboardModifiers(void* data,
                                      struct wl_keyboard* keyboard,
                                      const uint32_t serial,
                                      const uint32_t modsDepressed,
@@ -186,7 +191,7 @@ void Linux::WaylandKeyboardModifiers(void* data,
     xkb_state_update_mask(_linux->keyboardState, modsDepressed, modsLatched, modsLocked, 0, 0, group);
 }
 
-void Linux::WaylandKeyboardRepeatInfo(void* data, struct wl_keyboard* keyboard, const int32_t rate, const int32_t delay) {
+void Linux::KeyboardRepeatInfo(void* data, struct wl_keyboard* keyboard, const int32_t rate, const int32_t delay) {
     (void)(keyboard);
     (void)(rate);
     (void)(delay);

@@ -6,7 +6,7 @@
 
 namespace Cell::Shell::Implementations {
 
-void Linux::WaylandXDGToplevelConfigure(void* data, struct xdg_toplevel* toplevel, const int width, const int height, struct wl_array* states) {
+void Linux::XDGToplevelConfigure(void* data, struct xdg_toplevel* toplevel, const int width, const int height, struct wl_array* states) {
     (void)(width);
     (void)(height);
     (void)(states);
@@ -15,14 +15,14 @@ void Linux::WaylandXDGToplevelConfigure(void* data, struct xdg_toplevel* topleve
     CELL_ASSERT(_linux != nullptr && toplevel != nullptr);
 }
 
-void Linux::WaylandXDGToplevelClose(void* data, struct xdg_toplevel* toplevel) {
+void Linux::XDGToplevelClose(void* data, struct xdg_toplevel* toplevel) {
     Linux* _linux = (Linux*)data;
     CELL_ASSERT(_linux != nullptr && toplevel != nullptr);
 
     _linux->isDone = true;
 }
 
-void Linux::WaylandXDGToplevelConfigureBounds(void* data, struct xdg_toplevel* toplevel, const int32_t width, const int32_t height) {
+void Linux::XDGToplevelConfigureBounds(void* data, struct xdg_toplevel* toplevel, const int32_t width, const int32_t height) {
     (void)(width);
     (void)(height);
 
@@ -30,7 +30,7 @@ void Linux::WaylandXDGToplevelConfigureBounds(void* data, struct xdg_toplevel* t
     CELL_ASSERT(_linux != nullptr && toplevel != nullptr);
 }
 
-void Linux::WaylandXDGToplevelAnnounceWMCapabilities(void* data, struct xdg_toplevel* toplevel, struct wl_array* capabilities) {
+void Linux::XDGToplevelAnnounceWMCapabilities(void* data, struct xdg_toplevel* toplevel, struct wl_array* capabilities) {
     (void)(capabilities);
 
     Linux* _linux = (Linux*)data;

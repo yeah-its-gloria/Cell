@@ -14,6 +14,7 @@ Result Linux::RunDispatchImpl() {
         return Result::RequestedQuit;
     }
 
+    this->isActivated = this->keyboardActive || this->pointerActive;
     return Result::Success;
 }
 
@@ -23,16 +24,18 @@ Result Linux::RequestQuit() {
 }
 
 Wrapped<Extent, Result> Linux::GetDrawableExtent() {
-    // TODO: don't hardcode this lol
-
-    return Extent { 1280, 720 };
+    return this->extent;
 }
 
 Result Linux::SetDrawableExtent(const Extent extent) {
-    (void)(extent);
+    if (extent.width > INT32_MAX || extent.height > INT32_MAX) {
+        return Result::InvalidParameters;
+    }
 
-    // TODO: implement
+    xdg_surface_set_window_geometry(this->xdgSurface, 0, 0, extent.width, extent.height);
+    wl_surface_commit(this->surface);
 
+    this->extent = extent;
     return Result::Success;
 }
 
@@ -48,10 +51,29 @@ Result Linux::SetNewTitle(const System::String& title) {
 }
 
 Result Linux::IndicateStatus(const ShellStatus status) {
-    (void)(status);
+    if (this->cursorShapeDevice == nullptr || !this->pointerActive) {
+        return Result::Success;
+    }
 
-    // TODO: implement using wp_cursor_shape_manager_v1
+    wp_cursor_shape_device_v1_shape shape;
 
+    switch (status) {
+    case ShellStatus::Default: {
+        shape = WP_CURSOR_SHAPE_DEVICE_V1_SHAPE_DEFAULT;
+        break;
+    }
+
+    case ShellStatus::Working: {
+        shape = WP_CURSOR_SHAPE_DEVICE_V1_SHAPE_WAIT;
+        break;
+    }
+
+    default: {
+        CELL_UNREACHABLE;
+    }
+    }
+
+    wp_cursor_shape_device_v1_set_shape(this->cursorShapeDevice, this->pointerSerial, shape);
     return Result::Success;
 }
 

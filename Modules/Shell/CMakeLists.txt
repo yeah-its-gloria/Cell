@@ -16,13 +16,6 @@ add_library(CellShell ${CELL_LIBRARY_TYPE}
     ${MODULE_INCLUDES_DIR}/Cell/Shell/Controller/SwitchPro.hh
     ${MODULE_INCLUDES_DIR}/Cell/Shell/Controller/Xbox.hh
 
-    ${MODULE_INCLUDES_DIR}/Cell/Shell/Implementations/Windows.hh
-
-    ${MODULE_INCLUDES_DIR}/Cell/Shell/Implementations/Linux.hh
-    ${MODULE_INCLUDES_DIR}/Cell/Shell/Implementations/Linux/WaylandProtocols/idle-inhibit-client-protocol.h
-    ${MODULE_INCLUDES_DIR}/Cell/Shell/Implementations/Linux/WaylandProtocols/xdg-decoration-client-protocol.h
-    ${MODULE_INCLUDES_DIR}/Cell/Shell/Implementations/Linux/WaylandProtocols/xdg-shell-client-protocol.h
-
     ${CMAKE_CURRENT_LIST_DIR}/Sources/Actions.cc
     ${CMAKE_CURRENT_LIST_DIR}/Sources/Controller.cc
     ${CMAKE_CURRENT_LIST_DIR}/Sources/RunDispatch.cc
@@ -44,6 +37,8 @@ target_link_libraries(CellShell PUBLIC CellCore)
 
 if (WIN32)
     target_sources(CellShell PRIVATE
+        ${MODULE_INCLUDES_DIR}/Cell/Shell/Implementations/Windows.hh
+
         ${CMAKE_CURRENT_LIST_DIR}/Sources/Windows/Manifest.rc.h
 
         ${CMAKE_CURRENT_LIST_DIR}/Sources/Windows/Controller/Xbox.cc
@@ -60,18 +55,29 @@ elseif (UNIX)
     find_package(wayland REQUIRED FATAL_ERROR)
 
     target_sources(CellShell PRIVATE
+        ${MODULE_INCLUDES_DIR}/Cell/Shell/Implementations/Linux.hh
+
+        ${MODULE_INCLUDES_DIR}/Cell/Shell/Implementations/Linux/Protocols/cursor-shape-client-protocol.h
+        ${MODULE_INCLUDES_DIR}/Cell/Shell/Implementations/Linux/Protocols/idle-inhibit-client-protocol.h
+        ${MODULE_INCLUDES_DIR}/Cell/Shell/Implementations/Linux/Protocols/tablet-client-protocol.h
+        ${MODULE_INCLUDES_DIR}/Cell/Shell/Implementations/Linux/Protocols/xdg-decoration-client-protocol.h
+        ${MODULE_INCLUDES_DIR}/Cell/Shell/Implementations/Linux/Protocols/xdg-shell-client-protocol.h
+
         ${CMAKE_CURRENT_LIST_DIR}/Sources/Linux/Linux.cc
         ${CMAKE_CURRENT_LIST_DIR}/Sources/Linux/NewDestruct.cc
 
-        ${CMAKE_CURRENT_LIST_DIR}/Sources/Linux/WaylandEvents/Events.cc
-        ${CMAKE_CURRENT_LIST_DIR}/Sources/Linux/WaylandEvents/Keyboard.cc
-        ${CMAKE_CURRENT_LIST_DIR}/Sources/Linux/WaylandEvents/Registry.cc
-        ${CMAKE_CURRENT_LIST_DIR}/Sources/Linux/WaylandEvents/Seat.cc
-        ${CMAKE_CURRENT_LIST_DIR}/Sources/Linux/WaylandEvents/XDGToplevel.cc
+        ${CMAKE_CURRENT_LIST_DIR}/Sources/Linux/Events/Events.cc
+        ${CMAKE_CURRENT_LIST_DIR}/Sources/Linux/Events/Keyboard.cc
+        ${CMAKE_CURRENT_LIST_DIR}/Sources/Linux/Events/Pointer.cc
+        ${CMAKE_CURRENT_LIST_DIR}/Sources/Linux/Events/Registry.cc
+        ${CMAKE_CURRENT_LIST_DIR}/Sources/Linux/Events/Seat.cc
+        ${CMAKE_CURRENT_LIST_DIR}/Sources/Linux/Events/XDGToplevel.cc
 
-        ${CMAKE_CURRENT_LIST_DIR}/Sources/Linux/WaylandProtocols/idle-inhibit-protocol.c
-        ${CMAKE_CURRENT_LIST_DIR}/Sources/Linux/WaylandProtocols/xdg-decoration-protocol.c
-        ${CMAKE_CURRENT_LIST_DIR}/Sources/Linux/WaylandProtocols/xdg-shell-protocol.c
+        ${CMAKE_CURRENT_LIST_DIR}/Sources/Linux/Protocols/cursor-shape-protocol.c
+        ${CMAKE_CURRENT_LIST_DIR}/Sources/Linux/Protocols/idle-inhibit-protocol.c
+        ${CMAKE_CURRENT_LIST_DIR}/Sources/Linux/Protocols/tablet-protocol.c
+        ${CMAKE_CURRENT_LIST_DIR}/Sources/Linux/Protocols/xdg-decoration-protocol.c
+        ${CMAKE_CURRENT_LIST_DIR}/Sources/Linux/Protocols/xdg-shell-protocol.c
 
         ${CMAKE_CURRENT_LIST_DIR}/Sources/Linux/Controller/Xbox.cc
     )

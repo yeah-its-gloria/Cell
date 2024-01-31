@@ -21,8 +21,8 @@ enum class Result : uint8_t {
     // The given parameters were malformed.
     InvalidParameters,
 
-    // The given element (e.g a thread) died.
-    ElementHasDied,
+    // The given element (e.g a thread) expired.
+    Expired,
 
     // Failed to convert an element from one format to another.
     ConversionFailure,

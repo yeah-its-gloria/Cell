@@ -6,7 +6,7 @@
 
 namespace Cell::Shell::Implementations {
 
-void Linux::WaylandSeatCapabilities(void* data, struct wl_seat* seat, const uint32_t capabilities) {
+void Linux::SeatCapabilities(void* data, struct wl_seat* seat, const uint32_t capabilities) {
     Linux* _linux = (Linux*)data;
     CELL_ASSERT(_linux != nullptr);
 
@@ -23,7 +23,7 @@ void Linux::WaylandSeatCapabilities(void* data, struct wl_seat* seat, const uint
     }
 }
 
-void Linux::WaylandSeatName(void* data, struct wl_seat* seat, const char* name) {
+void Linux::SeatName(void* data, struct wl_seat* seat, const char* name) {
     (void)(seat);
     (void)(name);
 

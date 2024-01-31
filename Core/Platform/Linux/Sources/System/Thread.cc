@@ -8,35 +8,37 @@
 
 #include <errno.h>
 #include <pthread.h>
+#include <signal.h>
 
 namespace Cell::System {
 
-struct threadData {
+struct ThreadData {
     Event* event;
     ThreadFunction function;
     void* parameter;
+    uintptr_t* handle;
 };
 
-void* thread_trampoline(void* param) {
-    struct threadData data = *(struct threadData*)param;
-
+void* ThreadTrampoline(void* param) {
+    struct ThreadData data = *(struct ThreadData*)param;
     data.event->Signal();
-
     data.function(data.parameter);
+    *data.handle = 0;
     return nullptr;
 }
 
 Thread::Thread(ThreadFunction function, void* parameter, const String& name) {
     Event event;
 
-    const threadData data = {
+    const ThreadData data = {
         .event     = &event,
         .function  = function,
-        .parameter = parameter
+        .parameter = parameter,
+        .handle    = &this->handle
     };
 
     pthread_t thread = 0;
-    int result = pthread_create(&thread, nullptr, thread_trampoline, (void**)&data);
+    const int result = pthread_create(&thread, nullptr, ThreadTrampoline, (void**)&data);
     CELL_ASSERT(result == 0);
 
     event.Wait();
@@ -48,18 +50,25 @@ Thread::Thread(ThreadFunction function, void* parameter, const String& name) {
     }
 }
 
+
 Thread::~Thread() {
-    pthread_cancel((pthread_t)this->handle);
+    if (this->handle != 0) {
+        pthread_kill((pthread_t)this->handle, SIGTERM);
+    }
 }
 
-Result Thread::Join(const uint32_t timeout_ms) const {
+Result Thread::Join(const uint32_t timeoutMs) const {
+    if (this->handle == 0) {
+        return Result::Expired;
+    }
+
     int result = 0;
 
-    if (timeout_ms > 0) {
-        struct timespec timeout = { .tv_sec = 0, .tv_nsec = timeout_ms * 1000 };
-        if (timeout_ms >= 1000) {
-            timeout.tv_sec = timeout_ms / 1000;
-            timeout.tv_nsec = (timeout_ms % 1000) * 1000;
+    if (timeoutMs > 0) {
+        struct timespec timeout = { .tv_sec = 0, .tv_nsec = timeoutMs * 1000 };
+        if (timeoutMs >= 1000) {
+            timeout.tv_sec = timeoutMs / 1000;
+            timeout.tv_nsec = (timeoutMs % 1000) * 1000;
         }
 
         result = pthread_timedjoin_np((pthread_t)this->handle, nullptr, &timeout);
@@ -69,8 +78,7 @@ Result Thread::Join(const uint32_t timeout_ms) const {
 
     switch (result) {
     case 0:
-    case ESRCH: // thread already died
-    {
+    case ESRCH: { // thread already died
         return Result::Success;
     }
 
@@ -85,6 +93,10 @@ Result Thread::Join(const uint32_t timeout_ms) const {
 }
 
 bool Thread::IsActive() const {
+    if (this->handle == 0) {
+        return false;
+    }
+
     int result = pthread_tryjoin_np((pthread_t)this->handle, nullptr);
     switch (result) {
     case 0: {
@@ -102,6 +114,10 @@ bool Thread::IsActive() const {
 }
 
 Result Thread::SetName(const System::String& name) {
+    if (this->handle == 0) {
+        return Result::Expired;
+    }
+
     if (name.IsEmpty()) {
         return Result::InvalidParameters;
     }
@@ -115,7 +131,7 @@ Result Thread::SetName(const System::String& name) {
 
     case ENOENT:
     case ESRCH: {
-        return Result::ElementHasDied;
+        return Result::Expired;
     }
 
     case ERANGE: {
