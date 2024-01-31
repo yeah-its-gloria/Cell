@@ -15,11 +15,11 @@ void Linux::WaylandRegistryAdd(void* data, struct wl_registry* registry, const u
     CELL_ASSERT(_linux != nullptr && registry != nullptr);
 
     if (IS_INTERFACE(wl_compositor)) {
-        if (version < 5) {
-            System::Panic("wl_compositor interface version %d is too old (required: 5)", version);
+        if (version < 4) {
+            System::Panic("wl_compositor interface version %d is too old (required: 4)", version);
         }
 
-        _linux->compositor = (struct wl_compositor*)wl_registry_bind(registry, name, &wl_compositor_interface, 5);
+        _linux->compositor = (struct wl_compositor*)wl_registry_bind(registry, name, &wl_compositor_interface, 4);
         if (_linux->compositor == nullptr) {
             System::Panic("wl_registry_bind for wl_compositor failed");
         }
@@ -32,7 +32,7 @@ void Linux::WaylandRegistryAdd(void* data, struct wl_registry* registry, const u
             System::Panic("xdg_wm_base interface version %d is too old (required: 7)", version);
         }
 
-        _linux->seat = (struct wl_seat*)wl_registry_bind(registry, name, &wl_seat_interface, 2);
+        _linux->seat = (struct wl_seat*)wl_registry_bind(registry, name, &wl_seat_interface, 7);
         if (_linux->seat == nullptr) {
             System::Panic("wl_registry_bind for wl_seat failed");
         }
@@ -42,11 +42,11 @@ void Linux::WaylandRegistryAdd(void* data, struct wl_registry* registry, const u
     }
 
     if (IS_INTERFACE(xdg_wm_base)) {
-        if (version < 2) {
-            System::Panic("xdg_wm_base interface version %d is too old (required: 2)", version);
+        if (version < 1) {
+            System::Panic("xdg_wm_base interface version %d is too old (required: 1)", version);
         }
 
-        _linux->xdgManager = (struct xdg_wm_base*)wl_registry_bind(registry, name, &xdg_wm_base_interface, 2);
+        _linux->xdgManager = (struct xdg_wm_base*)wl_registry_bind(registry, name, &xdg_wm_base_interface, 1);
         if (_linux->xdgManager == nullptr) {
             System::Panic("wl_registry_bind for xdg_wm_base failed");
         }

@@ -40,7 +40,12 @@ target_compile_definitions(CellCore PUBLIC
                            "_REENTRANT"
 )
 
-target_compile_options(CellCore PRIVATE -Wno-varargs)
+target_compile_options(CellCore
+    PRIVATE -Wno-varargs
+
+    PUBLIC -Wno-packed-non-pod
+    PUBLIC -Wno-unknown-warning-option
+)
 
 target_link_options(CellCore PUBLIC -Wl,--no-undefined)
 
