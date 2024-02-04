@@ -37,7 +37,7 @@ WSITarget::~WSITarget() {
         vkDestroySwapchainKHR(this->device->device, this->swapchain, nullptr);
     }
 
-    vkDestroySurfaceKHR(this->device->instance, this->surface, nullptr);
+    vkDestroySurfaceKHR(this->device->instance->instance, this->surface, nullptr);
 }
 
 }

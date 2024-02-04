@@ -24,18 +24,4 @@ void CellEntry(Reference<String> parameterString) {
 
     event.Reset();
     CELL_ASSERT(event.Wait(1) == EventWaitResult::Timeout);
-
-    String a = "Hello";
-    String b = " World";
-
-    String c = a + b;
-
-    CELL_ASSERT(a == "Hello");
-    CELL_ASSERT(b == " World");
-    CELL_ASSERT(c == "Hello World");
-
-    //String euro = "€";
-
-    //CELL_ASSERT(euro.GetSize() == 3);
-    //CELL_ASSERT(euro.GetCount() == 1);
 }

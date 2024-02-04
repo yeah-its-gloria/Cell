@@ -55,7 +55,7 @@ Result Instance::UpdateState() {
 
     case XR_TYPE_EVENT_DATA_REFERENCE_SPACE_CHANGE_PENDING: {
         XrEventDataReferenceSpaceChangePending* change = (XrEventDataReferenceSpaceChangePending*)&event;
-        System::Log("Changing space: %d", change->referenceSpaceType);
+        System::Log("Changing space: %", (uint32_t)change->referenceSpaceType);
 
         // TODO: handle this
         break;

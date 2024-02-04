@@ -167,7 +167,7 @@ void Linux::KeyboardKey(void* data, struct wl_keyboard* keyboard, const uint32_t
 #ifdef _DEBUG
         char buf[129] = {0};
         xkb_state_key_get_utf8(_linux->keyboardState, key + 8, buf, sizeof(buf));
-        System::Log("Unknown key: %d %s", sym, state & WL_KEYBOARD_KEY_STATE_PRESSED ? "pressed" : "released");
+        System::Log("Unknown key: % %", sym, state & WL_KEYBOARD_KEY_STATE_PRESSED ? "pressed" : "released");
 #endif
 
         break;

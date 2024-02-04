@@ -13,14 +13,14 @@
 if (strcmp(interface, n##_interface.name) == 0) { \
     if (version < rv) { System::Panic(#n" interface version %d is too old (required: "#rv")", version); } \
     _linux->o = (struct n*)wl_registry_bind(registry, identity, &n##_interface, rv);\
-    if (_linux->o == nullptr) { System::Panic("wl_registry_bind for "#n" failed"); } else { System::Log("bound "#n" v"#rv); }\
+    if (_linux->o == nullptr) { System::Panic("wl_registry_bind for "#n" failed"); } \
 }
 
 #define REGISTER_GLOBAL_LISTENER(n, rv, o, l) \
 if (strcmp(interface, n##_interface.name) == 0) { \
     if (version < rv) { System::Panic(#n" interface version %d is too old (required: "#rv")", version); } \
     _linux->o = (struct n*)wl_registry_bind(registry, identity, &n##_interface, rv);\
-    if (_linux->o == nullptr) { System::Panic("wl_registry_bind for "#n" failed"); } else { System::Log("bound "#n" v"#rv); }\
+    if (_linux->o == nullptr) { System::Panic("wl_registry_bind for "#n" failed"); } \
     n##_add_listener(_linux->o, &Linux::l, _linux); \
 }
 

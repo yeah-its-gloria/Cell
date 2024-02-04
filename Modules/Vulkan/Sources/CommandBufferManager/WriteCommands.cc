@@ -77,7 +77,7 @@ Result CommandBufferManager::WriteCommands(const uint32_t index, const Command* 
 
         case CommandType::SetCullMode: {
             VkCullModeFlags cullMode = *(VkCullModeFlags*)commands[i].parameters;
-            this->device->setCullMode(this->buffers[index], cullMode);
+            this->device->instance->setCullMode(this->buffers[index], cullMode);
             break;
         }
 
@@ -152,7 +152,7 @@ Result CommandBufferManager::WriteCommands(const uint32_t index, const Command* 
                 .pStencilAttachment   = parameters->stencilAttachments
             };
 
-            this->device->beginRendering(this->buffers[index], &renderingInfo);
+            this->device->instance->beginRendering(this->buffers[index], &renderingInfo);
             break;
         }
 
@@ -161,7 +161,7 @@ Result CommandBufferManager::WriteCommands(const uint32_t index, const Command* 
                 return Result::InvalidCommandGiven;
             }
 
-            this->device->endRendering(this->buffers[index]);
+            this->device->instance->endRendering(this->buffers[index]);
             break;
         }
 

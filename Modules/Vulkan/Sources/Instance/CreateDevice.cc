@@ -190,10 +190,7 @@ Wrapped<Device*, Result> Instance::CreateDevice(const char** extensions, const u
                       device,
                       graphics,
                       transfer,
-                      this->instance,
-                      this->beginRendering,
-                      this->endRendering,
-                      this->setCullMode);
+                      this);
 }
 
 }

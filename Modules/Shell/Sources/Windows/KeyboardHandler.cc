@@ -202,7 +202,7 @@ void Windows::HandleKeyInput(const WPARAM key, const LPARAM extInfo, const bool 
 
 #if _DEBUG
     if (newKey > sizeof(KeyLUT) / sizeof(Shell::KeyboardButton)) {
-        System::Log("Unimplemented key: %d, %s", key, isPressed ? "pressed" : "released");
+        System::Log("Unimplemented key: %, %", key, isPressed ? "pressed" : "released");
         return;
     }
 #endif

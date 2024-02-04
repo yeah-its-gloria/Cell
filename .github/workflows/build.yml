@@ -31,7 +31,6 @@ jobs:
           cmake
           -B build
           -G Ninja
-          -DCELL_DATAMANAGEMENT_TESTS_ENABLE_BROKEN=OFF
           -DCMAKE_BUILD_TYPE=Release
           -DCMAKE_C_COMPILER=clang
           -DCMAKE_CXX_COMPILER=clang++
@@ -101,7 +100,6 @@ jobs:
           cmake
           -B build
           -G Ninja
-          -DCELL_DATAMANAGEMENT_TESTS_ENABLE_BROKEN=OFF
           -DCMAKE_BUILD_TYPE=Release
           -DCMAKE_C_COMPILER=clang
           -DCMAKE_CXX_COMPILER=clang++

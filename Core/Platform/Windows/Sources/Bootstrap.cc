@@ -39,7 +39,7 @@ int main() {
     }
 
     if (desired > 5000) {
-        System::Log("Timer resolution %d ns is above 500000 ns!", desired * 10);
+        System::Log("Timer resolution % ns is above 500000 ns!", desired * 10);
     }
 
     ntResult = NtSetTimerResolution(desired, TRUE, &_);

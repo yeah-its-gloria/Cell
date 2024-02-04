@@ -32,39 +32,40 @@ Other Linux distributions might not be as well supported, and Unix-likes are lik
 
 You can additionally configure the engine further through CMake. I recommend using a multi-configuration generator, like `Ninja Multi-Config`.
  
-| Setting                    | Default Value | Intent                                                                    |
-|----------------------------|---------------|---------------------------------------------------------------------------|
-| `CELL_ENABLE_EDITOR`       | ON            | Enables the editor being built.                                           |
-| `CELL_ENABLE_PROJECT`      | ON            | Enables the in tree project being built.                                  |
-| `CELL_ENABLE_TESTS`        | ON            | Enables tests across the entire engine.                                   |
-| `CELL_ENABLE_UTILITIES`    | ON            | Enables utilities being built.                                            |
-| `CELL_ENABLE_STATIC_BUILD` | OFF           | Builds all library components statically. Recommended for release builds. |
+| Setting | Default Value | Intent |
+|-|-|-|
+| `CELL_ENABLE_EDITOR` | ON | Enables the editor being built. |
+| `CELL_ENABLE_PROJECT` | ON | Enables the in tree project being built. |
+| `CELL_ENABLE_TESTS` | ON | Enables tests across the entire engine. |
+| `CELL_ENABLE_TESTS_LIKELY_FAILURE` | OFF | Enables tests that are likely to fail. |
+| `CELL_ENABLE_UTILITIES` | ON | Enables utilities being built. |
+| `CELL_ENABLE_STATIC_BUILD` | OFF | Builds all library components statically. Recommended for release builds. |
 
 ## Core
 The core implements a platform-agnostic interface for the editor, all modules, titles and utilities.
 
-| Setting                    | Default Value | Intent                                                                                   |
-|----------------------------|---------------|------------------------------------------------------------------------------------------|
-| `CELL_SKIP_ASSERT`         | OFF           | Disables checking assertions. Takes priority over all assertion options.                 |
-| `CELL_USE_EXTERNAL_ASSERT` | OFF           | Calls `assert()` in case an assertion fails. Takes priority over `CELL_USE_PANIC_ASSERT` |
-| `CELL_USE_PANIC_ASSERT`    | ON            | Calls `Cell::System::Panic()` in case an assertion fails.                                |
-| `CELL_ENABLE_UTILITIES`    | ON            | Enables utilities being built.                                            |
-| `CELL_ENABLE_STATIC_BUILD` | OFF           | Builds all library components statically. Recommended for release builds. |
+| Setting | Default Value | Intent |
+|-|-|-|
+| `CELL_SKIP_ASSERT` | OFF | Disables checking assertions. Takes priority over all assertion options. |
+| `CELL_USE_EXTERNAL_ASSERT` | OFF | Calls `assert()` in case an assertion fails. Takes priority over `CELL_USE_PANIC_ASSERT` |
+| `CELL_USE_PANIC_ASSERT` | ON | Calls `Cell::System::Panic()` in case an assertion fails. |
+| `CELL_ENABLE_UTILITIES` | ON | Enables utilities being built. |
+| `CELL_ENABLE_STATIC_BUILD` | OFF | Builds all library components statically. Recommended for release builds. |
 
 ## Editor
 The editor serves as a creation utility for various workloads.
 
 ## Modules
-| Name           | Implementation                       | Notes                                         |
-|----------------|--------------------------------------|-----------------------------------------------|
-| Audio          | WASAPI (Windows), PulseAudio (Linux) |                                               |
-| D3D12          | DirectX 12.1                         | Windows only                                  |
-| DataManagement | self-contained                       |                                               |
-| JavaScript     | QuickJS                              | Includes some custom patches                  |
-| Mathematics    | self-contained                       | Has hardware acceleration on x86_64 platforms |
-| OpenXR         | OpenXR 1.0                           | Vulkan implemented                            |
-| Shell          | Windows, Wayland (Linux), HID, etc   | Serves input implementations                  |
-| Vulkan         | Vulkan 1.2                           | Implemented WSIs: Win32 and Wayland           |
+| Name | Implementation | Notes |
+|-|-|-|
+| Audio | WASAPI (Windows), PulseAudio (Linux) | |
+| D3D12 | DirectX 12.1 | Windows only |
+| DataManagement | self-contained | |
+| JavaScript | QuickJS | Includes some custom patches |
+| Mathematics | self-contained | Has hardware acceleration on x86_64 platforms |
+| OpenXR | OpenXR 1.0 | Vulkan implemented |
+| Shell | Windows, Wayland (Linux), HID, etc | Serves input implementations |
+| Vulkan | Vulkan 1.2 | Implemented WSIs: Win32 and Wayland |
 
 A content packing utility is also available.
 

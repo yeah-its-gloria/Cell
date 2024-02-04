@@ -64,12 +64,11 @@ public:
     CELL_INLINE void Append(const T data) {
         if (this->count == 0) {
             this->data = System::AllocateMemory<T>();
-            this->count++;
         } else {
-            System::ReallocateMemory<T>(&this->data, ++this->count);
+            System::ReallocateMemory<T>(&this->data, this->count + 1);
         }
 
-        System::CopyMemory<T>(&this->data[this->count - 1], &data);
+        this->data[this->count++] = data;
     }
 
     // Removes the list entry at the given index.

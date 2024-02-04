@@ -139,7 +139,7 @@ Wrapped<PNG*, Result> PNG::Decode(const uint8_t* data, const size_t size) {
         } else if (!System::CompareMemory(chunkHeader.identifier, sRGBIdentifier, 4) &&
                    !System::CompareMemory(chunkHeader.identifier, gAMAIdentifier, 4) &&
                    !System::CompareMemory(chunkHeader.identifier, pHYsIdentifier, 4)) {
-            System::Log("Unknown chunk: %c%c%c%c: %d", chunkHeader.identifier[0], chunkHeader.identifier[1], chunkHeader.identifier[2], chunkHeader.identifier[3], chunkHeader.size);
+            System::Log(System::String::Format("Unknown chunk: %%%%: %", chunkHeader.identifier[0], chunkHeader.identifier[1], chunkHeader.identifier[2], chunkHeader.identifier[3], chunkHeader.size));
         }
 
         CELL_ASSERT(chunkHeader.size > 0);

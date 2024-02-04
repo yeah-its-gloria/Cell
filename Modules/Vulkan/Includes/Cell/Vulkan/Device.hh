@@ -6,13 +6,19 @@
 #include <Cell/Shell/Shell.hh>
 #include <Cell/Vulkan/Instance.hh>
 
-namespace Cell::Vulkan {
+namespace Cell {
+
+#if CELL_MODULES_OPENXR_AVAILABLE
+namespace OpenXR {
+class VulkanTarget;
+}
+#endif
+
+namespace Vulkan {
 class Buffer;
-class CommandBufferManager;
 class Image;
 class IRenderTarget;
 class Pipeline;
-class WSITarget;
 
 enum class QueueType : uint8_t {
     Graphics,
@@ -79,10 +85,7 @@ private:
                        VkDevice dev,
                        VkQueue graphics,
                        VkQueue transfer,
-                       VkInstance inst,
-                       PFN_vkCmdBeginRenderingKHR br,
-                       PFN_vkCmdEndRenderingKHR er,
-                       PFN_vkCmdSetCullModeEXT scm)
+                       Instance* inst)
         : physicalDevice(physDev),
           physicalDeviceQueueGraphics(physGraphics),
           physicalDeviceQueueTransfer(physTransfer),
@@ -90,10 +93,7 @@ private:
           device(dev),
           deviceQueueGraphics(graphics),
           deviceQueueTransfer(transfer),
-          instance(inst),
-          beginRendering(br),
-          endRendering(er),
-          setCullMode(scm) { }
+          instance(inst) { }
 
     CELL_FUNCTION Result CreateImageView(
         VkImageView& view,
@@ -116,10 +116,9 @@ private:
     VkQueue deviceQueueGraphics;
     VkQueue deviceQueueTransfer;
 
-    VkInstance instance;
-    PFN_vkCmdBeginRenderingKHR beginRendering;
-    PFN_vkCmdEndRenderingKHR endRendering;
-    PFN_vkCmdSetCullModeEXT setCullMode;
+    Instance* instance;
 };
 
-};
+}
+
+}

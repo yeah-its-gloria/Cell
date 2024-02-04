@@ -28,6 +28,7 @@ Wrapped<size_t, Result> File::GetOffset() {
         }
         }
     }
+
     return (size_t)size;
 }
 

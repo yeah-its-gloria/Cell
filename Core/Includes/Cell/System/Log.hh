@@ -12,6 +12,16 @@ namespace Cell::System {
 // The target is determined in core; formatting should be kept minimal.
 // Every message is separated as appropriate for the given logging implementation,
 //  e.g newlines are appended automatically for a plain text log to console or a file)
-CELL_FUNCTION void Log(const System::String& message, ...);
+CELL_FUNCTION void Log(const String& message);
+
+// Utility to prevent clang from being stupid and dumb.
+CELL_INLINE void Log(const char* message) {
+    Log(String(message));
+}
+
+// Utility to auto-format messages.
+template <typename... T> CELL_INLINE void Log(const char* format, T&&... args) {
+    Log(String::Format(format, args...));
+}
 
 }

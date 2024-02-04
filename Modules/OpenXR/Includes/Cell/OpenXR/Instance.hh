@@ -109,17 +109,15 @@ private:
     XrSystemProperties properties = { XR_TYPE_SYSTEM_PROPERTIES, nullptr, 0, 0, { }, { 0, 0, 0 }, { 0, 0 } };
     XrSystemId systemId = XR_NULL_SYSTEM_ID;
 
-    XrViewConfigurationView viewConfigs[ViewCount] =
-        {
-            { XR_TYPE_VIEW_CONFIGURATION_VIEW, nullptr, 0, 0, 0, 0, 0, 0 },
-            { XR_TYPE_VIEW_CONFIGURATION_VIEW, nullptr, 0, 0, 0, 0, 0, 0 }
-        };
+    XrViewConfigurationView viewConfigs[ViewCount] = {
+        { XR_TYPE_VIEW_CONFIGURATION_VIEW, nullptr, 0, 0, 0, 0, 0, 0 },
+        { XR_TYPE_VIEW_CONFIGURATION_VIEW, nullptr, 0, 0, 0, 0, 0, 0 }
+    };
 
-    XrView views[ViewCount] =
-        {
-            { XR_TYPE_VIEW, nullptr, { { 0.f, 0.f, 0.f, 0.f }, { 0.f, 0.f, 0.f } }, { 0.f, 0.f, 0.f, 0.f } },
-            { XR_TYPE_VIEW, nullptr, { { 0.f, 0.f, 0.f, 0.f }, { 0.f, 0.f, 0.f } }, { 0.f, 0.f, 0.f, 0.f } }
-        };
+    XrView views[ViewCount] = {
+        { XR_TYPE_VIEW, nullptr, { { 0.f, 0.f, 0.f, 0.f }, { 0.f, 0.f, 0.f } }, { 0.f, 0.f, 0.f, 0.f } },
+        { XR_TYPE_VIEW, nullptr, { { 0.f, 0.f, 0.f, 0.f }, { 0.f, 0.f, 0.f } }, { 0.f, 0.f, 0.f, 0.f } }
+    };
 
     XrSpace space = nullptr;
 

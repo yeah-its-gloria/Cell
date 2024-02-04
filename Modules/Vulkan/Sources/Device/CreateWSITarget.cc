@@ -31,7 +31,7 @@ namespace Cell::Vulkan {
 
 Wrapped<WSITarget*, Result> Device::CreateWSITarget(Shell::IShell* shell) {
     VkSurfaceKHR surface = nullptr;
-    const Result result = createPlatformSurface(&surface, this->instance, shell);
+    const Result result = createPlatformSurface(&surface, this->instance->instance, shell);
     if (result != Result::Success) {
         return result;
     }
@@ -46,17 +46,17 @@ Wrapped<WSITarget*, Result> Device::CreateWSITarget(Shell::IShell* shell) {
     }
 
     case VK_ERROR_OUT_OF_HOST_MEMORY: {
-        vkDestroySurfaceKHR(this->instance, surface, nullptr);
+        vkDestroySurfaceKHR(this->instance->instance, surface, nullptr);
         return Result::OutOfHostMemory;
     }
 
     case VK_ERROR_OUT_OF_DEVICE_MEMORY: {
-        vkDestroySurfaceKHR(this->instance, surface, nullptr);
+        vkDestroySurfaceKHR(this->instance->instance, surface, nullptr);
         return Result::OutOfDeviceMemory;
     }
 
     case VK_ERROR_SURFACE_LOST_KHR: {
-        vkDestroySurfaceKHR(this->instance, surface, nullptr);
+        vkDestroySurfaceKHR(this->instance->instance, surface, nullptr);
         return Result::SurfaceLost;
     }
 
@@ -66,7 +66,7 @@ Wrapped<WSITarget*, Result> Device::CreateWSITarget(Shell::IShell* shell) {
     }
 
     if (canPresent == VK_FALSE) {
-        vkDestroySurfaceKHR(this->instance, surface, nullptr);
+        vkDestroySurfaceKHR(this->instance->instance, surface, nullptr);
         return Result::RunningOnIncompatibleHardware;
     }
 
@@ -80,17 +80,17 @@ Wrapped<WSITarget*, Result> Device::CreateWSITarget(Shell::IShell* shell) {
     }
 
     case VK_ERROR_OUT_OF_HOST_MEMORY: {
-        vkDestroySurfaceKHR(this->instance, surface, nullptr);
+        vkDestroySurfaceKHR(this->instance->instance, surface, nullptr);
         return Result::OutOfHostMemory;
     }
 
     case VK_ERROR_OUT_OF_DEVICE_MEMORY: {
-        vkDestroySurfaceKHR(this->instance, surface, nullptr);
+        vkDestroySurfaceKHR(this->instance->instance, surface, nullptr);
         return Result::OutOfDeviceMemory;
     }
 
     case VK_ERROR_SURFACE_LOST_KHR: {
-        vkDestroySurfaceKHR(this->instance, surface, nullptr);
+        vkDestroySurfaceKHR(this->instance->instance, surface, nullptr);
         return Result::SurfaceLost;
     }
 
@@ -109,17 +109,17 @@ Wrapped<WSITarget*, Result> Device::CreateWSITarget(Shell::IShell* shell) {
     }
 
     case VK_ERROR_OUT_OF_HOST_MEMORY: {
-        vkDestroySurfaceKHR(this->instance, surface, nullptr);
+        vkDestroySurfaceKHR(this->instance->instance, surface, nullptr);
         return Result::OutOfHostMemory;
     }
 
     case VK_ERROR_OUT_OF_DEVICE_MEMORY: {
-        vkDestroySurfaceKHR(this->instance, surface, nullptr);
+        vkDestroySurfaceKHR(this->instance->instance, surface, nullptr);
         return Result::OutOfDeviceMemory;
     }
 
     case VK_ERROR_SURFACE_LOST_KHR: {
-        vkDestroySurfaceKHR(this->instance, surface, nullptr);
+        vkDestroySurfaceKHR(this->instance->instance, surface, nullptr);
         return Result::SurfaceLost;
     }
 
@@ -138,17 +138,17 @@ Wrapped<WSITarget*, Result> Device::CreateWSITarget(Shell::IShell* shell) {
     }
 
     case VK_ERROR_OUT_OF_HOST_MEMORY: {
-        vkDestroySurfaceKHR(this->instance, surface, nullptr);
+        vkDestroySurfaceKHR(this->instance->instance, surface, nullptr);
         return Result::OutOfHostMemory;
     }
 
     case VK_ERROR_OUT_OF_DEVICE_MEMORY: {
-        vkDestroySurfaceKHR(this->instance, surface, nullptr);
+        vkDestroySurfaceKHR(this->instance->instance, surface, nullptr);
         return Result::OutOfDeviceMemory;
     }
 
     case VK_ERROR_SURFACE_LOST_KHR: {
-        vkDestroySurfaceKHR(this->instance, surface, nullptr);
+        vkDestroySurfaceKHR(this->instance->instance, surface, nullptr);
         return Result::SurfaceLost;
     }
 
@@ -167,17 +167,17 @@ Wrapped<WSITarget*, Result> Device::CreateWSITarget(Shell::IShell* shell) {
     }
 
     case VK_ERROR_OUT_OF_HOST_MEMORY: {
-        vkDestroySurfaceKHR(this->instance, surface, nullptr);
+        vkDestroySurfaceKHR(this->instance->instance, surface, nullptr);
         return Result::OutOfHostMemory;
     }
 
     case VK_ERROR_OUT_OF_DEVICE_MEMORY: {
-        vkDestroySurfaceKHR(this->instance, surface, nullptr);
+        vkDestroySurfaceKHR(this->instance->instance, surface, nullptr);
         return Result::OutOfDeviceMemory;
     }
 
     case VK_ERROR_SURFACE_LOST_KHR: {
-        vkDestroySurfaceKHR(this->instance, surface, nullptr);
+        vkDestroySurfaceKHR(this->instance->instance, surface, nullptr);
         return Result::SurfaceLost;
     }
 

@@ -275,13 +275,11 @@ Result DualSense::Update() {
     /*uint32_t touchData1 = ((uint32_t)packet.touchpadData1[2]) << 16 | ((uint32_t)packet.touchpadData1[1]) << 8 | packet.touchpadData1[0];
     uint32_t touchData2 = ((uint32_t)packet.touchpadData2[2]) << 16 | ((uint32_t)packet.touchpadData2[1]) << 8 | packet.touchpadData2[0];
 
-    System::Log("%03d %03d %03d | %03d %03d %03d",
+    System::Log("% % % | % % %",
                 (packet.touchpadCounter1 >>  0) & 0xff,
-                ((touchData1) >> 12) & 0x0c,
-                ((touchData1) >>  0) & 0x0c,
+                ((touchData1) >> 12) & 0x0c, ((touchData1) >>  0) & 0x0c,
                 (packet.touchpadCounter2 >> 24) & 0xff,
-                ((touchData2) >> 12) & 0x0c,
-                ((touchData2) >>  0) & 0x0c
+                ((touchData2) >> 12) & 0x0c, ((touchData2) >>  0) & 0x0c
     );*/
 
     return Result::Success;

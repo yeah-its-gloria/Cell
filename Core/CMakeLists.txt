@@ -46,6 +46,7 @@ add_library(CellCore ${CELL_LIBRARY_TYPE}
     ${CORE_INCLUDES_DIR}/Cell/System/Result.hh
     ${CORE_INCLUDES_DIR}/Cell/System/RNG.hh
     ${CORE_INCLUDES_DIR}/Cell/System/String.hh
+    ${CORE_INCLUDES_DIR}/Cell/System/StringFormatting.hh
     ${CORE_INCLUDES_DIR}/Cell/System/Thread.hh
     ${CORE_INCLUDES_DIR}/Cell/System/Timer.hh
 
@@ -59,6 +60,7 @@ add_library(CellCore ${CELL_LIBRARY_TYPE}
     ${CORE_DIR}/Sources/Cell.cc
     ${CORE_DIR}/Sources/System/Panic.cc
     ${CORE_DIR}/Sources/System/String.cc
+    ${CORE_DIR}/Sources/System/StringFormat.cc
 )
 
 target_compile_definitions(CellCore PUBLIC
@@ -166,6 +168,7 @@ if (CELL_ENABLE_TESTS)
     endfunction()
 
     cell_add_test(Enumerables)
+    cell_add_test(String)
     cell_add_test(System)
     cell_add_test(Utilities)
 endif ()

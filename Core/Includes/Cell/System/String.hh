@@ -5,6 +5,7 @@
 
 #include <Cell/Wrapped.hh>
 #include <Cell/System/Result.hh>
+#include <Cell/System/StringFormatting.hh>
 
 namespace Cell::System {
 
@@ -23,8 +24,14 @@ public:
     // Creates a string from a wide string, which converts its contents from the platform encoding to UTF-8 automatically.
     CELL_FUNCTION static Wrapped<String, Result> FromPlatformWideString(const wchar_t* CELL_NONNULL wide);
 
-    // Creates a string from a format string and arguments.
-    CELL_FUNCTION __attribute__((format(printf, 1, 2))) static String Format(const char* CELL_NONNULL format, ...);
+    // Formats the given content into the string.
+    // Use "%" to indicate where to insert an object.
+    // TODO: formatting options, like indicating location and how to print specific numbers
+    template <typename... T> CELL_INLINE static String Format(const char* format, T&&... args) {
+        const size_t size = sizeof...(T);
+        const StringFormatting::Data cont[size] = { StringFormatting::Package<T>(args)... };
+        return FormatImplementation(format, cont, size);
+    }
 
     // Destructs the string.
     CELL_FUNCTION ~String();
@@ -95,7 +102,19 @@ public:
         return *this;
     }
 
+    // Per character iterator.
+    CELL_NODISCARD CELL_INLINE char* begin() const {
+        return &this->data[0];
+    }
+
+    // Per character iterator.
+    CELL_NODISCARD CELL_INLINE char* end() const {
+        return &this->data[this->size - 1];
+    }
+
 private:
+    CELL_FUNCTION static String FormatImplementation(const char* format, const StringFormatting::Data* content, const size_t count);
+
     char* data;
     size_t size;
 };

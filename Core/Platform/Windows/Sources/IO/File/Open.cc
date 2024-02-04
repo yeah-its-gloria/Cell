@@ -60,8 +60,6 @@ Wrapped<File*, Result> File::Open(const System::String& path, const FileMode mod
             case ERROR_PATH_NOT_FOUND:
             case ERROR_FILE_NOT_FOUND:
             case ERROR_NOT_FOUND: {
-
-
                 return Result::NotFound;
             }
 
@@ -76,8 +74,8 @@ Wrapped<File*, Result> File::Open(const System::String& path, const FileMode mod
         }
     }
 
-    HANDLE _file = CreateFileW(&widePath, accessType, shareType, nullptr, creationType, FILE_ATTRIBUTE_NORMAL, nullptr);
-    if (_file == INVALID_HANDLE_VALUE) {
+    HANDLE fileHandle = CreateFileW(&widePath, accessType, shareType, nullptr, creationType, FILE_ATTRIBUTE_NORMAL, nullptr);
+    if (fileHandle == INVALID_HANDLE_VALUE) {
         switch (GetLastError()) {
         case ERROR_ACCESS_DENIED: {
             return Result::AccessDenied;
@@ -126,7 +124,7 @@ Wrapped<File*, Result> File::Open(const System::String& path, const FileMode mod
     osFileHandleFlags |= _O_BINARY;
     strncat(descriptorMode, "b", 4);
 
-    FILE* descriptor = _fdopen(_open_osfhandle((intptr_t)_file, osFileHandleFlags), descriptorMode);
+    FILE* descriptor = _fdopen(_open_osfhandle((intptr_t)fileHandle, osFileHandleFlags), descriptorMode);
     CELL_ASSERT(descriptor != nullptr);
 
     return new File((uintptr_t)descriptor);

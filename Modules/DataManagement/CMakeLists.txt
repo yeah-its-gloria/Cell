@@ -3,8 +3,6 @@
 
 project(CellDataManagement LANGUAGES CXX VERSION 1.0.0 DESCRIPTION "Cell - Modules - Data Management")
 
-option(CELL_DATAMANAGEMENT_TESTS_ENABLE_BROKEN "Enables currently broken tests." ON)
-
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH};${CMAKE_CURRENT_LIST_DIR}/BuildScripts)
 
 include(ContentPacking)
@@ -38,7 +36,7 @@ target_compile_definitions(CellDataManagement PUBLIC "CELL_MODULES_DATAMANAGEMEN
 target_include_directories(CellDataManagement PUBLIC ${MODULE_INCLUDES_DIR})
 target_link_libraries(CellDataManagement PUBLIC CellCore)
 
-if (CELL_ENABLE_TESTS)
+if (CELL_ENABLE_TESTS AND CELL_ENABLE_TESTS_LIKELY_FAILURE)
     function(cell_dm_add_test name)
         add_executable(CellDataManagementParsing${name}Test ${CMAKE_CURRENT_LIST_DIR}/Tests/${name}.cc)
         target_link_libraries(CellDataManagementParsing${name}Test PRIVATE CellDataManagement)
@@ -46,12 +44,10 @@ if (CELL_ENABLE_TESTS)
         CellPlatformBootstrapTarget(CellDataManagementParsing${name}Test TRUE)
     endfunction()
 
-    if (CELL_DATAMANAGEMENT_TESTS_ENABLE_BROKEN)
-        cell_dm_add_test(glTF)
-        cell_dm_add_test(HTTP)
-        cell_dm_add_test(JSON)
-        cell_dm_add_test(PNG)
-    endif ()
+    cell_dm_add_test(glTF)
+    cell_dm_add_test(HTTP)
+    cell_dm_add_test(JSON)
+    cell_dm_add_test(PNG)
 endif ()
 
 CellPlatformBootstrapTarget(CellDataManagement)

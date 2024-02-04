@@ -13,15 +13,18 @@ namespace Cell {
 #if CELL_MODULES_OPENXR_AVAILABLE
 namespace OpenXR {
 class Instance;
-class VulkanTarget;
 }
 #endif
 
 namespace Vulkan {
+class CommandBufferManager;
 class Device;
+class WSITarget;
 
 class Instance : public Object {
+friend CommandBufferManager;
 friend Device;
+friend WSITarget;
 
 #if CELL_MODULES_OPENXR_AVAILABLE
 friend OpenXR::Instance;

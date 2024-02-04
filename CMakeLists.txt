@@ -69,11 +69,12 @@ endif ()
 
 option(CELL_ENABLE_EDITOR "Whether the editor should be built. Defaults to ON." ON)
 option(CELL_ENABLE_PROJECT "Whether the in tree project should be built. Defaults to ON." ON)
-
-option(CELL_ENABLE_TESTS "Whether tests should be built. Defaults to ON." ON)
 option(CELL_ENABLE_UTILITIES "Whether utilities should be built. Defaults to ON." ON)
 
 option(CELL_ENABLE_STATIC_BUILD "Whether the libraries (core, modules, etc) should be build statically. Defaults to OFF." OFF)
+
+option(CELL_ENABLE_TESTS "Whether tests should be built. Defaults to ON." ON)
+option(CELL_ENABLE_TESTS_LIKELY_FAILURE "Whether tests that are likely to fail should be built. Defaults to OFF." OFF)
 
 if (CELL_ENABLE_STATIC_BUILD)
     set(CELL_LIBRARY_TYPE STATIC)

@@ -17,30 +17,30 @@ void PrintValue(JSON::Value value, const bool isRoot = false, const bool isArray
     switch (value.type) {
     case JSON::Type::String: {
         ScopedBlock<char> string = value.string->ToCharPointer();
-        Log("%s: %s", isArray ? "-" : value.name, &string);
+        Log("%: %", isArray ? "-" : value.name, &string);
         break;
     }
 
     case JSON::Type::Number: {
-        Log("%s: %f", isArray ? "-" : value.name, value.number);
+        Log("%: %", isArray ? "-" : value.name, value.number);
         break;
     }
 
     case JSON::Type::Boolean: {
-        Log("%s: %s", isArray ? "-" : value.name, value.boolean ? "true" : "false");
+        Log("%: %", isArray ? "-" : value.name, value.boolean ? "true" : "false");
         break;
     }
 
     case JSON::Type::Null: {
-        Log("%s: null", isArray ? "-" : value.name);
+        Log("%: null", isArray ? "-" : value.name);
         break;
     }
 
     case JSON::Type::Object: {
         if (isRoot) {
-            Log("(Document contains %d top level elements)", value.size);
+            Log("(Document contains % top level elements)", value.size);
         } else {
-            Log("%s: object, %d elements", value.name, value.size);
+            Log("%: object, % elements", value.name, value.size);
         }
 
         for (size_t i = 0; i < value.size; i++) {
@@ -51,7 +51,7 @@ void PrintValue(JSON::Value value, const bool isRoot = false, const bool isArray
     }
 
     case JSON::Type::Array: {
-        Log("%s: array, %d elements", value.name, value.size);
+        Log("%: array, % elements", value.name, value.size);
 
         for (size_t i = 0; i < value.size; i++) {
             PrintValue(value.object[i], false, true);
