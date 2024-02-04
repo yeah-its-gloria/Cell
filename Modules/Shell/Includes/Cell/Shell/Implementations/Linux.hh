@@ -111,8 +111,12 @@ private:
         .axis_source = nullptr,
         .axis_stop = &Linux::PointerAxisStop,
         .axis_discrete = nullptr,
+#ifdef WL_POINTER_AXIS_VALUE120_SINCE_VERSION
         .axis_value120 = nullptr,
+#endif
+#ifdef WL_POINTER_AXIS_RELATIVE_DIRECTION_SINCE_VERSION
         .axis_relative_direction = nullptr
+#endif
     };
 
     struct wl_seat* seat = nullptr;

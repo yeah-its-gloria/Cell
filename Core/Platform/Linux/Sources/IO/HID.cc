@@ -6,14 +6,6 @@
 
 namespace Cell::IO::HID {
 
-Device::~Device() {
-    (void)(this->handle);
-
-    // TODO: implement
-
-    CELL_UNIMPLEMENTED
-}
-
 Wrapped<Device*, Result> Device::Open(const uint16_t vendorId, const uint16_t productId) {
     (void)(vendorId);
     (void)(productId);
@@ -21,6 +13,14 @@ Wrapped<Device*, Result> Device::Open(const uint16_t vendorId, const uint16_t pr
     // TODO: implement
 
     return Result::NotFound;
+}
+
+Device::~Device() {
+    (void)(this->handle);
+
+    // TODO: implement
+
+    CELL_UNIMPLEMENTED
 }
 
 Result Device::Read(IBlock& data, const uint32_t milliseconds) {

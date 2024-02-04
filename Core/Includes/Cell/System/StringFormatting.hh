@@ -3,7 +3,7 @@
 
 #pragma once
 
-#include <Cell/Cell.hh>
+#include <Cell/Reference.hh>
 
 namespace Cell::System { class String; }
 
@@ -41,8 +41,8 @@ struct Data {
         const char* constCharPointer;
         const wchar_t* constWideCharPointer;
         const void* address;
-        const System::String& string;
         const double floatingPoint;
+        const Reference<System::String> string;
     };
 };
 
@@ -51,10 +51,12 @@ struct Data {
 template <typename T> CELL_INLINE constexpr Data Package(T a);
 
 #define IMPL_PRIMITIVE(T, TT, TTT) \
+template <> CELL_INLINE constexpr Data Package<T>(T value) { return { .type = Type::TT, .TTT = value }; } \
+template <> CELL_INLINE constexpr Data Package<const T>(const T value) { return { .type = Type::TT, .TTT = value }; } \
 template <> CELL_INLINE constexpr Data Package<T&>(T& value) { return { .type = Type::TT, .TTT = value }; } \
 template <> CELL_INLINE constexpr Data Package<const T&>(const T& value) { return { .type = Type::TT, .TTT = value }; }
 
-#define IMPL_BRAIN_HURT(T, TT, TTT) \
+#define IMPL_POINTER(T, TT, TTT) \
 template <> CELL_INLINE constexpr Data Package<T*>(T* value) { return { .type = Type::TT, .TTT = value }; } \
 template <> CELL_INLINE constexpr Data Package<const T*>(const T* value) { return { .type = Type::TT, .TTT = value }; } \
 template <> CELL_INLINE constexpr Data Package<T*&>(T*& value) { return { .type = Type::TT, .TTT = value }; } \
@@ -70,8 +72,8 @@ IMPL_PRIMITIVE(int16_t, Int, sInt)
 IMPL_PRIMITIVE(int32_t, Int, sInt)
 IMPL_PRIMITIVE(int64_t, Int, sInt)
 
-IMPL_BRAIN_HURT(char, ConstCharPointer, constCharPointer)
-IMPL_BRAIN_HURT(wchar_t, ConstWideCharPointer, constWideCharPointer)
+IMPL_POINTER(char, ConstCharPointer, constCharPointer)
+IMPL_POINTER(wchar_t, ConstWideCharPointer, constWideCharPointer)
 
 template <> CELL_INLINE constexpr Data Package<float&>(float& value) { return { .type = Type::FloatingPoint, .floatingPoint = value }; }
 template <> CELL_INLINE constexpr Data Package<double&>(double& value) { return { .type = Type::FloatingPoint, .floatingPoint = value }; }
@@ -79,5 +81,8 @@ template <> CELL_INLINE constexpr Data Package<double&>(double& value) { return 
 template <> CELL_INLINE constexpr Data Package<void*&>(void*& value) { return { .type = Type::Address, .address = value }; }
 
 template <> CELL_INLINE constexpr Data Package<String&>(String& value) { return { .type = Type::CellString, .string = value }; }
+
+#undef IMPL_POINTER
+#undef IMPL_PRIMITIVE
 
 }

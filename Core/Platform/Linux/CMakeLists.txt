@@ -40,11 +40,11 @@ target_compile_definitions(CellCore PUBLIC
                            "_REENTRANT"
 )
 
-target_compile_options(CellCore
-    PRIVATE -Wno-varargs
-
-    PUBLIC -Wno-packed-non-pod
-    PUBLIC -Wno-unknown-warning-option
+# Linux compilers think matrices aren't plain I guess?
+# Figured it'd be best to make this behavior consistent across the entire engine
+target_compile_options(CellCore PUBLIC
+    -Wno-packed-non-pod
+    -Wno-unknown-warning-option
 )
 
 target_link_options(CellCore PUBLIC -Wl,--no-undefined)

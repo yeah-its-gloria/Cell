@@ -10,19 +10,23 @@ namespace Cell {
 // Object reference wrapper.
 template <typename T> class Reference : public Object {
 public:
-    // Creates a new reference.
-    CELL_INLINE Reference(T& object) : object(__builtin_addressof(object)) { }
+    // Creates a dead reference.
+    CELL_INLINE constexpr Reference() : object(nullptr) { }
 
-    // Empty destructor.
-    CELL_INLINE ~Reference() { }
+    // Creates a new reference.
+    CELL_INLINE constexpr Reference(T& object) : object(__builtin_addressof(object)) { }
 
     // Unwraps the reference.
-    CELL_NODISCARD CELL_INLINE T& Unwrap() {
+    CELL_NODISCARD CELL_INLINE constexpr T& Unwrap() {
+        return *this->object;
+    }
+
+    CELL_NODISCARD CELL_INLINE constexpr const T& Unwrap() const {
         return *this->object;
     }
 
     // Acts directly upon the referenced object.
-    CELL_NODISCARD CELL_INLINE T& operator ->() {
+    CELL_NODISCARD CELL_INLINE constexpr T& operator -> () {
         return this->Unwrap();
     }
 

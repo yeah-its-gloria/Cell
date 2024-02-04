@@ -98,7 +98,6 @@ if (MSVC) # for the pitiable that do use VS, I hope you know to use Clang at lea
         -Wno-c99-designator
         -Wno-nullability-completeness
         -Wno-c++2b-extensions
-        -Wno-microsoft-union-member-reference
 
         -Gd
         -Od
@@ -122,7 +121,6 @@ else ()
         -Wno-nullability-extension
         -Wno-nullability-completeness
         -Wno-c++2b-extensions
-        -Wno-microsoft-union-member-reference
 
         -pedantic
 

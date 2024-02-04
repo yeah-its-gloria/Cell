@@ -42,13 +42,14 @@ String String::FormatImplementation(const char* format, const StringFormatting::
             }
 
             case StringFormatting::Type::Address: {
-                sprintf(buf, "0x%016llx", (uint64_t)(content[insertedArgumentCount].address));
+                // Avoids a formatting error, I hate C types so much
+                sprintf(buf, "0x%016llx", (unsigned long long)(content[insertedArgumentCount].address));
                 output += buf;
                 break;
             }
 
             case StringFormatting::Type::CellString: {
-                output += content[insertedArgumentCount].string;
+                output += content[insertedArgumentCount].string.Unwrap();
                 break;
             }
 

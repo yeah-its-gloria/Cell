@@ -106,7 +106,7 @@ Wrapped<System::String, Result> AddressInfo::GetName(const size_t infoIndex) {
     switch (ptr->ai_family) {
     case AF_INET: {
         sockaddr_in* addr = (sockaddr_in*)ptr->ai_addr;
-        return System::String::Format("%d.%d.%d.%d",
+        return System::String::Format("%.%.%.%",
                                       (addr->sin_addr.s_addr >> 24) & 0xff,
                                       (addr->sin_addr.s_addr >> 16) & 0xff,
                                       (addr->sin_addr.s_addr >>  8) & 0xff,
@@ -115,7 +115,7 @@ Wrapped<System::String, Result> AddressInfo::GetName(const size_t infoIndex) {
 
     case AF_INET6: {
         sockaddr_in6* addr = (sockaddr_in6*)ptr->ai_addr;
-        return System::String::Format("%04x:%04x:%04x:%04x:%04x:%04x:%04x:%04x",
+        return System::String::Format("%:%:%:%:%:%:%:%",
                                       ((uint16_t)addr->sin6_addr.s6_addr[1]  << 8) | addr->sin6_addr.s6_addr[0],
                                       ((uint16_t)addr->sin6_addr.s6_addr[3]  << 8) | addr->sin6_addr.s6_addr[2],
                                       ((uint16_t)addr->sin6_addr.s6_addr[5]  << 8) | addr->sin6_addr.s6_addr[4],
