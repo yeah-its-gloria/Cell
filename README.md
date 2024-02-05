@@ -11,12 +11,6 @@ Note that some platform implementations might be less functional than others (I 
 Cell has the following dependencies:
 | Name | Minimum Version | Platform | Notes | Ubuntu Package | Arch Linux Package |
 |-|-|-|-|-|-|
-| [Vulkan](https://www.vulkan.org/) [headers](https://github.com/KhronosGroup/Vulkan-Headers) and [loader](https://github.com/KhronosGroup/Vulkan-Loader) | 1.3.268 | All | LunarG offers an [SDK package](https://vulkan.lunarg.com/sdk/home#windows) for Windows. | `libvulkan-dev` | `vulkan-headers`, `vulkan-loader` |
-| `spirv-link` from [SPIR-V Tools](https://github.com/KhronosGroup/SPIRV-Tools) | 2023.3 | All | | `spirv-tools` | `spirv-tools` |
-| `glslc` from [shaderc](https://github.com/google/shaderc/) | 2023.2 | All | | `glslc` | `shaderc` |
-| | | | | | |
-| [OpenXR](https://www.khronos.org/openxr/) [SDK](https://github.com/KhronosGroup/OpenXR-SDK) | 1.0.33 | All | Not required; if OpenXR isn't found, Cell will build without VR support. | `libopenxr-dev` | `openxr` |
-| | | | | | |
 | [LLVM](https://llvm.org) | 16.0.0 | All | Specifically clang and lld are needed. clang-cl can be used on Windows, if desired. Other compilers are **not officially** supported. | `clang`, `lld`, `llvm` | `clang`, `lld`, `llvm` |
 | [CMake](https://cmake.org/) | 3.20.0 | All | Requires a generator of some kind. | `cmake` | `cmake` |
 | [Ninja](https://ninja-build.org/) | 1.11.1 | All | Recommended generator for CMake. | `ninja-build` | `ninja` |
@@ -26,9 +20,15 @@ Cell has the following dependencies:
 | [Wayland](https://wayland.freedesktop.org/) | 1.22 | Linux | Official support for compositors is currently limited to [KDE (KWin)](https://kde.org/). | `libwayland-dev` | `wayland` | 
 | [xkbcommon](https://xkbcommon.org/) | 1.6.0 | Linux | | `libxkbcommon-dev` | `libxkbcommon` |
 | [PulseAudio](https://www.freedesktop.org/wiki/Software/PulseAudio/) | 16.1 | Linux | Official support for server implementations is limited to [pipewire](https://pipewire.org/). | `libpulse-dev` | `libpulse` |
+| | | | | | |
+| [Vulkan](https://www.vulkan.org/) [headers](https://github.com/KhronosGroup/Vulkan-Headers) and [loader](https://github.com/KhronosGroup/Vulkan-Loader) | 1.3.268 | All | LunarG offers an [SDK package](https://vulkan.lunarg.com/sdk/home#windows) for Windows. | `libvulkan-dev` | `vulkan-headers`, `vulkan-loader` |
+| `spirv-link` from [SPIR-V Tools](https://github.com/KhronosGroup/SPIRV-Tools) | 2023.3 | All | | `spirv-tools` | `spirv-tools` |
+| `glslc` from [shaderc](https://github.com/google/shaderc/) | 2023.2 | All | | `glslc` | `shaderc` |
+| | | | | | |
+| [OpenXR](https://www.khronos.org/openxr/) [SDK](https://github.com/KhronosGroup/OpenXR-SDK) | 1.0.33 | All | Not required; if OpenXR isn't found, Cell will build without VR support. | `libopenxr-dev` | `openxr` |
 
 Requires either Windows 10 or newer, Ubuntu 24.04 or newer, or an up-to-date Arch Linux installation.  
-Other Linux distributions might not be as well supported, and Unix-likes are likely broken and do not receive full support.
+Other Linux distributions might not be as well supported, and other Unix-ish-likes are likely broken and do not receive full support.
 
 You can additionally configure the engine further through CMake. I recommend using a multi-configuration generator, like `Ninja Multi-Config`.
  
@@ -37,7 +37,7 @@ You can additionally configure the engine further through CMake. I recommend usi
 | `CELL_ENABLE_EDITOR` | ON | Enables the editor being built. |
 | `CELL_ENABLE_PROJECT` | ON | Enables the in tree project being built. |
 | `CELL_ENABLE_TESTS` | ON | Enables tests across the entire engine. |
-| `CELL_ENABLE_TESTS_LIKELY_FAILURE` | OFF | Enables tests that are likely to fail. |
+| `CELL_ENABLE_TESTS_LIKELY_FAILURE` | OFF | Enables tests that are likely to fail or not properly implemented yet. |
 | `CELL_ENABLE_UTILITIES` | ON | Enables utilities being built. |
 | `CELL_ENABLE_STATIC_BUILD` | OFF | Builds all library components statically. Recommended for release builds. |
 
@@ -46,11 +46,9 @@ The core implements a platform-agnostic interface for the editor, all modules, t
 
 | Setting | Default Value | Intent |
 |-|-|-|
-| `CELL_SKIP_ASSERT` | OFF | Disables checking assertions. Takes priority over all assertion options. |
-| `CELL_USE_EXTERNAL_ASSERT` | OFF | Calls `assert()` in case an assertion fails. Takes priority over `CELL_USE_PANIC_ASSERT` |
-| `CELL_USE_PANIC_ASSERT` | ON | Calls `Cell::System::Panic()` in case an assertion fails. |
-| `CELL_ENABLE_UTILITIES` | ON | Enables utilities being built. |
-| `CELL_ENABLE_STATIC_BUILD` | OFF | Builds all library components statically. Recommended for release builds. |
+| `CELL_CORE_SKIP_ASSERT` | OFF | Disables checking assertions. Takes priority over all assertion options. |
+| `CELL_CORE_USE_EXTERNAL_ASSERT` | OFF | Calls `assert()` in case an assertion fails. Takes priority over `CELL_USE_PANIC_ASSERT` |
+| `CELL_CORE_USE_PANIC_ASSERT` | ON | Calls `Cell::System::Panic()` in case an assertion fails. |
 
 ## Editor
 The editor serves as a creation utility for various workloads.

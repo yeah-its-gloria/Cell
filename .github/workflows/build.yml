@@ -38,7 +38,7 @@ jobs:
           -Dspirv-link_PROGRAM=${{ github.workspace }}/install/bin/spirv-link
 
       - name: Build
-        run: cmake --build ${{ github.workspace }}/build -j4
+        run: cmake --build ${{ github.workspace }}/build -j
 
       - name: Test
         working-directory: ${{ github.workspace }}/build
@@ -92,7 +92,7 @@ jobs:
 
       - name: Build OpenXR
         working-directory: ${{ github.workspace }}/openxr-sdk
-        run: cmake --build build -j8
+        run: cmake --build build -j
 
       - name: Configure
         working-directory: ${{ github.workspace }}
@@ -109,7 +109,7 @@ jobs:
           -Dspirv-link_PROGRAM=${{ github.workspace }}/install/bin/spirv-link.exe
 
       - name: Build
-        run: cmake --build ${{ github.workspace }}/build -j4
+        run: cmake --build ${{ github.workspace }}/build -j
 
       - name: Test
         working-directory: ${{ github.workspace }}/build
