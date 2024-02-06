@@ -11,7 +11,7 @@ jobs:
     name: Ubuntu Release
     runs-on: ubuntu-22.04
     steps:
-      - name: Checkout
+      - name: Perform checkout
         uses: actions/checkout@v4
 
       - name: Install dependencies
@@ -48,13 +48,13 @@ jobs:
     name: Windows Release
     runs-on: windows-latest
     steps:
-      - name: Checkout
+      - name: Perform checkout
         uses: actions/checkout@v4
 
       - name: Install LLVM
         uses: KyleMayes/install-llvm-action@v1.9.0
         with:
-          version: "16.0"
+          version: "17.0"
 
       - name: Install Ninja
         uses: seanmiddleditch/gha-setup-ninja@v4
@@ -78,7 +78,19 @@ jobs:
           repository: KhronosGroup/OpenXR-SDK
           path: ${{ github.workspace }}/openxr-sdk
 
-      - name: Configure OpenXR
+      - name: Generate cache ID for OpenXR
+        working-directory: ${{ github.workspace }}/openxr-sdk
+        run: git rev-parse HEAD >> ${{ github.workspace }}/openxr-hash
+
+      - name: Cache OpenXR build
+        id: cache-openxr
+        uses: actions/cache@v4
+        with:
+          path: ${{ github.workspace }}/openxr-sdk/build/
+          key: ${{ runner.os }}-openxr-build-${{ hashFiles('openxr-hash') }}
+
+      - if: ${{ steps.cache-openxr.outputs.cache-hit != 'true' }}
+        name: Configure OpenXR
         working-directory: ${{ github.workspace }}/openxr-sdk
         run: >
           cmake
@@ -90,7 +102,8 @@ jobs:
           -DGLSL_COMPILER=${{ github.workspace }}/install/bin/glslc.exe
           -DGLSLANG_VALIDATOR=${{ github.workspace }}/install/bin/glslangValidator.exe
 
-      - name: Build OpenXR
+      - if: ${{ steps.cache-openxr.outputs.cache-hit != 'true' }}
+        name: Build OpenXR
         working-directory: ${{ github.workspace }}/openxr-sdk
         run: cmake --build build -j
 
