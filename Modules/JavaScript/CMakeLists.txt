@@ -18,7 +18,7 @@ target_include_directories(CellJavaScript PUBLIC ${MODULE_INCLUDES_DIR} ${CMAKE_
 target_link_libraries(CellJavaScript PUBLIC CellCore QuickJS)
 
 if (NOT WIN32 AND NOT UNIX)
-    message(FATAL_ERROR "Unsupported platform")
+    message(FATAL_ERROR "Unsupported platform.")
 endif ()
 
 CellPlatformBootstrapTarget(CellJavaScript)

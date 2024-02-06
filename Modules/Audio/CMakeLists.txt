@@ -46,7 +46,7 @@ elseif (UNIX)
     target_include_directories(CellAudio PUBLIC ${PulseAudio_INCLUDE_DIRS})
     target_link_libraries(CellAudio PRIVATE ${PulseAudio_LIBRARIES})
 else ()
-    message(FATAL_ERROR "Unsupported platform")
+    message(FATAL_ERROR "Unsupported platform.")
 endif ()
 
 CellPlatformBootstrapTarget(CellAudio)

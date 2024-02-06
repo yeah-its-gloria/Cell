@@ -105,7 +105,7 @@ if (WIN32)
 elseif (UNIX)
     target_sources(CellVulkan PRIVATE ${CMAKE_CURRENT_LIST_DIR}/Sources/Device/Platform/Linux.cc)
 else ()
-    message(FATAL_ERROR "Unsupported platform")
+    message(FATAL_ERROR "Unsupported platform.")
 endif ()
 
 CellPlatformBootstrapTarget(CellVulkan)

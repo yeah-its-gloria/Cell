@@ -38,7 +38,7 @@ if (WIN32 OR UNIX)
     target_compile_definitions(CellMathematics PUBLIC "CELL_MODULES_MATHEMATICS_HARDWARE_ACCELERATE_X86=1")
     target_compile_options(CellMathematics PRIVATE -mfma)
 else ()
-    message(FATAL_ERROR "Unsupported platform")
+    message(FATAL_ERROR "Unsupported platform.")
 endif ()
 
 if (CELL_ENABLE_TESTS)

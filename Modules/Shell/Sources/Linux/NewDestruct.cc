@@ -66,7 +66,7 @@ Wrapped<Linux*, Result> Linux::New(const System::String& title) {
 
         zxdg_toplevel_decoration_v1_set_mode(_linux->xdgDecoration, ZXDG_TOPLEVEL_DECORATION_V1_MODE_SERVER_SIDE);
     } else {
-        Log("zxdg_decoration_manager_v1 is unavailable, decorations might break or not show up");
+        Log("zxdg_decoration_manager_v1 is unavailable, decorations cannot be controlled");
     }
 
     if (_linux->idleInhibitManager != nullptr) {
@@ -75,7 +75,7 @@ Wrapped<Linux*, Result> Linux::New(const System::String& title) {
             Panic("zwp_idle_inhibit_manager_v1_create_inhibitor failed");
         }
     } else {
-        Log("zwp_idle_inhibit_manager_v1 is unavailable");
+        Log("zwp_idle_inhibit_manager_v1 is unavailable, idling behavior cannot be controlled");
     }
 
     if (_linux->cursorShapeManager != nullptr) {
@@ -84,7 +84,7 @@ Wrapped<Linux*, Result> Linux::New(const System::String& title) {
             Panic("wp_cursor_shape_manager_v1_get_pointer failed");
         }
     } else {
-        Log("wp_cursor_shape_manager_v1 is unavailable");
+        Log("wp_cursor_shape_manager_v1 is unavailable, cursor changes won't work");
     }
 
     char* titleStr = title.IsEmpty() ? (char*)"Cell" : title.ToCharPointer();

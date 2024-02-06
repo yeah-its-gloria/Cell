@@ -8,10 +8,11 @@
 #elif CELL_PLATFORM_LINUX
 #include <Cell/Shell/Implementations/Linux.hh>
 #else
-#error No implementation
+#error No implementation!
 #endif
 
 namespace Cell::Shell {
+
 using namespace Implementations;
 
 Wrapped<IShell*, Result> CreateShell(const System::String& title) {

@@ -6,7 +6,7 @@ project(CellOpenXR LANGUAGES CXX VERSION 1.0.0 DESCRIPTION "Cell - Modules - Ope
 find_package(OpenXR QUIET)
 
 if (NOT OpenXR_FOUND)
-    message(STATUS "OpenXR not found, disabling CellOpenXR.")
+    message(STATUS "[Modules/OpenXR] OpenXR not found, module disabled.")
     return()
 endif ()
 
@@ -61,7 +61,7 @@ if (WIN32)
         )
     endif ()
 elseif (NOT UNIX)
-    message(FATAL_ERROR "Unsupported platform")
+    message(FATAL_ERROR "Unsupported platform.")
 endif ()
 
 CellPlatformBootstrapTarget(CellOpenXR)

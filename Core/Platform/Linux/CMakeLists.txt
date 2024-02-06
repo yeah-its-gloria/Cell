@@ -58,7 +58,7 @@ if (CELL_LIBRARY_TYPE STREQUAL "STATIC")
 elseif (CELL_LIBRARY_TYPE STREQUAL "SHARED")
     target_compile_definitions(CellCore PUBLIC "CELL_FUNCTION=__attribute__((visibility(\"default\")))")
 else ()
-    message("${CELL_LIBRARY_TYPE} is an invalid library type")
+    message(FATAL_ERROR "\"${CELL_LIBRARY_TYPE}\" is an invalid library type.")
 endif ()
 
 target_link_libraries(CellCore PUBLIC pthread dl rt m)

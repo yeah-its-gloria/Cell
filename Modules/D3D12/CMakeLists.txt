@@ -17,7 +17,7 @@ target_include_directories(CellD3D12 PUBLIC ${MODULE_INCLUDES_DIR})
 target_link_libraries(CellD3D12 PUBLIC CellCore CellShell d3d12 dxgi)
 
 if (NOT WIN32)
-    message(FATAL_ERROR "Unsupported platform")
+    message(FATAL_ERROR "Unsupported platform.")
 endif ()
 
 CellPlatformBootstrapTarget(CellD3D12)

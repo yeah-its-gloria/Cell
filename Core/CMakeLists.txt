@@ -72,20 +72,20 @@ target_compile_definitions(CellCore PUBLIC
 
 if (CELL_CORE_SKIP_ASSERT)
     if (CELL_CORE_USE_EXTERNAL_ASSERT OR CELL_CORE_USE_PANIC_ASSERT)
-        message(STATUS "Assertions stubbed")
+        message(STATUS "[Core] Assertions stubbed.")
     endif ()
 
     target_compile_definitions(CellCore PUBLIC "CELL_CORE_SKIP_ASSERT=1")
 elseif (CELL_CORE_USE_EXTERNAL_ASSERT)
     if (CELL_CORE_USE_PANIC_ASSERT)
-        message(STATUS "External assert overrides using Cell::System::Panic")
+        message(STATUS "[Core] External assert overrides using Cell::System::Panic.")
     endif ()
 
     target_compile_definitions(CellCore PUBLIC "CELL_CORE_USE_EXTERNAL_ASSERT=1")
 elseif (CELL_CORE_USE_PANIC_ASSERT)
     target_compile_definitions(CellCore PUBLIC "CELL_CORE_USE_PANIC_ASSERT=1")
 else ()
-    message(STATUS "Redirecting assertion failures to a basic message box handler")
+    message(STATUS "[Core] Redirecting assertion failures to a basic message box handler.")
 endif ()
 
 target_include_directories(CellCore PUBLIC ${CORE_INCLUDES_DIR} ${GENERATE_DIR}/Includes)

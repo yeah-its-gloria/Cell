@@ -85,7 +85,7 @@ elseif (UNIX)
     target_include_directories(CellShell PRIVATE ${wayland_INCLUDE_DIRS} ${xkbcommon_INCLUDE_DIRS})
     target_link_libraries(CellShell PRIVATE ${wayland_LIBRARIES} ${xkbcommon_LIBRARIES})
 else ()
-    message(FATAL_ERROR "Unsupported platform")
+    message(FATAL_ERROR "Unsupported platform.")
 endif ()
 
 CellPlatformBootstrapTarget(CellShell)

@@ -9,7 +9,7 @@
 namespace Cell::System {
 
 void SoftPanic() {
-    printf("An error occurred that caused the engine and/or title to crash.");
+    printf("An error occurred that caused the engine and/or title to crash.\n");
 
     exit(0);
 }
