@@ -63,7 +63,7 @@ endif ()
 
 target_link_libraries(CellCore PUBLIC pthread dl rt m)
 
-function(CellPlatformBootstrapTarget target)
+function(cell_target_bootstrap target)
     get_target_property(type ${target} TYPE)
     if (NOT "${type}" STREQUAL "EXECUTABLE" AND NOT "${type}" STREQUAL "SHARED_LIBRARY")
         return()

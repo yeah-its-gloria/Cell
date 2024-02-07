@@ -116,7 +116,7 @@ function(Cell_Platform_Windows_Generate_Manifests target type)
     )
 endfunction()
 
-function(CellPlatformBootstrapTarget target)
+function(cell_target_bootstrap target)
     get_target_property(type ${target} TYPE)
     if (NOT "${type}" STREQUAL "EXECUTABLE")
         return()

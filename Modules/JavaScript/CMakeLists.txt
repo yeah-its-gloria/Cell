@@ -21,11 +21,11 @@ if (NOT WIN32 AND NOT UNIX)
     message(FATAL_ERROR "Unsupported platform.")
 endif ()
 
-CellPlatformBootstrapTarget(CellJavaScript)
+cell_target_bootstrap(CellJavaScript)
 
 if (CELL_ENABLE_TESTS AND CELL_ENABLE_TESTS_LIKELY_FAILURE)
     add_executable(CellJavaScriptGenericTest ${CMAKE_CURRENT_LIST_DIR}/Tests/Generic.cc)
     target_link_libraries(CellJavaScriptGenericTest PRIVATE CellJavaScript)
     add_test(NAME CellJavaScriptGenericTest COMMAND CellJavaScriptGenericTest WORKING_DIRECTORY ${PROJECT_ROOT_DIR})
-    CellPlatformBootstrapTarget(CellJavaScriptGenericTest TRUE)
+    cell_target_bootstrap(CellJavaScriptGenericTest TRUE)
 endif ()

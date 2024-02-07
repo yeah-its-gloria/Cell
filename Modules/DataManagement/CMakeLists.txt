@@ -41,7 +41,7 @@ if (CELL_ENABLE_TESTS AND CELL_ENABLE_TESTS_LIKELY_FAILURE)
         add_executable(CellDataManagementParsing${name}Test ${CMAKE_CURRENT_LIST_DIR}/Tests/${name}.cc)
         target_link_libraries(CellDataManagementParsing${name}Test PRIVATE CellDataManagement)
         add_test(NAME CellDataManagementParsing${name}Test COMMAND CellDataManagementParsing${name}Test WORKING_DIRECTORY ${PROJECT_ROOT_DIR})
-        CellPlatformBootstrapTarget(CellDataManagementParsing${name}Test TRUE)
+        cell_target_bootstrap(CellDataManagementParsing${name}Test TRUE)
     endfunction()
 
     cell_dm_add_test(glTF)
@@ -50,7 +50,7 @@ if (CELL_ENABLE_TESTS AND CELL_ENABLE_TESTS_LIKELY_FAILURE)
     cell_dm_add_test(PNG)
 endif ()
 
-CellPlatformBootstrapTarget(CellDataManagement)
+cell_target_bootstrap(CellDataManagement)
 
 if (CELL_ENABLE_UTILITIES)
     add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/Utilities/ContentPacker)

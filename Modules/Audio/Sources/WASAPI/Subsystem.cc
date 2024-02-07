@@ -1,12 +1,17 @@
 // SPDX-FileCopyrightText: Copyright 2023-2024 Gloria G.
 // SPDX-License-Identifier: BSD-2-Clause
 
-#include <Cell/Audio/WASAPI.hh>
+#include <Cell/Scoped.hh>
+#include <Cell/Audio/Implementations/WASAPI.hh>
 #include <Cell/System/Panic.hh>
 
-namespace Cell::Audio {
+namespace Cell::Audio::Implementations::WASAPI {
 
-Wrapped<WASAPI*, Result> WASAPI::New() {
+Wrapped<Subsystem*, Result> Subsystem::New(const System::String& title) {
+    if (title.IsEmpty()) {
+        return Result::InvalidParameters;
+    }
+
     IMMDeviceEnumerator* enumerator = nullptr;
     const HRESULT result = CoCreateInstance(__uuidof(MMDeviceEnumerator), nullptr, CLSCTX_INPROC_SERVER, __uuidof(IMMDeviceEnumerator), (void**)&enumerator);
     switch (result) {
@@ -14,13 +19,10 @@ Wrapped<WASAPI*, Result> WASAPI::New() {
         break;
     }
 
-    case CO_E_NOTINITIALIZED: {
-        return Result::PlatformNotReadyYet;
-    }
-
+    case CO_E_NOTINITIALIZED:
     case REGDB_E_CLASSNOTREG:
     case E_NOINTERFACE: {
-        return Result::RunningOnIncompatibleHardware;
+        return Result::ServiceUnavailable;
     }
 
     default: {
@@ -28,7 +30,11 @@ Wrapped<WASAPI*, Result> WASAPI::New() {
     }
     }
 
-    return new WASAPI(enumerator);
+    return new Subsystem(enumerator, title);
+}
+
+Subsystem::~Subsystem() {
+    this->enumerator->Release();
 }
 
 }

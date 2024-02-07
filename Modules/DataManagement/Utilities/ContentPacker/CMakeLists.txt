@@ -9,4 +9,4 @@ add_executable(CellDataManagementContentPacker
 
 target_link_libraries(CellDataManagementContentPacker PRIVATE CellCore CellDataManagement)
 
-CellPlatformBootstrapTarget(CellDataManagementContentPacker TRUE)
+cell_target_bootstrap(CellDataManagementContentPacker TRUE)

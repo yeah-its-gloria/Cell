@@ -12,47 +12,26 @@ enum class Result : uint8_t {
     // The operation completed successfully.
     Success,
 
-    // The instance is already in the requested state. This does not represent complete failure.
-    AlreadyInRequestedState,
-
-    // The given instance was in the wrong state for the requested operation.
-    InvalidState,
-
     // The given parameters were malformed.
     InvalidParameters,
-
-    // The given platform is not yet ready.
-    PlatformNotReadyYet,
-
-    // The underlying runtime encountered an error.
-    RuntimeFailure,
-
-    // A required feature is not available.
-    FeatureMissing,
-
-    // A required debugging feature is not available.
-    DebugFeatureMissing,
-
-    // The current hardware is not capable of supporting the requested features.
-    RunningOnIncompatibleHardware,
-
-    // The current underlying implementation is not compatible.
-    RunningOnIncompatibleSoftware,
 
     // The requested format isn't supported.
     UnsupportedFormat,
 
-    // The underlying device was lost.
-    DeviceLost,
+    // The underlying target (speakers, microphone, etc.)
+    TargetLost,
 
-    // The requested device is occupied by another software.
-    DeviceOccupied,
+    // The requested target (speakers, microphone, etc.) is currently exclusively used by another application.
+    TargetOccupied,
 
-    // The underlying subsystem ran out of usable memory.
-    OutOfMemory,
+    // The subsystem couldn't be accessed.
+    SubsystemBlocked,
 
-    // The subsystem is not yet finished with a previous operation and cannot begin another just yet.
-    NotYetFinished
+    // The operation couldn't acquire enough memory.
+    NotEnoughMemory,
+
+    // The necessary underlying services weren't available.
+    ServiceUnavailable
 };
 
 }

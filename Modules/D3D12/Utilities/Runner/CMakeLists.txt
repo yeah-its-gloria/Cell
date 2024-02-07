@@ -7,4 +7,4 @@ add_executable(CellD3D12Runner ${CMAKE_CURRENT_LIST_DIR}/Sources/Main.cc)
 
 target_link_libraries(CellD3D12Runner PRIVATE CellCore CellD3D12)
 
-CellPlatformBootstrapTarget(CellD3D12Runner TRUE)
+cell_target_bootstrap(CellD3D12Runner TRUE)

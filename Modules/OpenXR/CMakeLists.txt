@@ -64,4 +64,4 @@ elseif (NOT UNIX)
     message(FATAL_ERROR "Unsupported platform.")
 endif ()
 
-CellPlatformBootstrapTarget(CellOpenXR)
+cell_target_bootstrap(CellOpenXR)

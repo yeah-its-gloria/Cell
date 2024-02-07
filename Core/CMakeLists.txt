@@ -155,14 +155,14 @@ endif ()
 set(PLATFORM_DIR ${PLATFORM_DIR} PARENT_SCOPE)
 add_subdirectory(${PLATFORM_DIR})
 
-CellPlatformBootstrapTarget(CellCore)
+cell_target_bootstrap(CellCore)
 
 if (CELL_ENABLE_TESTS)
     function(cell_add_test name)
         add_executable(CellCore${name}Test ${CMAKE_CURRENT_LIST_DIR}/Tests/${name}.cc)
         target_link_libraries(CellCore${name}Test PRIVATE CellCore)
         add_test(NAME CellCore${name}Test COMMAND CellCore${name}Test WORKING_DIRECTORY ${PROJECT_ROOT_DIR})
-        CellPlatformBootstrapTarget(CellCore${name}Test TRUE)
+        cell_target_bootstrap(CellCore${name}Test TRUE)
     endfunction()
 
     cell_add_test(Enumerables)

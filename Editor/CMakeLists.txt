@@ -13,4 +13,4 @@ add_executable(CellEditor
 
 target_link_libraries(CellEditor PRIVATE CellCore CellDataManagement CellShell)
 
-CellPlatformBootstrapTarget(CellEditor)
+cell_target_bootstrap(CellEditor)

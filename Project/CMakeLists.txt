@@ -42,7 +42,7 @@ if (TARGET CellOpenXR)
     target_link_libraries(CellExample PRIVATE CellOpenXR)
 endif ()
 
-CellPlatformBootstrapTarget(CellExample)
+cell_target_bootstrap(CellExample)
 
 CellVulkanAddShader(CellExample DefaultVertex ${BUILDCONTENT_DIR}/Shaders/Default/Vertex.hlsl ${GENERATE_DIR}/Shaders VERTEX)
 CellVulkanAddShader(CellExample DefaultFragment ${BUILDCONTENT_DIR}/Shaders/Default/Fragment.hlsl ${GENERATE_DIR}/Shaders FRAGMENT)

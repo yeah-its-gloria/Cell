@@ -108,4 +108,4 @@ else ()
     message(FATAL_ERROR "Unsupported platform.")
 endif ()
 
-CellPlatformBootstrapTarget(CellVulkan)
+cell_target_bootstrap(CellVulkan)

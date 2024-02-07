@@ -3,54 +3,54 @@
 
 #include "Example.hh"
 
-#include <Cell/Audio/Engine.hh>
+#include <Cell/Audio/Renderer.hh>
 #include <Cell/IO/File.hh>
 #include <Cell/Scoped.hh>
 #include <Cell/System/Timer.hh>
+
+#include <Cell/System/Log.hh>
 
 using namespace Cell;
 using namespace Cell::Audio;
 
 void Example::AudioThread() {
-    ScopedObject engine = CreateEngine().Unwrap();
+    ScopedObject subsystem = CreateSubsystem("Cell").Unwrap();
 
-    Format format = {
+    const uint32_t sampleSize = ((2 * 32) / 8);
+
+    const Format format = {
         .type = FormatType::Float32PCM,
         .channels = 2,
         .rate = 48000
     };
 
-    Result result = engine->SetUpRendering(format);
-    CELL_ASSERT(result == Result::Success);
+    ScopedObject renderer = subsystem->CreateRenderer(format).Unwrap();
 
     ScopedObject file = IO::File::Open(this->GetContentPath("/SoundEffects/Boing.bin")).Unwrap();
 
     const size_t size = file->GetSize().Unwrap();
-    CELL_ASSERT(size % 4 == 0);
+    CELL_ASSERT(size % sampleSize == 0);
 
-    const uint32_t count = engine->GetBufferSize().Unwrap();
+    const uint32_t count = renderer->GetMaxSampleCount().Unwrap();
 
-    result = engine->PlaybackBegin();
+    Result result = renderer->Start();
     CELL_ASSERT(result == Result::Success);
 
-    const uint32_t sampleSize = ((2 * 32) / 8);
     System::OwnedBlock<uint8_t> buffer(count * sampleSize);
-
-    // TODO: short samples get played twice, fix that
 
     uint32_t dataOffset = 0;
     uint32_t framesToWrite = 0;
     while (this->shell->IsStillActive()) {
         if (this->audioTrigger.IsDataAvailable()) {
             while (this->shell->IsStillActive()) {
-                System::SleepPrecise(engine->GetLatencyMicroseconds());
+                System::SleepPrecise(renderer->GetLatency());
 
-                // prevents stupidly small sample sizes from underflowing us
+                // prevents a small number of samples from causing repeated playback
                 if (dataOffset >= size) {
                     break;
                 }
 
-                const uint32_t offset = engine->GetCurrentBufferFillCount().Unwrap();
+                const uint32_t offset = renderer->GetCurrentSampleOffset().Unwrap();
                 if (offset > 0) {
                     System::Thread::Yield();
                     continue;
@@ -70,7 +70,7 @@ void Example::AudioThread() {
                 IO::Result ioResult = file->Read(buffer, dataOffset);
                 CELL_ASSERT(ioResult == IO::Result::Success);
 
-                result = engine->WriteSamples(buffer, framesToWrite);
+                result = renderer->Submit(buffer);
                 CELL_ASSERT(result == Result::Success);
 
                 dataOffset += framesToWrite * sampleSize;
@@ -83,6 +83,6 @@ void Example::AudioThread() {
         System::Thread::Yield();
     }
 
-    result = engine->PlaybackEnd();
-    CELL_ASSERT(result == Result::Success || result == Result::NotYetFinished);
+    result = renderer->Stop();
+    CELL_ASSERT(result == Result::Success);
 }

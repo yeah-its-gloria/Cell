@@ -20,7 +20,7 @@ if (NOT WIN32)
     message(FATAL_ERROR "Unsupported platform.")
 endif ()
 
-CellPlatformBootstrapTarget(CellD3D12)
+cell_target_bootstrap(CellD3D12)
 
 if (CELL_ENABLE_UTILITIES)
     add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/Utilities/Runner)

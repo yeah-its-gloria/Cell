@@ -88,4 +88,4 @@ else ()
     message(FATAL_ERROR "Unsupported platform.")
 endif ()
 
-CellPlatformBootstrapTarget(CellShell)
+cell_target_bootstrap(CellShell)
