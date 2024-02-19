@@ -3,29 +3,24 @@
 
 #pragma once
 
-#include <Cell/Wrapped.hh>
-
+#include <Cell/String.hh>
 #include <Cell/Network/Properties.hh>
 #include <Cell/Network/Result.hh>
-
 #include <Cell/System/Memory.hh>
-#include <Cell/System/String.hh>
 
 namespace Cell::Network {
 
-class Socket;
-
-// Represents a collection of information on a given address.
+// Represents a collection of addressing information for connection targets.
 class AddressInfo : public Object {
-friend Socket;
+friend class Socket;
 
 public:
-    // Fetches information for the given address data and collects it as an address information object.
-    static CELL_FUNCTION Wrapped<AddressInfo*, Result> Get(const System::String& address,
-                                                           const uint16_t port,
-                                                           const Transport transport = Transport::IPv4,
-                                                           const ConnectionType type = ConnectionType::Stream,
-                                                           const Protocol protocol = Protocol::TCP
+    // Discovers the necessary addressing information for the given address data.
+    CELL_FUNCTION static Wrapped<AddressInfo*, Result> Find(const String&        address,
+                                                            const uint16_t       port,
+                                                            const Transport      transport = Transport::IPv4,
+                                                            const ConnectionType type      = ConnectionType::Stream,
+                                                            const Protocol       protocol  = Protocol::TCP
     );
 
     // Destructs the address information.
@@ -35,12 +30,14 @@ public:
     CELL_FUNCTION size_t GetResolvedCount();
 
     // Returns either the canonical name or a string representation of the address at the given info index.
-    CELL_FUNCTION Wrapped<System::String, Result> GetName(const size_t infoIndex = 0);
+    CELL_FUNCTION Wrapped<String, Result> GetName(const size_t infoIndex = 0);
+
+    CELL_NON_COPYABLE(AddressInfo)
 
 private:
-    CELL_FUNCTION_INTERNAL AddressInfo(const uintptr_t handle) : handle(handle) { };
+    CELL_HANDLE_CONSTRUCTOR(AddressInfo)
 
-    uintptr_t handle;
+    const uintptr_t handle;
 };
 
 }

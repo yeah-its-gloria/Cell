@@ -2,14 +2,14 @@
 // SPDX-License-Identifier: BSD-2-Clause
 
 #include "../Tools.hh"
+
 #include <Cell/IO/File.hh>
 #include <Cell/Scoped.hh>
-#include <Cell/System/BlockImpl.hh>
 
 using namespace Cell;
 using namespace Cell::Vulkan;
 
-void VulkanToolsLoadShader(Pipeline* pipeline, const System::String& path) {
+void VulkanToolsLoadShader(Pipeline* pipeline, const String& path) {
     ScopedObject<IO::File> file = IO::File::Open(path).Unwrap();
 
     const size_t size = file->GetSize().Unwrap();

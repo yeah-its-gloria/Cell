@@ -9,12 +9,12 @@
 
 namespace Cell::IO {
 
-Result SetWorkingDirectory(const System::String& path) {
+Result SetWorkingDirectory(const String& path) {
     if (path.IsEmpty()) {
         return Result::InvalidParameters;
     }
 
-    ScopedBlock<char> pathCChar = path.ToCharPointer();
+    ScopedBlock pathCChar = path.ToCharPointer();
     const int result = chdir(&pathCChar);
     switch (result) {
     case 0: {

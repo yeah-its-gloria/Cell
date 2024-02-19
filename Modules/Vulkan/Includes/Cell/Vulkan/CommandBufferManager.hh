@@ -80,6 +80,8 @@ public:
         return this->buffers[index];
     }
 
+    CELL_NON_COPYABLE(CommandBufferManager)
+
 private:
     CommandBufferManager(Device* dev, VkCommandPool pool, VkQueue queue) : device(dev), pool(pool), queue(queue) { }
 

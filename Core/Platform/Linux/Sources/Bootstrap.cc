@@ -2,7 +2,6 @@
 // SPDX-License-Identifier: BSD-2-Clause
 
 #include <Cell/System/Entry.hh>
-#include <Cell/System/Panic.hh>
 
 #include <stdio.h>
 
@@ -12,7 +11,7 @@ int main() {
     const int std_result = setvbuf(stdout, nullptr, _IONBF, 0);
     CELL_ASSERT(std_result == 0);
 
-    System::String a = "";
+    String a = "";
     CellEntry(Reference(a));
 
     return 0;

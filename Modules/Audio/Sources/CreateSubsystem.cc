@@ -12,7 +12,7 @@
 namespace Cell::Audio {
 using namespace Implementations;
 
-Wrapped<ISubsystem*, Result> CreateSubsystem(const System::String& title) {
+Wrapped<ISubsystem*, Result> CreateSubsystem(const String& title) {
 #ifdef CELL_PLATFORM_WINDOWS
     Wrapped<WASAPI::Subsystem*, Result> result = WASAPI::Subsystem::New(title);
 #elif CELL_PLATFORM_LINUX

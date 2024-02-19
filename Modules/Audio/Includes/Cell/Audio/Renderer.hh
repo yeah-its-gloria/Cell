@@ -11,7 +11,6 @@ namespace Cell::Audio {
 // Base audio renderer interface.
 class IRenderer : public Object {
 public:
-    // Common destructor.
     virtual ~IRenderer() = default;
 
     // Starts playback.

@@ -5,14 +5,14 @@
 
 namespace Cell::DataManagement::Foreign {
 
-Wrapped<uint8_t*, Result> Base64Decode(const System::String& data) {
+Wrapped<uint8_t*, Result> Base64Decode(const String& data) {
     (void)(data);
 
     CELL_UNIMPLEMENTED
 }
 
 
-Wrapped<System::String, Result> Base64Encode(const uint8_t* CELL_NONNULL data) {
+Wrapped<String, Result> Base64Encode(const uint8_t* CELL_NONNULL data) {
     (void)(data);
 
     CELL_UNIMPLEMENTED

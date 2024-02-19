@@ -60,7 +60,7 @@ The editor serves as a creation utility for various workloads.
 | D3D12 | DirectX 12.1 | Windows only |
 | DataManagement | self-contained | |
 | JavaScript | QuickJS | Includes some custom patches |
-| Mathematics | self-contained | Has hardware acceleration on x86_64 platforms |
+| Mathematics | self-contained | |
 | OpenXR | OpenXR 1.0 | Vulkan implemented |
 | Shell | Windows, Wayland (Linux), HID, etc | Serves input implementations |
 | Vulkan | Vulkan 1.2 | Implemented WSIs: Win32 and Wayland |

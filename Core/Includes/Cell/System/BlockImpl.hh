@@ -5,7 +5,6 @@
 
 #include <Cell/System/Block.hh>
 #include <Cell/System/Memory.hh>
-#include <Cell/System/Panic.hh>
 
 namespace Cell::System {
 
@@ -42,6 +41,8 @@ public:
     CELL_NODISCARD CELL_INLINE size_t Count() const override { return this->count; }
     CELL_NODISCARD CELL_INLINE size_t BlockSize() const override { return sizeof(T); }
 
+    CELL_NON_COPYABLE(OwnedBlock);
+
 private:
     T* data;
     size_t count;
@@ -58,6 +59,8 @@ public:
     CELL_NODISCARD CELL_INLINE const void* Pointer() const override { return this->data; }
     CELL_NODISCARD CELL_INLINE size_t Count() const override { return this->count; }
     CELL_NODISCARD CELL_INLINE size_t BlockSize() const override { return sizeof(T); }
+
+    CELL_NON_COPYABLE(UnownedBlock);
 
 private:
     const T* data;

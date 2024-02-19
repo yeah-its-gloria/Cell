@@ -22,22 +22,10 @@ public:
     // Unlocks the mutex.
     CELL_FUNCTION void Unlock();
 
+    CELL_NON_COPYABLE(Mutex)
+
 private:
     uintptr_t handle;
-};
-
-// Template for an auto destructing mutex, holding a reference over a variable.
-template <typename T> class AutoMutex : public Object {
-public:
-    AutoMutex(T& variable, Mutex& mutex) : variable(variable), mutex(mutex) { mutex.Lock(); }
-    ~AutoMutex() { mutex.Unlock(); }
-
-    operator T() { return this->variable; }
-    T operator ->() { return this->variable; }
-
-private:
-    T& variable;
-    Mutex& mutex;
 };
 
 }

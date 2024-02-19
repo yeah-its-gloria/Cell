@@ -82,14 +82,14 @@ int main() {
         }
     }
 
-    System::String parameters = "";
+    String parameters;
     if (firstSpaceIndex + 1 != rawCmdLineSize) {
         const size_t desiredCmdSize = rawCmdLineSize - firstSpaceIndex;
 
         System::OwnedBlock<wchar_t> stuff(desiredCmdSize);
         System::CopyMemory<wchar_t>(stuff, rawCmdLine + (firstSpaceIndex + 1), desiredCmdSize - 2);
 
-        parameters += System::String::FromPlatformWideString(stuff).Unwrap();
+        parameters += String::FromPlatformWideString(stuff).Unwrap();
     }
 
     CellEntry(Reference(parameters));

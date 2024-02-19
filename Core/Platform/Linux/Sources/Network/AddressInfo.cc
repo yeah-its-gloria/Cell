@@ -5,14 +5,13 @@
 
 #include <Cell/Scoped.hh>
 #include <Cell/Network/AddressInfo.hh>
-#include <Cell/System/Panic.hh>
 
 #include <netdb.h>
 #include <stdio.h>
 
 namespace Cell::Network {
 
-Wrapped<AddressInfo*, Result> AddressInfo::Get(const System::String& address, const uint16_t port, const Transport transport, const ConnectionType type, const Protocol protocol) {
+Wrapped<AddressInfo*, Result> AddressInfo::Find(const String& address, const uint16_t port, const Transport transport, const ConnectionType type, const Protocol protocol) {
     if (address.IsEmpty() || port == 0) {
         return Result::InvalidParameters;
     }
@@ -40,7 +39,7 @@ Wrapped<AddressInfo*, Result> AddressInfo::Get(const System::String& address, co
 
     addrinfo* results = nullptr;
 
-    ScopedBlock<char> addressStr = address.ToCharPointer();
+    ScopedBlock addressStr = address.ToCharPointer();
     const int sockResult = getaddrinfo(&addressStr, portStr, &hints, &results);
     switch (sockResult) {
     case 0: {
@@ -90,7 +89,7 @@ size_t AddressInfo::GetResolvedCount() {
     return i;
 }
 
-Wrapped<System::String, Result> AddressInfo::GetName(const size_t infoIndex) {
+Wrapped<String, Result> AddressInfo::GetName(const size_t infoIndex) {
     addrinfo* ptr = (addrinfo*)this->handle;
     for (size_t i = 1; i < infoIndex; i++) {
         ptr = ptr->ai_next;
@@ -100,30 +99,30 @@ Wrapped<System::String, Result> AddressInfo::GetName(const size_t infoIndex) {
     }
 
     if (ptr->ai_flags & AI_CANONNAME) {
-        return System::String(ptr->ai_canonname);
+        return String(ptr->ai_canonname);
     }
 
     switch (ptr->ai_family) {
     case AF_INET: {
         sockaddr_in* addr = (sockaddr_in*)ptr->ai_addr;
-        return System::String::Format("%.%.%.%",
-                                      (addr->sin_addr.s_addr >> 24) & 0xff,
-                                      (addr->sin_addr.s_addr >> 16) & 0xff,
-                                      (addr->sin_addr.s_addr >>  8) & 0xff,
-                                       addr->sin_addr.s_addr        & 0xff);
+        return String::Format("%.%.%.%",
+                              (addr->sin_addr.s_addr >> 24) & 0xff,
+                              (addr->sin_addr.s_addr >> 16) & 0xff,
+                              (addr->sin_addr.s_addr >>  8) & 0xff,
+                               addr->sin_addr.s_addr        & 0xff);
     }
 
     case AF_INET6: {
         sockaddr_in6* addr = (sockaddr_in6*)ptr->ai_addr;
-        return System::String::Format("%:%:%:%:%:%:%:%",
-                                      ((uint16_t)addr->sin6_addr.s6_addr[1]  << 8) | addr->sin6_addr.s6_addr[0],
-                                      ((uint16_t)addr->sin6_addr.s6_addr[3]  << 8) | addr->sin6_addr.s6_addr[2],
-                                      ((uint16_t)addr->sin6_addr.s6_addr[5]  << 8) | addr->sin6_addr.s6_addr[4],
-                                      ((uint16_t)addr->sin6_addr.s6_addr[7]  << 8) | addr->sin6_addr.s6_addr[6],
-                                      ((uint16_t)addr->sin6_addr.s6_addr[9]  << 8) | addr->sin6_addr.s6_addr[8],
-                                      ((uint16_t)addr->sin6_addr.s6_addr[11] << 8) | addr->sin6_addr.s6_addr[10],
-                                      ((uint16_t)addr->sin6_addr.s6_addr[13] << 8) | addr->sin6_addr.s6_addr[12],
-                                      ((uint16_t)addr->sin6_addr.s6_addr[15] << 8) | addr->sin6_addr.s6_addr[14]);
+        return String::Format("%:%:%:%:%:%:%:%",
+                              ((uint16_t)addr->sin6_addr.s6_addr[1]  << 8) | addr->sin6_addr.s6_addr[0],
+                              ((uint16_t)addr->sin6_addr.s6_addr[3]  << 8) | addr->sin6_addr.s6_addr[2],
+                              ((uint16_t)addr->sin6_addr.s6_addr[5]  << 8) | addr->sin6_addr.s6_addr[4],
+                              ((uint16_t)addr->sin6_addr.s6_addr[7]  << 8) | addr->sin6_addr.s6_addr[6],
+                              ((uint16_t)addr->sin6_addr.s6_addr[9]  << 8) | addr->sin6_addr.s6_addr[8],
+                              ((uint16_t)addr->sin6_addr.s6_addr[11] << 8) | addr->sin6_addr.s6_addr[10],
+                              ((uint16_t)addr->sin6_addr.s6_addr[13] << 8) | addr->sin6_addr.s6_addr[12],
+                              ((uint16_t)addr->sin6_addr.s6_addr[15] << 8) | addr->sin6_addr.s6_addr[14]);
     }
 
     default: {

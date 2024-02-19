@@ -14,6 +14,8 @@ public:
     CELL_FUNCTION ~Xbox() override;
     CELL_FUNCTION Result Update() override;
 
+    CELL_NON_COPYABLE(Xbox)
+
 private:
     CELL_INLINE Xbox(uintptr_t device) : device(device) { }
 

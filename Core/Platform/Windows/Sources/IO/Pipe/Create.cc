@@ -1,15 +1,15 @@
 // SPDX-FileCopyrightText: Copyright 2023-2024 Gloria G.
 // SPDX-License-Identifier: BSD-2-Clause
 
+#include <Cell/Scoped.hh>
 #include <Cell/IO/Pipe.hh>
-#include <Cell/System/Panic.hh>
 #include <Cell/System/Platform/Windows/Includes.h>
 
 #define HAS_MODE(in) (((uint8_t)(PipeMode::in) & (uint8_t)mode) == (uint8_t)(PipeMode::in))
 
 namespace Cell::IO {
 
-Wrapped<Pipe*, Result> Pipe::Create(const System::String& name, const size_t blockSize, const PipeMode mode) {
+Wrapped<Pipe*, Result> Pipe::Create(const String& name, const size_t blockSize, const PipeMode mode) {
     if (name.IsEmpty() || blockSize == 0 || blockSize > UINT32_MAX || (!HAS_MODE(Read) && !HAS_MODE(Write))) {
         return Result::InvalidParameters;
     }
@@ -24,11 +24,11 @@ Wrapped<Pipe*, Result> Pipe::Create(const System::String& name, const size_t blo
         pipeMode |= PIPE_ACCESS_OUTBOUND;
     }
 
-    System::String pipeName = "\\\\.\\pipe\\";
-    pipeName += name;
+    String pipeName = String("\\\\.\\pipe\\") + name;
+    ScopedBlock pipeNameWide = pipeName.ToPlatformWideString();
 
     const HANDLE handle = CreateNamedPipeW(
-        pipeName.ToPlatformWideString(),
+        pipeNameWide,
         pipeMode | FILE_FLAG_FIRST_PIPE_INSTANCE,
         PIPE_TYPE_MESSAGE | PIPE_READMODE_MESSAGE | PIPE_WAIT | PIPE_REJECT_REMOTE_CLIENTS,
         PIPE_UNLIMITED_INSTANCES,

@@ -8,12 +8,10 @@
 
 namespace Cell::Vulkan {
 
-class Pipeline;
-
 // Represents an arbitrary data buffer.
 class Buffer : public Object {
 friend Device;
-friend Pipeline;
+friend class Pipeline;
 
 public:
     // Destructs the buffer and frees its contents.
@@ -33,6 +31,8 @@ public:
 
     // Returns a handle to the buffer object.
     CELL_INLINE VkBuffer GetBufferHandle() { return this->buffer; }
+
+    CELL_NON_COPYABLE(Buffer)
 
 private:
     Buffer(Device* dev, VkBuffer buffer, VkDeviceMemory mem) : device(dev), buffer(buffer), memory(mem), isMapped(false) { }

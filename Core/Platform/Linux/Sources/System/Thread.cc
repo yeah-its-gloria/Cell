@@ -97,7 +97,7 @@ bool Thread::IsActive() const {
         return false;
     }
 
-    int result = pthread_tryjoin_np((pthread_t)this->handle, nullptr);
+    const int result = pthread_tryjoin_np((pthread_t)this->handle, nullptr);
     switch (result) {
     case 0: {
         return false;
@@ -113,7 +113,7 @@ bool Thread::IsActive() const {
     }
 }
 
-Result Thread::SetName(const System::String& name) {
+Result Thread::SetName(const String& name) {
     if (this->handle == 0) {
         return Result::Expired;
     }
@@ -122,7 +122,7 @@ Result Thread::SetName(const System::String& name) {
         return Result::InvalidParameters;
     }
 
-    ScopedBlock<char> nameStr = name.ToCharPointer();
+    ScopedBlock nameStr = name.ToCharPointer();
     const int result = pthread_setname_np(this->handle, &nameStr);
     switch (result) {
     case 0: {

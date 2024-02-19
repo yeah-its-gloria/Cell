@@ -26,10 +26,12 @@ public:
     // Allows terminating writing with a timeout.
     CELL_FUNCTION Result Write(const IBlock& data, const uint8_t endpoint, const uint32_t milliseconds = 0);
 
-private:
-    CELL_FUNCTION_INTERNAL USB(const uintptr_t handle) : handle(handle) { }
+    CELL_NON_COPYABLE(USB)
 
-    uintptr_t handle;
+private:
+    CELL_HANDLE_CONSTRUCTOR(USB)
+
+    const uintptr_t handle;
 };
 
 }

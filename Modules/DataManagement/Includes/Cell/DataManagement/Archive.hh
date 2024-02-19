@@ -21,6 +21,8 @@ public:
     Archive(IO::File* CELL_NONNULL file);
     ~Archive();
 
+    CELL_NON_COPYABLE(Archive)
+
 private:
     IO::File* file;
 };

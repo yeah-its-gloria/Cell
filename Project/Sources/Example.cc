@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: Copyright 2023-2024 Gloria G.
 // SPDX-License-Identifier: BSD-2-Clause
 
-#include "Example.hh"
+#include "InputController.hh"
 
 #include <Cell/IO/File.hh>
 #include <Cell/System/Entry.hh>
@@ -24,15 +24,39 @@ void Example::Launch(const String& parameterString) {
     (void)(parameterString);
 
     const IO::Result ioResult = IO::CheckPath(this->GetContentPath("/"));
-    if (ioResult != IO::Result::Success) {
-        Log("Failed to find the content directory, errors might occur");
+    switch (ioResult) {
+    case IO::Result::Success: {
+        break;
     }
 
-    this->ShellSetup();
+    case IO::Result::NotFound: {
+        Log("Failed to find the content directory.");
+        return;
+    }
+
+    case IO::Result::AccessDenied:
+    case IO::Result::Locked: {
+        Log("The content directory is inaccessible.");
+        return;
+    }
+
+    default: {
+        Log("The content directory cannot be accessed due to an indeterminate failure.");
+        return;
+    }
+    }
+
+    this->shell = Shell::CreateShell("Cell - Hi Aurelia").Unwrap();
+
+    Shell::Result shellResult = this->shell->DiscoverPeripherals();
+    if (shellResult != Shell::Result::Success) {
+        System::Panic("Failed to discover input peripherals");
+    }
+
+    this->controller = InputController::New(this);
 
     Thread audio(CELL_THREAD_CLASS_FUNC(Example, AudioThread), "Audio Thread");
-    //Thread network(CELL_THREAD_CLASS_FUNC(Example, NetworkThread), "Network Thread");
-    Thread renderer(CELL_THREAD_CLASS_FUNC(Example, VulkanThread), "Renderer Thread");
+    Thread renderer(CELL_THREAD_CLASS_FUNC(Example, RendererThread), "Renderer Thread");
 
 #ifdef CELL_MODULES_OPENXR_AVAILABLE
     Thread xr([](void* p) { ((Example*)p)->XRThread(); }, this, "XR Thread");
@@ -40,7 +64,6 @@ void Example::Launch(const String& parameterString) {
 
     uint64_t finishedTick = GetPreciseTickerValue();
     while (audio.IsActive()
-           // || network.IsActive()
            || renderer.IsActive()
 #ifdef CELL_MODULES_OPENXR_AVAILABLE
            || xr.IsActive()
@@ -48,19 +71,18 @@ void Example::Launch(const String& parameterString) {
     ) {
         this->shellDeltaTime = Utilities::Minimum((System::GetPreciseTickerValue() - finishedTick) / 1000.f, 0.001f);
 
-        const Shell::Result result = this->shell->RunDispatch();
-        if (result == Shell::Result::RequestedQuit) {
+        shellResult = this->shell->RunDispatch();
+        if (shellResult == Shell::Result::RequestedQuit) {
             break;
         }
 
-        CELL_ASSERT(result == Shell::Result::Success);
+        CELL_ASSERT(shellResult == Shell::Result::Success);
 
         finishedTick = GetPreciseTickerValue();
         System::Thread::Yield();
     }
 
     audio.Join();
-    //network.Join();
     renderer.Join();
 
 #ifdef CELL_MODULES_OPENXR_AVAILABLE

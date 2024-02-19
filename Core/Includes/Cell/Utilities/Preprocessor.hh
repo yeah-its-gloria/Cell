@@ -5,7 +5,8 @@
 
 #include <Cell/Cell.hh>
 
-#define CELL_BASE_TYPE(a) __underlying_type(a)
+#define CELL_BASE_TYPE(t) __underlying_type(t)
+#define CELL_IS_STANDARD_LAYOUT(t) __is_standard_layout(t)
 
 // Defines commonly used enumerator operators for enumerator classes.
 #define CELL_ENUM_CLASS_OPERATORS(N) \
@@ -18,3 +19,9 @@
 
 // Packing attribute for offsets in structures.
 #define CELL_PACKED(x) __attribute__((packed, aligned(x)))
+
+#ifdef CELL_PLATFORM_WINDOWS
+#define CELL_COUNT_OF(x) _countof(x)
+#else
+#define CELL_COUNT_OF(x) (sizeof(x) / sizeof(*x))
+#endif

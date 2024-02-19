@@ -1,7 +1,8 @@
 // SPDX-FileCopyrightText: Copyright 2023-2024 Gloria G.
 // SPDX-License-Identifier: BSD-2-Clause
 
-#include <Cell/D3D12/Device.hh>
+#include <Cell/D3D12/Pipeline.hh>
+#include <Cell/D3D12/Swapchain.hh>
 
 namespace Cell::D3D12 {
 
@@ -13,8 +14,16 @@ Wrapped<Device*, Result> Device::New() {
         break;
     }
 
+    case E_NOTIMPL: {
+        return Result::Unsupported;
+    }
+
+    case E_OUTOFMEMORY: {
+        return Result::NotEnoughMemory;
+    }
+
     default: {
-        System::Panic("CreateDXGIFactory1 failed");
+        System::Panic("CreateDXGIFactory2 failed");
     }
     }
 
@@ -23,6 +32,16 @@ Wrapped<Device*, Result> Device::New() {
     switch (result) {
     case S_OK: {
         break;
+    }
+
+    case E_NOTIMPL: {
+        factory->Release();
+        return Result::Unsupported;
+    }
+
+    case E_OUTOFMEMORY: {
+        factory->Release();
+        return Result::NotEnoughMemory;
     }
 
     default: {
@@ -34,7 +53,8 @@ Wrapped<Device*, Result> Device::New() {
         .Type = D3D12_COMMAND_LIST_TYPE_DIRECT,
         .Priority = 0,
         .Flags = D3D12_COMMAND_QUEUE_FLAG_NONE,
-        .NodeMask = 0};
+        .NodeMask = 0
+    };
 
     ID3D12CommandQueue* mainQueue = nullptr;
     result = device->CreateCommandQueue(&queueDescription, __uuidof(ID3D12CommandQueue), (void**)&mainQueue);
@@ -43,66 +63,102 @@ Wrapped<Device*, Result> Device::New() {
         break;
     }
 
+    case E_OUTOFMEMORY: {
+        device->Release();
+        factory->Release();
+        return Result::NotEnoughMemory;
+    }
+
     default: {
-        System::Panic("ID3D12CreateDevice1::CreateCommandQueue failed");
+        System::Panic("ID3D12Device1::CreateCommandQueue failed");
     }
     }
 
-    return new Device(factory, device, mainQueue);
-}
-
-Device::~Device() {
-    ULONG refCount = 0;
-
-    if (this->swapchain != nullptr) {
-        refCount = this->swapchain->Release();
-        CELL_ASSERT(refCount == 0);
-    }
-
-    refCount = this->mainQueue->Release();
-    CELL_ASSERT(refCount == 0);
-
-    refCount = this->device->Release();
-    CELL_ASSERT(refCount == 0);
-
-    refCount = this->factory->Release();
-    CELL_ASSERT(refCount == 0);
-}
-
-Result Device::CreateSwapchain(Shell::Implementations::Windows* shell) {
-    const Shell::Extent extent = shell->GetDrawableExtent().Unwrap();
-
-    DXGI_SWAP_CHAIN_DESC1 swapchainDescription = {
-        .Width = extent.width,
-        .Height = extent.height,
-        .Format = DXGI_FORMAT_R8G8B8A8_UNORM,
-        .Stereo = FALSE,
-        .SampleDesc.Count = 1,
-        .SampleDesc.Quality = 0,
-        .BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT,
-        .BufferCount = 3,
-        .Scaling = DXGI_SCALING_NONE,
-        .SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD,
-        .AlphaMode = DXGI_ALPHA_MODE_UNSPECIFIED,
-        .Flags = 0
-    };
-
-    HRESULT result = this->factory->CreateSwapChainForHwnd(this->mainQueue, shell->GetWindow(), &swapchainDescription, nullptr, nullptr, &this->swapchain);
+    ID3D12CommandAllocator* allocator = nullptr;
+    result = device->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, __uuidof(ID3D12CommandAllocator), (void**)&allocator);
     switch (result) {
     case S_OK: {
         break;
     }
 
-    case DXGI_ERROR_INVALID_CALL: {
+    case E_OUTOFMEMORY: {
+        device->Release();
+        factory->Release();
+        return Result::NotEnoughMemory;
+    }
+
+    default: {
+        System::Panic("ID3D12Device1::CreateCommandAllocator failed");
+    }
+    }
+
+    const D3D12_ROOT_SIGNATURE_DESC rootSigDesc = {
+        .NumParameters = 0,
+        .pParameters = nullptr,
+        .NumStaticSamplers = 0,
+        .pStaticSamplers = nullptr,
+        .Flags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT
+    };
+
+    ID3DBlob* rootBlob = nullptr;
+    result = D3D12SerializeRootSignature(&rootSigDesc, D3D_ROOT_SIGNATURE_VERSION_1_0, &rootBlob, nullptr);
+    switch (result) {
+    case S_OK: {
+        break;
+    }
+
+    case E_OUTOFMEMORY: {
+        allocator->Release();
+        mainQueue->Release();
+        device->Release();
+        factory->Release();
+        return Result::NotEnoughMemory;
+    }
+
+    case E_NOTIMPL: {
+        allocator->Release();
+        mainQueue->Release();
+        device->Release();
+        factory->Release();
         return Result::Unsupported;
     }
 
     default: {
-        System::Panic("IDXGIFactory4::CreateSwapChainForHwnd failed");
+        System::Panic("D3D12SerializeRootSignature failed");
     }
     }
 
-    return Result::Success;
+    ID3D12RootSignature* rootSig = nullptr;
+    device->CreateRootSignature(0, rootBlob->GetBufferPointer(), rootBlob->GetBufferSize(), __uuidof(ID3D12RootSignature), (void**)&rootSig);
+    switch (result) {
+    case S_OK: {
+        break;
+    }
+
+    case E_OUTOFMEMORY: {
+        rootBlob->Release();
+        allocator->Release();
+        mainQueue->Release();
+        device->Release();
+        factory->Release();
+        return Result::NotEnoughMemory;
+    }
+
+    default: {
+        System::Panic("ID3D12Device1::CreateRootSignature failed");
+    }
+    }
+
+    return new Device(factory, device, mainQueue, allocator, rootBlob, rootSig);
+}
+
+Device::~Device() {
+    this->rootSignature->Release();
+    this->rootSignatureBlob->Release();
+    this->commandAllocator->Release();
+    this->mainQueue->Release();
+    this->device->Release();
+    this->factory->Release();
 }
 
 }

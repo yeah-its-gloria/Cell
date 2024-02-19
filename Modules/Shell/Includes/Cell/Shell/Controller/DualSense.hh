@@ -14,6 +14,8 @@ public:
     CELL_FUNCTION ~DualSense() override;
     CELL_FUNCTION Result Update() override;
 
+    CELL_NON_COPYABLE(DualSense)
+
 private:
     CELL_INLINE DualSense(IO::HID::Device* device) : device(device) { }
 

@@ -14,9 +14,11 @@ class Subsystem : public ISubsystem {
 friend class Renderer;
 
 public:
-    CELL_FUNCTION static Wrapped<Subsystem*, Result> New(const System::String& title);
+    CELL_FUNCTION static Wrapped<Subsystem*, Result> New(const String& title);
     CELL_FUNCTION ~Subsystem() override;
     CELL_FUNCTION Wrapped<IRenderer*, Result> CreateRenderer(Format format) override;
+
+    CELL_NON_COPYABLE(Subsystem)
 
 private:
     CELL_INLINE Subsystem(pa_threaded_mainloop* l, pa_context* c) : loop(l), context(c) { };
@@ -40,6 +42,8 @@ public:
     CELL_FUNCTION Wrapped<uint32_t, Result> GetMaxSampleCount() override;
     CELL_FUNCTION Wrapped<uint32_t, Result> GetCurrentSampleOffset() override;
     CELL_FUNCTION uint32_t GetLatency() override;
+
+    CELL_NON_COPYABLE(Renderer)
 
 private:
     CELL_INLINE Renderer(Subsystem* s, pa_stream* st, size_t ss) : subsystem(s), stream(st), sampleSize(ss) { }

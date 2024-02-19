@@ -3,7 +3,6 @@
 
 #include <Cell/Scoped.hh>
 #include <Cell/IO/File.hh>
-#include <Cell/System/Panic.hh>
 
 #include <errno.h>
 #include <fcntl.h>
@@ -12,9 +11,9 @@
 
 namespace Cell::IO {
 
-#define HAS_MODE(in) (((uint8_t)(FileMode::in) & (uint8_t)mode) == (uint8_t)(FileMode::in))
+#define HAS_MODE(in) ((FileMode::in & mode) == FileMode::in)
 
-Wrapped<File*, Result> File::Open(const System::String& path, const FileMode mode) {
+Wrapped<File*, Result> File::Open(const String& path, const FileMode mode) {
     if (path.IsEmpty()) {
         return Result::InvalidParameters;
     }
@@ -44,7 +43,7 @@ Wrapped<File*, Result> File::Open(const System::String& path, const FileMode mod
         return Result::InvalidParameters;
     }
 
-    ScopedBlock<char> pathStr = path.ToCharPointer();
+    ScopedBlock pathStr = path.ToCharPointer();
     const int descriptor = open(&pathStr, flags);
     if (descriptor == -1) {
         switch (errno) {

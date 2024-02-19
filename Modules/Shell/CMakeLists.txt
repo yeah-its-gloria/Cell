@@ -59,6 +59,8 @@ elseif (UNIX)
 
         ${MODULE_INCLUDES_DIR}/Cell/Shell/Implementations/Linux/Protocols/cursor-shape-client-protocol.h
         ${MODULE_INCLUDES_DIR}/Cell/Shell/Implementations/Linux/Protocols/idle-inhibit-client-protocol.h
+        ${MODULE_INCLUDES_DIR}/Cell/Shell/Implementations/Linux/Protocols/pointer-constraints-client-protocol.h
+        ${MODULE_INCLUDES_DIR}/Cell/Shell/Implementations/Linux/Protocols/relative-pointer-client-protocol.h
         ${MODULE_INCLUDES_DIR}/Cell/Shell/Implementations/Linux/Protocols/tablet-client-protocol.h
         ${MODULE_INCLUDES_DIR}/Cell/Shell/Implementations/Linux/Protocols/xdg-decoration-client-protocol.h
         ${MODULE_INCLUDES_DIR}/Cell/Shell/Implementations/Linux/Protocols/xdg-shell-client-protocol.h
@@ -75,6 +77,8 @@ elseif (UNIX)
 
         ${CMAKE_CURRENT_LIST_DIR}/Sources/Linux/Protocols/cursor-shape-protocol.c
         ${CMAKE_CURRENT_LIST_DIR}/Sources/Linux/Protocols/idle-inhibit-protocol.c
+        ${CMAKE_CURRENT_LIST_DIR}/Sources/Linux/Protocols/pointer-constraints-protocol.c
+        ${CMAKE_CURRENT_LIST_DIR}/Sources/Linux/Protocols/relative-pointer-protocol.c
         ${CMAKE_CURRENT_LIST_DIR}/Sources/Linux/Protocols/tablet-protocol.c
         ${CMAKE_CURRENT_LIST_DIR}/Sources/Linux/Protocols/xdg-decoration-protocol.c
         ${CMAKE_CURRENT_LIST_DIR}/Sources/Linux/Protocols/xdg-shell-protocol.c

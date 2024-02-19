@@ -4,9 +4,7 @@
 #include <Cell/DataManagement/Foreign/JSON.hh>
 #include <Cell/System/BlockImpl.hh>
 #include <Cell/System/Log.hh>
-#include <Cell/System/Panic.hh>
-#include <Cell/Utilities/RawString.hh>
-#include <errno.h>
+
 #include <stdlib.h>
 #include <string.h>
 
@@ -61,7 +59,7 @@ CELL_FUNCTION_INTERNAL size_t parseValue(Value& value, const char* document, con
 
         value.type = Type::String;
         value.size = string_end - position - 1;
-        value.string = new System::String(document + position + 1, value.size);
+        value.string = new String(document + position + 1, value.size);
 
         position = string_end + 1;
         break;
@@ -74,7 +72,7 @@ CELL_FUNCTION_INTERNAL size_t parseValue(Value& value, const char* document, con
         value.size = 0;
         value.boolean = true;
 
-        position += Utilities::RawStringSize("true");
+        position += StringDetails::RawStringSize("true");
         break;
     }
 
@@ -85,7 +83,7 @@ CELL_FUNCTION_INTERNAL size_t parseValue(Value& value, const char* document, con
         value.size = 0;
         value.boolean = false;
 
-        position += Utilities::RawStringSize("false");
+        position += StringDetails::RawStringSize("false");
         break;
     }
 
@@ -96,7 +94,7 @@ CELL_FUNCTION_INTERNAL size_t parseValue(Value& value, const char* document, con
         value.size = 0;
         value.object = nullptr;
 
-        position += Utilities::RawStringSize("null");
+        position += StringDetails::RawStringSize("null");
         break;
     }
 
@@ -237,7 +235,7 @@ size_t parseObject(Collection::List<Value>& values, const char* document, const 
     return position;
 }
 
-Wrapped<Document*, Result> Document::Parse(const System::String& string) {
+Wrapped<Document*, Result> Document::Parse(const String& string) {
     if (string.IsEmpty()) {
         return Result::InvalidParameters;
     }

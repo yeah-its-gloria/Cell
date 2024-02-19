@@ -14,6 +14,8 @@ public:
     CELL_FUNCTION ~SwitchPro() override;
     CELL_FUNCTION Result Update() override;
 
+    CELL_NON_COPYABLE(SwitchPro)
+
 private:
     CELL_INLINE SwitchPro(IO::HID::Device* device) : device(device) {
         this->type = device->GetConnectionType();

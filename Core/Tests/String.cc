@@ -5,9 +5,8 @@
 #include <Cell/System/Log.hh>
 
 using namespace Cell;
-using namespace Cell::System;
 
-void CellEntry(Reference<System::String> parameterString) {
+void CellEntry(Reference<String> parameterString) {
     (void)(parameterString);
 
     String a = "Hello";
@@ -24,8 +23,8 @@ void CellEntry(Reference<System::String> parameterString) {
     //CELL_ASSERT(euro.GetSize() == 3);
     //CELL_ASSERT(euro.GetCount() == 1);
 
-    System::String d = "hi";
+    String d = "hi";
     uint32_t e = 30;
 
-    System::Log(System::String::Format("% %", d, e));
+    System::Log(String::Format("% %", d, e));
 }

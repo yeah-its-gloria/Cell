@@ -3,7 +3,7 @@
 
 #pragma once
 
-#include <Cell/System/String.hh>
+#include <Cell/String.hh>
 
 namespace Cell::System {
 
@@ -15,12 +15,12 @@ namespace Cell::System {
 CELL_FUNCTION void Log(const String& message);
 
 // Utility to prevent clang from being stupid and dumb.
-CELL_INLINE void Log(const char* message) {
+CELL_FUNCTION_INTERNAL CELL_INLINE void Log(const char* message) {
     Log(String(message));
 }
 
 // Utility to auto-format messages.
-template <typename... T> CELL_INLINE void Log(const char* format, T&&... args) {
+template <typename... T> CELL_FUNCTION_INTERNAL CELL_INLINE void Log(const char* format, T&&... args) {
     Log(String::Format(format, args...));
 }
 

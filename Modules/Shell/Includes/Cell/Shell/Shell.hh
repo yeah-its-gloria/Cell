@@ -3,11 +3,9 @@
 
 #pragma once
 
+#include <Cell/String.hh>
 #include <Cell/Collection/List.hh>
-#include <Cell/Wrapped.hh>
 #include <Cell/Shell/Controller.hh>
-#include <Cell/Shell/Result.hh>
-#include <Cell/System/String.hh>
 
 namespace Cell::Shell {
 
@@ -51,10 +49,13 @@ public:
     virtual Result SetDrawableExtent(const Extent extent) = 0;
 
     // Sets a new window title.
-    virtual Result SetNewTitle(const System::String& title) = 0;
+    virtual Result SetNewTitle(const String& title) = 0;
 
     // Sets a new status to be indicated to the user.
     virtual Result IndicateStatus(const ShellStatus status) = 0;
+
+    // Sets whether the cursor should be caught by the window (centered + hidden generally).
+    virtual Result CaptureState(const bool captured = true) = 0;
 
     // Dispatches all updates and fetches new data.
     CELL_FUNCTION Result RunDispatch();
@@ -70,19 +71,19 @@ public:
     }
 
     // Registers an action for keyboard button interactions.
-    CELL_FUNCTION Result RegisterAction(const KeyboardButton button, const ButtonFunction function, void* userData);
+    CELL_FUNCTION void RegisterAction(const KeyboardButton button, const ButtonFunction function, void* userData);
 
     // Registers an action for mouse button interactions.
-    CELL_FUNCTION Result RegisterAction(const MouseButton button, const ButtonFunction function, void* userData);
+    CELL_FUNCTION void RegisterAction(const MouseButton button, const ButtonFunction function, void* userData);
 
     // Registers an action for controller button interactions.
-    CELL_FUNCTION Result RegisterAction(const ControllerButton button, const ButtonFunction function, void* userData);
+    CELL_FUNCTION void RegisterAction(const ControllerButton button, const ButtonFunction function, void* userData);
 
     // Registers an action for mouse axis (e.g movement, wheel turns) interactions.
-    CELL_FUNCTION Result RegisterAction(const MouseAxis axis, const AxisFunction function, void* userData);
+    CELL_FUNCTION void RegisterAction(const MouseAxis axis, const AxisFunction function, void* userData);
 
     // Registers an action for controller axis (e.g sticks) interactions.
-    CELL_FUNCTION Result RegisterAction(const ControllerAxis axis, const AxisFunction function, void* userData);
+    CELL_FUNCTION void RegisterAction(const ControllerAxis axis, const AxisFunction function, void* userData);
 
     // Checks for all supported peripherals on the system.
     //
@@ -98,6 +99,9 @@ protected:
 
     KeyboardButton keys = KeyboardButton::None;
     KeyboardButton oldKeys = KeyboardButton::None;
+
+    double mouseX = 0.0;
+    double mouseY = 0.0;
 
 private:
     struct RegisterInfo {
@@ -123,6 +127,6 @@ private:
 };
 
 // Sets up the most suited shell implementation for the platform.
-CELL_FUNCTION Wrapped<IShell*, Result> CreateShell(const System::String& title = "");
+CELL_FUNCTION Wrapped<IShell*, Result> CreateShell(const String& title = "", const Extent extent = { 1280, 720 });
 
 }

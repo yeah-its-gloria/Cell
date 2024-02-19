@@ -39,13 +39,13 @@ Result Linux::SetDrawableExtent(const Extent extent) {
     return Result::Success;
 }
 
-Result Linux::SetNewTitle(const System::String& title) {
+Result Linux::SetNewTitle(const String& title) {
     if (title.IsEmpty()) {
         return Result::InvalidParameters;
     }
 
-    ScopedBlock<char> titleCChar = title.ToCharPointer();
-    xdg_toplevel_set_title(this->xdgToplevel, &titleCChar);
+    ScopedBlock titleStr = title.ToCharPointer();
+    xdg_toplevel_set_title(this->xdgToplevel, &titleStr);
 
     return Result::Success;
 }
@@ -74,6 +74,27 @@ Result Linux::IndicateStatus(const ShellStatus status) {
     }
 
     wp_cursor_shape_device_v1_set_shape(this->cursorShapeDevice, this->pointerSerial, shape);
+    return Result::Success;
+}
+
+Result Linux::CaptureState(const bool captured) {
+    if (this->pointerConstraints == nullptr || this->pointerLocked == captured || !this->pointerActive) {
+        return Result::Success;
+    }
+
+    this->pointerLocked = captured;
+    if (captured) {
+        this->pointerLock = zwp_pointer_constraints_v1_lock_pointer(this->pointerConstraints, this->surface, this->pointer, nullptr, ZWP_POINTER_CONSTRAINTS_V1_LIFETIME_PERSISTENT);
+        if (this->pointerLock == nullptr) {
+            System::Panic("zwp_pointer_constraints_v1_lock_pointer failed");
+        }
+
+        return Result::Success;
+    }
+
+    zwp_locked_pointer_v1_destroy(this->pointerLock);
+    this->pointerLock = nullptr;
+
     return Result::Success;
 }
 

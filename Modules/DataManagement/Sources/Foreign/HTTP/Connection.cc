@@ -6,7 +6,7 @@
 
 namespace Cell::DataManagement::Foreign::HTTP {
 
-Wrapped<Connection*, Result> Connection::Connect(const System::String& url) {
+Wrapped<Connection*, Result> Connection::Connect(const String& url) {
     (void)(url);
 
     CELL_UNIMPLEMENTED

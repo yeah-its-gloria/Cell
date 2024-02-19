@@ -16,7 +16,7 @@
 
 namespace Cell::Network {
 
-Wrapped<AddressInfo*, Result> AddressInfo::Get(const System::String& address, const uint16_t port, const Transport transport, const ConnectionType type, const Protocol protocol) {
+Wrapped<AddressInfo*, Result> AddressInfo::Find(const String& address, const uint16_t port, const Transport transport, const ConnectionType type, const Protocol protocol) {
     if (address.IsEmpty() || port == 0) {
         return Result::InvalidParameters;
     }
@@ -44,7 +44,7 @@ Wrapped<AddressInfo*, Result> AddressInfo::Get(const System::String& address, co
 
     ADDRINFOW* results = nullptr;
 
-    ScopedBlock<wchar_t> addressWide = address.ToPlatformWideString();
+    ScopedBlock addressWide = address.ToPlatformWideString();
     const INT wsaResult = GetAddrInfoW(&addressWide, portWide, &hints, &results);
     switch (wsaResult) {
     case 0: {
@@ -90,7 +90,7 @@ size_t AddressInfo::GetResolvedCount() {
     return i;
 }
 
-Wrapped<System::String, Result> AddressInfo::GetName(const size_t infoIndex) {
+Wrapped<String, Result> AddressInfo::GetName(const size_t infoIndex) {
     ADDRINFOW* ptr = (ADDRINFOW*)this->handle;
     for (size_t i = 1; i < infoIndex; i++) {
         ptr = ptr->ai_next;
@@ -100,24 +100,24 @@ Wrapped<System::String, Result> AddressInfo::GetName(const size_t infoIndex) {
     }
 
     if (ptr->ai_flags & AI_CANONNAME) {
-        return System::String::FromPlatformWideString(ptr->ai_canonname).Unwrap();
+        return String::FromPlatformWideString(ptr->ai_canonname).Unwrap();
     }
 
     switch (ptr->ai_family) {
     case AF_INET: {
         sockaddr_in* addr = (sockaddr_in*)ptr->ai_addr;
-        return System::String::Format("%.%d.%d.%d",
-                                      addr->sin_addr.S_un.S_un_b.s_b1, addr->sin_addr.S_un.S_un_b.s_b2,
-                                      addr->sin_addr.S_un.S_un_b.s_b3, addr->sin_addr.S_un.S_un_b.s_b4);
+        return String::Format("%.%.%.%",
+                              addr->sin_addr.S_un.S_un_b.s_b1, addr->sin_addr.S_un.S_un_b.s_b2,
+                              addr->sin_addr.S_un.S_un_b.s_b3, addr->sin_addr.S_un.S_un_b.s_b4);
     }
 
     case AF_INET6: {
         sockaddr_in6* addr = (sockaddr_in6*)ptr->ai_addr;
-        return System::String::Format("%:%x:%:%:%:%:%:%",
-                                      addr->sin6_addr.u.Word[0], addr->sin6_addr.u.Word[1],
-                                      addr->sin6_addr.u.Word[2], addr->sin6_addr.u.Word[3],
-                                      addr->sin6_addr.u.Word[4], addr->sin6_addr.u.Word[5],
-                                      addr->sin6_addr.u.Word[6], addr->sin6_addr.u.Word[7]);
+        return String::Format("%:%x:%:%:%:%:%:%",
+                              addr->sin6_addr.u.Word[0], addr->sin6_addr.u.Word[1],
+                              addr->sin6_addr.u.Word[2], addr->sin6_addr.u.Word[3],
+                              addr->sin6_addr.u.Word[4], addr->sin6_addr.u.Word[5],
+                              addr->sin6_addr.u.Word[6], addr->sin6_addr.u.Word[7]);
     }
 
     default: {

@@ -2,11 +2,11 @@
 // SPDX-License-Identifier: BSD-2-Clause
 
 #include <Cell/IO/HID.hh>
+#include <Cell/StringDetails/RawString.hh>
 #include <Cell/System/BlockImpl.hh>
 #include <Cell/System/Log.hh>
 #include <Cell/System/Panic.hh>
 #include <Cell/System/Platform/Windows/Includes.h>
-#include <Cell/Utilities/RawString.hh>
 
 #include <devpkey.h>
 #include <hidsdi.h>
@@ -24,11 +24,11 @@ struct deviceProps {
 CELL_FUNCTION_INTERNAL deviceProps parseDevicePathHID(const wchar_t* data) {
     deviceProps props = { false, false, 0, 0 };
 
-    const size_t pidOffset = Utilities::RawStringSize("_PID&");
+    const size_t pidOffset = StringDetails::RawStringSize("_PID&");
 
-    System::String path = System::String::FromPlatformWideString(data).Unwrap();
+    String path = String::FromPlatformWideString(data).Unwrap();
     if (path.BeginsWith("HID\\VID")) { // USB
-        const size_t offset = Utilities::RawStringSize("HID\\VID_");
+        const size_t offset = StringDetails::RawStringSize("HID\\VID_");
 
         props.isValid = true;
         props.vendorId = path.Substring(offset, 4).Unwrap().AsNumber(true).Unwrap();
@@ -36,14 +36,14 @@ CELL_FUNCTION_INTERNAL deviceProps parseDevicePathHID(const wchar_t* data) {
     } else if (path.BeginsWith("HID\\{")) { // USB
         props.isBluetooth = true;
 
-        const size_t baseOffset = Utilities::RawStringSize("HID\\{00000000-0000-0000-0000-000000000000}");
+        const size_t baseOffset = StringDetails::RawStringSize("HID\\{00000000-0000-0000-0000-000000000000}");
         if (path.Substring(baseOffset, 4).Unwrap() == "_Dev") {
-            const size_t offset = baseOffset + Utilities::RawStringSize("_Dev_VID&00");
+            const size_t offset = baseOffset + StringDetails::RawStringSize("_Dev_VID&00");
 
             props.vendorId = path.Substring(offset, 4).Unwrap().AsNumber(true).Unwrap();
             props.productId = path.Substring(offset + 4 + pidOffset, 4).Unwrap().AsNumber(true).Unwrap();
         } else {
-            const size_t offset = baseOffset + Utilities::RawStringSize("_VID&0000");
+            const size_t offset = baseOffset + StringDetails::RawStringSize("_VID&0000");
 
             props.vendorId = path.Substring(offset, 4).Unwrap().AsNumber(true).Unwrap();
             props.productId = path.Substring(offset + 4 + pidOffset, 4).Unwrap().AsNumber(true).Unwrap();

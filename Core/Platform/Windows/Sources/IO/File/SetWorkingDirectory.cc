@@ -7,7 +7,7 @@
 
 namespace Cell::IO {
 
-Result SetWorkingDirectory(const System::String& path) {
+Result SetWorkingDirectory(const String& path) {
     if (path.IsEmpty()) {
         return Result::InvalidParameters;
     }

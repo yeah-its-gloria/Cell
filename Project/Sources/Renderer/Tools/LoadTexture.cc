@@ -2,14 +2,14 @@
 // SPDX-License-Identifier: BSD-2-Clause
 
 #include "../Tools.hh"
+
 #include <Cell/IO/File.hh>
 #include <Cell/Scoped.hh>
-#include <Cell/System/BlockImpl.hh>
 
 using namespace Cell;
 using namespace Cell::Vulkan;
 
-Image* VulkanToolsLoadTexture(Device* device, const System::String& texturePath) {
+Image* VulkanToolsLoadTexture(Device* device, const String& texturePath) {
     ScopedObject<IO::File> file = IO::File::Open(texturePath).Unwrap();
 
     Image* image = device->CreateImage(1024, 1024).Unwrap();

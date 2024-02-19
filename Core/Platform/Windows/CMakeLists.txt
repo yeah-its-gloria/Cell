@@ -11,6 +11,8 @@ find_file(CLANG_RT_BUILTINS NAME "clang_rt.builtins-x86_64.lib" REQUIRED HINTS
 target_sources(CellCore PRIVATE
     ${PLATFORM_DIR}/Includes/Cell/System/Platform/Windows/Includes.h
 
+    ${PLATFORM_DIR}/Sources/String.cc
+
     ${PLATFORM_DIR}/Sources/IO/File/File.cc
     ${PLATFORM_DIR}/Sources/IO/File/CheckPath.cc
     ${PLATFORM_DIR}/Sources/IO/File/Delete.cc
@@ -51,7 +53,6 @@ target_sources(CellCore PRIVATE
     ${PLATFORM_DIR}/Sources/System/Mutex.cc
     ${PLATFORM_DIR}/Sources/System/Panic.cc
     ${PLATFORM_DIR}/Sources/System/RNG.cc
-    ${PLATFORM_DIR}/Sources/System/String.cc
     ${PLATFORM_DIR}/Sources/System/Thread.cc
     ${PLATFORM_DIR}/Sources/System/Timer.cc
 )

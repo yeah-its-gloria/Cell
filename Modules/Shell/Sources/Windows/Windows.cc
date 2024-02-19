@@ -52,7 +52,7 @@ Result Windows::SetDrawableExtent(const Extent extent) {
     return Result::Success;
 }
 
-Result Windows::SetNewTitle(const System::String& title) {
+Result Windows::SetNewTitle(const String& title) {
     if (title.IsEmpty()) {
         return Result::InvalidParameters;
     }
@@ -90,9 +90,29 @@ Result Windows::IndicateStatus(const ShellStatus status) {
     }
 
     CELL_ASSERT(cursor != nullptr);
-
     SetCursor(cursor);
     return Result::Success;
+}
+
+
+Result Windows::CaptureState(const bool captured) {
+    if (!this->isActivated) {
+        return Result::NotActive;
+    }
+
+    if (this->shouldCapture == captured) {
+        return Result::Success;
+    }
+
+    this->shouldCapture = captured;
+    if (captured) {
+        SetCursor(nullptr);
+        PostMessageW(this->window, WM_ACTIVATE, WA_ACTIVE, 0);
+        return Result::Success;
+    }
+
+    ReleaseCapture();
+    return this->IndicateStatus(ShellStatus::Default);
 }
 
 }

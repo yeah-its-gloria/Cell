@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: BSD-2-Clause
 
 #include "Tools.hh"
+#include "../InputController.hh"
 
 #include <Cell/Scoped.hh>
 #include <Cell/Mathematics/Utilities.hh>
@@ -13,9 +14,10 @@
 
 using namespace Cell;
 using namespace Cell::Mathematics;
+using namespace Cell::Mathematics::Utilities;
 using namespace Cell::Vulkan;
 
-void Example::VulkanThread() {
+void Example::RendererThread() {
     Shell::Result shellResult = this->shell->IndicateStatus(Shell::ShellStatus::Working);
     CELL_ASSERT(shellResult == Shell::Result::Success);
 
@@ -108,12 +110,12 @@ void Example::VulkanThread() {
     result = cmdBufferManager->CreateBuffers(target->GetImageCount());
     CELL_ASSERT(result == Result::Success);
 
-    ExampleUBO ubo;
-
-    ubo.model.SetToIdentity();
-
-    //ubo.view.LookAt(Vector3 { 0.f, 5.f, 5.f }, Mathematics::Utilities::DegreesToRadians(10.f), Mathematics::Utilities::DegreesToRadians(90.f));
-    ubo.view.LookAt({ 0.f, 0.1f, -5.f }, { 0.f, 0.f, 0.f }, { 0.f, 0.f, -1.f });
+    ExampleUBO ubo = {
+        .model = Matrix4x4::FromIdentity().Translate({ 0, 0, -5 }),
+        .view = Matrix4x4(),
+        .projection = Matrix4x4::AsPerspective(DegreesToRadians(70.f), (float)extent.width / (float)extent.height, 0.1f, 1000.f),
+        .delta = 0.f
+    };
 
     shellResult = this->shell->IndicateStatus(Shell::ShellStatus::Default);
     CELL_ASSERT(shellResult == Shell::Result::Success);
@@ -122,19 +124,18 @@ void Example::VulkanThread() {
     while (this->shell->IsStillActive()) {
         this->renderDeltaTime = Cell::Utilities::Minimum((System::GetPreciseTickerValue() - finishedTick) / 1000.f, 0.001f);
 
+        if (!this->shell->IsInForeground()) {
+            System::Thread::Yield();
+            continue;
+        } else {
+            shellResult = this->shell->CaptureState(true);
+            CELL_ASSERT(shellResult == Shell::Result::Success);
+        }
+
         ubo.delta = this->renderDeltaTime;
-        ubo.projection.Perspective(Mathematics::Utilities::DegreesToRadians(45.f), (float)extent.width / (float)extent.height, 0.1, 1000.f);
-
-        this->inputMutex.Lock();
-
-        ubo.projection.Rotate(this->rotationX, { 0.f, 1.f, 0.f });
-        ubo.projection.Rotate(this->rotationY, { 1.f, 0.f, 0.f });
-        ubo.projection.Translate(this->position);
-
-        this->inputMutex.Unlock();
+        ubo.view = this->controller->GetCamera();
 
         uniforms[target->GetFrameCounter()]->Copy(System::UnownedBlock { &ubo });
-
         VulkanToolsGenerateRenderCommands(vertexCount, indexCount, &cmdBufferManager, &pipeline, &buffer, &target, target->GetFrameCounter());
 
         result = device->RenderImage(&target, cmdBufferManager->GetCommandBufferHandle(target->GetFrameCounter()));
@@ -148,6 +149,7 @@ void Example::VulkanThread() {
             CELL_ASSERT(result == Result::Success);
 
             extent = target->GetExtent();
+            ubo.projection = Matrix4x4::AsPerspective(DegreesToRadians(70.f), (float)extent.width / (float)extent.height, 0.1, 1000.f);
             break;
         }
 

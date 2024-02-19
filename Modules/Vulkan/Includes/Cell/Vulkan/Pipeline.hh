@@ -5,8 +5,7 @@
 
 #include <Cell/Collection/List.hh>
 #include <Cell/Mathematics/Vector2.hh>
-#include <Cell/Mathematics/Vector3.hh>
-#include <Cell/Mathematics/Vector4.hh>
+#include <Cell/Mathematics/Quaternion.hh>
 #include <Cell/System/Block.hh>
 #include <Cell/Vulkan/Buffer.hh>
 #include <Cell/Vulkan/Image.hh>
@@ -40,7 +39,7 @@ struct Vertex {
     Mathematics::Vector3 position;
 
     // RGBA
-    Mathematics::Vector4 color;
+    Mathematics::Quaternion color;
 
     // U right, V down
     Mathematics::Vector2 textureCoordinates;
@@ -79,6 +78,8 @@ public:
 
     // Returns the descriptor sets for the given resource index.
     CELL_INLINE VkDescriptorSet* GetDescriptorSets(const uint32_t index) { return this->resources[index].sets; }
+
+    CELL_NON_COPYABLE(Pipeline)
 
 private:
     CELL_FUNCTION_INTERNAL Pipeline(Device* dev, VkFormat fmt) : device(dev), renderFormat(fmt) { }

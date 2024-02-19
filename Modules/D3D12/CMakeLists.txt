@@ -4,11 +4,22 @@
 project(CellD3D12 LANGUAGES CXX VERSION 1.0.0 DESCRIPTION "Cell - Modules - D3D12")
 
 set(MODULE_INCLUDES_DIR ${CMAKE_CURRENT_LIST_DIR}/Includes)
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH};${CMAKE_CURRENT_LIST_DIR}/BuildScripts)
+
+include(D3D12Shader)
 
 add_library(CellD3D12 ${CELL_LIBRARY_TYPE}
+    ${MODULE_INCLUDES_DIR}/Cell/D3D12/CommandList.hh
     ${MODULE_INCLUDES_DIR}/Cell/D3D12/Device.hh
+    ${MODULE_INCLUDES_DIR}/Cell/D3D12/Pipeline.hh
+    ${MODULE_INCLUDES_DIR}/Cell/D3D12/Resource.hh
+    ${MODULE_INCLUDES_DIR}/Cell/D3D12/Swapchain.hh
 
+    ${CMAKE_CURRENT_LIST_DIR}/Sources/CommandList.cc
     ${CMAKE_CURRENT_LIST_DIR}/Sources/Device.cc
+    ${CMAKE_CURRENT_LIST_DIR}/Sources/Pipeline.cc
+    ${CMAKE_CURRENT_LIST_DIR}/Sources/Resource.cc
+    ${CMAKE_CURRENT_LIST_DIR}/Sources/Swapchain.cc
 )
 
 target_compile_definitions(CellD3D12 PUBLIC "CELL_MODULES_D3D12_AVAILABLE=1")

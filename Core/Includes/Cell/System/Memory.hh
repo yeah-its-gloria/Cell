@@ -26,32 +26,32 @@ CELL_FUNCTION bool CompareMemory(const void* CELL_NONNULL a, const void* CELL_NO
 CELL_FUNCTION void ClearMemory(void* CELL_NONNULL block, const size_t size);
 
 // Allocates a count * count bytes large block.
-template <typename T> CELL_INLINE T* CELL_NONNULL AllocateMemory(const size_t count = 1) {
+template <typename T> CELL_FUNCTION_INTERNAL CELL_INLINE T* CELL_NONNULL AllocateMemory(const size_t count = 1) {
     return (T*)AllocateMemory(sizeof(T) * count);
 }
 
 // Reallocates the given block with the new count bytes * count.
-template <typename T> CELL_INLINE void ReallocateMemory(T* CELL_NONNULL* CELL_NONNULL block, const size_t count) {
+template <typename T> CELL_FUNCTION_INTERNAL CELL_INLINE void ReallocateMemory(T* CELL_NONNULL* CELL_NONNULL block, const size_t count) {
     ReallocateMemory((void**)block, sizeof(T) * count);
 }
 
 // Copies a block of memory to another.
-template <typename T> CELL_INLINE void CopyMemory(T* CELL_NONNULL destination, const T* CELL_NONNULL source, const size_t count = 1) {
+template <typename T> CELL_FUNCTION_INTERNAL CELL_INLINE void CopyMemory(T* CELL_NONNULL destination, const T* CELL_NONNULL source, const size_t count = 1) {
     CopyMemory((void*)destination, (const void*)source, sizeof(T) * count);
 }
 
 // Compares the data of the given blocks of memory and checks them for equality.
-template <typename T> CELL_INLINE bool CompareMemory(const T* CELL_NONNULL a, const T* CELL_NONNULL b, const size_t count = 1) {
+template <typename T> CELL_FUNCTION_INTERNAL CELL_INLINE bool CompareMemory(const T* CELL_NONNULL a, const T* CELL_NONNULL b, const size_t count = 1) {
     return CompareMemory((const void*)a, (const void*)b, sizeof(T) * count);
 }
 
 // Clears the given block to zero.
-template <typename T> CELL_INLINE void ClearMemory(T* CELL_NONNULL block, const size_t count = 1) {
+template <typename T> CELL_FUNCTION_INTERNAL CELL_INLINE void ClearMemory(T* CELL_NONNULL block, const size_t count = 1) {
     return ClearMemory((void*)block, sizeof(T) * count);
 }
 
 // Clears the given block to zero.
-template <typename T> CELL_INLINE void ClearMemory(T& block, const size_t count = 1) {
+template <typename T> CELL_FUNCTION_INTERNAL CELL_INLINE void ClearMemory(T& block, const size_t count = 1) {
     return ClearMemory((void*)&block, sizeof(T) * count);
 }
 

@@ -3,7 +3,6 @@
 
 #include <Cell/Scoped.hh>
 #include <Cell/System/DynamicLibrary.hh>
-#include <Cell/System/Panic.hh>
 
 #include <dlfcn.h>
 #include <errno.h>
@@ -15,7 +14,7 @@ Wrapped<DynamicLibrary*, Result> DynamicLibrary::New(const String& path) {
         return Result::InvalidParameters;
     }
 
-    ScopedBlock<char> pathStr = path.ToCharPointer();
+    ScopedBlock pathStr = path.ToCharPointer();
     void* handle = dlopen(&pathStr, RTLD_LAZY);
     if (handle == nullptr) {
         const int a = errno;

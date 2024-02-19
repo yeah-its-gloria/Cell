@@ -7,17 +7,14 @@
 #include <Cell/DataManagement/Container.hh>
 #include <Cell/IO/File.hh>
 #include <Cell/IO/FolderWalker.hh>
-#include <Cell/System/BlockImpl.hh>
 #include <Cell/System/Entry.hh>
 #include <Cell/System/Log.hh>
-#include <Cell/System/Memory.hh>
-#include <Cell/System/Panic.hh>
 #include <Cell/Utilities/MinMaxClamp.hh>
 
 using namespace Cell;
 using namespace Cell::DataManagement;
 
-void CellEntry(Reference<System::String> parameterString) {
+void CellEntry(Reference<String> parameterString) {
     IO::Result ioResult = IO::CheckPath(parameterString.Unwrap());
     if (ioResult != IO::Result::Success) {
         System::Log("Error: Content folder not found");
@@ -41,7 +38,7 @@ void CellEntry(Reference<System::String> parameterString) {
         }
     }*/
 
-    System::String fileName = parameterString.Unwrap() + "\\data.bin"; //+ elements[0];
+    String fileName = parameterString.Unwrap() + "\\data.bin"; //+ elements[0];
     ScopedObject importedFile = IO::File::Open(fileName).Unwrap();
 
     ScopedObject archive = IO::File::Open("archive.cel", IO::FileMode::Write | IO::FileMode::Create).Unwrap();

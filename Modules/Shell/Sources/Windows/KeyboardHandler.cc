@@ -6,7 +6,7 @@
 
 namespace Cell::Shell::Implementations {
 
-const Shell::KeyboardButton KeyLUT[164] = {
+const Shell::KeyboardButton KeyLUT[165] = {
     Shell::KeyboardButton::None,
     Shell::KeyboardButton::None,
     Shell::KeyboardButton::None,
@@ -129,6 +129,7 @@ const Shell::KeyboardButton KeyLUT[164] = {
     Shell::KeyboardButton::F10,
     Shell::KeyboardButton::F11,
     Shell::KeyboardButton::F12,
+    Shell::KeyboardButton::None,
     Shell::KeyboardButton::None,
     Shell::KeyboardButton::None,
     Shell::KeyboardButton::None,

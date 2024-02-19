@@ -7,7 +7,7 @@
 
 namespace Cell::Audio::Implementations::PulseAudio {
 
-Wrapped<Subsystem*, Result> Subsystem::New(const System::String& title) {
+Wrapped<Subsystem*, Result> Subsystem::New(const String& title) {
     if (title.IsEmpty()) {
         return Result::InvalidParameters;
     }

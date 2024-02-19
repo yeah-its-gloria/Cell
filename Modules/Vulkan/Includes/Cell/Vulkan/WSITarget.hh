@@ -36,6 +36,8 @@ public:
     CELL_INLINE VkImageView GetColorImageView(const uint32_t index) override { return this->swapchainImageViews[index]; }
     CELL_INLINE VkImageView GetDepthImageView(const uint32_t index) override { (void)(index); return this->depthImage->GetViewHandle(); }
 
+    CELL_NON_COPYABLE(WSITarget)
+
 private:
     WSITarget(Vulkan::Device* dev,
               Shell::IShell* shell,

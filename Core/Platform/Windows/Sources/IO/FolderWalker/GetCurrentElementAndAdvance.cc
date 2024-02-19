@@ -11,7 +11,7 @@ Wrapped<FolderWalkerElementData, Result> FolderWalker::GetCurrentElementDataAndA
     FolderWalkerInstance* instance = (FolderWalkerInstance*)this->handle;
 
     FolderWalkerElementData data = {
-        .fileName = System::String::FromPlatformWideString(instance->data.cFileName).Unwrap(),
+        .fileName = String::FromPlatformWideString(instance->data.cFileName).Unwrap(),
         .isFolder = (instance->data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) != 0
     };
 

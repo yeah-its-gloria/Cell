@@ -143,7 +143,7 @@ void VulkanToolsGenerateRenderCommands(const uint32_t vertexCount,
         .extent = extent
     };
 
-    VkCullModeFlags cullMode = VK_CULL_MODE_BACK_BIT;
+    //VkCullModeFlags cullMode = VK_CULL_MODE_NONE;
 
     CommandParameters::DrawIndexed drawParameters = {
         .indexCount = drawCount,
@@ -182,7 +182,7 @@ void VulkanToolsGenerateRenderCommands(const uint32_t vertexCount,
         .images = &presentationBarrierImage
     };
 
-    Command commands[12] = {
+    Command commands[11] = {
         { CommandType::InsertBarrier,      &drawingBarrier },
         { CommandType::BeginRendering,     &renderingParameters },
         { CommandType::BindPipeline,       &pipelineParameters },
@@ -191,12 +191,12 @@ void VulkanToolsGenerateRenderCommands(const uint32_t vertexCount,
         { CommandType::BindDescriptorSets, &setsParameters },
         { CommandType::SetViewport,        &viewport },
         { CommandType::SetScissor,         &scissor },
-        { CommandType::SetCullMode,        &cullMode },
+        //{ CommandType::SetCullMode,        &cullMode },
         { CommandType::DrawIndexed,        &drawParameters },
         { CommandType::EndRendering,       nullptr },
         { CommandType::InsertBarrier,      &presentationBarrier }
     };
 
-    result = commandBuffer->WriteCommandsSingle(frameId, commands, 12);
+    result = commandBuffer->WriteCommandsSingle(frameId, commands, 11);
     CELL_ASSERT(result == Result::Success);
 }

@@ -4,7 +4,7 @@
 #pragma once
 
 #include <Cell/Reference.hh>
-#include <Cell/System/String.hh>
+#include <Cell/String.hh>
 
 namespace Cell::System {
 
@@ -14,4 +14,4 @@ typedef void (* EntryFunction)(Reference<String>);
 }
 
 // Title entry prototype. Needs to be defined by every title, test and utility.
-CELL_FUNCTION_INTERNAL void CellEntry(Cell::Reference<Cell::System::String> parameterString);
+CELL_FUNCTION_INTERNAL void CellEntry(Cell::Reference<Cell::String> parameterString);

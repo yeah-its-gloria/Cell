@@ -9,6 +9,92 @@ namespace Cell::Mathematics {
 
 class Vector3 final : public Object {
 public:
+    // Creates a zeroed vector.
+    CELL_FUNCTION Vector3();
+
+    // Creates a fully described vector.
+    CELL_FUNCTION Vector3(const float x, const float y, const float z);
+
+    // Creates a vector with all the values set to one specific value.
+    CELL_FUNCTION Vector3(const float value);
+
+    // Adds the given vector to the current vector and returns the result.
+    CELL_NODISCARD CELL_FUNCTION Vector3 Add(const Vector3& vector) const;
+
+    // Adds the given scalar to the current vector and returns the result.
+    CELL_NODISCARD CELL_FUNCTION Vector3 Add(const float scalar) const;
+
+    // Subtracts the given vector from the current vector and returns the result.
+    CELL_NODISCARD CELL_FUNCTION Vector3 Subtract(const Vector3& vector) const;
+
+    // Subtracts the given scalar from the current vector and returns the result.
+    CELL_NODISCARD CELL_FUNCTION Vector3 Subtract(const float scalar) const;
+
+    // Multiplies the current vector with the given vector and returns the result.
+    CELL_NODISCARD CELL_FUNCTION Vector3 Multiply(const Vector3& vector) const;
+
+    // Multiplies the current vector with the given scalar and returns the result.
+    CELL_NODISCARD CELL_FUNCTION Vector3 Multiply(const float scalar) const;
+
+    // Calculates the dot product between this and the given vector.
+    CELL_NODISCARD CELL_FUNCTION float Dot(const Vector3& vector) const;
+
+    // Calculates the dot product for this vector.
+    CELL_NODISCARD CELL_FUNCTION float Dot() const;
+
+    // Calculates the cross product between this and the given vector.
+    CELL_NODISCARD CELL_FUNCTION Vector3 Cross(const Vector3& vector) const;
+
+    // Calculates the magnitude (length) for this vector.
+    CELL_NODISCARD CELL_FUNCTION float Magnitude() const;
+
+    // Normalizes this vector.
+    CELL_NODISCARD CELL_FUNCTION Vector3 Normalize() const;
+
+    // Linearly interpolates the current vector towards the target vector with the given multiplier.
+    CELL_NODISCARD CELL_FUNCTION Vector3 Lerp(const Vector3& target, const float multiplier = 0.5f) const;
+
+    CELL_NODISCARD CELL_FUNCTION Vector3 Rotate(const class Matrix4x4& rotation) const;
+
+    // Returns whether this vector is at the zero point.
+    CELL_NODISCARD CELL_FUNCTION bool IsZero() const;
+
+    // Adds the given vector to the current vector and returns the result.
+    CELL_NODISCARD CELL_FUNCTION Vector3 operator + (const Vector3& vector) const;
+
+    // Adds the given scalar across the current vector and returns the result.
+    CELL_NODISCARD CELL_FUNCTION Vector3 operator + (const float scalar) const;
+
+    // Subtracts the given vector from the current vector and returns the result.
+    CELL_NODISCARD CELL_FUNCTION Vector3 operator - (const Vector3& vector) const;
+
+    // Subtracts the given scalar across the current vector and returns the result.
+    CELL_NODISCARD CELL_FUNCTION Vector3 operator - (const float scalar) const;
+
+    // Multiplies the current vector with the given vector and returns the result.
+    CELL_NODISCARD CELL_FUNCTION Vector3 operator * (const Vector3& vector) const;
+
+    // Multiplies the given scalar across the given vector and returns the result.
+    CELL_NODISCARD CELL_FUNCTION Vector3 operator * (const float scalar) const;
+
+    // Adds the given vector to the current vector and stores the result in the current vector.
+    CELL_FUNCTION Vector3& operator += (const Vector3& vector);
+
+    // Adds the given scalar across the current vector and stores the result in the current vector.
+    CELL_FUNCTION Vector3& operator += (const float scalar);
+
+    // Subtracts the given vector from the current vector and stores the result in the current vector.
+    CELL_FUNCTION Vector3& operator -= (const Vector3& vector);
+
+    // Subtracts the given scalar across the current vector and stores the result in the current vector.
+    CELL_FUNCTION Vector3& operator -= (const float scalar);
+
+    // Multiplies the current vector with the given vector and stores the result in the current vector.
+    CELL_FUNCTION Vector3& operator *= (const Vector3& vector);
+
+    // Multiplies the given scalar across the given vector and stores the result in the current vector.
+    CELL_FUNCTION Vector3& operator *= (const float scalar);
+
     // Rightwards value.
     float x;
 
@@ -17,53 +103,6 @@ public:
 
     // Forwards value.
     float z;
-
-    // Creates a zeroed vector.
-    CELL_INLINE Vector3() : x(0), y(0), z(0) { }
-
-    // Creates a fully described vector.
-    CELL_INLINE Vector3(const float x, const float y, const float z) : x(x), y(y), z(z) { }
-
-    // Creates a vector with all the values set to one specific value.
-    CELL_INLINE Vector3(const float value) : x(value), y(value), z(value) { }
-
-    // Adds the value of the given vector to this vector.
-    CELL_FUNCTION Vector3 operator +(const Vector3 vector) const;
-
-    // Subtracts the value of the given vector from this vector.
-    CELL_FUNCTION Vector3 operator -(const Vector3 vector) const;
-
-    // Scales the vector.
-    CELL_FUNCTION Vector3 operator *(const Vector3 scale) const;
-
-    // Scales the vector.
-    CELL_INLINE Vector3 operator *(const float scale) const { return *this * Vector3(scale); }
-
-    // Scales the vector.
-    CELL_FUNCTION Vector3 operator /(const Vector3 scale) const;
-
-    // Scales the vector.
-    CELL_INLINE Vector3 operator /(const float scale) const { return *this / Vector3(scale); }
-
-    // Calculates the dot product between this and the given vector.
-    CELL_NODISCARD CELL_FUNCTION float Dot(const Vector3 vector) const;
-
-    // Calculates the cross product between this and the given vector.
-    CELL_NODISCARD CELL_FUNCTION Vector3 Cross(const Vector3 vector) const;
-
-    // Calculates the magnitude (length) for this vector.
-    CELL_NODISCARD CELL_FUNCTION float Magnitude() const;
-
-    // Normalizes this vector.
-    CELL_NODISCARD CELL_FUNCTION Vector3 Normalize() const;
-
-    // Calculates the dot product for this vector.
-    CELL_NODISCARD CELL_INLINE float Dot() const { return this->Dot(*this); }
-
-    // Linearly interpolates the current vector towards the target vector with the given multiplier.
-    CELL_NODISCARD CELL_FUNCTION Vector3 Lerp(const Vector3 target, const float multiplier = 0.5f) const;
-
-    CELL_NODISCARD CELL_INLINE bool IsZero() const { return this->x == 0.f && this->y == 0.f && this->z == 0.f; }
 };
 
 }

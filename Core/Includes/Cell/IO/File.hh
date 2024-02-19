@@ -3,10 +3,9 @@
 
 #pragma once
 
-#include <Cell/Wrapped.hh>
+#include <Cell/String.hh>
 #include <Cell/IO/Result.hh>
 #include <Cell/System/Block.hh>
-#include <Cell/System/String.hh>
 #include <Cell/Utilities/Preprocessor.hh>
 
 namespace Cell::IO {
@@ -35,7 +34,7 @@ CELL_ENUM_CLASS_OPERATORS(FileMode)
 class File : public Object {
 public:
     // Opens or creates a file.
-    CELL_FUNCTION static Wrapped<File*, Result> Open(const System::String& path, const FileMode mode = FileMode::Read | FileMode::Open);
+    CELL_FUNCTION static Wrapped<File*, Result> Open(const String& path, const FileMode mode = FileMode::Read | FileMode::Open);
 
     // Closes the file.
     CELL_FUNCTION ~File();
@@ -64,19 +63,21 @@ public:
     // Sets the offset at which data is read and written. By default, it's reset to zero.
     CELL_FUNCTION Result SetOffset(const size_t offset = 0);
 
-private:
-    CELL_INLINE File(const uintptr_t handle) : handle(handle) { };
+    CELL_NON_COPYABLE(File)
 
-    uintptr_t handle;
+private:
+    CELL_HANDLE_CONSTRUCTOR(File)
+
+    const uintptr_t handle;
 };
 
 // Deletes the file at the given path.
-CELL_FUNCTION Result Delete(const System::String& path);
+CELL_FUNCTION Result Delete(const String& path);
 
 // Checks if the given path is valid; e.g a file or directory is present.
-CELL_FUNCTION Result CheckPath(const System::String& path);
+CELL_FUNCTION Result CheckPath(const String& path);
 
 // Sets the current working directory to the given path.
-CELL_FUNCTION Result SetWorkingDirectory(const System::String& path);
+CELL_FUNCTION Result SetWorkingDirectory(const String& path);
 
 }

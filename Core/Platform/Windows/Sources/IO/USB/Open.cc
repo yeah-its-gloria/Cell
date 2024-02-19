@@ -4,10 +4,9 @@
 #include "Internal.hh"
 
 #include <Cell/IO/USB.hh>
+#include <Cell/StringDetails/RawString.hh>
 #include <Cell/System/BlockImpl.hh>
 #include <Cell/System/Log.hh>
-#include <Cell/System/Panic.hh>
-#include <Cell/Utilities/RawString.hh>
 
 #include <devpkey.h>
 #include <SetupAPI.h>
@@ -24,12 +23,12 @@ struct deviceProps {
 CELL_FUNCTION_INTERNAL deviceProps parseDevicePath(const wchar_t* data) {
     deviceProps props = { false, 0, 0, 0 };
 
-    const size_t pidOffset = Utilities::RawStringSize("_PID&");
-    const size_t interfaceOffset = Utilities::RawStringSize("&REV_0000&MI_");
+    const size_t pidOffset = StringDetails::RawStringSize("_PID&");
+    const size_t interfaceOffset = StringDetails::RawStringSize("&REV_0000&MI_");
 
-    System::String path = System::String::FromPlatformWideString(data).Unwrap();
+    String path = String::FromPlatformWideString(data).Unwrap();
     if (path.BeginsWith("USB\\VID")) {
-        const size_t offset = Utilities::RawStringSize("USB\\VID_");
+        const size_t offset = StringDetails::RawStringSize("USB\\VID_");
 
         props.isValid = true;
         props.vendorId = path.Substring(offset, 4).Unwrap().AsNumber(true).Unwrap();
@@ -39,7 +38,7 @@ CELL_FUNCTION_INTERNAL deviceProps parseDevicePath(const wchar_t* data) {
             props.interface = path.Substring(offset + pidOffset + interfaceOffset + 8, 2).Unwrap().AsNumber(true).Unwrap();
         }
     } else if (path.BeginsWith("USB\\{")) {
-        const size_t offset = Utilities::RawStringSize("USB\\{00000000-0000-0000-0000-000000000000}_VID&0000");
+        const size_t offset = StringDetails::RawStringSize("USB\\{00000000-0000-0000-0000-000000000000}_VID&0000");
 
         props.isValid = true;
         props.vendorId = path.Substring(offset, 4).Unwrap().AsNumber(true).Unwrap();

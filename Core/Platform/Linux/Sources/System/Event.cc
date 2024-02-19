@@ -37,10 +37,9 @@ void Event::Signal() {
 void Event::Reset() {
     sem_t* semaphore = (sem_t*)this->handle;
 
-    int result;
     int value = 0;
     while (true) {
-        result = sem_getvalue(semaphore, &value);
+        int result = sem_getvalue(semaphore, &value);
         CELL_ASSERT(result == 0);
         if (value == 0) {
             break;

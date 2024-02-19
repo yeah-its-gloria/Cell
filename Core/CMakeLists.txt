@@ -15,8 +15,10 @@ add_library(CellCore ${CELL_LIBRARY_TYPE}
     ${CORE_INCLUDES_DIR}/Cell/Optional.hh
     ${CORE_INCLUDES_DIR}/Cell/Reference.hh
     ${CORE_INCLUDES_DIR}/Cell/Scoped.hh
+    ${CORE_INCLUDES_DIR}/Cell/String.hh
     ${CORE_INCLUDES_DIR}/Cell/Wrapped.hh
 
+    ${CORE_INCLUDES_DIR}/Cell/Collection/Array.hh
     ${CORE_INCLUDES_DIR}/Cell/Collection/Dictionary.hh
     ${CORE_INCLUDES_DIR}/Cell/Collection/Enumerable.hh
     ${CORE_INCLUDES_DIR}/Cell/Collection/List.hh
@@ -33,9 +35,12 @@ add_library(CellCore ${CELL_LIBRARY_TYPE}
     ${CORE_INCLUDES_DIR}/Cell/Network/Result.hh
     ${CORE_INCLUDES_DIR}/Cell/Network/Socket.hh
 
+    ${CORE_INCLUDES_DIR}/Cell/StringDetails/Formatting.hh
+    ${CORE_INCLUDES_DIR}/Cell/StringDetails/Result.hh
+    ${CORE_INCLUDES_DIR}/Cell/StringDetails/RawString.hh
+
     ${CORE_INCLUDES_DIR}/Cell/System/Block.hh
     ${CORE_INCLUDES_DIR}/Cell/System/BlockImpl.hh
-    ${CORE_INCLUDES_DIR}/Cell/System/Channel.hh
     ${CORE_INCLUDES_DIR}/Cell/System/DynamicLibrary.hh
     ${CORE_INCLUDES_DIR}/Cell/System/Entry.hh
     ${CORE_INCLUDES_DIR}/Cell/System/Event.hh
@@ -45,22 +50,27 @@ add_library(CellCore ${CELL_LIBRARY_TYPE}
     ${CORE_INCLUDES_DIR}/Cell/System/Panic.hh
     ${CORE_INCLUDES_DIR}/Cell/System/Result.hh
     ${CORE_INCLUDES_DIR}/Cell/System/RNG.hh
-    ${CORE_INCLUDES_DIR}/Cell/System/String.hh
-    ${CORE_INCLUDES_DIR}/Cell/System/StringFormatting.hh
     ${CORE_INCLUDES_DIR}/Cell/System/Thread.hh
     ${CORE_INCLUDES_DIR}/Cell/System/Timer.hh
 
     ${CORE_INCLUDES_DIR}/Cell/Utilities/Byteswap.hh
     ${CORE_INCLUDES_DIR}/Cell/Utilities/MinMaxClamp.hh
     ${CORE_INCLUDES_DIR}/Cell/Utilities/Preprocessor.hh
-    ${CORE_INCLUDES_DIR}/Cell/Utilities/RawString.hh
 
     ${GENERATE_DIR}/Includes/Cell/Version.h
 
+# ----------------------------------------------------------------------
+
     ${CORE_DIR}/Sources/Cell.cc
+
     ${CORE_DIR}/Sources/System/Panic.cc
-    ${CORE_DIR}/Sources/System/String.cc
-    ${CORE_DIR}/Sources/System/StringFormat.cc
+
+    ${CORE_DIR}/Sources/String/Actions.cc
+    ${CORE_DIR}/Sources/String/Checks.cc
+    ${CORE_DIR}/Sources/String/Constructors.cc
+    ${CORE_DIR}/Sources/String/Conversions.cc
+    ${CORE_DIR}/Sources/String/Format.cc
+    ${CORE_DIR}/Sources/String/Operators.cc
 )
 
 target_compile_definitions(CellCore PUBLIC
@@ -166,9 +176,12 @@ if (CELL_ENABLE_TESTS)
     endfunction()
 
     cell_add_test(Enumerables)
+    cell_add_test(Network)
     cell_add_test(String)
     cell_add_test(System)
     cell_add_test(Utilities)
-endif ()
 
-add_custom_command(TARGET CellCore POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_if_different ${CORE_DIR}/Content/NOTICE $<TARGET_FILE_DIR:CellCore>)
+    if (WIN32 AND CELL_ENABLE_TESTS_LIKELY_FAILURE)
+        cell_add_test(WindowsDirectoryInspection)
+    endif()
+endif ()

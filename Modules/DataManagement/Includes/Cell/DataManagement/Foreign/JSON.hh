@@ -5,7 +5,7 @@
 
 #include <Cell/Collection/List.hh>
 #include <Cell/DataManagement/Result.hh>
-#include <Cell/System/String.hh>
+#include <Cell/String.hh>
 
 namespace Cell::DataManagement::Foreign::JSON {
 
@@ -25,7 +25,7 @@ struct Value {
     union {
         Value* object;
         Value* array; // values are unnamed
-        System::String* string; // UTF-8
+        String* string; // UTF-8
         double number;
         bool boolean;
     };
@@ -35,7 +35,7 @@ struct Value {
 
 class Document : public Object {
 public:
-    CELL_FUNCTION static Wrapped<Document*, Result> Parse(const System::String& document);
+    CELL_FUNCTION static Wrapped<Document*, Result> Parse(const String& document);
     CELL_FUNCTION ~Document();
 
     CELL_INLINE Value GetRoot() {

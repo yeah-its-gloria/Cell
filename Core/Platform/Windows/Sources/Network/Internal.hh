@@ -23,6 +23,7 @@ CELL_INLINE Wrapped<systemTypes, Result> convertPropertiesToSystemTypes(const Tr
 
     switch (transport) {
     case Transport::Unspecified: {
+        types.transport = AF_UNSPEC;
         break;
     }
 
@@ -36,11 +37,6 @@ CELL_INLINE Wrapped<systemTypes, Result> convertPropertiesToSystemTypes(const Tr
         break;
     }
 
-    case Transport::Bluetooth: {
-        types.transport = AF_BTH;
-        break;
-    }
-
     default: {
         return Result::InvalidParameters;
     }
@@ -48,6 +44,7 @@ CELL_INLINE Wrapped<systemTypes, Result> convertPropertiesToSystemTypes(const Tr
 
     switch (type) {
     case ConnectionType::Stream: {
+        types.type = SOCK_STREAM;
         break;
     }
 
@@ -68,6 +65,7 @@ CELL_INLINE Wrapped<systemTypes, Result> convertPropertiesToSystemTypes(const Tr
 
     switch (protocol) {
     case Protocol::TCP: {
+        types.protocol = IPPROTO_TCP;
         break;
     }
 

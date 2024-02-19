@@ -10,7 +10,7 @@
 namespace Cell::Shell::Implementations {
 using namespace System;
 
-Wrapped<Linux*, Result> Linux::New(const System::String& title) {
+Wrapped<Linux*, Result> Linux::New(const String& title, const Extent extent) {
     struct wl_display* display = wl_display_connect(nullptr);
     if (display == nullptr) {
         Panic("wl_display_connect failed");
@@ -33,6 +33,11 @@ Wrapped<Linux*, Result> Linux::New(const System::String& title) {
     CELL_ASSERT(result > -1);
 
     CELL_ASSERT(_linux->compositor != nullptr && _linux->seat != nullptr && _linux->xdgManager != nullptr);
+
+    result = wl_display_roundtrip(_linux->display);
+    CELL_ASSERT(result > -1);
+
+    CELL_ASSERT(_linux->keyboard != nullptr && _linux->pointer != nullptr);
 
     _linux->surface = wl_compositor_create_surface(_linux->compositor);
     if (_linux->surface == nullptr) {
@@ -87,11 +92,31 @@ Wrapped<Linux*, Result> Linux::New(const System::String& title) {
         Log("wp_cursor_shape_manager_v1 is unavailable, cursor changes won't work");
     }
 
+    if (_linux->relativePointerManager != nullptr) {
+        CELL_ASSERT(_linux->pointerConstraints != nullptr);
+
+        _linux->relativePointer = zwp_relative_pointer_manager_v1_get_relative_pointer(_linux->relativePointerManager, _linux->pointer);
+        if (_linux->relativePointer == nullptr) {
+            Panic("zwp_relative_pointer_manager_v1_get_relative_pointer failed");
+        }
+
+        result = zwp_relative_pointer_v1_add_listener(_linux->relativePointer, &Linux::RelativePointerListener, _linux);
+        CELL_ASSERT(result == 0);
+    } else {
+        Log("zwp_relative_pointer_manager_v1 is unavailable, cursor capturing won't work");
+    }
+
+    if (_linux->pointerConstraints != nullptr) {
+        CELL_ASSERT(_linux->relativePointerManager != nullptr);
+    } else {
+        Log("zwp_pointer_constraints_v1 is unavailable, cursor capturing won't work");
+    }
+
     char* titleStr = title.IsEmpty() ? (char*)"Cell" : title.ToCharPointer();
     xdg_toplevel_set_title(_linux->xdgToplevel, titleStr);
     xdg_toplevel_set_app_id(_linux->xdgToplevel, titleStr);
 
-    _linux->SetDrawableExtent({ 1280, 720 });
+    _linux->SetDrawableExtent(extent);
 
     if (!title.IsEmpty()) {
         System::FreeMemory(titleStr);
@@ -113,6 +138,14 @@ Linux::~Linux() {
         zxdg_toplevel_decoration_v1_destroy(this->xdgDecoration);
     }
 
+    if (this->relativePointer != nullptr) {
+        zwp_relative_pointer_v1_destroy(this->relativePointer);
+    }
+
+    if (this->pointerLock != nullptr) {
+        zwp_locked_pointer_v1_destroy(this->pointerLock);
+    }
+
     if (this->pointer != nullptr) {
         wl_pointer_destroy(this->pointer);
     }
@@ -127,6 +160,14 @@ Linux::~Linux() {
     xdg_toplevel_destroy(this->xdgToplevel);
     xdg_surface_destroy(this->xdgSurface);
     wl_surface_destroy(this->surface);
+
+    if (this->relativePointerManager != nullptr) {
+        zwp_relative_pointer_manager_v1_destroy(this->relativePointerManager);
+    }
+
+    if (this->pointerConstraints != nullptr) {
+        zwp_pointer_constraints_v1_destroy(this->pointerConstraints);
+    }
 
     if (this->cursorShapeManager != nullptr) {
         wp_cursor_shape_manager_v1_destroy(this->cursorShapeManager);

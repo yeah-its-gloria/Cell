@@ -4,21 +4,13 @@
 #pragma once
 
 #include <Cell/Shell/Shell.hh>
-#include <Cell/Vulkan/Instance.hh>
-
-namespace Cell {
+#include <Cell/Vulkan/RenderTarget.hh>
 
 #if CELL_MODULES_OPENXR_AVAILABLE
-namespace OpenXR {
-class VulkanTarget;
-}
+namespace Cell::OpenXR { class Session; }
 #endif
 
-namespace Vulkan {
-class Buffer;
-class Image;
-class IRenderTarget;
-class Pipeline;
+namespace Cell::Vulkan {
 
 enum class QueueType : uint8_t {
     Graphics,
@@ -31,16 +23,17 @@ enum class Stage : uint8_t {
 };
 
 class Device : public Object {
-friend Buffer;
-friend CommandBufferManager;
-friend Image;
 friend Instance;
-friend Pipeline;
-friend WSITarget;
+
+friend class Buffer;
+friend class CommandBufferManager;
+friend class Image;
+friend class Pipeline;
+friend class WSITarget;
 
 #if CELL_MODULES_OPENXR_AVAILABLE
 friend OpenXR::Instance;
-friend OpenXR::VulkanTarget;
+friend OpenXR::Session;
 #endif
 
 public:
@@ -48,34 +41,34 @@ public:
     CELL_FUNCTION ~Device();
 
     // Creates a managed buffer.
-    CELL_FUNCTION Wrapped<Buffer*, Result> CreateBuffer(
-        const size_t size,
-        const VkBufferUsageFlags usage,
-        const VkMemoryPropertyFlags memoryType,
-        const VkSharingMode shareMode = VK_SHARING_MODE_EXCLUSIVE
+    CELL_FUNCTION Wrapped<class Buffer*, Result> CreateBuffer(const size_t size,
+                                                              const VkBufferUsageFlags usage,
+                                                              const VkMemoryPropertyFlags memoryType,
+                                                              const VkSharingMode shareMode = VK_SHARING_MODE_EXCLUSIVE
     );
 
     // Creates a managed image.
-    CELL_FUNCTION Wrapped<Image*, Result> CreateImage(
-        const uint32_t width,
-        const uint32_t height,
-        const VkFormat format = VK_FORMAT_R8G8B8A8_SRGB,
-        const VkImageTiling tiling = VK_IMAGE_TILING_OPTIMAL,
-        const VkImageAspectFlags viewAspectMask = VK_IMAGE_ASPECT_COLOR_BIT,
-        const VkImageUsageFlags usage = VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT
+    CELL_FUNCTION Wrapped<class Image*, Result> CreateImage(const uint32_t width,
+                                                            const uint32_t height,
+                                                            const VkFormat format = VK_FORMAT_R8G8B8A8_SRGB,
+                                                            const VkImageTiling tiling = VK_IMAGE_TILING_OPTIMAL,
+                                                            const VkImageAspectFlags viewAspectMask = VK_IMAGE_ASPECT_COLOR_BIT,
+                                                            const VkImageUsageFlags usage = VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT
     );
 
     // Creates a command buffer manager.
-    CELL_FUNCTION Wrapped<CommandBufferManager*, Result> CreateCommandBufferManager(const QueueType queue = QueueType::Graphics, const bool resetIndividually = false);
+    CELL_FUNCTION Wrapped<class CommandBufferManager*, Result> CreateCommandBufferManager(const QueueType queue = QueueType::Graphics, const bool resetIndividually = false);
 
     // Creates a managed pipeline.
-    CELL_FUNCTION Wrapped<Pipeline*, Result> CreatePipeline(IRenderTarget* CELL_NONNULL target);
+    CELL_FUNCTION Wrapped<class Pipeline*, Result> CreatePipeline(IRenderTarget* CELL_NONNULL target);
 
     // Rendering utility - Renders to the next swapchain image index with the given buffer.
     CELL_FUNCTION Result RenderImage(IRenderTarget* CELL_NONNULL target, VkCommandBuffer CELL_NONNULL buffer);
 
     // Creates a WSI render target.
-    CELL_FUNCTION Wrapped<WSITarget*, Result> CreateWSITarget(Shell::IShell* CELL_NONNULL shell);
+    CELL_FUNCTION Wrapped<class WSITarget*, Result> CreateWSITarget(Shell::IShell* CELL_NONNULL shell);
+
+    CELL_NON_COPYABLE(Device)
 
 private:
     CELL_INLINE Device(VkPhysicalDevice physDev,
@@ -118,7 +111,5 @@ private:
 
     Instance* instance;
 };
-
-}
 
 }

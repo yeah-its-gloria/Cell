@@ -7,9 +7,16 @@
 
 namespace Cell::D3D12 {
 
+// Describes various results of functions interacting with the DirectX 12 implementation.
 enum class Result : uint8_t {
+    // The operation succeeded.
     Success,
-    Unsupported
+
+    // The underlying hardware, driver or other software did not offer support for the operation.
+    Unsupported,
+
+    // The system ran out of usable memory.
+    NotEnoughMemory
 };
 
 }

@@ -7,12 +7,12 @@
 
 namespace Cell::Utilities {
 
-// Swaps an unsigned, 16 bit integer.
+// Swaps the bytes of an unsigned 16 bit integer.
 CELL_NODISCARD CELL_INLINE uint16_t Byteswap(const uint16_t a) {
     return a >> 8 | a << 8;
 }
 
-// Swaps an unsigned, 32 bit integer.
+// Swaps the bytes of an unsigned 32 bit integer.
 CELL_NODISCARD CELL_INLINE uint32_t Byteswap(const uint32_t a) {
     return ((a >> 24) & 0x000000ff) |
            ((a >>  8) & 0x0000ff00) |
@@ -20,7 +20,7 @@ CELL_NODISCARD CELL_INLINE uint32_t Byteswap(const uint32_t a) {
            ((a << 24) & 0xff000000);
 }
 
-// Swaps an unsigned, 64 bit integer.
+// Swaps the bytes of an unsigned 64 bit integer.
 CELL_NODISCARD CELL_INLINE uint64_t Byteswap(const uint64_t a) {
     return ((a >> 56) & 0x00000000000000ff) |
            ((a >> 40) & 0x000000000000ff00) |
@@ -32,8 +32,16 @@ CELL_NODISCARD CELL_INLINE uint64_t Byteswap(const uint64_t a) {
            ((a << 56) & 0xff00000000000000);
 }
 
-// Swaps a little endian value to fit the platform endianness and vice versa, if needed.
-CELL_NODISCARD CELL_INLINE uint16_t ByteswapLEPlatform(const uint16_t a) {
+// Performs a byteswap on little endian encoded data if the platform is big endian.
+CELL_NODISCARD CELL_INLINE uint16_t ByteswapFromLE(const uint16_t a) {
+#ifdef CELL_PLATFORM_IS_BIG_ENDIAN
+    return Byteswap(a);
+#else
+    return a;
+#endif
+}
+// Performs a byteswap on little endian encoded data if the platform is big endian.
+CELL_NODISCARD CELL_INLINE uint32_t ByteswapFromLE(const uint32_t a) {
 #ifdef CELL_PLATFORM_IS_BIG_ENDIAN
     return Byteswap(a);
 #else
@@ -41,8 +49,8 @@ CELL_NODISCARD CELL_INLINE uint16_t ByteswapLEPlatform(const uint16_t a) {
 #endif
 }
 
-// Swaps a little endian value to fit the platform endianness and vice versa, if needed.
-CELL_NODISCARD CELL_INLINE uint32_t ByteswapLEPlatform(const uint32_t a) {
+// Performs a byteswap on little endian encoded data if the platform is big endian.
+CELL_NODISCARD CELL_INLINE uint64_t ByteswapFromLE(const uint64_t a) {
 #ifdef CELL_PLATFORM_IS_BIG_ENDIAN
     return Byteswap(a);
 #else
@@ -50,17 +58,8 @@ CELL_NODISCARD CELL_INLINE uint32_t ByteswapLEPlatform(const uint32_t a) {
 #endif
 }
 
-// Swaps a little endian value to fit the platform endianness and vice versa, if needed.
-CELL_NODISCARD CELL_INLINE uint64_t ByteswapLEPlatform(const uint64_t a) {
-#ifdef CELL_PLATFORM_IS_BIG_ENDIAN
-    return Byteswap(a);
-#else
-    return a;
-#endif
-}
-
-// Swaps a big/network endian value to fit the platform endianness and vice versa, if needed.
-CELL_NODISCARD CELL_INLINE uint16_t ByteswapBEPlatform(const uint16_t a) {
+// Performs a byteswap on big/network endian encoded data if the platform is little endian.
+CELL_NODISCARD CELL_INLINE uint16_t ByteswapFromBE(const uint16_t a) {
 #ifdef CELL_PLATFORM_IS_BIG_ENDIAN
     return a;
 #else
@@ -68,8 +67,8 @@ CELL_NODISCARD CELL_INLINE uint16_t ByteswapBEPlatform(const uint16_t a) {
 #endif
 }
 
-// Swaps a big/network endian value to fit the platform endianness and vice versa, if needed.
-CELL_NODISCARD CELL_INLINE uint32_t ByteswapBEPlatform(const uint32_t a) {
+// Performs a byteswap on big/network endian encoded data if the platform is little endian.
+CELL_NODISCARD CELL_INLINE uint32_t ByteswapFromBE(const uint32_t a) {
 #ifdef CELL_PLATFORM_IS_BIG_ENDIAN
     return a;
 #else
@@ -77,8 +76,8 @@ CELL_NODISCARD CELL_INLINE uint32_t ByteswapBEPlatform(const uint32_t a) {
 #endif
 }
 
-// Swaps a big/network endian value to fit the platform endianness and vice versa, if needed.
-CELL_NODISCARD CELL_INLINE uint64_t ByteswapBEPlatform(const uint64_t a) {
+// Performs a byteswap on big/network endian encoded data if the platform is little endian.
+CELL_NODISCARD CELL_INLINE uint64_t ByteswapFromBE(const uint64_t a) {
 #ifdef CELL_PLATFORM_IS_BIG_ENDIAN
     return a;
 #else

@@ -3,9 +3,8 @@
 
 #pragma once
 
-#include <Cell/Wrapped.hh>
+#include <Cell/String.hh>
 #include <Cell/Audio/Result.hh>
-#include <Cell/System/String.hh>
 
 namespace Cell::Audio {
 
@@ -27,19 +26,16 @@ struct Format {
     uint32_t rate;
 };
 
-class IRenderer;
-
 // Base audio subsystem interface.
 class ISubsystem : public Object {
 public:
-    // Common destructor.
     virtual ~ISubsystem() = default;
 
     // Sets up resources for rendering audio.
-    virtual Wrapped<IRenderer*, Result> CreateRenderer(Format format) = 0;
+    virtual Wrapped<class IRenderer*, Result> CreateRenderer(Format format) = 0;
 };
 
 // Sets up the most suitable subsystem for the current platform.
-CELL_FUNCTION Wrapped<ISubsystem*, Result> CreateSubsystem(const System::String& title);
+CELL_FUNCTION Wrapped<ISubsystem*, Result> CreateSubsystem(const String& title);
 
 }

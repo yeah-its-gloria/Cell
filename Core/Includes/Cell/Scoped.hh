@@ -29,6 +29,8 @@ public:
         return *this;
     }
 
+    CELL_NON_COPYABLE(ScopedBlock)
+
 private:
     T* block;
 };
@@ -41,6 +43,9 @@ public:
 
     // Destructor for the scoped object.
     CELL_INLINE ~ScopedObject() { delete this->object; }
+
+    // Returns the underlying pointer.
+    CELL_NODISCARD CELL_INLINE T* GetPointer() { return this->object; }
 
     // Convenience operator to act directly upon the wrapped object.
     CELL_NODISCARD CELL_INLINE T* operator ->() { return this->object; }
@@ -56,6 +61,8 @@ public:
         this->object = object;
         return *this;
     }
+
+    CELL_NON_COPYABLE(ScopedObject)
 
 private:
     T* object;

@@ -5,7 +5,7 @@
 
 namespace Cell::Shell {
 
-Result IShell::RegisterAction(const KeyboardButton button, const ButtonFunction function, void* userData) {
+void IShell::RegisterAction(const KeyboardButton button, const ButtonFunction function, void* userData) {
     const RegisterInfo info = {
         .type = 0,
         .userData = userData,
@@ -14,10 +14,9 @@ Result IShell::RegisterAction(const KeyboardButton button, const ButtonFunction 
     };
 
     this->registeredFunctions.Append(info);
-    return Result::Success;
 }
 
-Result IShell::RegisterAction(const MouseButton button, const ButtonFunction function, void* userData) {
+void IShell::RegisterAction(const MouseButton button, const ButtonFunction function, void* userData) {
     const RegisterInfo info = {
         .type = 1,
         .userData = userData,
@@ -26,10 +25,9 @@ Result IShell::RegisterAction(const MouseButton button, const ButtonFunction fun
     };
 
     this->registeredFunctions.Append(info);
-    return Result::Success;
 }
 
-Result IShell::RegisterAction(const ControllerButton button, const ButtonFunction function, void* userData) {
+void IShell::RegisterAction(const ControllerButton button, const ButtonFunction function, void* userData) {
     const RegisterInfo info = {
         .type = 2,
         .userData = userData,
@@ -38,10 +36,9 @@ Result IShell::RegisterAction(const ControllerButton button, const ButtonFunctio
     };
 
     this->registeredFunctions.Append(info);
-    return Result::Success;
 }
 
-Result IShell::RegisterAction(const MouseAxis axis, const AxisFunction function, void* userData) {
+void IShell::RegisterAction(const MouseAxis axis, const AxisFunction function, void* userData) {
     const RegisterInfo info = {
         .type = 3,
         .userData = userData,
@@ -50,10 +47,9 @@ Result IShell::RegisterAction(const MouseAxis axis, const AxisFunction function,
     };
 
     this->registeredFunctions.Append(info);
-    return Result::Success;
 }
 
-Result IShell::RegisterAction(const ControllerAxis axis, const AxisFunction function, void* userData) {
+void IShell::RegisterAction(const ControllerAxis axis, const AxisFunction function, void* userData) {
     const RegisterInfo info = {
         .type = 4,
         .userData = userData,
@@ -62,7 +58,6 @@ Result IShell::RegisterAction(const ControllerAxis axis, const AxisFunction func
     };
 
     this->registeredFunctions.Append(info);
-    return Result::Success;
 }
 
 }

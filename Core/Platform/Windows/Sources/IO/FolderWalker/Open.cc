@@ -8,12 +8,12 @@
 
 namespace Cell::IO {
 
-Wrapped<FolderWalker*, Result> FolderWalker::Open(const System::String& path) {
+Wrapped<FolderWalker*, Result> FolderWalker::Open(const String& path) {
     if (path.IsEmpty()) {
         return Result::InvalidParameters;
     }
 
-    System::String pathModified = path;
+    String pathModified = path;
     if (!pathModified.EndsWith("\\")) {
         pathModified += "\\";
     }

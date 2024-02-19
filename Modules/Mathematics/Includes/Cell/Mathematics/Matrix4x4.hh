@@ -3,98 +3,72 @@
 
 #pragma once
 
-#include <Cell/Mathematics/Vector3.hh>
-#include <Cell/Mathematics/Vector4.hh>
+#include <Cell/Mathematics/Quaternion.hh>
 
 namespace Cell::Mathematics {
 
-class alignas(16) Matrix4x4 final : public Object {
+// 4 x 4 matrix.
+class alignas(16) Matrix4x4 : public Object {
 public:
-    float data[4][4];
-
     // Creates an empty matrix.
-    CELL_INLINE Matrix4x4() : data { { 0.0, 0.0, 0.0, 0.0 },
-                                     { 0.0, 0.0, 0.0, 0.0 },
-                                     { 0.0, 0.0, 0.0, 0.0 },
-                                     { 0.0, 0.0, 0.0, 0.0 } } { }
+    CELL_FUNCTION Matrix4x4();
 
-    // Creates a matrix from a 3 axis vector.
-    CELL_FUNCTION Matrix4x4(const Vector3 vec);
+    // Creates a matrix from the given raw input.
+    CELL_FUNCTION Matrix4x4(float in[4][4]);
+
+    // Copies the contents of the given matrix.
+    CELL_FUNCTION Matrix4x4(const Matrix4x4& input);
+
+    // Defaulted destructor.
+    CELL_FUNCTION ~Matrix4x4() = default;
+
+    // Creates a matrix from a 3D position vector.
+    CELL_NODISCARD CELL_FUNCTION static Matrix4x4 FromVector3(const Vector3 in);
 
     // Creates a matrix from a quaternion.
-    CELL_FUNCTION Matrix4x4(const Vector4 quat);
+    CELL_NODISCARD CELL_FUNCTION static Matrix4x4 FromQuaternion(const Quaternion in);
 
-    // Resets the matrix to its identity.
-    CELL_FUNCTION Matrix4x4 SetToIdentity();
+    // Creates an identity matrix.
+    CELL_NODISCARD CELL_FUNCTION static Matrix4x4 FromIdentity();
 
-    // Inverts the matrix.
-    CELL_FUNCTION Matrix4x4 Invert();
+    // (Utility) Creates a perspective projection matrix with the given vertical FOV, resolution and clipping plane distances.
+    CELL_NODISCARD CELL_FUNCTION static Matrix4x4 AsPerspective(const float fovY, const float aspect, const float nearZ, const float farZ);
+
+    // Adds the scalar value to this matrix.
+    CELL_NODISCARD CELL_FUNCTION Matrix4x4 Add(const float scalar) const;
+
+    // Adds the other matrix to this matrix.
+    CELL_NODISCARD CELL_FUNCTION Matrix4x4 Add(const Matrix4x4& matrix) const;
+
+    // Subtracts the scalar value from this matrix.
+    CELL_NODISCARD CELL_FUNCTION Matrix4x4 Subtract(const float scalar) const;
+
+    // Subtracts the other matrix from this matrix.
+    CELL_NODISCARD CELL_FUNCTION Matrix4x4 Subtract(const Matrix4x4& matrix) const;
+
+    // Multiplies the scalar value with this matrix.
+    CELL_NODISCARD CELL_FUNCTION Matrix4x4 Multiply(const float scalar) const;
+
+    // Multiplies the other matrix with this matrix.
+    CELL_NODISCARD CELL_FUNCTION Matrix4x4 Multiply(const Matrix4x4& matrix) const;
+
+    // Returns the inversion of this matrix.
+    CELL_NODISCARD CELL_FUNCTION Matrix4x4 Invert() const;
 
     // (Affine Transformation) Translates this matrix to the given position.
-    CELL_FUNCTION Matrix4x4 Translate(const Vector3 position);
+    CELL_NODISCARD CELL_FUNCTION Matrix4x4 Translate(const Vector3& position) const;
 
     // (Affine Transformation) Rotates the matrix with the given angle around the given axis.
-    CELL_FUNCTION Matrix4x4 Rotate(const float angle, const Vector3 axis);
+    CELL_NODISCARD CELL_FUNCTION Matrix4x4 Rotate(const float angle, const Vector3& axes) const;
 
-    // (Affine Transformation) Scales the matrix to the given count.
-    CELL_FUNCTION Matrix4x4 Scale(const Vector3 scale);
+    // (Affine Transformation) Rotates the matrix with the given quaternion
+    CELL_NODISCARD CELL_FUNCTION Matrix4x4 Rotate(const Quaternion& quaternion) const;
 
-    // (Camera/view utility) Calculates a camera view for this matrix.
-    CELL_FUNCTION Matrix4x4 LookAt(const Vector3 eye, const Vector3 target, const Vector3 up);
+    // (Affine Transformation) Scales the matrix to the given 3 dimensional size.
+    CELL_NODISCARD CELL_FUNCTION Matrix4x4 Scale(const Vector3& scale) const;
 
-    // (Camera/view utility) Calculates a camera view for this matrix.
-    CELL_FUNCTION Matrix4x4 LookAt(const Vector3 eye, const float pitch, const float yaw);
-
-    // (Perspective utility) Calculates perspective projection for this matrix.
-    CELL_FUNCTION Matrix4x4 Perspective(const float fovY, const float aspect, const float nearZ, const float farZ);
-
-    // Adds the scalar value to this matrix.
-    CELL_FUNCTION Matrix4x4 Add(const float scalar);
-
-    // Adds the other matrix to this matrix.
-    CELL_FUNCTION Matrix4x4 Add(const Matrix4x4 matrix);
-
-    // Subtracts the scalar value from this matrix.
-    CELL_FUNCTION Matrix4x4 Subtract(const float scalar);
-
-    // Subtracts the other matrix from this matrix.
-    CELL_FUNCTION Matrix4x4 Subtract(const Matrix4x4 matrix);
-
-    // Multiplies the scalar value with this matrix.
-    CELL_FUNCTION Matrix4x4 Multiply(const float scalar);
-
-    // Multiplies the other matrix with this matrix.
-    CELL_FUNCTION Matrix4x4 Multiply(const Matrix4x4 matrix);
-
-    // Adds the scalar value to this matrix.
-    CELL_INLINE Matrix4x4 operator + (const float scalar) {
-        return this->Add(scalar);
-    }
-
-    // Adds the other matrix to this matrix.
-    CELL_INLINE Matrix4x4 operator + (const Matrix4x4 matrix) {
-        return this->Add(matrix);
-    }
-
-    // Subtracts the scalar value from this matrix.
-    CELL_INLINE Matrix4x4 operator - (const float scalar) {
-        return this->Subtract(scalar);
-    }
-
-    // Subtracts the other matrix from this matrix.
-    CELL_INLINE Matrix4x4 operator - (const Matrix4x4 matrix) {
-        return this->Subtract(matrix);
-    }
-
-    // Multiplies the scalar value with this matrix.
-    CELL_INLINE Matrix4x4 operator * (const float scalar) {
-        return this->Multiply(scalar);
-    }
-
-    // Multiplies the other matrix with this matrix.
-    CELL_INLINE Matrix4x4 operator * (const Matrix4x4 matrix) {
-        return this->Multiply(matrix);
-    }
+    // Raw matrix data.
+    float data[4][4];
 };
 
 }

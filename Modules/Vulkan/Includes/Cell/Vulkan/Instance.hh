@@ -8,23 +8,16 @@
 
 #include <vulkan/vulkan.h>
 
-namespace Cell {
-
 #if CELL_MODULES_OPENXR_AVAILABLE
-namespace OpenXR {
-class Instance;
-}
+namespace Cell::OpenXR { class Instance; }
 #endif
 
-namespace Vulkan {
-class CommandBufferManager;
-class Device;
-class WSITarget;
+namespace Cell::Vulkan {
 
 class Instance : public Object {
-friend CommandBufferManager;
-friend Device;
-friend WSITarget;
+friend class CommandBufferManager;
+friend class Device;
+friend class WSITarget;
 
 #if CELL_MODULES_OPENXR_AVAILABLE
 friend OpenXR::Instance;
@@ -41,11 +34,15 @@ public:
     CELL_FUNCTION ~Instance();
 
     // Initializes the best available device.
-    CELL_FUNCTION Wrapped<Device*, Result> CreateDevice();
+    CELL_FUNCTION Wrapped<class Device*, Result> CreateDevice();
 
     // Initializes the best available device.
     // Allows supplying an existing physical device.
-    CELL_FUNCTION Wrapped<Device*, Result> CreateDevice(const char* CELL_NONNULL* CELL_NONNULL extensions, const uint32_t count, VkPhysicalDevice CELL_NULLABLE physicalDevice = nullptr);
+    CELL_FUNCTION Wrapped<class Device*, Result> CreateDevice(const char* CELL_NONNULL* CELL_NONNULL extensions,
+                                                              const uint32_t count,
+                                                              VkPhysicalDevice CELL_NULLABLE physicalDevice = nullptr);
+
+    CELL_NON_COPYABLE(Instance)
 
 private:
     CELL_INLINE Instance(VkInstance CELL_NONNULL instance,
@@ -76,7 +73,5 @@ private:
     PFN_vkCmdEndRenderingKHR endRendering;
     PFN_vkCmdSetCullModeEXT setCullMode;
 };
-
-}
 
 }

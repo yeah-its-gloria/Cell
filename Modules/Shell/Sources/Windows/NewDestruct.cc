@@ -5,11 +5,10 @@
 
 #include <Cell/Scoped.hh>
 #include <Cell/Shell/Implementations/Windows.hh>
-#include <Cell/System/Panic.hh>
 
 namespace Cell::Shell::Implementations {
 
-Wrapped<Windows*, Result> Windows::New(const System::String& title) {
+Wrapped<Windows*, Result> Windows::New(const String& title, const Extent extent) {
     HINSTANCE instance = GetModuleHandleW(nullptr);
 
     const WNDCLASSEXW windowClass = {
@@ -38,8 +37,8 @@ Wrapped<Windows*, Result> Windows::New(const System::String& title) {
     RECT defaultResolution = {
         .left = 60,
         .top = 60,
-        .right = 60 + 1280,
-        .bottom = 60 + 720
+        .right = 60 + (LONG)extent.width,
+        .bottom = 60 + (LONG)extent.height
     };
 
     const BOOL win32Result = AdjustWindowRectExForDpi(&defaultResolution, windowStyle, FALSE, exWindowStyle, GetDpiForSystem());

@@ -3,10 +3,8 @@
 
 #pragma once
 
-#include <Cell/Shell/InputTypes.hh>
 #include <Cell/Shell/Shell.hh>
 #include <Cell/System/Mutex.hh>
-#include <Cell/System/String.hh>
 #include <Cell/System/Platform/Windows/Includes.h>
 
 namespace Cell::Shell::Implementations {
@@ -15,7 +13,7 @@ namespace Cell::Shell::Implementations {
 class Windows : public IShell {
 public:
     // Creates a new shell instance.
-    CELL_FUNCTION static Wrapped<Windows*, Result> New(const System::String& title = "");
+    CELL_FUNCTION static Wrapped<Windows*, Result> New(const String& title, const Extent extent);
 
     // Destructs the shell instance.
     CELL_FUNCTION ~Windows() override;
@@ -29,8 +27,11 @@ public:
     CELL_FUNCTION Result RequestQuit() override;
     CELL_FUNCTION Wrapped<Extent, Result> GetDrawableExtent() override;
     CELL_FUNCTION Result SetDrawableExtent(const Extent extent) override;
-    CELL_FUNCTION Result SetNewTitle(const System::String& title) override;
+    CELL_FUNCTION Result SetNewTitle(const String& title) override;
     CELL_FUNCTION Result IndicateStatus(const ShellStatus status) override;
+    CELL_FUNCTION Result CaptureState(const bool captured) override;
+
+    CELL_NON_COPYABLE(Windows)
 
 private:
     CELL_INLINE Windows(HINSTANCE CELL_NONNULL instance, HWND CELL_NONNULL window, WNDCLASSEXW windowClass) : instance(instance), window(window), windowClass(windowClass) { }
@@ -43,6 +44,11 @@ private:
     HINSTANCE instance;
     HWND window;
     WNDCLASSEXW windowClass;
+
+    bool shouldCapture = false;
+
+    int prevCoordX = 0;
+    int prevCoordY = 0;
 };
 
 }

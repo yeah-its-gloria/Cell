@@ -17,7 +17,7 @@ Wrapped<DynamicLibrary*, Result> DynamicLibrary::New(const String& path) {
     const HMODULE module = LoadLibraryExW(&widePath, nullptr, 0);
     if (module == nullptr) {
         switch (GetLastError()) {
-            // TODO: figure out what results this returns
+        // TODO: figure out what results this returns
 
         default: {
             Panic("LoadLibraryExW failed");

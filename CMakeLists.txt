@@ -1,12 +1,13 @@
 # SPDX-FileCopyrightText: Copyright 2023-2024 Gloria G.
 # SPDX-License-Identifier: BSD-2-Clause
 
-cmake_minimum_required(VERSION 3.20.0 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.24.0 FATAL_ERROR)
 
 project(Cell LANGUAGES C CXX VERSION 1.0.0 DESCRIPTION "Cell")
 
 cmake_policy(SET CMP0054 NEW)
 cmake_policy(SET CMP0079 NEW)
+cmake_policy(SET CMP0149 NEW)
 
 set(CMAKE_C_STANDARD 23)
 set(CMAKE_CXX_STANDARD 20)
@@ -67,6 +68,10 @@ if (MSVC AND NOT ${CMAKE_VS_PLATFORM_TOOLSET} STREQUAL "ClangCL")
     message(WARNING "CL is basically guaranteed to break. It's recommended that you use the ClangCL tookit instead of \"${CMAKE_VS_PLATFORM_TOOLSET}\".")
 endif ()
 
+if(NOT DEFINED CMAKE_BUILD_TYPE AND NOT DEFINED CMAKE_CONFIGURATION_TYPES)
+    set(CMAKE_BUILD_TYPE Debug CACHE STRING "Which type of build to generate (Debug, Release)")
+endif()
+
 option(CELL_ENABLE_EDITOR "Whether the editor should be built. Defaults to ON." ON)
 option(CELL_ENABLE_PROJECT "Whether the in tree project should be built. Defaults to ON." ON)
 option(CELL_ENABLE_UTILITIES "Whether utilities should be built. Defaults to ON." ON)
@@ -90,17 +95,17 @@ file(MAKE_DIRECTORY ${GENERATE_DIR})
 
 add_subdirectory(${CORE_DIR})
 
-CellAddModule(Audio)
 CellAddModule(DataManagement)
-CellAddModule(JavaScript)
 CellAddModule(Mathematics)
-CellAddModule(OpenXR)
 CellAddModule(Shell)
+CellAddModule(Audio)
 CellAddModule(Vulkan)
 
 if (WIN32)
     CellAddModule(D3D12)
 endif ()
+
+CellAddModule(OpenXR)
 
 if (CELL_ENABLE_EDITOR)
     add_subdirectory(${PROJECT_ROOT_DIR}/Editor)

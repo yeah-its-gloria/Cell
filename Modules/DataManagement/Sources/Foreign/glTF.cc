@@ -41,7 +41,7 @@ Result ParseGlTF(const uint8_t* data, const size_t size) {
     glTFChunkHeader* jsonChunkHeader = (glTFChunkHeader*)(data + sizeof(glTFHeader));
     CELL_ASSERT(jsonChunkHeader->chunkSize > 0 && jsonChunkHeader->chunkSize < size - sizeof(glTFHeader) && jsonChunkHeader->chunkType == glTFChunkType::JSON);
 
-    System::String jsonData((const char*)data + sizeof(glTFHeader) + sizeof(glTFChunkHeader), jsonChunkHeader->chunkSize * sizeof(char));
+    String jsonData((const char*)data + sizeof(glTFHeader) + sizeof(glTFChunkHeader), jsonChunkHeader->chunkSize * sizeof(char));
 
     ScopedObject document = JSON::Document::Parse(jsonData).Unwrap();
     (void)(document);

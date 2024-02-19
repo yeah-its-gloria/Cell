@@ -3,8 +3,8 @@
 
 #pragma once
 
+#include <Cell/String.hh>
 #include <Cell/System/Result.hh>
-#include <Cell/System/String.hh>
 
 // Shorthand for calling a class instance function in a thread.
 //
@@ -22,7 +22,7 @@ class Thread : public Object {
 public:
     // Spawns a new thread, with the given parameter and, optionally, name.
     // Some platforms do not support names; they are only used for debugging facilities.
-    CELL_FUNCTION explicit Thread(ThreadFunction CELL_NONNULL function, void* CELL_NULLABLE parameter = nullptr, const System::String& name = "");
+    CELL_FUNCTION explicit Thread(ThreadFunction CELL_NONNULL function, void* CELL_NULLABLE parameter = nullptr, const String& name = "");
 
     // Destructs the thread.
     // If the thread is still active, it will be terminated, if possible.
@@ -36,10 +36,12 @@ public:
     CELL_NODISCARD CELL_FUNCTION bool IsActive() const;
 
     // Sets the name of this thread, if possible.
-    CELL_FUNCTION Result SetName(const System::String& name);
+    CELL_FUNCTION Result SetName(const String& name);
 
     // Requests the scheduler to yield execution.
     CELL_FUNCTION static void Yield();
+
+    CELL_NON_COPYABLE(Thread)
 
 private:
     uintptr_t handle;

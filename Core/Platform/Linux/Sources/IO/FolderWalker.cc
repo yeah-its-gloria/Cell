@@ -5,7 +5,7 @@
 
 namespace Cell::IO {
 
-Wrapped<FolderWalker*, Result> FolderWalker::Open(const System::String& path) {
+Wrapped<FolderWalker*, Result> FolderWalker::Open(const String& path) {
     (void)(path);
 
     // TODO: implement

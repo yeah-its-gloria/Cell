@@ -5,7 +5,6 @@
 
 #include <Cell/Network/AddressInfo.hh>
 #include <Cell/Network/Result.hh>
-
 #include <Cell/System/Block.hh>
 
 namespace Cell::Network {
@@ -15,7 +14,9 @@ class Socket : public Object {
 public:
     // Creates a new socket.
     // By default, it creates a TCP socket via IPv4.
-    CELL_FUNCTION static Wrapped<Socket*, Result> New(const Transport transport = Transport::IPv4, const ConnectionType type = ConnectionType::Stream, const Protocol protocol = Protocol::TCP);
+    CELL_FUNCTION static Wrapped<Socket*, Result> New(const Transport      transport = Transport::IPv4,
+                                                      const ConnectionType type      = ConnectionType::Stream,
+                                                      const Protocol       protocol  = Protocol::TCP);
 
     // Closes the socket.
     CELL_FUNCTION ~Socket();
@@ -26,16 +27,18 @@ public:
     // Disconnects a connected socket.
     CELL_FUNCTION Result Disconnect();
 
-    // Sends the given block of memory through the socket.
+    // Sends the given block through the socket.
     CELL_FUNCTION Result Send(const IBlock& data, const bool isOutOfBand = false);
 
-    // Receives the count of data available to the socket and writes it to the given block of memory.
+    // Receives the count of data available to the socket and writes it to the given block.
     CELL_FUNCTION Result Receive(IBlock& data);
 
-private:
-    CELL_FUNCTION_INTERNAL Socket(const uintptr_t handle) : handle(handle) { }
+    CELL_NON_COPYABLE(Socket)
 
-    uintptr_t handle;
+private:
+    CELL_HANDLE_CONSTRUCTOR(Socket)
+
+    const uintptr_t handle;
 };
 
 }

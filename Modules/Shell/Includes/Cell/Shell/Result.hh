@@ -24,6 +24,9 @@ enum class Result : uint8_t {
     // The request timed out.
     Timeout,
 
+    // The shell reported that the instance representative of the current application is not active.
+    NotActive,
+
     // The device (e.g controller) responded improperly.
     InvalidReplies
 };

@@ -16,3 +16,9 @@ public:
 };
 
 }
+
+// Creates a constructor for types hiding implementation details with a pointer handle.
+#define CELL_HANDLE_CONSTRUCTOR(T) CELL_FUNCTION_INTERNAL CELL_INLINE constexpr T(const uintptr_t handle) : handle(handle) { }
+
+// Deletes the copy constructor, which only permits moving the object.
+#define CELL_NON_COPYABLE(T) T(T& _) = delete; T(T&& _) = default;

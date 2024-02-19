@@ -35,6 +35,8 @@ public:
     // By default, it blocks forever until the event is signaled.
     CELL_FUNCTION EventWaitResult Wait(const uint32_t timeoutMs = 0);
 
+    CELL_NON_COPYABLE(Event)
+
 private:
     uintptr_t handle;
 };

@@ -20,10 +20,12 @@ public:
     // Generates a random 64 bit value.
     CELL_FUNCTION Wrapped<uint64_t, Result> Generate();
 
-private:
-    CELL_FUNCTION_INTERNAL RandomNumberGenerator(const uintptr_t handle) : handle(handle) { }
+    CELL_NON_COPYABLE(RandomNumberGenerator)
 
-    uintptr_t handle;
+private:
+    CELL_HANDLE_CONSTRUCTOR(RandomNumberGenerator)
+
+    const uintptr_t handle;
 };
 
 }

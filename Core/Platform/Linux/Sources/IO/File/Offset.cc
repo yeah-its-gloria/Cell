@@ -12,7 +12,7 @@ namespace Cell::IO {
 Wrapped<size_t, Result> File::GetOffset() {
     FILE* file = (FILE*)this->handle;
 
-    int64_t size = ftello64(file);
+    const int64_t size = ftello64(file);
     if (size == -1) {
         switch (ferror(file)) {
         case EFBIG: {
@@ -28,6 +28,7 @@ Wrapped<size_t, Result> File::GetOffset() {
         }
         }
     }
+
     return (size_t)size;
 }
 

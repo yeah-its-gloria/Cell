@@ -96,8 +96,8 @@ Wrapped<PNG*, Result> PNG::Decode(const uint8_t* data, const size_t size) {
         return Result::InvalidChecksum;
     }
 
-    header.width = Utilities::ByteswapBEPlatform(header.width);
-    header.height = Utilities::ByteswapBEPlatform(header.height);
+    header.width = Utilities::ByteswapFromBE(header.width);
+    header.height = Utilities::ByteswapFromBE(header.height);
 
     if (header.filterMethod != 0 || header.compressionMethod != 0) {
         return Result::InvalidData;
@@ -139,7 +139,7 @@ Wrapped<PNG*, Result> PNG::Decode(const uint8_t* data, const size_t size) {
         } else if (!System::CompareMemory(chunkHeader.identifier, sRGBIdentifier, 4) &&
                    !System::CompareMemory(chunkHeader.identifier, gAMAIdentifier, 4) &&
                    !System::CompareMemory(chunkHeader.identifier, pHYsIdentifier, 4)) {
-            System::Log(System::String::Format("Unknown chunk: %%%%: %", chunkHeader.identifier[0], chunkHeader.identifier[1], chunkHeader.identifier[2], chunkHeader.identifier[3], chunkHeader.size));
+            System::Log("Unknown chunk: %%%%: %", chunkHeader.identifier[0], chunkHeader.identifier[1], chunkHeader.identifier[2], chunkHeader.identifier[3], chunkHeader.size);
         }
 
         CELL_ASSERT(chunkHeader.size > 0);

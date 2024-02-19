@@ -3,7 +3,7 @@
 
 [[vk::location(0)]]
 struct FragmentInput {
-    float4 color : COLOR0;
-    float2 texCoords : TEXCOORD;
+    float4 color;
+    float2 texCoords;
     uint texIndex;
 };

@@ -7,7 +7,7 @@
 
 namespace Cell::IO {
 
-Result Delete(const System::String& path) {
+Result Delete(const String& path) {
     if (path.IsEmpty()) {
         return Result::InvalidParameters;
     }

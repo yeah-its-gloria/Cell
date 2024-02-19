@@ -17,6 +17,9 @@ public:
     // Destructs this PNG instance.
     CELL_FUNCTION ~PNG();
 
+    // TODO: implement copying
+    CELL_NON_COPYABLE(PNG)
+
 private:
     CELL_INLINE PNG(uint32_t width, uint32_t height, uint8_t depth, uint8_t* data) : width(width), height(height), depth(depth), data(data) { }
 

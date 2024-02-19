@@ -10,48 +10,39 @@ if (NOT OpenXR_FOUND)
     return()
 endif ()
 
-find_package(Vulkan REQUIRED FATAL_ERROR)
+if (NOT TARGET CellVulkan AND NOT TARGET CellD3D12)
+    message(FATAL_ERROR "Neither Vulkan nor D3D12 were found, no backing renderer available")
+endif ()
 
 set(MODULE_INCLUDES_DIR ${CMAKE_CURRENT_LIST_DIR}/Includes)
 
 add_library(CellOpenXR ${CELL_LIBRARY_TYPE}
     ${MODULE_INCLUDES_DIR}/Cell/OpenXR/Instance.hh
     ${MODULE_INCLUDES_DIR}/Cell/OpenXR/Result.hh
-    ${MODULE_INCLUDES_DIR}/Cell/OpenXR/VulkanTarget.hh
+    ${MODULE_INCLUDES_DIR}/Cell/OpenXR/Session.hh
 
-    ${CMAKE_CURRENT_LIST_DIR}/Sources/CreateRenderTargetsVulkan.cc
-    ${CMAKE_CURRENT_LIST_DIR}/Sources/CreateSpace.cc
-    ${CMAKE_CURRENT_LIST_DIR}/Sources/FetchViewConfiguration.cc
-    ${CMAKE_CURRENT_LIST_DIR}/Sources/FrameControl.cc
-    ${CMAKE_CURRENT_LIST_DIR}/Sources/GetFunctionPointer.cc
-    ${CMAKE_CURRENT_LIST_DIR}/Sources/InitializeSessionVulkan.cc
-    ${CMAKE_CURRENT_LIST_DIR}/Sources/InitializeSystem.cc
     ${CMAKE_CURRENT_LIST_DIR}/Sources/Instance.cc
-    ${CMAKE_CURRENT_LIST_DIR}/Sources/New.cc
+    ${CMAKE_CURRENT_LIST_DIR}/Sources/PrepSession.cc
     ${CMAKE_CURRENT_LIST_DIR}/Sources/Session.cc
-    ${CMAKE_CURRENT_LIST_DIR}/Sources/UpdateState.cc
-
-    ${CMAKE_CURRENT_LIST_DIR}/Sources/VulkanTarget/AcquireAndPresent.cc
-    ${CMAKE_CURRENT_LIST_DIR}/Sources/VulkanTarget/CreateSwapchain.cc
-    ${CMAKE_CURRENT_LIST_DIR}/Sources/VulkanTarget/VulkanTarget.cc
 )
 
-target_compile_definitions(CellOpenXR PUBLIC
-    "CELL_MODULES_OPENXR_AVAILABLE=1"
+target_compile_definitions(CellOpenXR PUBLIC "CELL_MODULES_OPENXR_AVAILABLE=1")
+target_include_directories(CellOpenXR PUBLIC ${MODULE_INCLUDES_DIR} ${OpenXR_INCLUDE_DIRS})
+target_link_libraries(CellOpenXR PUBLIC CellCore CellMathematics PRIVATE ${OpenXR_LIBRARIES})
 
-    "XR_USE_GRAPHICS_API_VULKAN=1"
-)
+if (TARGET CellVulkan)
+    target_sources(CellOpenXR PRIVATE ${CMAKE_CURRENT_LIST_DIR}/Sources/CreateSessionVulkan.cc)
 
-target_include_directories(CellOpenXR PUBLIC ${MODULE_INCLUDES_DIR} ${OpenXR_INCLUDE_DIRS} ${Vulkan_INCLUDE_DIRS})
+    target_compile_definitions(CellOpenXR PUBLIC "XR_USE_GRAPHICS_API_VULKAN=1")
+    target_link_libraries(CellOpenXR PUBLIC CellVulkan PRIVATE ${Vulkan_LIBRARIES})
+endif ()
 
-target_link_libraries(CellOpenXR PUBLIC
-    CellCore
-    CellMathematics
-    CellVulkan
+if (TARGET CellD3D12)
+    target_sources(CellOpenXR PRIVATE ${CMAKE_CURRENT_LIST_DIR}/Sources/CreateSessionD3D12.cc)
 
-    PRIVATE ${OpenXR_LIBRARIES}
-    PRIVATE ${Vulkan_LIBRARIES}
-)
+    target_compile_definitions(CellOpenXR PUBLIC "XR_USE_GRAPHICS_API_D3D12=1")
+    target_link_libraries(CellOpenXR PUBLIC CellD3D12 PRIVATE dxgi PRIVATE d3d12)
+endif ()
 
 if (WIN32)
     if (DEFINED OpenXR_BINARIES)

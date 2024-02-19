@@ -9,12 +9,12 @@
 
 namespace Cell::IO {
 
-Result CheckPath(const System::String& path) {
+Result CheckPath(const String& path) {
     if (path.IsEmpty()) {
         return Result::InvalidParameters;
     }
 
-    ScopedBlock<char> pathCChar = path.ToCharPointer();
+    ScopedBlock pathCChar = path.ToCharPointer();
 
     struct stat buffer { };
     const int result = stat(&pathCChar, &buffer);

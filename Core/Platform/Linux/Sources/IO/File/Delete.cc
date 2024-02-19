@@ -9,12 +9,12 @@
 
 namespace Cell::IO {
 
-Result Delete(const System::String& path) {
+Result Delete(const String& path) {
     if (path.IsEmpty()) {
         return Result::InvalidParameters;
     }
 
-    ScopedBlock<char> pathCChar = path.ToCharPointer();
+    ScopedBlock pathCChar = path.ToCharPointer();
     const int result = remove(&pathCChar);
     switch (result) {
     case 0: {

@@ -37,11 +37,6 @@ CELL_INLINE Wrapped<systemTypes, Result> convertPropertiesToSystemTypes(const Tr
         break;
     }
 
-    case Transport::Bluetooth: {
-        types.transport = AF_BLUETOOTH;
-        break;
-    }
-
     default: {
         return Result::InvalidParameters;
     }

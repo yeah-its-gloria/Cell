@@ -11,10 +11,10 @@ namespace Cell::Collection {
 template <typename T> class Array : public IEnumerable<T> {
 public:
     // Creates a new array from the given block and size.
-    CELL_INLINE Array(T* block, const size_t count) : block(block), count(count) { }
+    CELL_INLINE constexpr Array(T* block, const size_t count) : block(block), count(count) { }
 
-    // Empty destructor.
-    CELL_INLINE ~Array() { }
+    // Defaulted destructor.
+    CELL_INLINE constexpr ~Array() = default;
 
     // Returns the number of elements in the block.
     CELL_NODISCARD CELL_INLINE size_t GetCount() const override {

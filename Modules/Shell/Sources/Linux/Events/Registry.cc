@@ -36,6 +36,8 @@ void Linux::RegistryAdd(void* data, struct wl_registry* registry, const uint32_t
     REGISTER_GLOBAL(zxdg_decoration_manager_v1, 1, xdgDecorationManager)
     REGISTER_GLOBAL(zwp_idle_inhibit_manager_v1, 1, idleInhibitManager)
     REGISTER_GLOBAL(wp_cursor_shape_manager_v1, 1, cursorShapeManager)
+    REGISTER_GLOBAL(zwp_pointer_constraints_v1, 1, pointerConstraints)
+    REGISTER_GLOBAL(zwp_relative_pointer_manager_v1, 1, relativePointerManager)
 }
 
 void Linux::RegistryRemove(void* data, struct wl_registry* registry, const uint32_t identity) {

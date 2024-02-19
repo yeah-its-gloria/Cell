@@ -3,11 +3,10 @@
 
 #include <Cell/Scoped.hh>
 #include <Cell/Audio/Implementations/WASAPI.hh>
-#include <Cell/System/Panic.hh>
 
 namespace Cell::Audio::Implementations::WASAPI {
 
-Wrapped<Subsystem*, Result> Subsystem::New(const System::String& title) {
+Wrapped<Subsystem*, Result> Subsystem::New(const String& title) {
     if (title.IsEmpty()) {
         return Result::InvalidParameters;
     }

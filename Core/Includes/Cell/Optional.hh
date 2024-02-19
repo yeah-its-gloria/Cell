@@ -12,27 +12,27 @@ namespace Cell {
 template <typename T> class Optional : public Object {
 public:
     // Creates a filled optional value.
-    CELL_INLINE Optional(T data) : data(data), hasData(true) { }
+    CELL_FUNCTION_INTERNAL CELL_INLINE constexpr Optional(T data) : data(data), hasData(true) { }
 
     // Creates an empty optional value.
-    CELL_INLINE Optional() : hasData(false) { }
+    CELL_FUNCTION_INTERNAL CELL_INLINE constexpr Optional() : hasData(false) { }
 
-    // Empty destructor.
-    CELL_INLINE ~Optional() { }
+    // Trivial empty destructor.
+    CELL_FUNCTION_INTERNAL CELL_INLINE constexpr ~Optional() { }
 
     // Returns the wrapped value.
-    CELL_NODISCARD CELL_INLINE T Unwrap() const {
+    CELL_NODISCARD CELL_FUNCTION_INTERNAL CELL_INLINE T Unwrap() const {
         CELL_ASSERT(this->hasData);
         return this->data;
     }
 
     // Checks if this optional value contains data.
-    CELL_NODISCARD CELL_INLINE bool IsValid() const {
+    CELL_NODISCARD CELL_FUNCTION_INTERNAL CELL_INLINE bool IsValid() const {
         return this->hasData;
     }
 
     // Allows assigning new data to fill this optional value.
-    CELL_INLINE Optional<T>& operator =(const T& data) {
+    CELL_FUNCTION_INTERNAL CELL_INLINE Optional<T>& operator =(const T& data) {
         this->data = data;
         this->hasData = true;
 
@@ -40,7 +40,7 @@ public:
     }
 
     // Operator shortcut for IsValid.
-    CELL_INLINE operator bool() const {
+    CELL_NODISCARD CELL_FUNCTION_INTERNAL CELL_INLINE operator bool() const {
         return this->hasData;
     }
 
@@ -56,7 +56,7 @@ private:
     bool hasData;
 };
 
-template <typename T> Optional<T> None() {
+template <typename T> constexpr Optional<T> None() {
     return Optional<T>();
 }
 

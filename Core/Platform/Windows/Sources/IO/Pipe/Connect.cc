@@ -1,15 +1,15 @@
 // SPDX-FileCopyrightText: Copyright 2023-2024 Gloria G.
 // SPDX-License-Identifier: BSD-2-Clause
 
+#include <Cell/Scoped.hh>
 #include <Cell/IO/Pipe.hh>
-#include <Cell/System/Panic.hh>
 #include <Cell/System/Platform/Windows/Includes.h>
 
 #define HAS_MODE(in) (((uint8_t)(PipeMode::in) & (uint8_t)mode) == (uint8_t)(PipeMode::in))
 
 namespace Cell::IO {
 
-Wrapped<Pipe*, Result> Pipe::Connect(const System::String& name, const PipeMode mode) {
+Wrapped<Pipe*, Result> Pipe::Connect(const String& name, const PipeMode mode) {
     if (name.IsEmpty() || (!HAS_MODE(Read) && !HAS_MODE(Write))) {
         return Result::InvalidParameters;
     }
@@ -24,11 +24,11 @@ Wrapped<Pipe*, Result> Pipe::Connect(const System::String& name, const PipeMode 
         pipeMode |= GENERIC_WRITE;
     }
 
-    System::String pipeName = "\\\\.\\pipe\\";
-    pipeName += name;
+    String pipeName = String("\\\\.\\pipe\\") + name;
+    ScopedBlock pipeNameWide = pipeName.ToPlatformWideString();
 
     const HANDLE handle = CreateFileW(
-        pipeName.ToPlatformWideString(),
+        pipeNameWide,
         pipeMode,
         0,
         nullptr,

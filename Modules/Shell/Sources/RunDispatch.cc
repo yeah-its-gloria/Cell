@@ -66,7 +66,7 @@ Result IShell::RunDispatch() {
         }
 
         case 2: { // controller button
-            for (uint32_t index = 0; index < reports.GetCount(); index++) {
+            for (size_t index = 0; index < reports.GetCount(); index++) {
                 handleButton(reports[index].buttons, previousReports[index].buttons, info.controller, info.button, info.userData);
             }
 
@@ -74,6 +74,25 @@ Result IShell::RunDispatch() {
         }
 
         case 3: { // mouse axis
+            switch (info.mouseAxis) {
+            case MouseAxis::PositionX: {
+                if (fabs(this->mouseX) > 0.1) {
+                    info.axis(this->mouseX, info.userData);
+                }
+
+                break;
+            }
+
+            case MouseAxis::PositionY: {
+                if (fabs(this->mouseY) > 0.1) {
+                    info.axis(this->mouseY, info.userData);
+                }
+
+                break;
+            }
+
+            default: { break; }
+            }
             break;
         }
 
@@ -97,6 +116,9 @@ Result IShell::RunDispatch() {
     }
 
     this->oldKeys = this->keys;
+
+    this->mouseX = 0.0;
+    this->mouseY = 0.0;
     return Result::Success;
 }
 

@@ -5,9 +5,8 @@
 #include <Cell/System/Panic.hh>
 #include <Cell/System/Platform/Windows/Includes.h>
 
-#include <stdio.h>
-
 #include <io.h>
+#include <stdio.h>
 
 namespace Cell::IO {
 
@@ -44,7 +43,7 @@ Wrapped<size_t, Result> File::GetSize() {
         }
     }
 
-    HANDLE file = (HANDLE)_get_osfhandle(no);
+    const HANDLE file = (HANDLE)_get_osfhandle(no);
     if (file == FALSE) {
         switch (GetLastError()) {
         default: {

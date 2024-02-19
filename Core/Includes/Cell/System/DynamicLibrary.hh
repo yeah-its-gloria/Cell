@@ -3,10 +3,9 @@
 
 #pragma once
 
+#include <Cell/String.hh>
 #include <Cell/Collection/Dictionary.hh>
-
 #include <Cell/System/Result.hh>
-#include <Cell/System/String.hh>
 
 namespace Cell::System {
 
@@ -25,8 +24,10 @@ public:
     // Loads the function with the given name, and returns a pointer for it.
     CELL_FUNCTION Wrapped<GenericFunctionPointer, Result> GetFunction(const String& name);
 
+    CELL_NON_COPYABLE(DynamicLibrary)
+
 private:
-    CELL_FUNCTION_INTERNAL DynamicLibrary(const uintptr_t handle) : handle(handle) { }
+    CELL_FUNCTION_INTERNAL CELL_INLINE DynamicLibrary(const uintptr_t handle) : handle(handle) { }
 
     uintptr_t handle;
     Collection::Dictionary<String, GenericFunctionPointer> loadedFunctions;

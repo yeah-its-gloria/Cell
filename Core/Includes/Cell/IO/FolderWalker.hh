@@ -3,14 +3,13 @@
 
 #pragma once
 
-#include <Cell/Wrapped.hh>
+#include <Cell/String.hh>
 #include <Cell/IO/Result.hh>
-#include <Cell/System/String.hh>
 
 namespace Cell::IO {
 
 struct FolderWalkerElementData {
-    System::String fileName;
+    String fileName;
     bool isFolder;
 };
 
@@ -18,7 +17,7 @@ struct FolderWalkerElementData {
 class FolderWalker : public Object {
 public:
     // Creates a new folder walker.
-    CELL_FUNCTION static Wrapped<FolderWalker*, Result> Open(const System::String& path);
+    CELL_FUNCTION static Wrapped<FolderWalker*, Result> Open(const String& path);
 
     // Destructs the folder walker.
     CELL_FUNCTION ~FolderWalker();
@@ -26,11 +25,14 @@ public:
     // Returns the data for the current element and advances to the next available element.
     CELL_FUNCTION Wrapped<FolderWalkerElementData, Result> GetCurrentElementDataAndAdvance();
 
+    CELL_NON_COPYABLE(FolderWalker)
+
 private:
-    CELL_FUNCTION_INTERNAL FolderWalker(const uintptr_t handle) : handle(handle) { };
+    CELL_HANDLE_CONSTRUCTOR(FolderWalker)
+
     CELL_FUNCTION_INTERNAL Result Advance();
 
-    uintptr_t handle;
+    const uintptr_t handle;
 };
 
 }

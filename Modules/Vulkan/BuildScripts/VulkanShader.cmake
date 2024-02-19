@@ -37,7 +37,7 @@ function(CellVulkanAddShader target name input output_dir type)
     cmake_path(RELATIVE_PATH output BASE_DIRECTORY ${CMAKE_SOURCE_DIR} OUTPUT_VARIABLE output_relative)
 
     add_custom_command(
-        COMMENT "Building ${lang} object ${output_relative}..."
+        COMMENT "Building ${lang} (Vulkan) object ${output_relative}..."
 
         OUTPUT  ${output}
         DEPENDS ${input}
@@ -56,8 +56,8 @@ function(CellVulkanAddShader target name input output_dir type)
             ${output}
     )
 
-    add_custom_target(CellShaders.${name} ALL DEPENDS ${output})
-    add_dependencies(${target} CellShaders.${name})
+    add_custom_target(CellVulkanShaders.${name} ALL DEPENDS ${output})
+    add_dependencies(${target} CellVulkanShaders.${name})
 endfunction()
 
 # Combines two shader stages into one SPIR-V binary.
@@ -86,6 +86,6 @@ function(CellVulkanLinkShaders target name shader1 shader2 output_dir)
             ${output}
     )
 
-    add_custom_target(CellShadersLinked.${name} ALL DEPENDS ${output})
-    add_dependencies(${target} CellShadersLinked.${name})
+    add_custom_target(CellVulkanShadersLinked.${name} ALL DEPENDS ${output})
+    add_dependencies(${target} CellVulkanShadersLinked.${name})
 endfunction()

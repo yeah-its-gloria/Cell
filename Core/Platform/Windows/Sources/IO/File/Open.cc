@@ -12,9 +12,9 @@
 
 namespace Cell::IO {
 
-#define HAS_MODE(in) (((uint8_t)(FileMode::in) & (uint8_t)mode) == (uint8_t)(FileMode::in))
+#define HAS_MODE(in) ((FileMode::in & mode) == FileMode::in)
 
-Wrapped<File*, Result> File::Open(const System::String& path, const FileMode mode) {
+Wrapped<File*, Result> File::Open(const String& path, const FileMode mode) {
     if (path.IsEmpty()) {
         return Result::InvalidParameters;
     }
@@ -74,7 +74,7 @@ Wrapped<File*, Result> File::Open(const System::String& path, const FileMode mod
         }
     }
 
-    HANDLE fileHandle = CreateFileW(&widePath, accessType, shareType, nullptr, creationType, FILE_ATTRIBUTE_NORMAL, nullptr);
+    const HANDLE fileHandle = CreateFileW(&widePath, accessType, shareType, nullptr, creationType, FILE_ATTRIBUTE_NORMAL, nullptr);
     if (fileHandle == INVALID_HANDLE_VALUE) {
         switch (GetLastError()) {
         case ERROR_ACCESS_DENIED: {

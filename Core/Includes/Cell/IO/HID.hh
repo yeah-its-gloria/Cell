@@ -52,11 +52,13 @@ public:
         return this->type;
     }
 
-private:
-    CELL_FUNCTION_INTERNAL Device(const uintptr_t handle, const ConnectionType type) : handle(handle), type(type) { }
+    CELL_NON_COPYABLE(Device)
 
-    uintptr_t handle;
-    ConnectionType type;
+private:
+    CELL_FUNCTION_INTERNAL CELL_INLINE Device(const uintptr_t handle, const ConnectionType type) : handle(handle), type(type) { }
+
+    const uintptr_t handle;
+    const ConnectionType type;
 };
 
 }

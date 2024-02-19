@@ -177,7 +177,7 @@ enum class StatusCode : uint16_t {
 class Connection : public Object {
 public:
     // Connects to an HTTP service; Host has to be formed as whatever.the.domain.name.is
-    CELL_FUNCTION static Wrapped<Connection*, Result> Connect(const System::String& host);
+    CELL_FUNCTION static Wrapped<Connection*, Result> Connect(const String& host);
 
     // Disconnects and destructs the HTTP socket.
     CELL_FUNCTION ~Connection();

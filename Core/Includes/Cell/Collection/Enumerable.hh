@@ -11,8 +11,6 @@ namespace Cell::Collection {
 // Enumerable interface for list like objects.
 template <typename T> class IEnumerable : public Object {
 public:
-    virtual ~IEnumerable() = default;
-
     // Retrieves the count of elements in this enumerable.
     CELL_NODISCARD virtual size_t GetCount() const = 0;
 

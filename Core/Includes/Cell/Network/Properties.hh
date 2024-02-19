@@ -16,10 +16,7 @@ enum class Transport : uint8_t {
     IPv4,
 
     // Transport via IP version 6.
-    IPv6,
-
-    // Transport via bluetooth. Requires a raw socket.
-    Bluetooth
+    IPv6
 };
 
 // Various methods of connection and communication.
@@ -39,7 +36,7 @@ enum class Protocol : uint8_t {
     // Transmission Control Protocol; slow but reliable.
     TCP,
 
-    // User Datagram Protocol; lossy, quick and dirty.
+    // User Datagram Protocol; lossy but quick.
     UDP,
 
     // Internet Control Message Protocol; useful for pings and such.

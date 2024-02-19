@@ -7,7 +7,7 @@
 using namespace Cell;
 using namespace Cell::Collection;
 
-void CellEntry(Reference<System::String> parameterString) {
+void CellEntry(Reference<String> parameterString) {
     (void)(parameterString);
 
     List<uint8_t> data((uint8_t)15);

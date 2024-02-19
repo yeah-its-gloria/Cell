@@ -7,12 +7,10 @@
 
 namespace Cell::Vulkan {
 
-class Pipeline;
-
 // Represents an image.
 class Image : public Object {
 friend Device;
-friend Pipeline;
+friend class Pipeline;
 
 public:
     // Destructs the images.
@@ -29,6 +27,8 @@ public:
 
     // Returns a handle to the underlying sampler.
     CELL_INLINE VkSampler GetSamplerHandle() { return this->sampler; }
+
+    CELL_NON_COPYABLE(Image)
 
 private:
     CELL_FUNCTION_INTERNAL Image(Device* dev,

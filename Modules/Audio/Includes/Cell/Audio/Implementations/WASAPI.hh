@@ -14,15 +14,17 @@ namespace Cell::Audio::Implementations::WASAPI {
 // WASAPI subsystem implementation.
 class Subsystem : public ISubsystem {
 public:
-    CELL_FUNCTION static Wrapped<Subsystem*, Result> New(const System::String& title);
+    CELL_FUNCTION static Wrapped<Subsystem*, Result> New(const String& title);
     CELL_FUNCTION ~Subsystem() override;
     CELL_FUNCTION Wrapped<IRenderer*, Result> CreateRenderer(Format format) override;
 
+    CELL_NON_COPYABLE(Subsystem)
+
 private:
-    CELL_FUNCTION_INTERNAL Subsystem(IMMDeviceEnumerator* CELL_NONNULL e, const System::String& t) : enumerator(e), title(t) { }
+    CELL_FUNCTION_INTERNAL Subsystem(IMMDeviceEnumerator* CELL_NONNULL e, const String& t) : enumerator(e), title(t) { }
 
     IMMDeviceEnumerator* enumerator;
-    System::String title;
+    String title;
 };
 
 // WASAPI renderer implementation.
@@ -37,6 +39,8 @@ public:
     CELL_FUNCTION Wrapped<uint32_t, Result> GetMaxSampleCount() override;
     CELL_FUNCTION Wrapped<uint32_t, Result> GetCurrentSampleOffset() override;
     CELL_FUNCTION uint32_t GetLatency() override;
+
+    CELL_NON_COPYABLE(Renderer)
 
 private:
     CELL_INLINE Renderer(Subsystem*          CELL_NONNULL s,
