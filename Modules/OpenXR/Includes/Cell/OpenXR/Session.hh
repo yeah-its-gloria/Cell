@@ -20,7 +20,7 @@ public:
 
 private:
     CELL_FUNCTION_INTERNAL CELL_INLINE Session(Instance* i, XrSystemId id, XrSystemProperties p, XrViewConfigurationView vc[2], XrSession s, XrSpace sp)
-        : instance(i), id(id), properties(p), viewConfigurations(vc[0], vc[1]), session(s), space(sp) { }
+        : instance(i), id(id), properties(p), viewConfigurations { vc[0], vc[1] }, session(s), space(sp) { }
 
     Instance* instance;
 
