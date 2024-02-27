@@ -8,7 +8,7 @@
 #include <Cell/Collection/List.hh>
 #include <Cell/Mathematics/Matrix4x4.hh>
 #include <Cell/Vulkan/Buffer.hh>
-#include <Cell/Vulkan/CommandBufferManager.hh>
+#include <Cell/Vulkan/CommandBuffer.hh>
 #include <Cell/Vulkan/Image.hh>
 #include <Cell/Vulkan/Pipeline.hh>
 #include <Cell/Vulkan/RenderTarget.hh>
@@ -26,7 +26,7 @@ CELL_FUNCTION_INTERNAL Cell::Vulkan::Image* VulkanToolsLoadTexture(Cell::Vulkan:
 
 CELL_FUNCTION_INTERNAL void VulkanToolsGenerateRenderCommands(const uint32_t vertexCount,
                                                               const uint32_t drawCount,
-                                                              Cell::Vulkan::CommandBufferManager* CELL_NONNULL commandBuffer,
+                                                              Cell::Vulkan::CommandBuffer* CELL_NONNULL commandBuffer,
                                                               Cell::Vulkan::Pipeline* CELL_NONNULL pipeline,
                                                               Cell::Vulkan::Buffer* CELL_NONNULL buffer,
                                                               Cell::Vulkan::IRenderTarget* CELL_NONNULL target,

@@ -144,7 +144,7 @@ Wrapped<uint32_t, Result> Renderer::GetCurrentSampleOffset() {
 }
 
 uint32_t Renderer::GetLatency() {
-    return this->latency;
+    return 1000000000.0;
 }
 
 }

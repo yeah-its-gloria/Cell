@@ -5,6 +5,10 @@
 
 namespace Cell::Vulkan {
 
+Wrapped<Pipeline*, Result> Device::CreatePipeline(IRenderTarget* target) {
+    return new Pipeline(this, target->GetColorFormat());
+}
+
 Pipeline::~Pipeline() {
     if (this->pipeline != nullptr) {
         vkDestroyPipeline(this->device->device, this->pipeline, nullptr);

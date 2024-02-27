@@ -7,8 +7,8 @@
 namespace Cell::Vulkan {
 
 Result WSITarget::RetrieveProperties() {
-    const VkResult vkResult = vkGetPhysicalDeviceSurfaceCapabilitiesKHR(this->device->physicalDevice, this->surface, &this->capabilities);
-    switch (vkResult) {
+    const VkResult result = vkGetPhysicalDeviceSurfaceCapabilitiesKHR(this->device->physicalDevice, this->surface, &this->capabilities);
+    switch (result) {
     case VK_SUCCESS: {
         break;
     }

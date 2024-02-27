@@ -2,25 +2,21 @@
 // SPDX-License-Identifier: BSD-2-Clause
 
 #include <Cell/Scoped.hh>
-#include <Cell/Vulkan/CommandBufferManager.hh>
+#include <Cell/Collection/Single.hh>
+#include <Cell/Vulkan/CommandBuffer.hh>
 #include <Cell/Vulkan/WSITarget.hh>
 
 namespace Cell::Vulkan {
 
 Result WSITarget::PrepareSwapchain() {
-    Wrapped<CommandBufferManager*, Result> cmdBufferManagerResult = this->device->CreateCommandBufferManager();
-    if (!cmdBufferManagerResult.IsValid()) {
-        return cmdBufferManagerResult.Result();
+    Wrapped<CommandBuffer*, Result> commandBufferResult = this->device->CreateCommandBuffer();
+    if (!commandBufferResult.IsValid()) {
+        return commandBufferResult.Result();
     }
 
-    ScopedObject<CommandBufferManager> cmdBufferManager = cmdBufferManagerResult.Unwrap();
+    ScopedObject commandBuffer = commandBufferResult.Unwrap();
 
-    Result result = cmdBufferManager->CreateBuffers(1);
-    if (result != Result::Success) {
-        return result;
-    }
-
-    result = cmdBufferManager->BeginCommands(0);
+    Result result = commandBuffer->Begin();
     if (result != Result::Success) {
         return result;
     }
@@ -43,7 +39,7 @@ Result WSITarget::PrepareSwapchain() {
             .subresourceRange.layerCount     = 1
         };
 
-        CommandParameters::InsertBarrier swapchainBarrier = {
+        const CommandParameters::InsertBarrier swapchainBarrier = {
             .stageMaskSource      = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
             .stageMaskDestination = VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT,
             .dependencyFlags      = 0,
@@ -55,19 +51,19 @@ Result WSITarget::PrepareSwapchain() {
             .images               = &swapchainBarrierImage
         };
 
-        Command command = { CommandType::InsertBarrier, &swapchainBarrier };
-        result = cmdBufferManager->WriteCommands(0, &command, 1);
+        const Command command = { CommandType::InsertBarrier, &swapchainBarrier };
+        result = commandBuffer->Write(Collection::Single(command));
         if (result != Result::Success) {
             return result;
         }
     }
 
-    result = cmdBufferManager->EndCommands(0);
+    result = commandBuffer->End();
     if (result != Result::Success) {
         return result;
     }
 
-    return cmdBufferManager->Submit(0);
+    return commandBuffer->Submit();
 }
 
 }

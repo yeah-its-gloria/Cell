@@ -140,6 +140,13 @@ public:
         return this->data[index];
     }
 
+    // Retrieves the entry at the specified index.
+    CELL_NODISCARD CELL_INLINE const T& operator [] (const size_t index) const override {
+        CELL_ASSERT(index < this->count);
+
+        return this->data[index];
+    }
+
     // Returns this list as a block.
     CELL_NODISCARD CELL_INLINE System::UnownedBlock<T> AsBlock() {
         return System::UnownedBlock<T> { this->data, this->count };
@@ -177,6 +184,16 @@ public:
 
     // end operator for loops.
     CELL_NODISCARD CELL_INLINE T* end() override {
+        return this->data + this->count;
+    }
+
+    // Begin operator for constant foreach operations.
+    CELL_NODISCARD CELL_INLINE const T* begin() const override {
+        return this->data;
+    }
+
+    // End operator for constant foreach operations.
+    CELL_NODISCARD CELL_INLINE const T* end() const override {
         return this->data + this->count;
     }
 

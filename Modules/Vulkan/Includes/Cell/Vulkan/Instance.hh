@@ -15,7 +15,7 @@ namespace Cell::OpenXR { class Instance; }
 namespace Cell::Vulkan {
 
 class Instance : public Object {
-friend class CommandBufferManager;
+friend class CommandBuffer;
 friend class Device;
 friend class WSITarget;
 
@@ -28,7 +28,7 @@ public:
     CELL_FUNCTION static Wrapped<Instance*, Result> New();
 
     // Creates a new instance and initializes a Vulkan instance for it, with the given extensions.
-    CELL_FUNCTION static Wrapped<Instance*, Result> New(const char* CELL_NONNULL* CELL_NONNULL extensions, const uint32_t count);
+    CELL_FUNCTION static Wrapped<Instance*, Result> New(const char* CELL_NONNULL * CELL_NONNULL extensions, const uint32_t count);
 
     // Destructor for instances.
     CELL_FUNCTION ~Instance();
@@ -38,7 +38,7 @@ public:
 
     // Initializes the best available device.
     // Allows supplying an existing physical device.
-    CELL_FUNCTION Wrapped<class Device*, Result> CreateDevice(const char* CELL_NONNULL* CELL_NONNULL extensions,
+    CELL_FUNCTION Wrapped<class Device*, Result> CreateDevice(const char* CELL_NONNULL * CELL_NONNULL extensions,
                                                               const uint32_t count,
                                                               VkPhysicalDevice CELL_NULLABLE physicalDevice = nullptr);
 

@@ -3,19 +3,18 @@
 
 #include "../Tools.hh"
 
+#include <Cell/Collection/Array.hh>
+
 using namespace Cell::Vulkan;
 using namespace Cell::Vulkan::CommandParameters;
 
 void VulkanToolsGenerateRenderCommands(const uint32_t vertexCount,
                                        const uint32_t drawCount,
-                                       CommandBufferManager* commandBuffer,
+                                       CommandBuffer* commandBuffer,
                                        Pipeline* pipeline,
                                        Buffer* buffer,
                                        IRenderTarget* target,
                                        const uint32_t frameId) {
-    Result result = commandBuffer->Reset();
-    CELL_ASSERT(result == Result::Success);
-
     const VkExtent2D extent = target->GetExtent();
 
     const VkImageMemoryBarrier drawingBarrierImage = {
@@ -35,7 +34,7 @@ void VulkanToolsGenerateRenderCommands(const uint32_t vertexCount,
         .subresourceRange.layerCount = 1
     };
 
-    CommandParameters::InsertBarrier drawingBarrier = {
+    const CommandParameters::InsertBarrier drawingBarrier = {
         .stageMaskSource = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
         .stageMaskDestination = VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT,
         .dependencyFlags = 0,
@@ -84,7 +83,7 @@ void VulkanToolsGenerateRenderCommands(const uint32_t vertexCount,
         .clearValue = depthValue
     };
 
-    CommandParameters::BeginRendering renderingParameters = {
+    const CommandParameters::BeginRendering renderingParameters = {
         .renderArea.extent = extent,
         .renderArea.offset = { 0, 0 },
 
@@ -97,7 +96,7 @@ void VulkanToolsGenerateRenderCommands(const uint32_t vertexCount,
         .stencilAttachments = nullptr
     };
 
-    CommandParameters::BindPipeline pipelineParameters = {
+    const CommandParameters::BindPipeline pipelineParameters = {
         .pipeline = pipeline->GetPipelineHandle(),
         .point = VK_PIPELINE_BIND_POINT_GRAPHICS
     };
@@ -105,21 +104,21 @@ void VulkanToolsGenerateRenderCommands(const uint32_t vertexCount,
     VkBuffer bufferHandle = buffer->GetBufferHandle();
     VkDeviceSize offset = 0;
 
-    CommandParameters::BindVertexBuffers vertexParameters = {
+    const CommandParameters::BindVertexBuffers vertexParameters = {
         .bindingFirst = 0,
         .bindingCount = 1,
         .buffers = &bufferHandle,
         .offsets = &offset
     };
 
-    CommandParameters::BindIndexBuffer indexParameters = {
+    const CommandParameters::BindIndexBuffer indexParameters = {
         .buffer = bufferHandle,
         .offset = sizeof(Vertex) * vertexCount,
         .type = VK_INDEX_TYPE_UINT16
     };
 
     VkDescriptorSet set = pipeline->GetDescriptorSets(0)[frameId];
-    CommandParameters::BindDescriptorSets setsParameters = {
+    const CommandParameters::BindDescriptorSets setsParameters = {
         .point = VK_PIPELINE_BIND_POINT_GRAPHICS,
         .layout = pipeline->GetPipelineLayoutHandle(),
         .sets = &set,
@@ -143,9 +142,9 @@ void VulkanToolsGenerateRenderCommands(const uint32_t vertexCount,
         .extent = extent
     };
 
-    //VkCullModeFlags cullMode = VK_CULL_MODE_NONE;
+    VkCullModeFlags cullMode = VK_CULL_MODE_BACK_BIT;
 
-    CommandParameters::DrawIndexed drawParameters = {
+    const CommandParameters::DrawIndexed drawParameters = {
         .indexCount = drawCount,
         .instanceCount = 1,
         .indexFirstIndex = 0,
@@ -170,7 +169,7 @@ void VulkanToolsGenerateRenderCommands(const uint32_t vertexCount,
         .subresourceRange.layerCount = 1
     };
 
-    CommandParameters::InsertBarrier presentationBarrier = {
+    const CommandParameters::InsertBarrier presentationBarrier = {
         .stageMaskSource = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
         .stageMaskDestination = VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT,
         .dependencyFlags = 0,
@@ -182,7 +181,7 @@ void VulkanToolsGenerateRenderCommands(const uint32_t vertexCount,
         .images = &presentationBarrierImage
     };
 
-    Command commands[11] = {
+    const Command commands[] = {
         { CommandType::InsertBarrier,      &drawingBarrier },
         { CommandType::BeginRendering,     &renderingParameters },
         { CommandType::BindPipeline,       &pipelineParameters },
@@ -191,12 +190,12 @@ void VulkanToolsGenerateRenderCommands(const uint32_t vertexCount,
         { CommandType::BindDescriptorSets, &setsParameters },
         { CommandType::SetViewport,        &viewport },
         { CommandType::SetScissor,         &scissor },
-        //{ CommandType::SetCullMode,        &cullMode },
+        { CommandType::SetCullMode,        &cullMode },
         { CommandType::DrawIndexed,        &drawParameters },
         { CommandType::EndRendering,       nullptr },
         { CommandType::InsertBarrier,      &presentationBarrier }
     };
 
-    result = commandBuffer->WriteCommandsSingle(frameId, commands, 11);
+    const Result result = commandBuffer->WriteSinglePass(Cell::Collection::Array(&commands));
     CELL_ASSERT(result == Result::Success);
 }

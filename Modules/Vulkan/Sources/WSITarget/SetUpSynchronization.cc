@@ -37,51 +37,7 @@ Result WSITarget::SetUpSynchronization() {
         if (result != VK_SUCCESS) {
             break;
         }
-    }
 
-    switch (result) {
-    case VK_SUCCESS: {
-        break;
-    }
-
-    case VK_ERROR_OUT_OF_HOST_MEMORY: {
-        for (VkSemaphore semaphore : this->imageAvailable) {
-            if (semaphore != nullptr) {
-                vkDestroySemaphore(this->device->device, semaphore, nullptr);
-            }
-        }
-
-        for (VkSemaphore semaphore : this->renderFinished) {
-            if (semaphore != nullptr) {
-                vkDestroySemaphore(this->device->device, semaphore, nullptr);
-            }
-        }
-
-        return Result::OutOfHostMemory;
-    }
-
-    case VK_ERROR_OUT_OF_DEVICE_MEMORY: {
-        for (VkSemaphore semaphore : this->imageAvailable) {
-            if (semaphore != nullptr) {
-                vkDestroySemaphore(this->device->device, semaphore, nullptr);
-            }
-        }
-
-        for (VkSemaphore semaphore : this->renderFinished) {
-            if (semaphore != nullptr) {
-                vkDestroySemaphore(this->device->device, semaphore, nullptr);
-            }
-        }
-
-        return Result::OutOfDeviceMemory;
-    }
-
-    default: {
-        System::Panic("vkCreateSemaphore failed");
-    }
-    }
-
-    for (size_t i = 0; i < this->swapchainDepth; i++) {
         result = vkCreateFence(this->device->device, &fenceInfo, nullptr, &this->inFlightFrames[i]);
         if (result != VK_SUCCESS) {
             break;
@@ -138,7 +94,7 @@ Result WSITarget::SetUpSynchronization() {
     }
 
     default: {
-        System::Panic("vkCreateFence failed");
+        System::Panic("vkCreateSemaphore/vkCreateFence failed");
     }
     }
 

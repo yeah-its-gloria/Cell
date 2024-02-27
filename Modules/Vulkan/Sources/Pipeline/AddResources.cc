@@ -9,7 +9,7 @@ namespace Cell::Vulkan {
 
 using namespace Collection;
 
-Result Pipeline::AddResources(IEnumerable<ResourceBinding>& resBindings, IEnumerable<ResourceDescriptor>& resDescriptors) {
+Result Pipeline::AddResources(const IEnumerable<ResourceBinding>& resBindings, const IEnumerable<ResourceDescriptor>& resDescriptors) {
     if (resBindings.IsEmpty() || resDescriptors.IsEmpty()) {
         return Result::InvalidParameters;
     }

@@ -105,10 +105,10 @@ void Example::RendererThread() {
     result = pipeline->Finalize();
     CELL_ASSERT(result == Result::Success);
 
-    ScopedObject cmdBufferManager = device->CreateCommandBufferManager().Unwrap();
-
-    result = cmdBufferManager->CreateBuffers(target->GetImageCount());
-    CELL_ASSERT(result == Result::Success);
+    Collection::List<CommandBuffer*> commandBuffers(target->GetImageCount());
+    for (uint32_t index = 0; index < uniforms.GetCount(); index++) {
+        commandBuffers[index] = device->CreateCommandBuffer().Unwrap();
+    }
 
     ExampleUBO ubo = {
         .model = Matrix4x4::FromIdentity().Translate({ 0, 0, -5 }),
@@ -135,10 +135,12 @@ void Example::RendererThread() {
         ubo.delta = this->renderDeltaTime;
         ubo.view = this->controller->GetCamera();
 
-        uniforms[target->GetFrameCounter()]->Copy(System::UnownedBlock { &ubo });
-        VulkanToolsGenerateRenderCommands(vertexCount, indexCount, &cmdBufferManager, &pipeline, &buffer, &target, target->GetFrameCounter());
+        const uint32_t frameIndex = target->GetFrameCounter();
 
-        result = device->RenderImage(&target, cmdBufferManager->GetCommandBufferHandle(target->GetFrameCounter()));
+        uniforms[frameIndex]->Copy(System::UnownedBlock { &ubo });
+        VulkanToolsGenerateRenderCommands(vertexCount, indexCount, commandBuffers[frameIndex], &pipeline, &buffer, &target, frameIndex);
+
+        result = device->RenderImage(&target, commandBuffers[frameIndex]);
         switch (result) {
         case Result::Success: {
             break;
@@ -160,6 +162,10 @@ void Example::RendererThread() {
 
         finishedTick = System::GetPreciseTickerValue();
         System::Thread::Yield();
+    }
+
+    for (CommandBuffer* commandBuffer : commandBuffers) {
+        delete commandBuffer;
     }
 
     for (Buffer* uniform : uniforms) {

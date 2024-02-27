@@ -1,26 +1,26 @@
 // SPDX-FileCopyrightText: Copyright 2023-2024 Gloria G.
 // SPDX-License-Identifier: BSD-2-Clause
 
-#include <Cell/System/Memory.hh>
 #include <Cell/Vulkan/Buffer.hh>
 
 namespace Cell::Vulkan {
 
-Buffer::~Buffer() {
-    vkDestroyBuffer(this->device->device, this->buffer, nullptr);
-    vkFreeMemory(this->device->device, this->memory, nullptr);
-}
+Wrapped<Buffer*, Result> Device::CreateBuffer(const size_t size, const VkBufferUsageFlags usage, const VkMemoryPropertyFlags type, const VkSharingMode mode) {
+    const VkBufferCreateInfo bufferInfo = {
+        .sType                 = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO,
+        .pNext                 = nullptr,
+        .flags                 = 0,
 
-Result Buffer::Map(void*& address, const uint64_t size, const uint64_t offset) {
-    if (this->isMapped) {
-        return Result::InvalidState;
-    }
+        .size                  = size,
+        .usage                 = usage,
+        .sharingMode           = mode,
 
-    if (size == 0) {
-        return Result::InvalidParameters;
-    }
+        .queueFamilyIndexCount = 0,
+        .pQueueFamilyIndices   = nullptr
+    };
 
-    VkResult result = vkMapMemory(this->device->device, this->memory, offset, size, 0, &address);
+    VkBuffer vkBuffer = nullptr;
+    VkResult result = vkCreateBuffer(this->device, &bufferInfo, nullptr, &vkBuffer);
     switch (result) {
     case VK_SUCCESS: {
         break;
@@ -35,39 +35,72 @@ Result Buffer::Map(void*& address, const uint64_t size, const uint64_t offset) {
     }
 
     default: {
-        System::Panic("vkMapMemory failed");
+        System::Panic("vkCreateBuffer failed");
     }
     }
 
-    this->isMapped = true;
-    return Result::Success;
+    VkMemoryRequirements requirements;
+    vkGetBufferMemoryRequirements(this->device, vkBuffer, &requirements);
+
+    const VkMemoryAllocateInfo allocationInfo = {
+        .sType           = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO,
+        .pNext           = nullptr,
+
+        .allocationSize  = requirements.size,
+        .memoryTypeIndex = this->GetMemoryTypeIndex(vkBuffer, type)
+    };
+
+    VkDeviceMemory memory = nullptr;
+    result = vkAllocateMemory(this->device, &allocationInfo, nullptr, &memory);
+    switch (result) {
+    case VK_SUCCESS: {
+        break;
+    }
+
+    case VK_ERROR_OUT_OF_HOST_MEMORY: {
+        vkDestroyBuffer(this->device, vkBuffer, nullptr);
+        return Result::OutOfHostMemory;
+    }
+
+    case VK_ERROR_OUT_OF_DEVICE_MEMORY: {
+        vkDestroyBuffer(this->device, vkBuffer, nullptr);
+        return Result::OutOfDeviceMemory;
+    }
+
+    default: {
+        System::Panic("vkAllocateMemory failed");
+    }
+    }
+
+    result = vkBindBufferMemory(this->device, vkBuffer, memory, 0);
+    switch (result) {
+    case VK_SUCCESS: {
+        break;
+    }
+
+    case VK_ERROR_OUT_OF_HOST_MEMORY: {
+        vkDestroyBuffer(this->device, vkBuffer, nullptr);
+        vkFreeMemory(this->device, memory, nullptr);
+        return Result::OutOfHostMemory;
+    }
+
+    case VK_ERROR_OUT_OF_DEVICE_MEMORY: {
+        vkDestroyBuffer(this->device, vkBuffer, nullptr);
+        vkFreeMemory(this->device, memory, nullptr);
+        return Result::OutOfDeviceMemory;
+    }
+
+    default: {
+        System::Panic("vkBindBufferMemory failed");
+    }
+    }
+
+    return new Buffer(this, vkBuffer, memory);
 }
 
-void Buffer::Unmap() {
-    if (!this->isMapped) {
-        return;
-    }
-
-    vkUnmapMemory(this->device->device, this->memory);
-
-    this->isMapped = false;
-}
-
-Result Buffer::Copy(const IBlock& data, const uint64_t offset) {
-    if (this->isMapped) {
-        return Result::InvalidState;
-    }
-
-    void* address = nullptr;
-    Result result = this->Map(address, data.ByteSize(), offset);
-    if (result != Result::Success) {
-        return result;
-    }
-
-    System::CopyMemory(address, data.Pointer(), data.ByteSize());
-
-    this->Unmap();
-    return Result::Success;
+Buffer::~Buffer() {
+    vkDestroyBuffer(this->device->device, this->buffer, nullptr);
+    vkFreeMemory(this->device->device, this->memory, nullptr);
 }
 
 }

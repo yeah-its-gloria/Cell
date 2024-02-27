@@ -26,7 +26,7 @@ class Device : public Object {
 friend Instance;
 
 friend class Buffer;
-friend class CommandBufferManager;
+friend class CommandBuffer;
 friend class Image;
 friend class Pipeline;
 friend class WSITarget;
@@ -40,14 +40,14 @@ public:
     // Destructs the device, alongside all resources created with it.
     CELL_FUNCTION ~Device();
 
-    // Creates a managed buffer.
+    // Creates a data buffer resource.
     CELL_FUNCTION Wrapped<class Buffer*, Result> CreateBuffer(const size_t size,
                                                               const VkBufferUsageFlags usage,
                                                               const VkMemoryPropertyFlags memoryType,
                                                               const VkSharingMode shareMode = VK_SHARING_MODE_EXCLUSIVE
     );
 
-    // Creates a managed image.
+    // Creates an image resource.
     CELL_FUNCTION Wrapped<class Image*, Result> CreateImage(const uint32_t width,
                                                             const uint32_t height,
                                                             const VkFormat format = VK_FORMAT_R8G8B8A8_SRGB,
@@ -56,14 +56,14 @@ public:
                                                             const VkImageUsageFlags usage = VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT
     );
 
-    // Creates a command buffer manager.
-    CELL_FUNCTION Wrapped<class CommandBufferManager*, Result> CreateCommandBufferManager(const QueueType queue = QueueType::Graphics, const bool resetIndividually = false);
+    // Creates a command buffer.
+    CELL_FUNCTION Wrapped<class CommandBuffer*, Result> CreateCommandBuffer(const QueueType queue = QueueType::Graphics);
 
-    // Creates a managed pipeline.
+    // Creates a pipeline.
     CELL_FUNCTION Wrapped<class Pipeline*, Result> CreatePipeline(IRenderTarget* CELL_NONNULL target);
 
     // Rendering utility - Renders to the next swapchain image index with the given buffer.
-    CELL_FUNCTION Result RenderImage(IRenderTarget* CELL_NONNULL target, VkCommandBuffer CELL_NONNULL buffer);
+    CELL_FUNCTION Result RenderImage(IRenderTarget* CELL_NONNULL target, class CommandBuffer* CELL_NONNULL buffer);
 
     // Creates a WSI render target.
     CELL_FUNCTION Wrapped<class WSITarget*, Result> CreateWSITarget(Shell::IShell* CELL_NONNULL shell);
@@ -71,22 +71,16 @@ public:
     CELL_NON_COPYABLE(Device)
 
 private:
-    CELL_INLINE Device(VkPhysicalDevice physDev,
-                       uint32_t physGraphics,
-                       uint32_t physTransfer,
-                       VkPhysicalDeviceMemoryProperties prop,
-                       VkDevice dev,
-                       VkQueue graphics,
-                       VkQueue transfer,
-                       Instance* inst)
-        : physicalDevice(physDev),
-          physicalDeviceQueueGraphics(physGraphics),
-          physicalDeviceQueueTransfer(physTransfer),
-          physicalDeviceProperties(prop),
-          device(dev),
-          deviceQueueGraphics(graphics),
-          deviceQueueTransfer(transfer),
-          instance(inst) { }
+    CELL_FUNCTION_INTERNAL CELL_INLINE Device(VkPhysicalDevice pd, uint32_t pgi,
+                                              uint32_t pti, VkPhysicalDeviceMemoryProperties pr,
+                                              VkDevice d, VkQueue qg,
+                                              VkQueue qt, VkCommandPool pg,
+                                              VkCommandPool pt, Instance* i)
+        : physicalDevice(pd), physicalDeviceQueueGraphics(pgi),
+          physicalDeviceQueueTransfer(pti), physicalDeviceProperties(pr),
+          device(d), deviceQueueGraphics(qg),
+          deviceQueueTransfer(qt), graphicsPool(pg),
+          transferPool(pt), instance(i) { }
 
     CELL_FUNCTION Result CreateImageView(
         VkImageView& view,
@@ -108,6 +102,9 @@ private:
     VkDevice device;
     VkQueue deviceQueueGraphics;
     VkQueue deviceQueueTransfer;
+
+    VkCommandPool graphicsPool;
+    VkCommandPool transferPool;
 
     Instance* instance;
 };

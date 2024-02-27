@@ -12,7 +12,7 @@ Result WSITarget::Recreate() {
         return Result::InvalidState;
     }
 
-    VkResult vkResult = vkDeviceWaitIdle(this->device->device);
+    const VkResult vkResult = vkDeviceWaitIdle(this->device->device);
     switch (vkResult) {
     case VK_SUCCESS: {
         break;
@@ -36,7 +36,7 @@ Result WSITarget::Recreate() {
     }
 
     if (this->swapchainImageViews.GetCount() > 0) {
-        for (VkImageView imageView : this->swapchainImageViews) {
+        for (VkImageView& imageView : this->swapchainImageViews) {
             vkDestroyImageView(this->device->device, imageView, nullptr);
         }
     }

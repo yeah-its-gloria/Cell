@@ -130,10 +130,7 @@ public:
 
     // Returns the value in the first found pair matching the given key.
     CELL_NODISCARD CELL_INLINE V& GetValue(const K& key) {
-        Optional<size_t> position = this->Has(key);
-        CELL_ASSERT(position.IsValid());
-
-        return this->GetValue(position.Unwrap());
+        return this->pairBlock[this->Has(key).Unwrap()].value;
     }
 
     // Returns the key at the given index.
@@ -152,25 +149,48 @@ public:
 
     // Sets the value at the given index.
     CELL_INLINE void Set(const size_t index, const V& value) {
+        CELL_ASSERT(index < this->count);
+
         this->pairBlock[index].value = value;
     }
 
     // Gets the value at the given index.
     // Meant for the enumerator interface.
     CELL_NODISCARD V& operator [] (const size_t index) override {
-        return this->GetValue(index);
+        CELL_ASSERT(index < this->count);
+
+        return this->pairBlock[index].value;
+    }
+
+    // Gets the value at the given index.
+    // Meant for the enumerator interface.
+    CELL_NODISCARD const V& operator [] (const size_t index) const override {
+        CELL_ASSERT(index < this->count);
+
+        return this->pairBlock[index].value;
     }
 
     // Begin operator for the enumerator interface.
     // Returns the address of the value in the first pair.
     CELL_NODISCARD CELL_INLINE V* begin() override {
-        return &this->pairBlock[0].value;
+        return &(this->pairBlock->value);
+    }
+
+    // Begin operator for the enumerator interface.
+    // Returns the address of the value in the first pair.
+    CELL_NODISCARD CELL_INLINE V* end() override {
+        return &((this->pairBlock + this->count)->value);
+    }
+
+    // Begin operator for constant foreach operations.
+    CELL_NODISCARD CELL_INLINE const V* begin() const override {
+        return &(this->pairBlock->value);
     }
 
     // End operator for the enumerator interface.
     // Returns the address of the value in the last pair.
-    CELL_NODISCARD CELL_INLINE V* end() override {
-        return &this->pairBlock[this->count].value;
+    CELL_NODISCARD CELL_INLINE const V* end() const override {
+        return &((this->pairBlock + this->count)->value);
     }
 
 private:

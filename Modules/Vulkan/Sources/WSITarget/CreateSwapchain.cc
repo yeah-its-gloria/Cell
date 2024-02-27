@@ -6,12 +6,6 @@
 namespace Cell::Vulkan {
 
 Result WSITarget::CreateSwapchain() {
-    if (this->surface == nullptr) {
-        return Result::InvalidState;
-    }
-
-    // Swapchain creation
-
     const VkSwapchainCreateInfoKHR swapchainInfo = {
         .sType                 = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR,
         .pNext                 = nullptr,
@@ -28,8 +22,8 @@ Result WSITarget::CreateSwapchain() {
         .imageUsage            = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT,
         .imageSharingMode      = VK_SHARING_MODE_EXCLUSIVE,
 
-        .queueFamilyIndexCount = 0,
-        .pQueueFamilyIndices   = nullptr,
+        .queueFamilyIndexCount = 1,
+        .pQueueFamilyIndices   = &this->device->physicalDeviceQueueGraphics,
 
         .preTransform          = this->capabilities.currentTransform,
 
@@ -42,8 +36,8 @@ Result WSITarget::CreateSwapchain() {
         .oldSwapchain          = nullptr
     };
 
-    VkResult vkResult = vkCreateSwapchainKHR(this->device->device, &swapchainInfo, nullptr, &this->swapchain);
-    switch (vkResult) {
+    VkResult result = vkCreateSwapchainKHR(this->device->device, &swapchainInfo, nullptr, &this->swapchain);
+    switch (result) {
     case VK_SUCCESS: {
         break;
     }
@@ -72,8 +66,8 @@ Result WSITarget::CreateSwapchain() {
     // Image retrieval
 
     uint32_t imageCount = 0;
-    vkResult = vkGetSwapchainImagesKHR(this->device->device, this->swapchain, &imageCount, nullptr);
-    switch (vkResult) {
+    result = vkGetSwapchainImagesKHR(this->device->device, this->swapchain, &imageCount, nullptr);
+    switch (result) {
     case VK_SUCCESS: {
         break;
     }
@@ -95,8 +89,8 @@ Result WSITarget::CreateSwapchain() {
 
     this->swapchainImages.SetCount(imageCount);
 
-    vkResult = vkGetSwapchainImagesKHR(this->device->device, this->swapchain, &imageCount, this->swapchainImages.AsRaw());
-    switch (vkResult) {
+    result = vkGetSwapchainImagesKHR(this->device->device, this->swapchain, &imageCount, this->swapchainImages.AsRaw());
+    switch (result) {
     case VK_SUCCESS: {
         break;
     }
@@ -122,20 +116,20 @@ Result WSITarget::CreateSwapchain() {
 
     this->swapchainImageViews.SetCount(imageCount);
 
-    Result result = Result::Success;
+    Result cellResult = Result::Success;
     for (uint32_t index = 0; index < imageCount; index++) {
-        result = this->device->CreateImageView(this->swapchainImageViews[index], this->swapchainImages[index], this->format.format);
-        if (result != Result::Success) {
+        cellResult = this->device->CreateImageView(this->swapchainImageViews[index], this->swapchainImages[index], this->format.format);
+        if (cellResult != Result::Success) {
             break;
         }
     }
 
-    if (result != Result::Success) {
+    if (cellResult != Result::Success) {
         this->swapchainImageViews.Reset();
         this->swapchainImages.Reset();
 
         vkDestroySwapchainKHR(this->device->device, this->swapchain, nullptr);
-        return result;
+        return cellResult;
     }
 
     return Result::Success;

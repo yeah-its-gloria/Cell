@@ -2,7 +2,6 @@
 // SPDX-License-Identifier: BSD-2-Clause
 
 #include <Cell/Audio/Implementations/WASAPI.hh>
-#include <Cell/System/Panic.hh>
 
 namespace Cell::Audio::Implementations::WASAPI {
 

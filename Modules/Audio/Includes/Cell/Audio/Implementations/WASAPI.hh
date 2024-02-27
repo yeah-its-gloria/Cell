@@ -11,6 +11,8 @@
 
 namespace Cell::Audio::Implementations::WASAPI {
 
+class CellMMNotificationClient;
+
 // WASAPI subsystem implementation.
 class Subsystem : public ISubsystem {
 public:
@@ -21,9 +23,12 @@ public:
     CELL_NON_COPYABLE(Subsystem)
 
 private:
-    CELL_FUNCTION_INTERNAL Subsystem(IMMDeviceEnumerator* CELL_NONNULL e, const String& t) : enumerator(e), title(t) { }
+
+    CELL_FUNCTION_INTERNAL Subsystem(IMMDeviceEnumerator* CELL_NONNULL e, CellMMNotificationClient* CELL_NONNULL n, const String& t)
+        : enumerator(e), notificationClient(n), title(t) { }
 
     IMMDeviceEnumerator* enumerator;
+    CellMMNotificationClient* notificationClient;
     String title;
 };
 
@@ -61,8 +66,6 @@ private:
     IAudioRenderClient* renderClient;
 
     size_t sampleSize;
-
-    const uint32_t latency = 1000000000.0;
 };
 
 }

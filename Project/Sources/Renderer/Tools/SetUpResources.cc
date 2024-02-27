@@ -10,7 +10,7 @@ using namespace Cell;
 using namespace Cell::Vulkan;
 
 void VulkanToolsSetUpResources(Pipeline* pipeline, Collection::List<Buffer*>& uniforms, Image* texture1, Image* texture2, IRenderTarget* target) {
-    ResourceBinding bindings[3] = {
+    ResourceBinding bindings[] = {
         { .type = ResourceType::Buffer, .stage = Stage::Vertex },
         { .type = ResourceType::Image, .stage = Stage::Fragment },
         { .type = ResourceType::Image, .stage = Stage::Fragment }
@@ -30,7 +30,6 @@ void VulkanToolsSetUpResources(Pipeline* pipeline, Collection::List<Buffer*>& un
         descriptors[i + 2].imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
     }
 
-    Collection::Array bindingsArray(bindings, 3);
-    const Result result = pipeline->AddResources(bindingsArray, descriptors);
+    const Result result = pipeline->AddResources(Collection::Array(&bindings), descriptors);
     CELL_ASSERT(result == Result::Success);
 }

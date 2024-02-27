@@ -17,11 +17,20 @@ public:
     // Retrieves the element at the given index.
     CELL_NODISCARD virtual T& operator [] (const size_t index) = 0;
 
+    // Retrieves the element at the given index.
+    CELL_NODISCARD virtual const T& operator [] (const size_t index) const = 0;
+
     // Begin operator for foreach operations.
     CELL_NODISCARD virtual T* begin() = 0;
 
     // End operator for foreach operations.
     CELL_NODISCARD virtual T* end() = 0;
+
+    // Begin operator for constant foreach operations.
+    CELL_NODISCARD virtual const T* begin() const = 0;
+
+    // End operator for constant foreach operations.
+    CELL_NODISCARD virtual const T* end() const = 0;
 
     // Checks whether this enumerable contains no items.
     CELL_NODISCARD bool IsEmpty() const {

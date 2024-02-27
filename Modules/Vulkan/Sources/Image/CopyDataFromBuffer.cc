@@ -2,25 +2,14 @@
 // SPDX-License-Identifier: BSD-2-Clause
 
 #include <Cell/Scoped.hh>
+#include <Cell/Collection/Array.hh>
 #include <Cell/Vulkan/Buffer.hh>
-#include <Cell/Vulkan/CommandBufferManager.hh>
+#include <Cell/Vulkan/CommandBuffer.hh>
 #include <Cell/Vulkan/Image.hh>
 
 namespace Cell::Vulkan {
 
 Result Image::CopyDataFromBuffer(Buffer* buffer) {
-    Wrapped<CommandBufferManager*, Result> cmdBufferManagerResult = this->device->CreateCommandBufferManager();
-    if (!cmdBufferManagerResult.IsValid()) {
-        return cmdBufferManagerResult.Result();
-    }
-
-    ScopedObject<CommandBufferManager> cmdBufferManager = cmdBufferManagerResult.Unwrap();
-
-    Result result = cmdBufferManager->CreateBuffers(1);
-    if (result != Result::Success) {
-        return result;
-    }
-
     const VkImageMemoryBarrier barrierFirstData = {
         .sType                           = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER,
         .pNext                           = nullptr,
@@ -43,7 +32,7 @@ Result Image::CopyDataFromBuffer(Buffer* buffer) {
         .subresourceRange.layerCount     = 1
     };
 
-    CommandParameters::InsertBarrier barrierFirstParameters = {
+    const CommandParameters::InsertBarrier barrierFirstParameters = {
         .stageMaskSource      = VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT,
         .stageMaskDestination = VK_PIPELINE_STAGE_TRANSFER_BIT,
         .dependencyFlags      = 0,
@@ -74,7 +63,7 @@ Result Image::CopyDataFromBuffer(Buffer* buffer) {
         .imageExtent.depth               = this->depth
     };
 
-    CommandParameters::CopyBufferToImage copyParameters = {
+    const CommandParameters::CopyBufferToImage copyParameters = {
         .source      = buffer->GetBufferHandle(),
         .destination = this->image,
         .layout      = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
@@ -104,7 +93,7 @@ Result Image::CopyDataFromBuffer(Buffer* buffer) {
         .subresourceRange.layerCount     = 1
     };
 
-    CommandParameters::InsertBarrier barrierSecondParameters = {
+    const CommandParameters::InsertBarrier barrierSecondParameters = {
         .stageMaskSource      = VK_PIPELINE_STAGE_TRANSFER_BIT,
         .stageMaskDestination = VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT,
         .dependencyFlags      = 0,
@@ -116,18 +105,25 @@ Result Image::CopyDataFromBuffer(Buffer* buffer) {
         .images               = &barrierSecondData
     };
 
-    Command commands[3] = {
+    const Command commands[3] = {
         { CommandType::InsertBarrier,     &barrierFirstParameters },
         { CommandType::CopyBufferToImage, &copyParameters },
         { CommandType::InsertBarrier,     &barrierSecondParameters }
     };
 
-    result = cmdBufferManager->WriteCommandsSingle(0, commands, 3);
+    Wrapped<CommandBuffer*, Result> commandBufferResult = this->device->CreateCommandBuffer();
+    if (!commandBufferResult.IsValid()) {
+        return commandBufferResult.Result();
+    }
+
+    ScopedObject commandBuffer = commandBufferResult.Unwrap();
+
+    const Result result = commandBuffer->WriteSinglePass(Collection::Array(&commands));
     if (result != Result::Success) {
         return result;
     }
 
-    return cmdBufferManager->Submit(0);
+    return commandBuffer->Submit();
 }
 
 }

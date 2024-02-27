@@ -62,7 +62,7 @@ public:
     CELL_FUNCTION Result AddMultiShader(const IBlock& data);
 
     // Adds resources for shaders to this pipeline.
-    CELL_FUNCTION Result AddResources(Collection::IEnumerable<ResourceBinding>& resBindings, Collection::IEnumerable<ResourceDescriptor>& resDescriptors);
+    CELL_FUNCTION Result AddResources(const Collection::IEnumerable<ResourceBinding>& resBindings, const Collection::IEnumerable<ResourceDescriptor>& resDescriptors);
 
     // Finalizes the pipeline data into a proper pipeline.
     CELL_FUNCTION Result Finalize();

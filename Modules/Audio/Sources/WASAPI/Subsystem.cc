@@ -2,7 +2,8 @@
 // SPDX-License-Identifier: BSD-2-Clause
 
 #include <Cell/Scoped.hh>
-#include <Cell/Audio/Implementations/WASAPI.hh>
+
+#include "NotificationImpl.hh"
 
 namespace Cell::Audio::Implementations::WASAPI {
 
@@ -29,10 +30,11 @@ Wrapped<Subsystem*, Result> Subsystem::New(const String& title) {
     }
     }
 
-    return new Subsystem(enumerator, title);
+    return new Subsystem(enumerator, new CellMMNotificationClient(enumerator), title);
 }
 
 Subsystem::~Subsystem() {
+    this->notificationClient->Release();
     this->enumerator->Release();
 }
 

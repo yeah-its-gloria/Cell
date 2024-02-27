@@ -6,7 +6,7 @@
 namespace Cell::Vulkan {
 
 Result WSITarget::Present() {
-    const VkPresentInfoKHR presentationInfo = {
+    const VkPresentInfoKHR presentInfo = {
         .sType              = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR,
         .pNext              = nullptr,
 
@@ -20,7 +20,7 @@ Result WSITarget::Present() {
         .pResults           = nullptr
     };
 
-    const VkResult result = vkQueuePresentKHR(this->device->deviceQueueGraphics, &presentationInfo);
+    const VkResult result = vkQueuePresentKHR(this->device->deviceQueueGraphics, &presentInfo);
     switch (result) {
     case VK_SUCCESS: {
         this->renderFrameCounter = (this->renderFrameCounter + 1) % this->swapchainDepth;

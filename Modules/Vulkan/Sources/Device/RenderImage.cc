@@ -1,12 +1,12 @@
 // SPDX-FileCopyrightText: Copyright 2023-2024 Gloria G.
 // SPDX-License-Identifier: BSD-2-Clause
 
+#include <Cell/Vulkan/CommandBuffer.hh>
 #include <Cell/Vulkan/Pipeline.hh>
-#include <Cell/Vulkan/RenderTarget.hh>
 
 namespace Cell::Vulkan {
 
-Result Device::RenderImage(IRenderTarget* target, VkCommandBuffer CELL_NONNULL buffer) {
+Result Device::RenderImage(IRenderTarget* target, CommandBuffer* buffer) {
     Wrapped <AcquiredImage, Result> acquiredResult = target->AcquireNext();
     if (!acquiredResult.IsValid()) {
         return acquiredResult.Result();
@@ -20,14 +20,14 @@ Result Device::RenderImage(IRenderTarget* target, VkCommandBuffer CELL_NONNULL b
         .sType                = VK_STRUCTURE_TYPE_SUBMIT_INFO,
         .pNext                = nullptr,
 
-        .waitSemaphoreCount   = image.usesSync ? (uint32_t)1 : 0,
+        .waitSemaphoreCount   = (uint32_t)(image.usesSync ? 1 : 0),
         .pWaitSemaphores      = &image.available,
         .pWaitDstStageMask    = &stageMask,
 
         .commandBufferCount   = 1,
-        .pCommandBuffers      = &buffer,
+        .pCommandBuffers      = &buffer->buffer,
 
-        .signalSemaphoreCount = image.usesSync ? (uint32_t)1 : 0,
+        .signalSemaphoreCount = (uint32_t)(image.usesSync ? 1 : 0),
         .pSignalSemaphores    = &image.rendered
     };
 

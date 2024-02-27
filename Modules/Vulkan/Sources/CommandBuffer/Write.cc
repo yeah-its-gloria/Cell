@@ -1,139 +1,139 @@
 // SPDX-FileCopyrightText: Copyright 2023-2024 Gloria G.
 // SPDX-License-Identifier: BSD-2-Clause
 
-#include <Cell/Vulkan/CommandBufferManager.hh>
+#include <Cell/Vulkan/CommandBuffer.hh>
 
 namespace Cell::Vulkan {
 
 using namespace CommandParameters;
 
-Result CommandBufferManager::WriteCommands(const uint32_t index, const Command* commands, const uint32_t count) {
-    if (this->buffers.GetCount() < index) {
-        return Result::InvalidParameters;
+Result CommandBuffer::Write(const Collection::IEnumerable<const Command>& commands) {
+    if (this->recordState != RecordState::Recording) {
+        return Result::InvalidState;
     }
 
-    for (uint32_t i = 0; i < count; i++) {
-        switch (commands[i].type) {
+    for (const Command& command : commands) {
+        switch (command.type) {
         case CommandType::BindPipeline: {
-            BindPipeline* parameters = (BindPipeline*)commands[i].parameters;
+            BindPipeline* parameters = (BindPipeline*)command.parameters;
             if (parameters == nullptr) {
                 return Result::InvalidCommandGiven;
             }
 
-            vkCmdBindPipeline(this->buffers[index], parameters->point, parameters->pipeline);
+            vkCmdBindPipeline(this->buffer, parameters->point, parameters->pipeline);
             break;
         }
 
         case CommandType::BindVertexBuffers: {
-            BindVertexBuffers* parameters = (BindVertexBuffers*)commands[i].parameters;
+            BindVertexBuffers* parameters = (BindVertexBuffers*)command.parameters;
             if (parameters == nullptr) {
                 return Result::InvalidCommandGiven;
             }
 
-            vkCmdBindVertexBuffers(this->buffers[index], parameters->bindingFirst, parameters->bindingCount, parameters->buffers, parameters->offsets);
+            vkCmdBindVertexBuffers(this->buffer, parameters->bindingFirst, parameters->bindingCount, parameters->buffers, parameters->offsets);
             break;
         }
 
         case CommandType::BindIndexBuffer: {
-            BindIndexBuffer* parameters = (BindIndexBuffer*)commands[i].parameters;
+            BindIndexBuffer* parameters = (BindIndexBuffer*)command.parameters;
             if (parameters == nullptr) {
                 return Result::InvalidCommandGiven;
             }
 
-            vkCmdBindIndexBuffer(this->buffers[index], parameters->buffer, parameters->offset, parameters->type);
+            vkCmdBindIndexBuffer(this->buffer, parameters->buffer, parameters->offset, parameters->type);
             break;
         }
 
         case CommandType::BindDescriptorSets: {
-            BindDescriptorSets* parameters = (BindDescriptorSets*)commands[i].parameters;
+            BindDescriptorSets* parameters = (BindDescriptorSets*)command.parameters;
             if (parameters == nullptr) {
                 return Result::InvalidCommandGiven;
             }
 
-            vkCmdBindDescriptorSets(this->buffers[index], parameters->point, parameters->layout, parameters->setFirstIndex, parameters->setCount, parameters->sets, parameters->dynamicOffsetCount,
+            vkCmdBindDescriptorSets(this->buffer, parameters->point, parameters->layout, parameters->setFirstIndex, parameters->setCount, parameters->sets, parameters->dynamicOffsetCount,
                                     parameters->dynamicOffsets);
             break;
         }
 
         case CommandType::SetViewport: {
-            VkViewport* parameters = (VkViewport*)commands[i].parameters;
+            VkViewport* parameters = (VkViewport*)command.parameters;
             if (parameters == nullptr) {
                 return Result::InvalidCommandGiven;
             }
 
-            vkCmdSetViewport(this->buffers[index], 0, 1, parameters);
+            vkCmdSetViewport(this->buffer, 0, 1, parameters);
             break;
         }
 
         case CommandType::SetScissor: {
-            VkRect2D* parameters = (VkRect2D*)commands[i].parameters;
+            VkRect2D* parameters = (VkRect2D*)command.parameters;
             if (parameters == nullptr) {
                 return Result::InvalidCommandGiven;
             }
 
-            vkCmdSetScissor(this->buffers[index], 0, 1, parameters);
+            vkCmdSetScissor(this->buffer, 0, 1, parameters);
             break;
         }
 
         case CommandType::SetCullMode: {
-            VkCullModeFlags cullMode = *(VkCullModeFlags*)commands[i].parameters;
-            this->device->instance->setCullMode(this->buffers[index], cullMode);
+            VkCullModeFlags cullMode = *(VkCullModeFlags*)command.parameters;
+            this->device->instance->setCullMode(this->buffer, cullMode);
             break;
         }
 
         case CommandType::Draw: {
-            Draw* parameters = (Draw*)commands[i].parameters;
+            Draw* parameters = (Draw*)command.parameters;
             if (parameters == nullptr) {
                 return Result::InvalidCommandGiven;
             }
 
-            vkCmdDraw(this->buffers[index], parameters->vertexCount, parameters->instanceCount, parameters->vertexFirstIndex, parameters->instanceFirstIndex);
+            vkCmdDraw(this->buffer, parameters->vertexCount, parameters->instanceCount, parameters->vertexFirstIndex, parameters->instanceFirstIndex);
             break;
         }
 
         case CommandType::DrawIndexed: {
-            DrawIndexed* parameters = (DrawIndexed*)commands[i].parameters;
+            DrawIndexed* parameters = (DrawIndexed*)command.parameters;
             if (parameters == nullptr) {
                 return Result::InvalidCommandGiven;
             }
 
-            vkCmdDrawIndexed(this->buffers[index], parameters->indexCount, parameters->instanceCount, parameters->indexFirstIndex, parameters->vertexOffset, parameters->instanceFirstIndex);
+            vkCmdDrawIndexed(this->buffer, parameters->indexCount, parameters->instanceCount, parameters->indexFirstIndex, parameters->vertexOffset, parameters->instanceFirstIndex);
             break;
         }
 
         case CommandType::InsertBarrier: {
-            InsertBarrier* parameters = (InsertBarrier*)commands[i].parameters;
+            InsertBarrier* parameters = (InsertBarrier*)command.parameters;
             if (parameters == nullptr) {
                 return Result::InvalidCommandGiven;
             }
 
-            vkCmdPipelineBarrier(this->buffers[index], parameters->stageMaskSource, parameters->stageMaskDestination, parameters->dependencyFlags, parameters->barrierCount, parameters->barriers,
+            vkCmdPipelineBarrier(this->buffer, parameters->stageMaskSource, parameters->stageMaskDestination, parameters->dependencyFlags, parameters->barrierCount, parameters->barriers,
                                  parameters->bufferCount, parameters->buffers, parameters->imageCount, parameters->images);
             break;
         }
 
         case CommandType::CopyBuffer: {
-            CopyBuffer* parameters = (CopyBuffer*)commands[i].parameters;
+            CopyBuffer* parameters = (CopyBuffer*)command.parameters;
             if (parameters == nullptr) {
                 return Result::InvalidCommandGiven;
             }
 
-            vkCmdCopyBuffer(this->buffers[index], parameters->source, parameters->destination, parameters->regionCount, parameters->regions);
+            vkCmdCopyBuffer(this->buffer, parameters->source, parameters->destination, parameters->regionCount, parameters->regions);
             break;
         }
 
         case CommandType::CopyBufferToImage: {
-            CopyBufferToImage* parameters = (CopyBufferToImage*)commands[i].parameters;
+            CopyBufferToImage* parameters = (CopyBufferToImage*)command.parameters;
             if (parameters == nullptr) {
                 return Result::InvalidCommandGiven;
             }
 
-            vkCmdCopyBufferToImage(this->buffers[index], parameters->source, parameters->destination, parameters->layout, parameters->regionCount, parameters->regions);
+            vkCmdCopyBufferToImage(this->buffer, parameters->source, parameters->destination, parameters->layout, parameters->regionCount, parameters->regions);
             break;
         }
 
         case CommandType::BeginRendering: {
-            BeginRendering* parameters = (BeginRendering*)commands[i].parameters;
+            BeginRendering* parameters = (BeginRendering*)command.parameters;
             if (parameters == nullptr) {
                 return Result::InvalidCommandGiven;
             }
@@ -152,16 +152,16 @@ Result CommandBufferManager::WriteCommands(const uint32_t index, const Command* 
                 .pStencilAttachment   = parameters->stencilAttachments
             };
 
-            this->device->instance->beginRendering(this->buffers[index], &renderingInfo);
+            this->device->instance->beginRendering(this->buffer, &renderingInfo);
             break;
         }
 
         case CommandType::EndRendering: {
-            if (commands[i].parameters != nullptr) {
+            if (command.parameters != nullptr) {
                 return Result::InvalidCommandGiven;
             }
 
-            this->device->instance->endRendering(this->buffers[index]);
+            this->device->instance->endRendering(this->buffer);
             break;
         }
 

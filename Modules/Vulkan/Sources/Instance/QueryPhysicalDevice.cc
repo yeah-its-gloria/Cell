@@ -81,4 +81,33 @@ Wrapped<Instance::QueryPhysicalDeviceResult, Result> Instance::QueryPhysicalDevi
     return result;
 }
 
+Instance::PhysicalDeviceQueues Instance::QueryPhysicalDeviceQueues(VkPhysicalDevice device) {
+    uint32_t graphicsQueue = (uint32_t)-1;
+    uint32_t transferQueue = (uint32_t)-1;
+
+    uint32_t queueFamilyPropertiesCount = 0;
+    vkGetPhysicalDeviceQueueFamilyProperties(device, &queueFamilyPropertiesCount, nullptr);
+
+    System::OwnedBlock<VkQueueFamilyProperties> queueFamilyProperties(queueFamilyPropertiesCount);
+    vkGetPhysicalDeviceQueueFamilyProperties(device, &queueFamilyPropertiesCount, queueFamilyProperties);
+
+    for (uint32_t index = 0; index < queueFamilyPropertiesCount; index++) {
+        if (graphicsQueue == (uint32_t)-1 && queueFamilyProperties[index].queueFlags & VK_QUEUE_GRAPHICS_BIT) {
+            graphicsQueue = index;
+        }
+
+        if (transferQueue == (uint32_t)-1 && queueFamilyProperties[index].queueFlags & VK_QUEUE_TRANSFER_BIT && index != graphicsQueue) {
+            transferQueue = index;
+        }
+
+        if (graphicsQueue != (uint32_t)-1 && transferQueue != (uint32_t)-1) {
+            break;
+        }
+    }
+
+    CELL_ASSERT(graphicsQueue != (uint32_t)-1);
+
+    return Instance::PhysicalDeviceQueues { .graphics = graphicsQueue, .transfer = transferQueue };
+}
+
 }
