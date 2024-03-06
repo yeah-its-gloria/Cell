@@ -57,6 +57,14 @@ public:
     // Sets whether the cursor should be caught by the window (centered + hidden generally).
     virtual Result CaptureState(const bool captured = true) = 0;
 
+    // Logs text to the window, similar to the regular Log function.
+    // Some environments might not properly support this, and instead use the regular log function.
+    // Do note that any renderer attached to a shell will clear the window and make any text messages on it disappear.
+    virtual Result Log(const String& text) = 0;
+
+    // Clears logged messages on the window, if available.
+    virtual Result LogClear() = 0;
+
     // Dispatches all updates and fetches new data.
     CELL_FUNCTION Result RunDispatch();
 

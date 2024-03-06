@@ -7,7 +7,7 @@ namespace Cell::Vulkan {
 
 Result CommandBuffer::Submit() {
     if (this->recordState != RecordState::Recorded) {
-        return Result::InvalidParameters;
+        return Result::InvalidState;
     }
 
     const VkFenceCreateInfo fenceInfo = {

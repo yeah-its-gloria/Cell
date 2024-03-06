@@ -25,9 +25,6 @@ void Example::RendererThread() {
     ScopedObject device = instance->CreateDevice().Unwrap();
     ScopedObject target = device->CreateWSITarget(this->shell).Unwrap();
 
-    Result result = target->SetUpRendering();
-    CELL_ASSERT(result == Result::Success);
-
     VkExtent2D extent = target->GetExtent();
 
     ScopedObject lesbianTexture = VulkanToolsLoadTexture(&device, this->GetContentPath("/Textures/LesbianTex.bin"));
@@ -102,7 +99,7 @@ void Example::RendererThread() {
 
     VulkanToolsLoadShader(&pipeline, this->GetContentPath("/Shaders/Default.spv"));
 
-    result = pipeline->Finalize();
+    Result result = pipeline->Finalize();
     CELL_ASSERT(result == Result::Success);
 
     Collection::List<CommandBuffer*> commandBuffers(target->GetImageCount());
@@ -140,7 +137,7 @@ void Example::RendererThread() {
         uniforms[frameIndex]->Copy(System::UnownedBlock { &ubo });
         VulkanToolsGenerateRenderCommands(vertexCount, indexCount, commandBuffers[frameIndex], &pipeline, &buffer, &target, frameIndex);
 
-        result = device->RenderImage(&target, commandBuffers[frameIndex]);
+        result = commandBuffers[frameIndex]->Submit(&target);
         switch (result) {
         case Result::Success: {
             break;
@@ -162,13 +159,5 @@ void Example::RendererThread() {
 
         finishedTick = System::GetPreciseTickerValue();
         System::Thread::Yield();
-    }
-
-    for (CommandBuffer* commandBuffer : commandBuffers) {
-        delete commandBuffer;
-    }
-
-    for (Buffer* uniform : uniforms) {
-        delete uniform;
     }
 }

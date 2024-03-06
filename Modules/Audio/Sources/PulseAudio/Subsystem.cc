@@ -5,6 +5,10 @@
 #include <Cell/Audio/Implementations/PulseAudio.hh>
 #include <Cell/System/Panic.hh>
 
+Cell::Audio::DeviceInfo::~DeviceInfo() {
+    CELL_UNIMPLEMENTED
+}
+
 namespace Cell::Audio::Implementations::PulseAudio {
 
 Wrapped<Subsystem*, Result> Subsystem::New(const String& title) {
@@ -115,6 +119,24 @@ void Subsystem::StateCallback(pa_context* context, void* userdata) {
     CELL_ASSERT(pulse != nullptr && pulse->context == context);
 
     pulse->contextState = pa_context_get_state(pulse->context);
+}
+
+// TODO: implement these
+
+Wrapped<IRenderer*, Result> Subsystem::CreateRenderer(const DeviceInfo& info, const Format& format) {
+    (void)(info); (void)(format);
+
+    CELL_UNIMPLEMENTED
+}
+
+Wrapped<ICapturer*, Result> Subsystem::CreateLoopback(const DeviceInfo& info, const Format& format) {
+    (void)(info); (void)(format);
+
+    CELL_UNIMPLEMENTED
+}
+
+Wrapped<Collection::List<DeviceInfo>, Result> Subsystem::DiscoverAvailableRenderers() {
+    CELL_UNIMPLEMENTED
 }
 
 }

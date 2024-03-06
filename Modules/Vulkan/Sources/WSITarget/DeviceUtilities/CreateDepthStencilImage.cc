@@ -5,32 +5,30 @@
 #include <Cell/Collection/Single.hh>
 #include <Cell/Vulkan/Image.hh>
 #include <Cell/Vulkan/CommandBuffer.hh>
-#include <Cell/Vulkan/WSITarget.hh>
 
 namespace Cell::Vulkan {
 
-Result WSITarget::SetUpDepthBuffer() {
-    Wrapped<Image*, Result> imageResult = this->device->CreateImage(this->extent.width,
-                                                                    this->extent.height,
-                                                                    VK_FORMAT_D24_UNORM_S8_UINT,
-                                                                    VK_IMAGE_TILING_OPTIMAL,
-                                                                    (VkImageAspectFlagBits)(VK_IMAGE_ASPECT_DEPTH_BIT | VK_IMAGE_ASPECT_STENCIL_BIT),
-                                                                    VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT);
-
+Wrapped<Image*, Result> Device::CreateDepthStencilImage(const VkExtent2D& extent) {
+    Wrapped<Image*, Result> imageResult = this->CreateImage(extent.width,
+                                                            extent.height,
+                                                            VK_FORMAT_D24_UNORM_S8_UINT,
+                                                            VK_IMAGE_TILING_OPTIMAL,
+                                                            (VkImageAspectFlagBits)(VK_IMAGE_ASPECT_DEPTH_BIT | VK_IMAGE_ASPECT_STENCIL_BIT),
+                                                            VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT);
     if (!imageResult.IsValid()) {
         return imageResult.Result();
     }
 
     Image* depthImage = imageResult.Unwrap();
 
-    Wrapped<CommandBuffer*, Result> commandBufferResult = this->device->CreateCommandBuffer();
+    Wrapped<CommandBuffer*, Result> commandBufferResult = this->CreateCommandBuffer();
     if (!commandBufferResult.IsValid()) {
         return commandBufferResult.Result();
     }
 
-    ScopedObject commandBuffer = commandBufferResult.Unwrap();
+    ScopedObject<CommandBuffer> commandBuffer = commandBufferResult.Unwrap();
 
-    const VkImageMemoryBarrier depthImageTransition = {
+    const VkImageMemoryBarrier transition = {
         .sType                           = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER,
         .pNext                           = nullptr,
         .srcAccessMask                   = VK_ACCESS_NONE,
@@ -47,7 +45,7 @@ Result WSITarget::SetUpDepthBuffer() {
         .subresourceRange.layerCount     = 1
     };
 
-    const CommandParameters::InsertBarrier depthImageTransitionBarrier = {
+    const CommandParameters::InsertBarrier transitionParam = {
         .stageMaskSource      = VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT,
         .stageMaskDestination = VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT,
         .dependencyFlags      = 0,
@@ -56,10 +54,10 @@ Result WSITarget::SetUpDepthBuffer() {
         .bufferCount          = 0,
         .buffers              = nullptr,
         .imageCount           = 1,
-        .images               = &depthImageTransition
+        .images               = &transition
     };
 
-    const Command command = { CommandType::InsertBarrier, &depthImageTransitionBarrier };
+    const Command command = { CommandType::InsertBarrier, &transitionParam };
     Result result = commandBuffer->WriteSinglePass(Collection::Single(command));
     if (result != Result::Success) {
         return result;
@@ -71,8 +69,7 @@ Result WSITarget::SetUpDepthBuffer() {
         return result;
     }
 
-    this->depthImage = depthImage;
-    return Result::Success;
+    return depthImage;
 }
 
 }

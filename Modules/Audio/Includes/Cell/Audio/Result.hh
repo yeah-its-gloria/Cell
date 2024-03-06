@@ -31,7 +31,13 @@ enum class Result : uint8_t {
     NotEnoughMemory,
 
     // The necessary underlying services weren't available.
-    ServiceUnavailable
+    ServiceUnavailable,
+
+    // The requested elements (e.g devices) couldn't be found.
+    NothingFound,
+
+    // No more samples could be captured.
+    NoMoreSamples
 };
 
 }

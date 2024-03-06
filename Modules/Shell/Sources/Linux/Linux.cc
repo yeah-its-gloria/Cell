@@ -3,6 +3,7 @@
 
 #include <Cell/Scoped.hh>
 #include <Cell/Shell/Implementations/Linux.hh>
+#include <Cell/System/Log.hh>
 
 namespace Cell::Shell::Implementations {
 
@@ -95,6 +96,15 @@ Result Linux::CaptureState(const bool captured) {
     zwp_locked_pointer_v1_destroy(this->pointerLock);
     this->pointerLock = nullptr;
 
+    return Result::Success;
+}
+
+Result Linux::Log(const String& text) {
+    System::Log(text);
+    return Result::Success;
+}
+
+Result Linux::LogClear() {
     return Result::Success;
 }
 

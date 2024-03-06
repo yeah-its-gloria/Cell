@@ -6,7 +6,10 @@
 #include <Cell/Collection/Enumerable.hh>
 #include <Cell/System/BlockImpl.hh>
 #include <Cell/System/Memory.hh>
-#include <Cell/Utilities/Preprocessor.hh>
+#include <Cell/Utilities/Concepts.hh>
+
+// Yes, I allow this
+#include <initializer_list>
 
 namespace Cell::Collection {
 
@@ -37,6 +40,12 @@ public:
         }
     }
 
+    // Creates a list with all given elements.
+    CELL_INLINE List(const std::initializer_list<T> list) : count(list.size()) {
+        this->data = System::AllocateMemory<T>(this->count);
+        System::CopyMemory<T>(this->data, list.begin(), this->count);
+    }
+
     // Creates a list by copying the entries in the given list.
     CELL_INLINE List(const List<T>& list) : data(nullptr), count(0) {
         if (list.count == 0) {
@@ -48,11 +57,26 @@ public:
         System::CopyMemory<T>(this->data, list.data, this->count);
     }
 
-    // Destructs this list and frees its contents.
-    CELL_INLINE ~List() {
-        if (this->data != nullptr) {
-            System::FreeMemory(this->data);
+    // Destructs this list by deleting every object stored and freeing its memory.
+    CELL_INLINE ~List() requires Utilities::IsDeletable<T> {
+        if (this->data == nullptr) {
+            return;
         }
+
+        for (size_t i = 0; i < this->count; i++) {
+            delete this->data[i];
+        }
+
+        System::FreeMemory(this->data);
+    }
+
+    // Destructs this list's memory.
+    CELL_INLINE ~List() requires (!Utilities::IsDeletable<T>) {
+        if (this->data == nullptr) {
+            return;
+        }
+
+        System::FreeMemory(this->data);
     }
 
     // Appends an element to the end of the list.
@@ -157,9 +181,10 @@ public:
         return this->data;
     }
 
+
     // Overwrites the contents of this list with the given list.
-    CELL_NODISCARD CELL_INLINE List<T>& operator = (const List<T>& list) {
-        if (this == list) {
+    CELL_INLINE List<T>& operator = (const List<T>& list) {
+        if (this->data == list.data) {
             return *this;
         }
 
@@ -201,16 +226,6 @@ private:
     T* data;
     size_t count;
 };
-
-template<> CELL_INLINE List<Cell::Object*>::~List() {
-    if (this->data != nullptr) {
-        for (size_t i = 0; i < this->count; i++) {
-            delete this->data[i];
-        }
-
-        System::FreeMemory(this->data);
-    }
-}
 
 }
 

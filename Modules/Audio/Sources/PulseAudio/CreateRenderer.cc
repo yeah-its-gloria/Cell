@@ -2,11 +2,10 @@
 // SPDX-License-Identifier: BSD-2-Clause
 
 #include <Cell/Audio/Implementations/PulseAudio.hh>
-#include <Cell/System/Panic.hh>
 
 namespace Cell::Audio::Implementations::PulseAudio {
 
-Wrapped<IRenderer*, Result> Subsystem::CreateRenderer(Format format) {
+Wrapped<IRenderer*, Result> Subsystem::CreateRenderer(const Format& format) {
     size_t sampleSize;
     pa_sample_format_t pulseFormat;
 

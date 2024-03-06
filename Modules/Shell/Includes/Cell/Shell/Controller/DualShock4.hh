@@ -11,7 +11,8 @@ namespace Cell::Shell::Controller {
 class DualShock4 : public IController {
 public:
     CELL_FUNCTION static Wrapped<DualShock4*, Result> Find();
-    CELL_FUNCTION ~DualShock4() override;
+    CELL_FUNCTION ~DualShock4();
+
     CELL_FUNCTION Result Update() override;
 
     CELL_NON_COPYABLE(DualShock4)

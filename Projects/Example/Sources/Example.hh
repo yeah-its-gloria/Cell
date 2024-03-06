@@ -17,7 +17,7 @@ public:
     CELL_FUNCTION_INTERNAL void Launch(const Cell::String& parameterString);
 
     CELL_INLINE Cell::String GetContentPath(const Cell::String& string) {
-        return Cell::String("./Project/Content") + string;
+        return Cell::String("./Projects/Example/Content") + string;
     }
 
 private:

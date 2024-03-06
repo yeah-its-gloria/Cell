@@ -22,9 +22,13 @@ target_link_libraries(CellAudio PUBLIC CellCore)
 
 if (WIN32)
     target_sources(CellAudio PRIVATE
-       ${CMAKE_CURRENT_LIST_DIR}/Sources/WASAPI/NotificationImpl.hh
+        ${CMAKE_CURRENT_LIST_DIR}/Sources/WASAPI/NotificationImpl.hh
 
+        ${CMAKE_CURRENT_LIST_DIR}/Sources/WASAPI/Capturer.cc
+        ${CMAKE_CURRENT_LIST_DIR}/Sources/WASAPI/CreateLoopback.cc
         ${CMAKE_CURRENT_LIST_DIR}/Sources/WASAPI/CreateRenderer.cc
+        ${CMAKE_CURRENT_LIST_DIR}/Sources/WASAPI/DiscoverAvailableRenderers.cc
+        ${CMAKE_CURRENT_LIST_DIR}/Sources/WASAPI/FindDevice.cc
         ${CMAKE_CURRENT_LIST_DIR}/Sources/WASAPI/NotificationImpl.cc
         ${CMAKE_CURRENT_LIST_DIR}/Sources/WASAPI/Renderer.cc
         ${CMAKE_CURRENT_LIST_DIR}/Sources/WASAPI/Subsystem.cc

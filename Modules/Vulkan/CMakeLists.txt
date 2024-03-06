@@ -36,6 +36,7 @@ add_library(CellVulkan ${CELL_LIBRARY_TYPE}
     ${CMAKE_CURRENT_LIST_DIR}/Sources/CommandBuffer/CommandBuffer.cc
     ${CMAKE_CURRENT_LIST_DIR}/Sources/CommandBuffer/Create.cc
     ${CMAKE_CURRENT_LIST_DIR}/Sources/CommandBuffer/Submit.cc
+    ${CMAKE_CURRENT_LIST_DIR}/Sources/CommandBuffer/SubmitRender.cc
     ${CMAKE_CURRENT_LIST_DIR}/Sources/CommandBuffer/Write.cc
 
 # ------------------------------------------------------------------------------------------------
@@ -43,7 +44,6 @@ add_library(CellVulkan ${CELL_LIBRARY_TYPE}
     ${CMAKE_CURRENT_LIST_DIR}/Sources/Device/CreateImageView.cc
     ${CMAKE_CURRENT_LIST_DIR}/Sources/Device/Device.cc
     ${CMAKE_CURRENT_LIST_DIR}/Sources/Device/GetMemoryTypeIndex.cc
-    ${CMAKE_CURRENT_LIST_DIR}/Sources/Device/RenderImage.cc
 
 # ------------------------------------------------------------------------------------------------
 
@@ -69,15 +69,14 @@ add_library(CellVulkan ${CELL_LIBRARY_TYPE}
     ${CMAKE_CURRENT_LIST_DIR}/Sources/WSITarget/Platform.hh
 
     ${CMAKE_CURRENT_LIST_DIR}/Sources/WSITarget/AcquireNext.cc
-    ${CMAKE_CURRENT_LIST_DIR}/Sources/WSITarget/CreateSwapchain.cc
-    ${CMAKE_CURRENT_LIST_DIR}/Sources/WSITarget/PrepareSwapchain.cc
+    ${CMAKE_CURRENT_LIST_DIR}/Sources/WSITarget/Create.cc
     ${CMAKE_CURRENT_LIST_DIR}/Sources/WSITarget/Present.cc
     ${CMAKE_CURRENT_LIST_DIR}/Sources/WSITarget/Recreate.cc
-    ${CMAKE_CURRENT_LIST_DIR}/Sources/WSITarget/RetrieveProperties.cc
-    ${CMAKE_CURRENT_LIST_DIR}/Sources/WSITarget/SetUpSynchronization.cc
-    ${CMAKE_CURRENT_LIST_DIR}/Sources/WSITarget/SetUpDepthBuffer.cc
-    ${CMAKE_CURRENT_LIST_DIR}/Sources/WSITarget/SetUpRendering.cc
     ${CMAKE_CURRENT_LIST_DIR}/Sources/WSITarget/WSITarget.cc
+
+    ${CMAKE_CURRENT_LIST_DIR}/Sources/WSITarget/DeviceUtilities/CreateDepthStencilImage.cc
+    ${CMAKE_CURRENT_LIST_DIR}/Sources/WSITarget/DeviceUtilities/CreateSwapchainForSurface.cc
+    ${CMAKE_CURRENT_LIST_DIR}/Sources/WSITarget/DeviceUtilities/GetSurfaceData.cc
 )
 
 target_compile_definitions(CellVulkan PUBLIC "CELL_MODULES_VULKAN_AVAILABLE=1")

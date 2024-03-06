@@ -115,4 +115,27 @@ Result Windows::CaptureState(const bool captured) {
     return this->IndicateStatus(ShellStatus::Default);
 }
 
+Result Windows::Log(const String& text) {
+    ScopedBlock<wchar_t> textWide = text.ToPlatformWideString();
+
+    HWND textWnd = CreateWindowExW(0, L"STATIC", textWide, WS_VISIBLE | WS_CHILD | SS_LEFT, 10, 30 * this->messages.GetCount(), 1000, 30, window, nullptr, instance, nullptr);
+    if (textWnd == nullptr) {
+        System::Panic("CreateWindowExW failed");
+    }
+
+    SendMessage(textWnd, WM_SETFONT, (WPARAM)this->font, (LPARAM)MAKELONG(TRUE, 0));
+
+    this->messages.Append(textWnd);
+    return Result::Success;
+}
+
+Result Windows::LogClear() {
+    for (HWND& text : this->messages) {
+        DestroyWindow(text);
+    }
+
+    this->messages.Reset();
+    return Result::Success;
+}
+
 }

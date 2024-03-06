@@ -12,16 +12,11 @@ namespace Cell::Shell::Implementations {
 // Shell implementation for Windows.
 class Windows : public IShell {
 public:
-    // Creates a new shell instance.
     CELL_FUNCTION static Wrapped<Windows*, Result> New(const String& title, const Extent extent);
 
-    // Destructs the shell instance.
-    CELL_FUNCTION ~Windows() override;
+    CELL_FUNCTION ~Windows();
 
-    // Returns a handle to the instance of the currently running executable.
     CELL_INLINE HINSTANCE GetInstance() { return this->instance; }
-
-    // Returns a handle to the engine window.
     CELL_INLINE HWND GetWindow() { return this->window; }
 
     CELL_FUNCTION Result RequestQuit() override;
@@ -30,11 +25,13 @@ public:
     CELL_FUNCTION Result SetNewTitle(const String& title) override;
     CELL_FUNCTION Result IndicateStatus(const ShellStatus status) override;
     CELL_FUNCTION Result CaptureState(const bool captured) override;
+    CELL_FUNCTION Result Log(const String& text) override;
+    CELL_FUNCTION Result LogClear() override;
 
     CELL_NON_COPYABLE(Windows)
 
 private:
-    CELL_INLINE Windows(HINSTANCE CELL_NONNULL instance, HWND CELL_NONNULL window, WNDCLASSEXW windowClass) : instance(instance), window(window), windowClass(windowClass) { }
+    CELL_INLINE CELL_FUNCTION_INTERNAL Windows(HINSTANCE CELL_NONNULL i, HWND CELL_NONNULL w, HFONT CELL_NONNULL f, const WNDCLASSEXW& c) : instance(i), window(w), font(f), windowClass(c) { }
 
     CELL_FUNCTION_INTERNAL Result RunDispatchImpl() override;
 
@@ -43,7 +40,10 @@ private:
 
     HINSTANCE instance;
     HWND window;
+    HFONT font;
     WNDCLASSEXW windowClass;
+
+    Collection::List<HWND> messages;
 
     bool shouldCapture = false;
 

@@ -3,6 +3,7 @@
 
 #pragma once
 
+#include <Cell/Audio/Capturer.hh>
 #include <Cell/Audio/Renderer.hh>
 #include <Cell/System/Platform/Windows/Includes.h>
 
@@ -17,15 +18,21 @@ class CellMMNotificationClient;
 class Subsystem : public ISubsystem {
 public:
     CELL_FUNCTION static Wrapped<Subsystem*, Result> New(const String& title);
-    CELL_FUNCTION ~Subsystem() override;
-    CELL_FUNCTION Wrapped<IRenderer*, Result> CreateRenderer(Format format) override;
+    CELL_FUNCTION ~Subsystem();
+    CELL_FUNCTION Wrapped<IRenderer*, Result> CreateRenderer(const Format& format) override;
+    CELL_FUNCTION Wrapped<IRenderer*, Result> CreateRenderer(const DeviceInfo& info, const Format& format) override;
+    CELL_FUNCTION Wrapped<ICapturer*, Result> CreateLoopback(const DeviceInfo& info, const Format& format) override;
+    CELL_FUNCTION Wrapped<Collection::List<DeviceInfo>, Result> DiscoverAvailableRenderers() override;
 
     CELL_NON_COPYABLE(Subsystem)
 
 private:
-
-    CELL_FUNCTION_INTERNAL Subsystem(IMMDeviceEnumerator* CELL_NONNULL e, CellMMNotificationClient* CELL_NONNULL n, const String& t)
+    CELL_FUNCTION_INTERNAL CELL_INLINE Subsystem(IMMDeviceEnumerator* CELL_NONNULL e, CellMMNotificationClient* CELL_NONNULL n, const String& t)
         : enumerator(e), notificationClient(n), title(t) { }
+
+    CELL_FUNCTION_INTERNAL Wrapped<IMMDevice*, Result> FindDeviceByID(LPWSTR id);
+    CELL_FUNCTION_INTERNAL Wrapped<IAudioClient3*, Result> ActivateClientImpl(IMMDevice* device, const Format& format, const uint32_t flags);
+    CELL_FUNCTION_INTERNAL Wrapped<IRenderer*, Result> CreateRendererImpl(IMMDevice* device, const Format& format);
 
     IMMDeviceEnumerator* enumerator;
     CellMMNotificationClient* notificationClient;
@@ -37,7 +44,8 @@ class Renderer : public IRenderer {
 friend Subsystem;
 
 public:
-    CELL_FUNCTION ~Renderer() override;
+    CELL_FUNCTION ~Renderer();
+
     CELL_FUNCTION Result Start() override;
     CELL_FUNCTION Result Stop() override;
     CELL_FUNCTION Result Submit(const IBlock& block) override;
@@ -48,11 +56,11 @@ public:
     CELL_NON_COPYABLE(Renderer)
 
 private:
-    CELL_INLINE Renderer(Subsystem*          CELL_NONNULL s,
-                         IMMDevice*          CELL_NONNULL d,
-                         IAudioClient3*      CELL_NONNULL c,
-                         IAudioRenderClient* CELL_NONNULL rc,
-                         size_t                           ss)
+    CELL_FUNCTION_INTERNAL CELL_INLINE Renderer(Subsystem*          CELL_NONNULL s,
+                                                IMMDevice*          CELL_NONNULL d,
+                                                IAudioClient3*      CELL_NONNULL c,
+                                                IAudioRenderClient* CELL_NONNULL rc,
+                                                size_t                           ss)
         : subsystem(s),
           device(d),
           client(c),
@@ -64,6 +72,40 @@ private:
     IMMDevice* device;
     IAudioClient3* client;
     IAudioRenderClient* renderClient;
+
+    size_t sampleSize;
+};
+
+// WASAPI capturer implementation.
+class Capturer : public ICapturer {
+friend Subsystem;
+
+public:
+    CELL_FUNCTION ~Capturer();
+
+    CELL_FUNCTION Result Start() override;
+    CELL_FUNCTION Result Stop() override;
+    CELL_FUNCTION Result Fetch(System::OwnedBlock<uint8_t>& out) override;
+
+    CELL_NON_COPYABLE(Capturer)
+
+private:
+    CELL_FUNCTION_INTERNAL CELL_INLINE Capturer(Subsystem*           CELL_NONNULL s,
+                                                IMMDevice*           CELL_NONNULL d,
+                                                IAudioClient3*       CELL_NONNULL c,
+                                                IAudioCaptureClient* CELL_NONNULL cc,
+                                                size_t                            ss)
+        : subsystem(s),
+          device(d),
+          client(c),
+          captureClient(cc),
+          sampleSize(ss) { }
+
+    Subsystem* subsystem;
+
+    IMMDevice* device;
+    IAudioClient3* client;
+    IAudioCaptureClient* captureClient;
 
     size_t sampleSize;
 };

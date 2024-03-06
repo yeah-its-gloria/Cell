@@ -54,6 +54,7 @@ add_library(CellCore ${CELL_LIBRARY_TYPE}
     ${CORE_INCLUDES_DIR}/Cell/System/Timer.hh
 
     ${CORE_INCLUDES_DIR}/Cell/Utilities/Byteswap.hh
+    ${CORE_INCLUDES_DIR}/Cell/Utilities/Concepts.hh
     ${CORE_INCLUDES_DIR}/Cell/Utilities/MinMaxClamp.hh
     ${CORE_INCLUDES_DIR}/Cell/Utilities/Preprocessor.hh
 
@@ -182,6 +183,7 @@ if (CELL_ENABLE_TESTS)
     cell_add_test(Utilities)
 
     if (WIN32 AND CELL_ENABLE_TESTS_LIKELY_FAILURE)
+        cell_add_test(Movement)
         cell_add_test(WindowsDirectoryInspection)
     endif()
 endif ()

@@ -69,7 +69,7 @@ void Example::Launch(const String& parameterString) {
            || xr.IsActive()
 #endif
     ) {
-        this->shellDeltaTime = Utilities::Minimum((System::GetPreciseTickerValue() - finishedTick) / 1000.f, 0.001f);
+        this->shellDeltaTime = Utilities::Minimum((GetPreciseTickerValue() - finishedTick) / 1000.f, 0.001f);
 
         shellResult = this->shell->RunDispatch();
         if (shellResult == Shell::Result::RequestedQuit) {
@@ -79,7 +79,7 @@ void Example::Launch(const String& parameterString) {
         CELL_ASSERT(shellResult == Shell::Result::Success);
 
         finishedTick = GetPreciseTickerValue();
-        System::Thread::Yield();
+        Thread::Yield();
     }
 
     audio.Join();

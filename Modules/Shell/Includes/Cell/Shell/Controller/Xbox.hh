@@ -11,7 +11,8 @@ namespace Cell::Shell::Controller {
 class Xbox : public IController {
 public:
     CELL_FUNCTION static Wrapped<Xbox*, Result> Find();
-    CELL_FUNCTION ~Xbox() override;
+    CELL_FUNCTION ~Xbox();
+
     CELL_FUNCTION Result Update() override;
 
     CELL_NON_COPYABLE(Xbox)

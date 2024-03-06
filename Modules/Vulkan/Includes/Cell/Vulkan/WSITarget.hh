@@ -11,75 +11,52 @@
 namespace Cell::Vulkan {
 
 // Vulkan WSI implementation.
-class WSITarget final : public IRenderTarget {
+class WSITarget : public IRenderTarget {
 friend Device;
 
 public:
-    CELL_FUNCTION ~WSITarget() override;
+    CELL_FUNCTION ~WSITarget();
 
-    CELL_FUNCTION Result SetUpRendering();
     CELL_FUNCTION Result Recreate();
 
-    CELL_INLINE uint32_t GetFrameCounter() { return this->renderFrameCounter; }
-    CELL_INLINE VkImageView GetSwapchainImageViewForCurrentIndex() { return this->swapchainImageViews[this->renderImageIndex]; }
-    CELL_INLINE VkImage GetSwapchainImageForCurrentIndex() { return this->swapchainImages[this->renderImageIndex]; }
-    CELL_INLINE Image* GetDepthImage() { return this->depthImage; }
+    CELL_FUNCTION uint32_t GetFrameCounter();
+    CELL_FUNCTION VkImageView GetSwapchainImageViewForCurrentIndex();
+    CELL_FUNCTION VkImage GetSwapchainImageForCurrentIndex();
+    CELL_FUNCTION Image* GetDepthImage();
 
     CELL_FUNCTION Wrapped<AcquiredImage, Result> AcquireNext() override;
     CELL_FUNCTION Result Present() override;
 
-    CELL_INLINE VkExtent2D GetExtent() override { return this->extent; }
-    CELL_INLINE VkFormat GetColorFormat() override { return this->format.format; }
-    CELL_INLINE uint32_t GetImageCount() override { return this->swapchainDepth; }
-    CELL_INLINE uint32_t GetCurrentImageIndex() override { return this->renderImageIndex; }
-    CELL_INLINE VkImage GetColorImage(const uint32_t index) override { return this->swapchainImages[index]; }
-    CELL_INLINE VkImageView GetColorImageView(const uint32_t index) override { return this->swapchainImageViews[index]; }
-    CELL_INLINE VkImageView GetDepthImageView(const uint32_t index) override { (void)(index); return this->depthImage->GetViewHandle(); }
+    CELL_FUNCTION VkExtent2D GetExtent() override;
+    CELL_FUNCTION VkFormat GetColorFormat() override;
+    CELL_FUNCTION uint32_t GetImageCount() override;
+    CELL_FUNCTION uint32_t GetCurrentImageIndex() override;
+    CELL_FUNCTION VkImage GetColorImage(const uint32_t index) override;
+    CELL_FUNCTION VkImageView GetColorImageView(const uint32_t index) override;
+    CELL_FUNCTION VkImageView GetDepthImageView(const uint32_t index) override;
 
     CELL_NON_COPYABLE(WSITarget)
 
 private:
-    WSITarget(Vulkan::Device* dev,
-              Shell::IShell* shell,
-              VkSurfaceKHR surf,
-              const VkSurfaceFormatKHR fmt,
-              const VkPresentModeKHR mode,
-              const uint32_t depth = 4)
-        : device(dev),
-          shell(shell),
-          surface(surf),
-          format(fmt),
-          presentMode(mode),
-          swapchainDepth(depth) { }
-
-    CELL_FUNCTION_INTERNAL Result RetrieveProperties();
-    CELL_FUNCTION_INTERNAL Result CreateSwapchain();
-    CELL_FUNCTION_INTERNAL Result PrepareSwapchain();
-    CELL_FUNCTION_INTERNAL Result SetUpDepthBuffer();
-    CELL_FUNCTION_INTERNAL Result SetUpSynchronization();
-
-    Vulkan::Device* device;
-    Shell::IShell* shell;
-
-    VkSurfaceCapabilitiesKHR capabilities = {
-        .minImageCount = 0,
-        .maxImageCount = 0,
-        .currentExtent = { 0, 0 },
-        .minImageExtent = { 0, 0 },
-        .maxImageExtent = { 0, 0 },
-        .maxImageArrayLayers = 0,
-        .supportedTransforms = 0,
-        .currentTransform = (VkSurfaceTransformFlagBitsKHR)0,
-        .supportedCompositeAlpha = 0,
-        .supportedUsageFlags = 0
-    };
+    CELL_FUNCTION_INTERNAL CELL_INLINE WSITarget(VkSurfaceKHR s, const uint8_t d, const VkSurfaceCapabilitiesKHR& c,
+                                                 const VkSurfaceFormatKHR f, const VkPresentModeKHR p, const VkExtent2D e,
+                                                 VkSwapchainKHR sc, Collection::List<VkImage>& i,
+                                                 Collection::List<VkImageView>& v, Image*& di,
+                                                 Collection::List<VkSemaphore>& ia, Collection::List<VkSemaphore>& rf,
+                                                 Collection::List<VkFence>& iff, Device* de, Shell::IShell* sh)
+        : surface(s), capabilities(c), format(f), mode(p), extent(e),
+          swapchain(sc), depth(d), swapchainImages(i), swapchainImageViews(v),
+          imageAvailable(ia), renderFinished(rf), inFlightFrames(iff), depthImage(di),
+          device(de), shell(sh) { }
 
     VkSurfaceKHR surface;
+    VkSurfaceCapabilitiesKHR capabilities;
     VkSurfaceFormatKHR format;
-    VkPresentModeKHR presentMode;
-    VkExtent2D extent = { 0, 0 };
+    VkPresentModeKHR mode;
+    VkExtent2D extent;
+    VkSwapchainKHR swapchain;
+    uint32_t depth;
 
-    VkSwapchainKHR swapchain = nullptr;
     Collection::List<VkImage> swapchainImages;
     Collection::List<VkImageView> swapchainImageViews;
 
@@ -87,12 +64,13 @@ private:
     Collection::List<VkSemaphore> renderFinished;
     Collection::List<VkFence> inFlightFrames;
 
+    Image* depthImage;
+
+    Vulkan::Device* device;
+    Shell::IShell* shell;
+
     uint32_t renderImageIndex = 0;
     uint32_t renderFrameCounter = 0;
-
-    uint32_t swapchainDepth;
-
-    Image* depthImage = nullptr;
 };
 
 }

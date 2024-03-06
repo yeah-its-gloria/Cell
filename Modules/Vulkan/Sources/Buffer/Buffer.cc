@@ -19,8 +19,8 @@ Wrapped<Buffer*, Result> Device::CreateBuffer(const size_t size, const VkBufferU
         .pQueueFamilyIndices   = nullptr
     };
 
-    VkBuffer vkBuffer = nullptr;
-    VkResult result = vkCreateBuffer(this->device, &bufferInfo, nullptr, &vkBuffer);
+    VkBuffer buffer = nullptr;
+    VkResult result = vkCreateBuffer(this->device, &bufferInfo, nullptr, &buffer);
     switch (result) {
     case VK_SUCCESS: {
         break;
@@ -40,14 +40,14 @@ Wrapped<Buffer*, Result> Device::CreateBuffer(const size_t size, const VkBufferU
     }
 
     VkMemoryRequirements requirements;
-    vkGetBufferMemoryRequirements(this->device, vkBuffer, &requirements);
+    vkGetBufferMemoryRequirements(this->device, buffer, &requirements);
 
     const VkMemoryAllocateInfo allocationInfo = {
         .sType           = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO,
         .pNext           = nullptr,
 
         .allocationSize  = requirements.size,
-        .memoryTypeIndex = this->GetMemoryTypeIndex(vkBuffer, type)
+        .memoryTypeIndex = this->GetMemoryTypeIndex(buffer, type)
     };
 
     VkDeviceMemory memory = nullptr;
@@ -58,12 +58,12 @@ Wrapped<Buffer*, Result> Device::CreateBuffer(const size_t size, const VkBufferU
     }
 
     case VK_ERROR_OUT_OF_HOST_MEMORY: {
-        vkDestroyBuffer(this->device, vkBuffer, nullptr);
+        vkDestroyBuffer(this->device, buffer, nullptr);
         return Result::OutOfHostMemory;
     }
 
     case VK_ERROR_OUT_OF_DEVICE_MEMORY: {
-        vkDestroyBuffer(this->device, vkBuffer, nullptr);
+        vkDestroyBuffer(this->device, buffer, nullptr);
         return Result::OutOfDeviceMemory;
     }
 
@@ -72,20 +72,20 @@ Wrapped<Buffer*, Result> Device::CreateBuffer(const size_t size, const VkBufferU
     }
     }
 
-    result = vkBindBufferMemory(this->device, vkBuffer, memory, 0);
+    result = vkBindBufferMemory(this->device, buffer, memory, 0);
     switch (result) {
     case VK_SUCCESS: {
         break;
     }
 
     case VK_ERROR_OUT_OF_HOST_MEMORY: {
-        vkDestroyBuffer(this->device, vkBuffer, nullptr);
+        vkDestroyBuffer(this->device, buffer, nullptr);
         vkFreeMemory(this->device, memory, nullptr);
         return Result::OutOfHostMemory;
     }
 
     case VK_ERROR_OUT_OF_DEVICE_MEMORY: {
-        vkDestroyBuffer(this->device, vkBuffer, nullptr);
+        vkDestroyBuffer(this->device, buffer, nullptr);
         vkFreeMemory(this->device, memory, nullptr);
         return Result::OutOfDeviceMemory;
     }
@@ -95,7 +95,7 @@ Wrapped<Buffer*, Result> Device::CreateBuffer(const size_t size, const VkBufferU
     }
     }
 
-    return new Buffer(this, vkBuffer, memory);
+    return new Buffer(this, buffer, memory);
 }
 
 Buffer::~Buffer() {

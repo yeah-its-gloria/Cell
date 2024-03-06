@@ -15,8 +15,13 @@ friend class Renderer;
 
 public:
     CELL_FUNCTION static Wrapped<Subsystem*, Result> New(const String& title);
-    CELL_FUNCTION ~Subsystem() override;
-    CELL_FUNCTION Wrapped<IRenderer*, Result> CreateRenderer(Format format) override;
+    CELL_FUNCTION ~Subsystem();
+
+    CELL_FUNCTION Wrapped<IRenderer*, Result> CreateRenderer(const Format& format) override;
+
+    CELL_FUNCTION Wrapped<IRenderer*, Result> CreateRenderer(const DeviceInfo& info, const Format& format) override;
+    CELL_FUNCTION Wrapped<ICapturer*, Result> CreateLoopback(const DeviceInfo& info, const Format& format) override;
+    CELL_FUNCTION Wrapped<Collection::List<DeviceInfo>, Result> DiscoverAvailableRenderers() override;
 
     CELL_NON_COPYABLE(Subsystem)
 
@@ -35,7 +40,8 @@ class Renderer : public IRenderer {
 friend Subsystem;
 
 public:
-    CELL_FUNCTION ~Renderer() override;
+    CELL_FUNCTION ~Renderer();
+
     CELL_FUNCTION Result Start() override;
     CELL_FUNCTION Result Stop() override;
     CELL_FUNCTION Result Submit(const IBlock& block) override;

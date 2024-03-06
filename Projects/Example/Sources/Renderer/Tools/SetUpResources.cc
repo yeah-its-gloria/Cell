@@ -10,10 +10,10 @@ using namespace Cell;
 using namespace Cell::Vulkan;
 
 void VulkanToolsSetUpResources(Pipeline* pipeline, Collection::List<Buffer*>& uniforms, Image* texture1, Image* texture2, IRenderTarget* target) {
-    ResourceBinding bindings[] = {
-        { .type = ResourceType::Buffer, .stage = Stage::Vertex },
-        { .type = ResourceType::Image, .stage = Stage::Fragment },
-        { .type = ResourceType::Image, .stage = Stage::Fragment }
+    const Collection::List<ResourceBinding> bindings = {
+        { .type = ResourceType::Buffer, .stage = Stage::Vertex   },
+        { .type = ResourceType::Image,  .stage = Stage::Fragment },
+        { .type = ResourceType::Image,  .stage = Stage::Fragment }
     };
 
     Collection::List<ResourceDescriptor> descriptors(3 * target->GetImageCount()); // 3 resources per image
@@ -30,6 +30,6 @@ void VulkanToolsSetUpResources(Pipeline* pipeline, Collection::List<Buffer*>& un
         descriptors[i + 2].imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
     }
 
-    const Result result = pipeline->AddResources(Collection::Array(&bindings), descriptors);
+    const Result result = pipeline->AddResources(bindings, descriptors);
     CELL_ASSERT(result == Result::Success);
 }

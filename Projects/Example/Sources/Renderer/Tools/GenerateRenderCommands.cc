@@ -142,7 +142,7 @@ void VulkanToolsGenerateRenderCommands(const uint32_t vertexCount,
         .extent = extent
     };
 
-    VkCullModeFlags cullMode = VK_CULL_MODE_BACK_BIT;
+    VkCullModeFlags cullMode = VK_CULL_MODE_NONE;
 
     const CommandParameters::DrawIndexed drawParameters = {
         .indexCount = drawCount,

@@ -73,7 +73,7 @@ if(NOT DEFINED CMAKE_BUILD_TYPE AND NOT DEFINED CMAKE_CONFIGURATION_TYPES)
 endif()
 
 option(CELL_ENABLE_EDITOR "Whether the editor should be built. Defaults to ON." ON)
-option(CELL_ENABLE_PROJECT "Whether the in tree project should be built. Defaults to ON." ON)
+option(CELL_ENABLE_PROJECTS "Whether the in tree projects should be built. Defaults to ON." ON)
 option(CELL_ENABLE_UTILITIES "Whether utilities should be built. Defaults to ON." ON)
 
 option(CELL_ENABLE_STATIC_BUILD "Whether the libraries (core, modules, etc) should be build statically. Defaults to OFF." OFF)
@@ -111,6 +111,8 @@ if (CELL_ENABLE_EDITOR)
     add_subdirectory(${PROJECT_ROOT_DIR}/Editor)
 endif ()
 
-if (CELL_ENABLE_PROJECT)
-    add_subdirectory(${PROJECT_ROOT_DIR}/Project)
+if (CELL_ENABLE_PROJECTS)
+    add_subdirectory(${PROJECT_ROOT_DIR}/Projects/Example)
+
+    add_subdirectory(${PROJECT_ROOT_DIR}/Projects/AudioDuplicator)
 endif ()

@@ -8,7 +8,7 @@
 
 namespace Cell::Audio {
 
-// Base audio renderer interface.
+// Base audio rendering interface.
 class IRenderer : public Object {
 public:
     virtual ~IRenderer() = default;

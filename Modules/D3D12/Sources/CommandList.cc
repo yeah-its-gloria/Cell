@@ -7,12 +7,12 @@
 namespace Cell::D3D12 {
 
 Wrapped<CommandList*, Result> Device::CreateCommandList(Pipeline* pipeline) {
-    ID3D12GraphicsCommandList* list = nullptr;
+    ID3D12GraphicsCommandList1* list = nullptr;
     HRESULT result = this->device->CreateCommandList(0,
                                                      D3D12_COMMAND_LIST_TYPE_DIRECT,
                                                      this->commandAllocator,
                                                      pipeline->state,
-                                                     __uuidof(ID3D12GraphicsCommandList),
+                                                     __uuidof(ID3D12GraphicsCommandList1),
                                                      (void**)&list);
 
     switch (result) {

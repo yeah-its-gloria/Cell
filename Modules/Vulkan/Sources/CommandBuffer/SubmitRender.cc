@@ -6,8 +6,12 @@
 
 namespace Cell::Vulkan {
 
-Result Device::RenderImage(IRenderTarget* target, CommandBuffer* buffer) {
-    Wrapped <AcquiredImage, Result> acquiredResult = target->AcquireNext();
+Result CommandBuffer::Submit(IRenderTarget* target) {
+    if (this->recordState != RecordState::Recorded || this->queueRef != this->device->deviceQueueGraphics) {
+        return Result::InvalidState;
+    }
+
+    Wrapped<AcquiredImage, Result> acquiredResult = target->AcquireNext();
     if (!acquiredResult.IsValid()) {
         return acquiredResult.Result();
     }
@@ -25,14 +29,14 @@ Result Device::RenderImage(IRenderTarget* target, CommandBuffer* buffer) {
         .pWaitDstStageMask    = &stageMask,
 
         .commandBufferCount   = 1,
-        .pCommandBuffers      = &buffer->buffer,
+        .pCommandBuffers      = &this->buffer,
 
         .signalSemaphoreCount = (uint32_t)(image.usesSync ? 1 : 0),
         .pSignalSemaphores    = &image.rendered
     };
 
-    VkResult vkResult = vkQueueSubmit(this->deviceQueueGraphics, 1, &submitInfo, image.usesSync ? image.inFlight : nullptr);
-    switch (vkResult) {
+    VkResult result = vkQueueSubmit(this->queueRef, 1, &submitInfo, image.usesSync ? image.inFlight : nullptr);
+    switch (result) {
     case VK_SUCCESS: {
         break;
     }
@@ -54,13 +58,13 @@ Result Device::RenderImage(IRenderTarget* target, CommandBuffer* buffer) {
     }
     }
 
-    Result result = target->Present();
-    if (result != Result::Success) {
-        return result;
+    const Result presentResult = target->Present();
+    if (presentResult != Result::Success) {
+        return presentResult;
     }
 
-    vkResult = vkDeviceWaitIdle(this->device);
-    switch (vkResult) {
+    result = vkDeviceWaitIdle(this->device->device);
+    switch (result) {
     case VK_SUCCESS: {
         break;
     }

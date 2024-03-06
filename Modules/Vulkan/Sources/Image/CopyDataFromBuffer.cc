@@ -105,7 +105,7 @@ Result Image::CopyDataFromBuffer(Buffer* buffer) {
         .images               = &barrierSecondData
     };
 
-    const Command commands[3] = {
+    const Collection::List<const Command> commands = {
         { CommandType::InsertBarrier,     &barrierFirstParameters },
         { CommandType::CopyBufferToImage, &copyParameters },
         { CommandType::InsertBarrier,     &barrierSecondParameters }
@@ -116,9 +116,9 @@ Result Image::CopyDataFromBuffer(Buffer* buffer) {
         return commandBufferResult.Result();
     }
 
-    ScopedObject commandBuffer = commandBufferResult.Unwrap();
+    ScopedObject<CommandBuffer> commandBuffer = commandBufferResult.Unwrap();
 
-    const Result result = commandBuffer->WriteSinglePass(Collection::Array(&commands));
+    const Result result = commandBuffer->WriteSinglePass(commands);
     if (result != Result::Success) {
         return result;
     }

@@ -27,16 +27,16 @@ Result String::Append(const String& string) {
     return Result::Success;
 }
 
-Result String::Append(const char* data) {
-    const size_t dataSize = StringDetails::RawStringSize(data);
+Result String::Append(const char* input) {
+    const size_t dataSize = StringDetails::RawStringSize(input);
 
-    if (this->IsEmpty()) {
+    if (this->size == 0) {
         this->data = AllocateMemory<char>(dataSize);
     } else {
         ReallocateMemory<char>(&this->data, this->size + dataSize);
     }
 
-    CopyMemory<char>(this->data + this->size, data, dataSize);
+    CopyMemory<char>(this->data + this->size, input, dataSize);
     this->size += dataSize;
 
     return Result::Success;

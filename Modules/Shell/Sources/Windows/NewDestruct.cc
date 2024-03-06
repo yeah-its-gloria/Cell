@@ -67,7 +67,34 @@ Wrapped<Windows*, Result> Windows::New(const String& title, const Extent extent)
         System::Panic("CreateWindowExW failed");
     }
 
-    Windows* windows = new Windows(instance, window, windowClass);
+    HDC hdc = GetDC(window);
+    CELL_ASSERT(hdc != nullptr);
+
+    const LOGFONT logFont = {
+        .lfHeight         = -MulDiv(16, GetDeviceCaps(hdc, LOGPIXELSY), 72),
+        .lfWidth          = 0,
+        .lfEscapement     = 0,
+        .lfOrientation    = 0,
+        .lfWeight         = FW_BOLD,
+        .lfItalic         = 0,
+        .lfUnderline      = 0,
+        .lfStrikeOut      = 0,
+        .lfCharSet        = 0,
+        .lfOutPrecision   = 0,
+        .lfClipPrecision  = 0,
+        .lfQuality        = 1,
+        .lfPitchAndFamily = 0,
+        .lfFaceName       = L"Segoe UI",
+    };
+
+    HFONT font = CreateFontIndirectW(&logFont);
+    if (font == nullptr) {
+        System::Panic("CreateFontIndirectW failed");
+    }
+
+    ReleaseDC(window, hdc);
+
+    Windows* windows = new Windows(instance, window, font, windowClass);
 
     SetLastError(ERROR_SUCCESS); // SetWindowLongPtr does not clear errors
     SetWindowLongPtrW(window, GWLP_USERDATA, (LONG_PTR)windows);

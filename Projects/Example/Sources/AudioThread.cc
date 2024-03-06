@@ -15,7 +15,7 @@ using namespace Cell;
 using namespace Cell::Audio;
 
 void Example::AudioThread() {
-    ScopedObject subsystem = CreateSubsystem("Cell").Unwrap();
+    ScopedObject<ISubsystem> subsystem = CreateSubsystem("Cell").Unwrap();
 
     const uint32_t sampleSize = ((2 * 32) / 8);
 
@@ -25,11 +25,11 @@ void Example::AudioThread() {
         .rate = 48000
     };
 
-    ScopedObject renderer = subsystem->CreateRenderer(format).Unwrap();
+    ScopedObject<IRenderer> renderer = subsystem->CreateRenderer(format).Unwrap();
 
-    ScopedObject file = IO::File::Open(this->GetContentPath("/SoundEffects/Boing.bin")).Unwrap();
+    ScopedObject<IO::File> file = IO::File::Open(this->GetContentPath("/SoundEffects/Boing.bin")).Unwrap();
 
-    const size_t size = file->GetSize().Unwrap();
+    const uint32_t size = file->GetSize().Unwrap();
     CELL_ASSERT(size % sampleSize == 0);
 
     const uint32_t count = renderer->GetMaxSampleCount().Unwrap();
@@ -37,19 +37,12 @@ void Example::AudioThread() {
     Result result = renderer->Start();
     CELL_ASSERT(result == Result::Success);
 
-    System::OwnedBlock<uint8_t> buffer(count * sampleSize);
-
     uint32_t dataOffset = 0;
-    uint32_t framesToWrite = 0;
     while (this->shell->IsStillActive()) {
-        if (!this->controller->TriggeredAudio()) {
+        if (!this->controller->TriggeredAudio() || dataOffset >= size) {
             dataOffset = 0;
             System::Thread::Yield();
             continue;
-        }
-
-        if (dataOffset >= size) {
-            dataOffset = 0;
         }
 
         System::SleepPrecise(renderer->GetLatency());
@@ -60,18 +53,16 @@ void Example::AudioThread() {
             continue;
         }
 
-        framesToWrite = count - offset;
-        CELL_ASSERT(framesToWrite > 0);
+        const uint32_t framesToWrite = (uint32_t)[&count, &offset, &size, &dataOffset]{
+            if (size - dataOffset < count * sampleSize) {
+                return ((uint32_t)size - dataOffset) / sampleSize;
+            }
 
-        if (size - dataOffset < framesToWrite * sampleSize) {
-            framesToWrite = (size - dataOffset) / sampleSize;
-        }
+            return count - offset;
+        }();
 
-        if (buffer.Count() != framesToWrite * sampleSize) {
-            buffer.Resize(framesToWrite * sampleSize);
-        }
-
-        IO::Result ioResult = file->Read(buffer, dataOffset);
+        System::OwnedBlock<uint8_t> buffer(framesToWrite * sampleSize);
+        IO::Result ioResult = file->Read(buffer, dataOffset, false);
         CELL_ASSERT(ioResult == IO::Result::Success);
 
         result = renderer->Submit(buffer);

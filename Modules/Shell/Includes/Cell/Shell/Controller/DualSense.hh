@@ -11,7 +11,8 @@ namespace Cell::Shell::Controller {
 class DualSense : public IController {
 public:
     CELL_FUNCTION static Wrapped<DualSense*, Result> Find();
-    CELL_FUNCTION ~DualSense() override;
+    CELL_FUNCTION ~DualSense();
+
     CELL_FUNCTION Result Update() override;
 
     CELL_NON_COPYABLE(DualSense)

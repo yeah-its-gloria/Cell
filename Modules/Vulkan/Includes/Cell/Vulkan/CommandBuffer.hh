@@ -62,6 +62,9 @@ public:
     // Submits this buffer for synchronous execution.
     CELL_FUNCTION Result Submit();
 
+    // Submits this buffer for drawing to the given target, using the target's synchronization capabilities, if available.
+    CELL_FUNCTION Result Submit(IRenderTarget* CELL_NONNULL target);
+
 private:
     enum class RecordState : uint8_t {
         Initialized,

@@ -4,7 +4,7 @@
 #include <Cell/Scoped.hh>
 #include <Cell/DataManagement/Foreign/JSON.hh>
 #include <Cell/DataManagement/Foreign/glTF.hh>
-#include <Cell/System/Panic.hh>
+#include <Cell/Utilities/Preprocessor.hh>
 
 namespace Cell::DataManagement::Foreign {
 

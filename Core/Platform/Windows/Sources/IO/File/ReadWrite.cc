@@ -53,18 +53,25 @@ Result File::Read(IBlock& data, const size_t offset, const bool keepPrevious) {
     }
 
     result = this->Read(data);
-    if (result != Result::Success) {
+    switch (result) {
+    case Result::Success:
+    case Result::ReachedEnd: {
+        if (keepPrevious) {
+            result = this->SetOffset(previousOffset);
+            if (result != Result::Success) {
+                return result;
+            }
+        }
+
         return result;
     }
 
-    if (keepPrevious) {
-        result = this->SetOffset(previousOffset);
-        if (result != Result::Success) {
-            return result;
-        }
+    default: {
+        break;
+    }
     }
 
-    return Result::Success;
+    return result;
 }
 
 Result File::Write(const IBlock& data) {

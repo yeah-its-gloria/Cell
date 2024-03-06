@@ -23,13 +23,13 @@ Result WSITarget::Present() {
     const VkResult result = vkQueuePresentKHR(this->device->deviceQueueGraphics, &presentInfo);
     switch (result) {
     case VK_SUCCESS: {
-        this->renderFrameCounter = (this->renderFrameCounter + 1) % this->swapchainDepth;
+        this->renderFrameCounter = (this->renderFrameCounter + 1) % this->depth;
         break;
     }
 
     case VK_SUBOPTIMAL_KHR:
     case VK_ERROR_OUT_OF_DATE_KHR: {
-        this->renderFrameCounter = (this->renderFrameCounter + 1) % this->swapchainDepth;
+        this->renderFrameCounter = (this->renderFrameCounter + 1) % this->depth;
         return Result::Suboptimal;
     }
 

@@ -183,6 +183,16 @@ LRESULT Windows::WindowLoop(HWND window, UINT message, WPARAM paramHigh, LPARAM 
         break;
     }
 
+    case WM_CTLCOLORSTATIC: {
+        CELL_ASSERT(windows != nullptr);
+
+        HDC hdcStatic = (HDC)paramHigh;
+
+        SetTextColor(hdcStatic, RGB(255, 255, 255));
+        SetBkColor(hdcStatic, RGB(0, 0, 0));
+        return (INT_PTR)windows->windowClass.hbrBackground;
+    }
+
     default: {
         break;
     }

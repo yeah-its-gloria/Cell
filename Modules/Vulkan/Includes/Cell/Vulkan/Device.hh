@@ -62,11 +62,9 @@ public:
     // Creates a pipeline.
     CELL_FUNCTION Wrapped<class Pipeline*, Result> CreatePipeline(IRenderTarget* CELL_NONNULL target);
 
-    // Rendering utility - Renders to the next swapchain image index with the given buffer.
-    CELL_FUNCTION Result RenderImage(IRenderTarget* CELL_NONNULL target, class CommandBuffer* CELL_NONNULL buffer);
-
-    // Creates a WSI render target.
-    CELL_FUNCTION Wrapped<class WSITarget*, Result> CreateWSITarget(Shell::IShell* CELL_NONNULL shell);
+    // Creates a WSI implementation render target backed by the given shell.
+    // Backed by 4 images by default.
+    CELL_FUNCTION Wrapped<class WSITarget*, Result> CreateWSITarget(Shell::IShell* CELL_NONNULL shell, const uint8_t depth = 4);
 
     CELL_NON_COPYABLE(Device)
 
@@ -82,6 +80,31 @@ private:
           deviceQueueTransfer(qt), graphicsPool(pg),
           transferPool(pt), instance(i) { }
 
+    struct SurfaceStaticInfo {
+        const VkSurfaceFormatKHR format;
+        const VkPresentModeKHR mode;
+    };
+
+    struct SurfaceDynamicInfo {
+        const VkSurfaceCapabilitiesKHR capabilities;
+        const VkExtent2D extent;
+    };
+
+    struct SwapchainInfo {
+        VkSurfaceKHR& surface;
+        const VkSurfaceFormatKHR& format;
+        const VkPresentModeKHR& mode;
+        const VkSurfaceCapabilitiesKHR& capabilities;
+        const VkExtent2D& extent;
+        const uint8_t& depth;
+    };
+
+    struct SwapchainData {
+        VkSwapchainKHR swapchain;
+        Collection::List<VkImage> images;
+        Collection::List<VkImageView> views;
+    };
+
     CELL_FUNCTION Result CreateImageView(
         VkImageView& view,
         VkImage CELL_NONNULL image,
@@ -92,6 +115,11 @@ private:
 
     CELL_FUNCTION_INTERNAL uint32_t GetMemoryTypeIndex(VkBuffer buffer, const VkMemoryPropertyFlags type);
     CELL_FUNCTION_INTERNAL uint32_t GetMemoryTypeIndex(VkImage image, const VkMemoryPropertyFlags type);
+
+    CELL_FUNCTION_INTERNAL Wrapped<SurfaceStaticInfo, Result> GetSurfaceStatics(VkSurfaceKHR& surface);
+    CELL_FUNCTION_INTERNAL Wrapped<SurfaceDynamicInfo, Result> GetSurfaceDynamics(VkSurfaceKHR& surface, const Shell::Extent& shellExtent);
+    CELL_FUNCTION_INTERNAL Wrapped<SwapchainData, Result> CreateSwapchainForSurface(const SwapchainInfo& info);
+    CELL_FUNCTION_INTERNAL Wrapped<Image*, Result> CreateDepthStencilImage(const VkExtent2D& info);
 
     VkPhysicalDevice physicalDevice;
     uint32_t physicalDeviceQueueGraphics;

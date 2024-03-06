@@ -24,13 +24,9 @@ public:
     // Sets up a Wayland client.
     CELL_FUNCTION static Wrapped<Linux*, Result> New(const String& title, const Extent extent);
 
-    // Terminates the Wayland client connection and destructs the instance.
-    CELL_FUNCTION ~Linux() override;
+    CELL_FUNCTION ~Linux();
 
-    // Returns a handle to the current Wayland client display.
     CELL_NODISCARD CELL_INLINE wl_display* GetDisplay() const { return this->display; }
-
-    // Returns a handle to the current Wayland client surface.
     CELL_NODISCARD CELL_INLINE wl_surface* GetSurface() const { return this->surface; }
 
     CELL_FUNCTION Result RequestQuit() override;
@@ -39,6 +35,8 @@ public:
     CELL_FUNCTION Result SetNewTitle(const String& title) override;
     CELL_FUNCTION Result IndicateStatus(const ShellStatus status) override;
     CELL_FUNCTION Result CaptureState(const bool captured) override;
+    CELL_FUNCTION Result Log(const String& text) override;
+    CELL_FUNCTION Result LogClear() override;
 
     CELL_NON_COPYABLE(Linux)
 

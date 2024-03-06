@@ -35,7 +35,7 @@ You can additionally configure the engine further through CMake. I recommend usi
 | Setting | Default Value | Intent |
 |-|-|-|
 | `CELL_ENABLE_EDITOR` | ON | Enables the editor being built. |
-| `CELL_ENABLE_PROJECT` | ON | Enables the in tree project being built. |
+| `CELL_ENABLE_PROJECTS` | ON | Enables the in tree project being built. |
 | `CELL_ENABLE_TESTS` | ON | Enables tests across the entire engine. |
 | `CELL_ENABLE_TESTS_LIKELY_FAILURE` | OFF | Enables tests that are likely to fail or not properly implemented yet. |
 | `CELL_ENABLE_UTILITIES` | ON | Enables utilities being built. |
@@ -59,7 +59,6 @@ The editor serves as a creation utility for various workloads.
 | Audio | WASAPI (Windows), PulseAudio (Linux) | |
 | D3D12 | DirectX 12.1 | Windows only |
 | DataManagement | self-contained | |
-| JavaScript | QuickJS | Includes some custom patches |
 | Mathematics | self-contained | |
 | OpenXR | OpenXR 1.0 | Vulkan implemented |
 | Shell | Windows, Wayland (Linux), HID, etc | Serves input implementations |

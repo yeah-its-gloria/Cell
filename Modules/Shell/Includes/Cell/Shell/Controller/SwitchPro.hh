@@ -11,7 +11,8 @@ namespace Cell::Shell::Controller {
 class SwitchPro : public IController {
 public:
     CELL_FUNCTION static Wrapped<SwitchPro*, Result> Find();
-    CELL_FUNCTION ~SwitchPro() override;
+    CELL_FUNCTION ~SwitchPro();
+
     CELL_FUNCTION Result Update() override;
 
     CELL_NON_COPYABLE(SwitchPro)
