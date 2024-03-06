@@ -71,7 +71,7 @@ public:
     }
 
     // Destructs this list's memory.
-    CELL_INLINE ~List() requires (!Utilities::IsDeletable<T>) {
+    CELL_INLINE ~List() {
         if (this->data == nullptr) {
             return;
         }

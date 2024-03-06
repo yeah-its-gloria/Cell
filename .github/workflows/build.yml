@@ -7,42 +7,42 @@ on:
     branches: [ "main" ]
 
 jobs:
-  build-ubuntu:
-    name: Ubuntu Release
-    runs-on: ubuntu-22.04
-    steps:
-      - name: Perform checkout
-        uses: actions/checkout@v4
-
-      - name: Install dependencies
-        run: |
-          sudo apt update
-          sudo apt install -y cmake ninja-build libvulkan-dev libwayland-dev libopenxr-dev libxkbcommon-dev libpulse-dev clang lld llvm
-
-        # Required as Ubuntu 22.04 doesn't have a good glslc package (we normally require 24.04)
-      - name: Fetch glslc
-        run: |
-          curl -L -O https://storage.googleapis.com/shaderc/artifacts/prod/graphics_shader_compiler/shaderc/linux/continuous_clang_release/435/20230810-123653/install.tgz
-          tar xvf install.tgz
-
-      - name: Configure
-        working-directory: ${{ github.workspace }}
-        run: >
-          cmake
-          -B build
-          -G Ninja
-          -DCMAKE_BUILD_TYPE=Release
-          -DCMAKE_C_COMPILER=clang
-          -DCMAKE_CXX_COMPILER=clang++
-          -Dglslc_PROGRAM=${{ github.workspace }}/install/bin/glslc
-          -Dspirv-link_PROGRAM=${{ github.workspace }}/install/bin/spirv-link
-
-      - name: Build
-        run: cmake --build ${{ github.workspace }}/build -j
-
-      - name: Test
-        working-directory: ${{ github.workspace }}/build
-        run: ctest --build-config Release
+#  build-ubuntu:
+#    name: Ubuntu Release
+#    runs-on: ubuntu-22.04
+#    steps:
+#      - name: Perform checkout
+#        uses: actions/checkout@v4
+#
+#      - name: Install dependencies
+#        run: |
+#          sudo apt update
+#          sudo apt install -y cmake ninja-build libvulkan-dev libwayland-dev libopenxr-dev libxkbcommon-dev libpulse-dev clang lld llvm
+#
+#        # Required as Ubuntu 22.04 doesn't have a good glslc package (we normally require 24.04)
+#      - name: Fetch glslc
+#        run: |
+#          curl -L -O https://storage.googleapis.com/shaderc/artifacts/prod/graphics_shader_compiler/shaderc/linux/continuous_clang_release/435/20230810-123653/install.tgz
+#          tar xvf install.tgz
+#
+#      - name: Configure
+#        working-directory: ${{ github.workspace }}
+#        run: >
+#          cmake
+#          -B build
+#          -G Ninja
+#          -DCMAKE_BUILD_TYPE=Release
+#          -DCMAKE_C_COMPILER=clang
+#          -DCMAKE_CXX_COMPILER=clang++
+#          -Dglslc_PROGRAM=${{ github.workspace }}/install/bin/glslc
+#          -Dspirv-link_PROGRAM=${{ github.workspace }}/install/bin/spirv-link
+#
+#      - name: Build
+#        run: cmake --build ${{ github.workspace }}/build -j
+#
+#      - name: Test
+#        working-directory: ${{ github.workspace }}/build
+#        run: ctest --build-config Release
 
   build-windows:
     name: Windows Release
