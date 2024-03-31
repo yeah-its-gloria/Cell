@@ -30,7 +30,7 @@ function(CellAddRustImplementation target crate)
         OUTPUT ${library_output}
         DEPENDS "${SOURCE_DIR}/Cargo.toml" "${SOURCE_DIR}/src/lib.rs"
         WORKING_DIRECTORY ${SOURCE_DIR}
-        COMMAND ${cargo_PROGRAM} build ${CONFIG} --target-dir \"${BINARY_DIR}/Build\" --quiet
+        COMMAND ${cargo_PROGRAM} build $<$<NOT:$<CONFIG:Debug>>:--release> --target-dir \"${BINARY_DIR}/Build\" --quiet
     )
 
     add_custom_command(

@@ -69,7 +69,7 @@ void PrintValue(JSON::Value value, const bool isRoot = false, const bool isArray
 void CellEntry(Reference<String> parameterString) {
     (void)(parameterString);
 
-    ScopedObject<IO::File> file = IO::File::Open("./Engine/Modules/DataManagement/Content/Data.json").Unwrap();
+    ScopedObject<IO::File> file = IO::File::Open("./Modules/DataManagement/Content/Data.json").Unwrap();
     const size_t size = file->GetSize();
 
     Memory::OwnedBlock<char> data(size);

@@ -80,7 +80,7 @@ option(CELL_ENABLE_EDITOR "Whether the editor should be built. Defaults to ON." 
 option(CELL_ENABLE_PROJECTS "Whether the in tree projects should be built. Defaults to ON." ON)
 option(CELL_ENABLE_UTILITIES "Whether utilities should be built. Defaults to ON." ON)
 
-option(CELL_ENABLE_STATIC_BUILD "Whether the libraries (core, modules, etc) should be build statically. Defaults to OFF." OFF)
+option(CELL_ENABLE_STATIC_BUILD "Whether the libraries (core, modules, etc) should be build statically. Defaults to ON." ON)
 
 option(CELL_ENABLE_TESTS "Whether tests should be built. Defaults to ON." ON)
 option(CELL_ENABLE_TESTS_LIKELY_FAILURE "Whether tests that are likely to fail should be built. Defaults to OFF." OFF)

@@ -16,6 +16,7 @@ Cell has the following dependencies:
 | [LLVM](https://llvm.org) | 16.0.0 | All | Specifically clang and lld are needed. clang-cl can be used on Windows, if desired. Other compilers are **not officially** supported. | `clang`, `lld`, `llvm` | `clang`, `lld`, `llvm` |
 | [CMake](https://cmake.org/) | 3.24.0 | All | Requires a generator of some kind. | `cmake` | `cmake` |
 | [Ninja](https://ninja-build.org/) | 1.11.1 | All | Recommended generator for CMake. | `ninja-build` | `ninja` |
+| [Rust](https://rust-lang.org) via [cargo](https://github.com/rust-lang/cargo) | 1.75.0 | All | [rustup](https://rustup.rs/) is recommended for managing Rust installations. | `cargo`, `rustc` | `rust` |
 | | | | | | |
 | [Windows SDK](https://developer.microsoft.com/en-us/windows/downloads/windows-sdk/) | 10.0.22621.0 | Windows | Should be installed alongside MSVC v143. | | |
 | | | | | | |
