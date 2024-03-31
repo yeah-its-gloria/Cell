@@ -5,6 +5,7 @@
 
 #include <Cell/Wrapped.hh>
 #include <Cell/D3D12/Result.hh>
+#include <Cell/Memory/Block.hh>
 #include <Cell/Shell/Implementations/Windows.hh>
 
 #include <d3d12.h>
@@ -13,7 +14,7 @@
 namespace Cell::D3D12 {
 
 // Represents a D3D12 rendering device.
-class Device : public Object {
+class Device : public NoCopyObject {
 friend class CommandList;
 friend class Resource;
 
@@ -37,25 +38,23 @@ public:
     CELL_FUNCTION Wrapped<class Resource*, Result> CreateResource(const size_t stride, const size_t size);
 
     // Creates a pipeline with a vertex and pixel shader, using DXIL bytecode for both.
-    CELL_FUNCTION Wrapped<class Pipeline*, Result> CreatePipeline(const IBlock& vertex, const IBlock& pixel);
+    CELL_FUNCTION Wrapped<class Pipeline*, Result> CreatePipeline(const Memory::IBlock& vertex, const Memory::IBlock& pixel);
 
     // Creates a swapchain with the Windows shell implementation.
     CELL_FUNCTION Wrapped<class Swapchain*, Result> CreateSwapchain(Shell::Implementations::Windows* CELL_NONNULL shell);
 
     // Wrapper for IShell to create a swapchain.
-    CELL_FUNCTION_INTERNAL CELL_INLINE Wrapped<class Swapchain*, Result> CreateSwapchain(Shell::IShell* CELL_NONNULL shell) {
+    CELL_FUNCTION inline Wrapped<class Swapchain*, Result> CreateSwapchain(Shell::IShell* CELL_NONNULL shell) {
         return this->CreateSwapchain((Shell::Implementations::Windows*)shell);
     }
 
-    CELL_NON_COPYABLE(Device)
-
 private:
-    CELL_FUNCTION_INTERNAL CELL_INLINE Device(IDXGIFactory2* CELL_NONNULL f,
-                                              ID3D12Device1* CELL_NONNULL d,
-                                              ID3D12CommandQueue* CELL_NONNULL q,
-                                              ID3D12CommandAllocator* CELL_NONNULL a,
-                                              ID3DBlob* CELL_NONNULL b,
-                                              ID3D12RootSignature* CELL_NONNULL s)
+    CELL_FUNCTION_INTERNAL Device(IDXGIFactory2* CELL_NONNULL f,
+                                  ID3D12Device1* CELL_NONNULL d,
+                                  ID3D12CommandQueue* CELL_NONNULL q,
+                                  ID3D12CommandAllocator* CELL_NONNULL a,
+                                  ID3DBlob* CELL_NONNULL b,
+                                  ID3D12RootSignature* CELL_NONNULL s)
         : factory(f), device(d), mainQueue(q), commandAllocator(a), rootSignatureBlob(b), rootSignature(s) { }
 
     IDXGIFactory2* factory;

@@ -11,12 +11,11 @@ class Example : public Cell::Object {
 friend class InputController;
 
 public:
-    CELL_INLINE Example() { }
-
+    CELL_FUNCTION_INTERNAL Example() = default;
     CELL_FUNCTION_INTERNAL ~Example();
     CELL_FUNCTION_INTERNAL void Launch(const Cell::String& parameterString);
 
-    CELL_INLINE Cell::String GetContentPath(const Cell::String& string) {
+    CELL_FUNCTION_INTERNAL inline Cell::String GetContentPath(const Cell::String& string) {
         return Cell::String("./Projects/Example/Content") + string;
     }
 

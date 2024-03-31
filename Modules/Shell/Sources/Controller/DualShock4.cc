@@ -4,13 +4,14 @@
 #include "DualShock4Structures.hh"
 
 #include <Cell/Shell/Controller/DualShock4.hh>
-#include <Cell/System/BlockImpl.hh>
-#include <Cell/System/Log.hh>
+#include <Cell/Memory/Allocator.hh>
+#include <Cell/Memory/OwnedBlock.hh>
+#include <Cell/Memory/UnownedBlock.hh>
 
 namespace Cell::Shell::Controller {
 
 Wrapped<DualShock4*, Result> DualShock4::Find() {
-    const Wrapped<IO::HID::Device*, IO::Result> hidResult = IO::HID::Device::Open(0x054c, 0x05c4);
+    Wrapped<IO::HID::Device*, IO::Result> hidResult = IO::HID::Device::Open(0x054c, 0x05c4);
     if (!hidResult.IsValid()) {
         switch (hidResult.Result()) {
         case IO::Result::NotFound: {
@@ -32,8 +33,8 @@ Wrapped<DualShock4*, Result> DualShock4::Find() {
         return Result::NotFound;
     }
 
-    System::OwnedBlock<uint8_t> packet(64);
-    packet[0] = 0x12;
+    Memory::OwnedBlock<uint8_t> packet(64);
+    packet.AsBytes()[0] = 0x12;
     IO::Result result = device->Read(packet, 33);
     switch (result) {
     case IO::Result::Success: {
@@ -58,7 +59,7 @@ DualShock4::~DualShock4() {
 
 Result DualShock4::Update() {
     this->lastReport = this->report;
-    System::ClearMemory(this->report);
+    Memory::Clear(this->report);
 
     IO::Result result;
 
@@ -110,7 +111,7 @@ Result DualShock4::Update() {
         }
         }
 
-        result = device->Write(System::UnownedBlock { &effectsPacket }, 33);
+        result = device->Write(Memory::UnownedBlock { &effectsPacket }, 33);
         switch (result) {
         case IO::Result::Success: {
             break;
@@ -132,7 +133,7 @@ Result DualShock4::Update() {
 
     DualShock4ReportPacket packet;
 
-    System::UnownedBlock packetRef { &packet };
+    Memory::UnownedBlock packetRef { &packet };
     result = device->Read(packetRef, 16);
     switch (result) {
     case IO::Result::Success: {

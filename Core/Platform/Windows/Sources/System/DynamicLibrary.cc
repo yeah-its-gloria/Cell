@@ -3,7 +3,6 @@
 
 #include <Cell/Scoped.hh>
 #include <Cell/System/DynamicLibrary.hh>
-#include <Cell/System/Panic.hh>
 #include <Cell/System/Platform/Windows/Includes.h>
 
 namespace Cell::System {
@@ -14,7 +13,7 @@ Wrapped<DynamicLibrary*, Result> DynamicLibrary::New(const String& path) {
     }
 
     ScopedBlock<wchar_t> widePath = path.ToPlatformWideString();
-    const HMODULE module = LoadLibraryExW(&widePath, nullptr, 0);
+    HMODULE module = LoadLibraryExW(&widePath, nullptr, 0);
     if (module == nullptr) {
         switch (GetLastError()) {
         // TODO: figure out what results this returns
@@ -29,17 +28,17 @@ Wrapped<DynamicLibrary*, Result> DynamicLibrary::New(const String& path) {
 }
 
 DynamicLibrary::~DynamicLibrary() {
-    const BOOL result = FreeLibrary((HMODULE)this->handle);
+    const BOOL result = FreeLibrary((HMODULE)this->impl);
     CELL_ASSERT(result == TRUE);
 }
 
 Wrapped<GenericFunctionPointer, Result> DynamicLibrary::GetFunction(const String& name) {
     if (this->loadedFunctions.Has(name).IsValid()) {
-        return this->loadedFunctions.GetValue(name);
+        return (GenericFunctionPointer)this->loadedFunctions.GetValue(name);
     }
 
     ScopedBlock<char> namePtr = name.ToCharPointer();
-    FARPROC proc = GetProcAddress((HMODULE)this->handle, &namePtr);
+    FARPROC proc = GetProcAddress((HMODULE)this->impl, &namePtr);
     if (proc == nullptr) {
         switch (GetLastError()) {
         case ERROR_PROC_NOT_FOUND: {

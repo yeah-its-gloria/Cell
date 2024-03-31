@@ -88,5 +88,4 @@
 #define HRESULT_FROM_WIN32(x) __HRESULT_FROM_WIN32(x)
 #endif
 
-#undef CopyMemory
 #undef Yield

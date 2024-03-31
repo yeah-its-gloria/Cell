@@ -14,13 +14,13 @@ namespace Cell::System {
 //  e.g newlines are appended automatically for a plain text log to console or a file)
 CELL_FUNCTION void Log(const String& message);
 
-// Utility to prevent clang from being stupid and dumb.
-CELL_FUNCTION_INTERNAL CELL_INLINE void Log(const char* message) {
+// Stinky utility because C/C++ really don't like us.
+CELL_FUNCTION_TEMPLATE inline void Log(const char* message) {
     Log(String(message));
 }
 
 // Utility to auto-format messages.
-template <typename... T> CELL_FUNCTION_INTERNAL CELL_INLINE void Log(const char* format, T&&... args) {
+template <typename... T> CELL_FUNCTION_TEMPLATE void Log(const char* format, T&&... args) {
     Log(String::Format(format, args...));
 }
 

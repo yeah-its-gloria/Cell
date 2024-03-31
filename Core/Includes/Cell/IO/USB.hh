@@ -5,12 +5,12 @@
 
 #include <Cell/Wrapped.hh>
 #include <Cell/IO/Result.hh>
-#include <Cell/System/Block.hh>
+#include <Cell/Memory/Block.hh>
 
 namespace Cell::IO {
 
 // Interactions with generic USB devices.
-class USB : public Object {
+class USB : public NoCopyObject {
 public:
     // Opens or creates a USB device.
     CELL_FUNCTION static Wrapped<USB*, Result> Open(const uint16_t vendorId, const uint16_t productId, const uint8_t interface = 0);
@@ -20,18 +20,16 @@ public:
 
     // Reads data from the device. This would be a report for HID devices.
     // Allows terminating reading with a timeout.
-    CELL_FUNCTION Result Read(IBlock& data, const uint8_t endpoint, const uint32_t milliseconds = 0);
+    CELL_FUNCTION Result Read(Memory::IBlock& data, const uint8_t endpoint, const uint32_t milliseconds = 0);
 
     // Writes data to the device. This would be a report for HID devices.
     // Allows terminating writing with a timeout.
-    CELL_FUNCTION Result Write(const IBlock& data, const uint8_t endpoint, const uint32_t milliseconds = 0);
-
-    CELL_NON_COPYABLE(USB)
+    CELL_FUNCTION Result Write(const Memory::IBlock& data, const uint8_t endpoint, const uint32_t milliseconds = 0);
 
 private:
-    CELL_HANDLE_CONSTRUCTOR(USB)
+    CELL_FUNCTION_INTERNAL USB(uintptr_t i) : impl(i) { }
 
-    const uintptr_t handle;
+    uintptr_t impl;
 };
 
 }

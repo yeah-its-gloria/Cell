@@ -10,7 +10,7 @@
 namespace Cell::D3D12 {
 
 // Represents a list of commands.
-class CommandList : public Object {
+class CommandList : public NoCopyObject {
 friend Device;
 
 public:
@@ -20,10 +20,8 @@ public:
     // Sorry
     CELL_FUNCTION void StupidTestThing(Swapchain* CELL_NONNULL swapchain, Resource* CELL_NONNULL vertices);
 
-    CELL_NON_COPYABLE(CommandList)
-
 private:
-    CELL_FUNCTION_INTERNAL CELL_INLINE CommandList(Device* d, Pipeline* p, ID3D12GraphicsCommandList* l) : device(d), pipeline(p), list(l) { }
+    CELL_FUNCTION_INTERNAL CommandList(Device* d, Pipeline* p, ID3D12GraphicsCommandList* l) : device(d), pipeline(p), list(l) { }
 
     Device* device;
     Pipeline* pipeline;

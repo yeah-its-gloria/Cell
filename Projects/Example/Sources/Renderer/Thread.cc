@@ -6,8 +6,8 @@
 
 #include <Cell/Scoped.hh>
 #include <Cell/Mathematics/Utilities.hh>
-#include <Cell/System/BlockImpl.hh>
-#include <Cell/System/Log.hh>
+#include <Cell/Memory/OwnedBlock.hh>
+#include <Cell/Memory/UnownedBlock.hh>
 #include <Cell/System/Timer.hh>
 #include <Cell/Utilities/MinMaxClamp.hh>
 #include <Cell/Vulkan/WSITarget.hh>
@@ -90,8 +90,8 @@ void Example::RendererThread() {
         4, 5, 7
     };
 
-    buffer->Copy(System::UnownedBlock { vertices, vertexCount });
-    buffer->Copy(System::UnownedBlock { indices, indexCount }, sizeof(Vertex) * vertexCount);
+    buffer->Copy(Memory::UnownedBlock { vertices, vertexCount });
+    buffer->Copy(Memory::UnownedBlock { indices, indexCount }, sizeof(Vertex) * vertexCount);
 
     ScopedObject pipeline = device->CreatePipeline(&target).Unwrap();
 
@@ -134,7 +134,7 @@ void Example::RendererThread() {
 
         const uint32_t frameIndex = target->GetFrameCounter();
 
-        uniforms[frameIndex]->Copy(System::UnownedBlock { &ubo });
+        uniforms[frameIndex]->Copy(Memory::UnownedBlock { &ubo });
         VulkanToolsGenerateRenderCommands(vertexCount, indexCount, commandBuffers[frameIndex], &pipeline, &buffer, &target, frameIndex);
 
         result = commandBuffers[frameIndex]->Submit(&target);

@@ -3,14 +3,13 @@
 
 #pragma once
 
+#include <Cell/Memory/Block.hh>
 #include <Cell/Network/AddressInfo.hh>
-#include <Cell/Network/Result.hh>
-#include <Cell/System/Block.hh>
 
 namespace Cell::Network {
 
 // Represents a connection between two hosts.
-class Socket : public Object {
+class Socket : public NoCopyObject {
 public:
     // Creates a new socket.
     // By default, it creates a TCP socket via IPv4.
@@ -28,17 +27,15 @@ public:
     CELL_FUNCTION Result Disconnect();
 
     // Sends the given block through the socket.
-    CELL_FUNCTION Result Send(const IBlock& data, const bool isOutOfBand = false);
+    CELL_FUNCTION Result Send(const Memory::IBlock& data, const bool isOutOfBand = false);
 
     // Receives the count of data available to the socket and writes it to the given block.
-    CELL_FUNCTION Result Receive(IBlock& data);
-
-    CELL_NON_COPYABLE(Socket)
+    CELL_FUNCTION Result Receive(Memory::IBlock& data);
 
 private:
-    CELL_HANDLE_CONSTRUCTOR(Socket)
+    CELL_FUNCTION_INTERNAL Socket(uintptr_t i) : impl(i) { }
 
-    const uintptr_t handle;
+    uintptr_t impl;
 };
 
 }

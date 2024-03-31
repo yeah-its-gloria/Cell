@@ -4,18 +4,18 @@
 #include "Internal.hh"
 
 #include <Cell/IO/USB.hh>
-#include <Cell/System/Memory.hh>
+#include <Cell/Memory/Allocator.hh>
 #include <Cell/System/Panic.hh>
 
 namespace Cell::IO {
 
 USB::~USB() {
-    usbData* data = (usbData*)this->handle;
+    usbData* data = (usbData*)this->impl;
 
     WinUsb_Free(data->handle);
     CloseHandle(data->device);
 
-    System::FreeMemory(data);
+    Memory::Free(data);
 }
 
 CELL_FUNCTION_INTERNAL Result handleOverlapped(HANDLE handle, OVERLAPPED& overlapped, const DWORD size, const uint32_t milliseconds) {
@@ -40,20 +40,20 @@ CELL_FUNCTION_INTERNAL Result handleOverlapped(HANDLE handle, OVERLAPPED& overla
     return Result::Success;
 }
 
-Result USB::Read(IBlock& data, const uint8_t endpoint, const uint32_t milliseconds) {
-    if (data.ByteSize() > UINT32_MAX) {
+Result USB::Read(Memory::IBlock& data, const uint8_t endpoint, const uint32_t milliseconds) {
+    if (data.GetSize() > UINT32_MAX) {
         return Result::InvalidParameters;
     }
 
-    usbData* interface = (usbData*)this->handle;
+    usbData* interface = (usbData*)this->impl;
 
     DWORD read = 0;
     OVERLAPPED overlapped;
-    const BOOL result = WinUsb_ReadPipe(interface->handle, endpoint, (uint8_t*)data.Pointer(), (DWORD)data.ByteSize(), &read, milliseconds > 0 ? &overlapped : nullptr);
+    const BOOL result = WinUsb_ReadPipe(interface->handle, endpoint, (uint8_t*)data.AsPointer(), (DWORD)data.GetSize(), &read, milliseconds > 0 ? &overlapped : nullptr);
     if (result == FALSE) {
         switch (GetLastError()) {
         case ERROR_IO_PENDING: {
-            return handleOverlapped(interface->device, overlapped, (const DWORD)data.ByteSize(), milliseconds);
+            return handleOverlapped(interface->device, overlapped, (const DWORD)data.GetSize(), milliseconds);
         }
 
         case ERROR_DEVICE_NOT_CONNECTED: {
@@ -66,28 +66,28 @@ Result USB::Read(IBlock& data, const uint8_t endpoint, const uint32_t millisecon
         }
     }
 
-    if (read < data.ByteSize()) {
+    if (read < data.GetSize()) {
         return Result::Incomplete;
     }
 
     return Result::Success;
 }
 
-Result USB::Write(const IBlock& data, const uint8_t endpoint, const uint32_t milliseconds) {
-    if (data.ByteSize() > UINT32_MAX) {
+Result USB::Write(const Memory::IBlock& data, const uint8_t endpoint, const uint32_t milliseconds) {
+    if (data.GetSize() > UINT32_MAX) {
         return Result::InvalidParameters;
     }
 
-    usbData* interface = (usbData*)this->handle;
+    usbData* interface = (usbData*)this->impl;
 
     DWORD written = 0;
     OVERLAPPED overlapped;
-    DWORD stuff = data.ByteSize();
-    const BOOL result = WinUsb_WritePipe(interface->handle, endpoint, (uint8_t*)data.Pointer(), (DWORD)stuff, &written, milliseconds > 0 ? &overlapped : nullptr);
+    DWORD stuff = data.GetSize();
+    const BOOL result = WinUsb_WritePipe(interface->handle, endpoint, (uint8_t*)data.AsPointer(), (DWORD)stuff, &written, milliseconds > 0 ? &overlapped : nullptr);
     if (result == FALSE) {
         switch (GetLastError()) {
         case ERROR_IO_PENDING: {
-            return handleOverlapped(interface->handle, overlapped, (const DWORD)data.ByteSize(), milliseconds);
+            return handleOverlapped(interface->handle, overlapped, (const DWORD)data.GetSize(), milliseconds);
         }
 
         case ERROR_DEVICE_NOT_CONNECTED: {
@@ -100,7 +100,7 @@ Result USB::Write(const IBlock& data, const uint8_t endpoint, const uint32_t mil
         }
     }
 
-    if (written < data.ByteSize()) {
+    if (written < data.GetSize()) {
         return Result::Incomplete;
     }
 

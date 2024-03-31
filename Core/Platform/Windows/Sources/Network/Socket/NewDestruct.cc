@@ -36,9 +36,9 @@ Wrapped<Socket*, Result> Socket::New(const Transport transport, const Connection
 }
 
 Socket::~Socket() {
-    shutdown(this->handle, SD_BOTH); // best effort attempt : )
+    shutdown(this->impl, SD_BOTH); // best effort attempt : )
 
-    const int result = closesocket(this->handle);
+    const int result = closesocket(this->impl);
     CELL_ASSERT(result == 0);
 }
 

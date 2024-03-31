@@ -4,6 +4,8 @@
 #include <Cell/Scoped.hh>
 #include <Cell/Audio/Capturer.hh>
 #include <Cell/Audio/Renderer.hh>
+#include <Cell/Memory/OwnedBlock.hh>
+#include <Cell/Memory/UnownedBlock.hh>
 #include <Cell/Shell/Shell.hh>
 #include <Cell/System/Entry.hh>
 #include <Cell/System/Log.hh>
@@ -47,19 +49,17 @@ void CellEntry(Reference<String> parameterString) {
             break;
         }
 
-        CELL_ASSERT(shellResult == Cell::Shell::Result::Success);
+        CELL_ASSERT(shellResult == Shell::Result::Success);
 
         System::SleepPrecise(renderer->GetLatency());
 
-        System::OwnedBlock<uint8_t> buffer(1);
-        result = loopback->Fetch(buffer);
-        if (result == Audio::Result::NoMoreSamples) {
+        const uint32_t samples = loopback->GetAvailableSampleCount().Unwrap();
+        if (samples == 0) {
             continue;
         }
 
-        CELL_ASSERT(result == Audio::Result::Success);
-
-        result = renderer->Submit(buffer);
+        ScopedBlock<uint8_t> fetchBuffer = loopback->Fetch(samples).Unwrap();
+        result = renderer->Submit(Memory::UnownedBlock<uint8_t> { fetchBuffer, samples * ((2 * 32) / 8) });
         CELL_ASSERT(result == Audio::Result::Success);
     }
 

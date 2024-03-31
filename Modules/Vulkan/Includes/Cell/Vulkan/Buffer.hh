@@ -3,13 +3,13 @@
 
 #pragma once
 
-#include <Cell/System/Block.hh>
+#include <Cell/Memory/Block.hh>
 #include <Cell/Vulkan/Device.hh>
 
 namespace Cell::Vulkan {
 
 // Represents an arbitrary data buffer.
-class Buffer : public Object {
+class Buffer : public NoCopyObject {
 friend Device;
 friend class Pipeline;
 
@@ -24,18 +24,16 @@ public:
     CELL_FUNCTION void Unmap();
 
     // Utility function to copy a whole block at once.
-    CELL_FUNCTION Result Copy(const IBlock& data, const uint64_t offset = 0);
+    CELL_FUNCTION Result Copy(const Memory::IBlock& data, const uint64_t offset = 0);
 
     // Returns the owning device.
-    CELL_INLINE Device* GetDevice() { return this->device; }
+    CELL_FUNCTION inline Device* GetDevice() { return this->device; }
 
     // Returns a handle to the buffer object.
-    CELL_INLINE VkBuffer GetBufferHandle() { return this->buffer; }
-
-    CELL_NON_COPYABLE(Buffer)
+    CELL_FUNCTION inline VkBuffer GetBufferHandle() { return this->buffer; }
 
 private:
-    Buffer(Device* dev, VkBuffer buffer, VkDeviceMemory mem) : device(dev), buffer(buffer), memory(mem), isMapped(false) { }
+    CELL_FUNCTION_INTERNAL Buffer(Device* dev, VkBuffer buffer, VkDeviceMemory mem) : device(dev), buffer(buffer), memory(mem), isMapped(false) { }
 
     Device* device;
     VkBuffer buffer;

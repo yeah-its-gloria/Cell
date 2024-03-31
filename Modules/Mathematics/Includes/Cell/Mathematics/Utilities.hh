@@ -8,7 +8,7 @@
 namespace Cell::Mathematics::Utilities {
 
 // Converts the given degrees value to radians.
-CELL_INLINE constexpr double DegreesToRadians(const double degrees) {
+CELL_FUNCTION_INTERNAL inline constexpr double DegreesToRadians(const double degrees) {
     return degrees * CELL_MATHEMATICS_PI / 180.f;
 }
 

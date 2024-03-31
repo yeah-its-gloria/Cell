@@ -10,7 +10,7 @@ namespace Cell::D3D12 {
 // TODO: make this less vertex buffer specific lol
 
 // Represents a vertex buffer resource on the device that created it.
-class Resource : public Object {
+class Resource : public NoCopyObject {
 friend class CommandList;
 friend Device;
 
@@ -19,12 +19,10 @@ public:
     CELL_FUNCTION ~Resource();
 
     // Copies data into the buffer.
-    CELL_FUNCTION Result CopyData(const IBlock& data);
-
-    CELL_NON_COPYABLE(Resource)
+    CELL_FUNCTION Result CopyData(const Memory::IBlock& data);
 
 private:
-    CELL_FUNCTION_INTERNAL CELL_INLINE Resource(Device* d, ID3D12Resource* r, D3D12_VERTEX_BUFFER_VIEW v) : device(d), resource(r), view(v) { }
+    CELL_FUNCTION_INTERNAL Resource(Device* d, ID3D12Resource* r, D3D12_VERTEX_BUFFER_VIEW v) : device(d), resource(r), view(v) { }
 
     Device* device;
 

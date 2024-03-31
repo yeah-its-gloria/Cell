@@ -15,10 +15,8 @@ public:
 
     CELL_FUNCTION Result Update() override;
 
-    CELL_NON_COPYABLE(Xbox)
-
 private:
-    CELL_INLINE Xbox(uintptr_t device) : device(device) { }
+    CELL_FUNCTION_INTERNAL Xbox(uintptr_t d) : device(d) { }
 
     uintptr_t device;
 };

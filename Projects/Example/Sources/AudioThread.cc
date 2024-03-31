@@ -4,12 +4,11 @@
 #include "Example.hh"
 #include "InputController.hh"
 
+#include <Cell/Scoped.hh>
 #include <Cell/Audio/Renderer.hh>
 #include <Cell/IO/File.hh>
-#include <Cell/Scoped.hh>
+#include <Cell/Memory/OwnedBlock.hh>
 #include <Cell/System/Timer.hh>
-
-#include <Cell/System/Log.hh>
 
 using namespace Cell;
 using namespace Cell::Audio;
@@ -29,7 +28,7 @@ void Example::AudioThread() {
 
     ScopedObject<IO::File> file = IO::File::Open(this->GetContentPath("/SoundEffects/Boing.bin")).Unwrap();
 
-    const uint32_t size = file->GetSize().Unwrap();
+    const uint32_t size = file->GetSize();
     CELL_ASSERT(size % sampleSize == 0);
 
     const uint32_t count = renderer->GetMaxSampleCount().Unwrap();
@@ -47,22 +46,24 @@ void Example::AudioThread() {
 
         System::SleepPrecise(renderer->GetLatency());
 
+        // BUG: this doesn't function well on PulseAudio with particularly small samples
+        // TODO: build a better way of detecting when the buffer is full
         const uint32_t offset = renderer->GetCurrentSampleOffset().Unwrap();
         if (offset > 0) {
             System::Thread::Yield();
             continue;
         }
 
-        const uint32_t framesToWrite = (uint32_t)[&count, &offset, &size, &dataOffset]{
+        const uint32_t framesToWrite = (uint32_t)[&count, &size, &dataOffset]{
             if (size - dataOffset < count * sampleSize) {
                 return ((uint32_t)size - dataOffset) / sampleSize;
             }
 
-            return count - offset;
+            return count;
         }();
 
-        System::OwnedBlock<uint8_t> buffer(framesToWrite * sampleSize);
-        IO::Result ioResult = file->Read(buffer, dataOffset, false);
+        Memory::OwnedBlock<uint8_t> buffer(framesToWrite * sampleSize);
+        IO::Result ioResult = file->Read(buffer, dataOffset);
         CELL_ASSERT(ioResult == IO::Result::Success);
 
         result = renderer->Submit(buffer);

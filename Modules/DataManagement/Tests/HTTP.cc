@@ -2,13 +2,12 @@
 // SPDX-License-Identifier: BSD-2-Clause
 
 #include <Cell/Scoped.hh>
-#include <Cell/DataManagement/Foreign/HTTP.hh>
-#include <Cell/System/BlockImpl.hh>
+#include <Cell/DataManagement/HTTP.hh>
+#include <Cell/Memory/UnownedBlock.hh>
 #include <Cell/System/Entry.hh>
 
 using namespace Cell;
 using namespace Cell::DataManagement;
-using namespace Cell::DataManagement::Foreign;
 
 void CellEntry(Reference<String> parameterString) {
     (void)(parameterString);
@@ -17,6 +16,6 @@ void CellEntry(Reference<String> parameterString) {
 
     ScopedBlock<uint8_t> data = (uint8_t*)httpResponse.ToCharPointer();
 
-    Wrapped<HTTP::Request*, Result> result = HTTP::Request::FromRaw(System::UnownedBlock<uint8_t> { data, httpResponse.GetSize() });
+    Wrapped<HTTP::Request*, Result> result = HTTP::Request::FromRaw(Memory::UnownedBlock<uint8_t> { data, httpResponse.GetSize() });
     CELL_ASSERT(result.IsValid());
 }

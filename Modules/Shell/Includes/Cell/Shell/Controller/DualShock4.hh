@@ -15,10 +15,8 @@ public:
 
     CELL_FUNCTION Result Update() override;
 
-    CELL_NON_COPYABLE(DualShock4)
-
 private:
-    CELL_INLINE DualShock4(IO::HID::Device* device) : device(device) { }
+    CELL_FUNCTION_INTERNAL DualShock4(IO::HID::Device* d) : device(d) { }
 
     IO::HID::Device* device;
 };

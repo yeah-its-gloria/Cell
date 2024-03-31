@@ -8,7 +8,7 @@
 
 namespace Cell {
 using namespace StringDetails;
-using namespace System;
+using namespace Memory;
 
 Result String::Append(const String& string) {
     if (string.IsEmpty()) {
@@ -16,12 +16,12 @@ Result String::Append(const String& string) {
     }
 
     if (this->size == 0) {
-        this->data = AllocateMemory<char>(string.size);
+        this->data = Allocate<char>(string.size);
     } else {
-        ReallocateMemory<char>(&this->data, this->size + string.size);
+        Reallocate<char>(this->data, this->size + string.size);
     }
 
-    CopyMemory<char>(this->data + this->size, string.data, string.size);
+    Copy<char>(this->data + this->size, string.data, string.size);
 
     this->size += string.size;
     return Result::Success;
@@ -31,12 +31,12 @@ Result String::Append(const char* input) {
     const size_t dataSize = StringDetails::RawStringSize(input);
 
     if (this->size == 0) {
-        this->data = AllocateMemory<char>(dataSize);
+        this->data = Allocate<char>(dataSize);
     } else {
-        ReallocateMemory<char>(&this->data, this->size + dataSize);
+        Reallocate<char>(this->data, this->size + dataSize);
     }
 
-    CopyMemory<char>(this->data + this->size, input, dataSize);
+    Copy<char>(this->data + this->size, input, dataSize);
     this->size += dataSize;
 
     return Result::Success;
@@ -47,7 +47,7 @@ void String::Clear() {
         return;
     }
 
-    FreeMemory(this->data);
+    Free(this->data);
 
     this->size = 0;
     this->data = nullptr;

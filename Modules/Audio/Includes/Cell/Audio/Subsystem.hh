@@ -40,7 +40,7 @@ struct Format {
 };
 
 // Calculates a single sample's byte size for the given format.
-CELL_FUNCTION_INTERNAL CELL_INLINE constexpr uint32_t GetSampleByteSize(const Format& format) {
+CELL_FUNCTION_INTERNAL inline constexpr uint32_t GetSampleByteSize(const Format& format) {
     const uint32_t bits = [&format]{
         switch (format.type) {
         case FormatType::Float32PCM: {
@@ -63,9 +63,9 @@ CELL_FUNCTION_INTERNAL CELL_INLINE constexpr uint32_t GetSampleByteSize(const Fo
 }
 
 // Base audio subsystem interface.
-class ISubsystem : public Object {
+class ISubsystem : public NoCopyObject {
 public:
-    virtual ~ISubsystem() = default;
+    CELL_FUNCTION virtual ~ISubsystem() = default;
 
     // Sets up a renderer with the given format. The given renderer will always output to the currently selected device.
     virtual Wrapped<class IRenderer*, Result> CreateRenderer(const Format& format) = 0;

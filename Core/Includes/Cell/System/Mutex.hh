@@ -8,7 +8,7 @@
 namespace Cell::System {
 
 // Represents a locking mechanism for resources. Useful to prevent data races.
-class Mutex : public Object {
+class Mutex : public NoCopyObject {
 public:
     // Creates a new mutex.
     CELL_FUNCTION Mutex(bool createLocked = false);
@@ -22,10 +22,8 @@ public:
     // Unlocks the mutex.
     CELL_FUNCTION void Unlock();
 
-    CELL_NON_COPYABLE(Mutex)
-
 private:
-    uintptr_t handle;
+    uintptr_t impl;
 };
 
 }

@@ -14,7 +14,7 @@ namespace Cell::OpenXR { class Instance; }
 
 namespace Cell::Vulkan {
 
-class Instance : public Object {
+class Instance : public NoCopyObject {
 friend class CommandBuffer;
 friend class Device;
 friend class WSITarget;
@@ -42,13 +42,11 @@ public:
                                                               const uint32_t count,
                                                               VkPhysicalDevice CELL_NULLABLE physicalDevice = nullptr);
 
-    CELL_NON_COPYABLE(Instance)
-
 private:
-    CELL_INLINE Instance(VkInstance CELL_NONNULL instance,
-                         PFN_vkCmdBeginRenderingKHR CELL_NONNULL beginRendering,
-                         PFN_vkCmdEndRenderingKHR CELL_NONNULL endRendering,
-                         PFN_vkCmdSetCullModeEXT CELL_NONNULL setCullMode)
+    CELL_FUNCTION_INTERNAL Instance(VkInstance CELL_NONNULL instance,
+                                    PFN_vkCmdBeginRenderingKHR CELL_NONNULL beginRendering,
+                                    PFN_vkCmdEndRenderingKHR CELL_NONNULL endRendering,
+                                    PFN_vkCmdSetCullModeEXT CELL_NONNULL setCullMode)
         : instance(instance), beginRendering(beginRendering), endRendering(endRendering), setCullMode(setCullMode) { }
 
     struct PhysicalDeviceQueues {

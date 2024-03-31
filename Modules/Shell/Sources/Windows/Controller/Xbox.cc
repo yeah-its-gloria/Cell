@@ -3,7 +3,7 @@
 
 #include <Cell/Shell/Controller/Xbox.hh>
 #include <Cell/System/Log.hh>
-#include <Cell/System/Memory.hh>
+#include <Cell/Memory/Allocator.hh>
 #include <Cell/System/Timer.hh>
 
 #include <wrl.h>
@@ -42,7 +42,7 @@ Wrapped<Xbox*, Result> Xbox::Find() {
     IGamepad* gamepad = nullptr;
     gamepads->GetAt(0, &gamepad);
 
-    XboxData* data = System::AllocateMemory<XboxData>();
+    XboxData* data = Memory::Allocate<XboxData>();
 
     data->statics = statics;
     data->gamepad = gamepad;
@@ -56,12 +56,12 @@ Xbox::~Xbox() {
     data->gamepad->Release();
     data->statics->Release();
 
-    System::FreeMemory(data);
+    Memory::Free(data);
 }
 
 Result Xbox::Update() {
     this->lastReport = this->report;
-    System::ClearMemory(this->report);
+    Memory::Clear(this->report);
 
     XboxData* data = (XboxData*)this->device;
 

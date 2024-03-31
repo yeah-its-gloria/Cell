@@ -5,14 +5,14 @@
 
 namespace Cell::Vulkan {
 
-Result Pipeline::AddMultiShader(const IBlock& block) {
+Result Pipeline::AddMultiShader(const Memory::IBlock& block) {
     const VkShaderModuleCreateInfo moduleInfo = {
         .sType    = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO,
         .pNext    = nullptr,
         .flags    = 0,
 
-        .codeSize = block.ByteSize(),
-        .pCode    = (const uint32_t*)block.Pointer()
+        .codeSize = block.GetSize(),
+        .pCode    = (const uint32_t*)block.AsPointer()
     };
 
     VkShaderModule module = nullptr;

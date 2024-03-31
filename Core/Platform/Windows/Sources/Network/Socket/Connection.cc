@@ -9,8 +9,8 @@
 namespace Cell::Network {
 
 Result Socket::Connect(const AddressInfo* info) {
-    ADDRINFOW* infoData = (ADDRINFOW*)info->handle;
-    const int result = WSAConnect(this->handle, infoData->ai_addr, (int)infoData->ai_addrlen, nullptr, nullptr, nullptr, nullptr);
+    ADDRINFOW* infoData = (ADDRINFOW*)info->impl;
+    const int result = WSAConnect(this->impl, infoData->ai_addr, (int)infoData->ai_addrlen, nullptr, nullptr, nullptr, nullptr);
     if (result == SOCKET_ERROR) {
         switch (WSAGetLastError()) {
         default: {
@@ -23,7 +23,7 @@ Result Socket::Connect(const AddressInfo* info) {
 }
 
 Result Socket::Disconnect() {
-    const int result = shutdown(this->handle, SD_BOTH);
+    const int result = shutdown(this->impl, SD_BOTH);
     if (result == SOCKET_ERROR) {
         switch (WSAGetLastError()) {
         case WSAENOTCONN: {

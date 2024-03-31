@@ -3,8 +3,6 @@
 
 #include "Platform.hh"
 
-#include <Cell/System/BlockImpl.hh>
-
 namespace Cell::Vulkan {
 
 Wrapped<WSITarget*, Result> Device::CreateWSITarget(Shell::IShell* shell, const uint8_t depth) {

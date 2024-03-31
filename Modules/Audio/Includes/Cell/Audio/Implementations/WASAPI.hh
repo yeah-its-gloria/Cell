@@ -24,10 +24,8 @@ public:
     CELL_FUNCTION Wrapped<ICapturer*, Result> CreateLoopback(const DeviceInfo& info, const Format& format) override;
     CELL_FUNCTION Wrapped<Collection::List<DeviceInfo>, Result> DiscoverAvailableRenderers() override;
 
-    CELL_NON_COPYABLE(Subsystem)
-
 private:
-    CELL_FUNCTION_INTERNAL CELL_INLINE Subsystem(IMMDeviceEnumerator* CELL_NONNULL e, CellMMNotificationClient* CELL_NONNULL n, const String& t)
+    CELL_FUNCTION_INTERNAL Subsystem(IMMDeviceEnumerator* CELL_NONNULL e, CellMMNotificationClient* CELL_NONNULL n, const String& t)
         : enumerator(e), notificationClient(n), title(t) { }
 
     CELL_FUNCTION_INTERNAL Wrapped<IMMDevice*, Result> FindDeviceByID(LPWSTR id);
@@ -48,19 +46,17 @@ public:
 
     CELL_FUNCTION Result Start() override;
     CELL_FUNCTION Result Stop() override;
-    CELL_FUNCTION Result Submit(const IBlock& block) override;
+    CELL_FUNCTION Result Submit(const Memory::IBlock& block) override;
     CELL_FUNCTION Wrapped<uint32_t, Result> GetMaxSampleCount() override;
     CELL_FUNCTION Wrapped<uint32_t, Result> GetCurrentSampleOffset() override;
     CELL_FUNCTION uint32_t GetLatency() override;
 
-    CELL_NON_COPYABLE(Renderer)
-
 private:
-    CELL_FUNCTION_INTERNAL CELL_INLINE Renderer(Subsystem*          CELL_NONNULL s,
-                                                IMMDevice*          CELL_NONNULL d,
-                                                IAudioClient3*      CELL_NONNULL c,
-                                                IAudioRenderClient* CELL_NONNULL rc,
-                                                size_t                           ss)
+    CELL_FUNCTION_INTERNAL Renderer(Subsystem*          CELL_NONNULL s,
+                                    IMMDevice*          CELL_NONNULL d,
+                                    IAudioClient3*      CELL_NONNULL c,
+                                    IAudioRenderClient* CELL_NONNULL rc,
+                                    size_t                           ss)
         : subsystem(s),
           device(d),
           client(c),
@@ -85,16 +81,15 @@ public:
 
     CELL_FUNCTION Result Start() override;
     CELL_FUNCTION Result Stop() override;
-    CELL_FUNCTION Result Fetch(System::OwnedBlock<uint8_t>& out) override;
-
-    CELL_NON_COPYABLE(Capturer)
+    CELL_FUNCTION Wrapped<uint32_t, Result> GetAvailableSampleCount() override;
+    CELL_FUNCTION Wrapped<uint8_t*, Result> Fetch(const uint32_t count) override;
 
 private:
-    CELL_FUNCTION_INTERNAL CELL_INLINE Capturer(Subsystem*           CELL_NONNULL s,
-                                                IMMDevice*           CELL_NONNULL d,
-                                                IAudioClient3*       CELL_NONNULL c,
-                                                IAudioCaptureClient* CELL_NONNULL cc,
-                                                size_t                            ss)
+    CELL_FUNCTION_INTERNAL Capturer(Subsystem*           CELL_NONNULL s,
+                                    IMMDevice*           CELL_NONNULL d,
+                                    IAudioClient3*       CELL_NONNULL c,
+                                    IAudioCaptureClient* CELL_NONNULL cc,
+                                    size_t                            ss)
         : subsystem(s),
           device(d),
           client(c),

@@ -17,7 +17,7 @@ struct FormatInfo {
     uint32_t mask;
 };
 
-CELL_FUNCTION_INTERNAL CELL_INLINE constexpr uint32_t GetChannelMask(uint8_t channels) {
+CELL_FUNCTION_INTERNAL constexpr uint32_t GetChannelMask(const uint8_t channels) {
     switch (channels) {
     case 1: {
         return KSAUDIO_SPEAKER_MONO;

@@ -17,7 +17,7 @@ public:
     CELL_FUNCTION_INTERNAL bool TriggeredAudio();
 
 private:
-    CELL_INLINE InputController(Example* owner) : owner(owner) { }
+    CELL_FUNCTION_INTERNAL InputController(Example* owner) : owner(owner) { }
 
     CELL_FUNCTION_INTERNAL void OnForward(const Cell::Shell::InputType type);
     CELL_FUNCTION_INTERNAL void OnBackward(const Cell::Shell::InputType type);

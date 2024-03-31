@@ -9,28 +9,32 @@ namespace Cell::DataManagement {
 
 // Results used across data parsing.
 enum class Result : uint8_t {
-    // Indicates success.
+    // Success.
     Success,
 
-    // Indicates malformed parameters.
+    // Malformed parameters.
     InvalidParameters,
-
-// PNG
 
     // Indicates a broken file signature.
     InvalidSignature,
 
-    // Indicates an unexpected or unsupported size.
+    // Unexpected or unsupported size.
     InvalidSize,
 
-    // Indicates a malformed identifier, for something like a chunk.
+    // Malformed identifier, for something like a chunk.
     InvalidIdentifier,
 
-    // Indicates a checksum was wrong.
+    // Checksum was wrong.
     InvalidChecksum,
 
-    // Indicates malformed data.
-    InvalidData
+    // Malformed data.
+    InvalidData,
+
+    // Buffer too small.
+    NoSpaceInBuffer,
+
+    // Ran out of memory.
+    NotEnoughMemory
 };
 
 }

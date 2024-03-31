@@ -48,19 +48,19 @@ struct Data {
 
 // Template function for implementing storage of various types.
 // Also reminder that C++ reference rules make no sense
-template <typename T> CELL_INLINE CELL_FUNCTION_INTERNAL constexpr Data Package(T a);
+template <typename T> CELL_FUNCTION_TEMPLATE constexpr Data Package(T a);
 
 #define IMPL_PRIMITIVE(T, TT, TTT) \
-template <> CELL_INLINE CELL_FUNCTION_INTERNAL constexpr Data Package<T>(T value) { return { .type = Type::TT, .TTT = value }; } \
-template <> CELL_INLINE CELL_FUNCTION_INTERNAL constexpr Data Package<const T>(const T value) { return { .type = Type::TT, .TTT = value }; } \
-template <> CELL_INLINE CELL_FUNCTION_INTERNAL constexpr Data Package<T&>(T& value) { return { .type = Type::TT, .TTT = value }; } \
-template <> CELL_INLINE CELL_FUNCTION_INTERNAL constexpr Data Package<const T&>(const T& value) { return { .type = Type::TT, .TTT = value }; }
+template <> CELL_FUNCTION_TEMPLATE constexpr Data Package<T>(T value) { return { .type = Type::TT, .TTT = value }; } \
+template <> CELL_FUNCTION_TEMPLATE constexpr Data Package<const T>(const T value) { return { .type = Type::TT, .TTT = value }; } \
+template <> CELL_FUNCTION_TEMPLATE constexpr Data Package<T&>(T& value) { return { .type = Type::TT, .TTT = value }; } \
+template <> CELL_FUNCTION_TEMPLATE constexpr Data Package<const T&>(const T& value) { return { .type = Type::TT, .TTT = value }; }
 
 #define IMPL_POINTER(T, TT, TTT) \
-template <> CELL_INLINE CELL_FUNCTION_INTERNAL constexpr Data Package<T*>(T* value) { return { .type = Type::TT, .TTT = value }; } \
-template <> CELL_INLINE CELL_FUNCTION_INTERNAL constexpr Data Package<const T*>(const T* value) { return { .type = Type::TT, .TTT = value }; } \
-template <> CELL_INLINE CELL_FUNCTION_INTERNAL constexpr Data Package<T*&>(T*& value) { return { .type = Type::TT, .TTT = value }; } \
-template <> CELL_INLINE CELL_FUNCTION_INTERNAL constexpr Data Package<const T*&>(const T*& value) { return { .type = Type::TT, .TTT = value }; }
+template <> CELL_FUNCTION_TEMPLATE constexpr Data Package<T*>(T* value) { return { .type = Type::TT, .TTT = value }; } \
+template <> CELL_FUNCTION_TEMPLATE constexpr Data Package<const T*>(const T* value) { return { .type = Type::TT, .TTT = value }; } \
+template <> CELL_FUNCTION_TEMPLATE constexpr Data Package<T*&>(T*& value) { return { .type = Type::TT, .TTT = value }; } \
+template <> CELL_FUNCTION_TEMPLATE constexpr Data Package<const T*&>(const T*& value) { return { .type = Type::TT, .TTT = value }; }
 
 IMPL_PRIMITIVE(uint8_t, UInt, uInt)
 IMPL_PRIMITIVE(uint16_t, UInt, uInt)
@@ -79,8 +79,8 @@ IMPL_POINTER(char, ConstCharPointer, constCharPointer)
 IMPL_POINTER(wchar_t, ConstWideCharPointer, constWideCharPointer)
 IMPL_POINTER(void, Address, address)
 
-template <> CELL_INLINE CELL_FUNCTION_INTERNAL constexpr Data Package<String&>(String& value) { return { .type = Type::CellString, .string = value }; }
-template <> CELL_INLINE CELL_FUNCTION_INTERNAL constexpr Data Package<const String&>(const String& value) { return { .type = Type::CellString, .string = value }; }
+template <> CELL_FUNCTION_TEMPLATE constexpr Data Package<String&>(String& value) { return { .type = Type::CellString, .string = value }; }
+template <> CELL_FUNCTION_TEMPLATE constexpr Data Package<const String&>(const String& value) { return { .type = Type::CellString, .string = value }; }
 
 #ifdef CELL_PLATFORM_WINDOWS
 IMPL_PRIMITIVE(long, Int, sInt)

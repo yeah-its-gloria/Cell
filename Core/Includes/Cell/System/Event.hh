@@ -17,7 +17,7 @@ enum class EventWaitResult : uint8_t {
 };
 
 // Represents an event. Can be signaled, useful as a semaphore for operation.
-class Event : public Object {
+class Event : public NoCopyObject {
 public:
     // Creates a new event.
     CELL_FUNCTION Event(const bool createSignaled = false);
@@ -34,8 +34,6 @@ public:
     // Waits for the event to be signaled with the given timeout.
     // By default, it blocks forever until the event is signaled.
     CELL_FUNCTION EventWaitResult Wait(const uint32_t timeoutMs = 0);
-
-    CELL_NON_COPYABLE(Event)
 
 private:
     uintptr_t handle;

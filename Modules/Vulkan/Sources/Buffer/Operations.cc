@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: Copyright 2023-2024 Gloria G.
 // SPDX-License-Identifier: BSD-2-Clause
 
-#include <Cell/System/Memory.hh>
+#include <Cell/Memory/Allocator.hh>
 #include <Cell/Vulkan/Buffer.hh>
 
 namespace Cell::Vulkan {
@@ -48,18 +48,18 @@ void Buffer::Unmap() {
     this->isMapped = false;
 }
 
-Result Buffer::Copy(const IBlock& data, const uint64_t offset) {
+Result Buffer::Copy(const Memory::IBlock& data, const uint64_t offset) {
     if (this->isMapped) {
         return Result::InvalidState;
     }
 
     void* address = nullptr;
-    Result result = this->Map(address, data.ByteSize(), offset);
+    Result result = this->Map(address, data.GetSize(), offset);
     if (result != Result::Success) {
         return result;
     }
 
-    System::CopyMemory(address, data.Pointer(), data.ByteSize());
+    Memory::Copy(address, data.AsPointer(), data.GetSize());
 
     this->Unmap();
     return Result::Success;

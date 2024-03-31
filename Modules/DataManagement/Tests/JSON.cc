@@ -2,15 +2,15 @@
 // SPDX-License-Identifier: BSD-2-Clause
 
 #include <Cell/Scoped.hh>
-#include <Cell/DataManagement/Foreign/JSON.hh>
+#include <Cell/DataManagement/JSON.hh>
 #include <Cell/IO/File.hh>
-#include <Cell/System/BlockImpl.hh>
+#include <Cell/Memory/OwnedBlock.hh>
 #include <Cell/System/Entry.hh>
 #include <Cell/System/Log.hh>
 #include <Cell/System/Panic.hh>
 
 using namespace Cell;
-using namespace Cell::DataManagement::Foreign;
+using namespace Cell::DataManagement;
 using namespace Cell::System;
 
 void PrintValue(JSON::Value value, const bool isRoot = false, const bool isArray = false) {
@@ -70,13 +70,13 @@ void CellEntry(Reference<String> parameterString) {
     (void)(parameterString);
 
     ScopedObject<IO::File> file = IO::File::Open("./Engine/Modules/DataManagement/Content/Data.json").Unwrap();
-    const size_t size = file->GetSize().Unwrap();
+    const size_t size = file->GetSize();
 
-    OwnedBlock<char> data(size);
+    Memory::OwnedBlock<char> data(size);
     IO::Result result = file->Read(data);
     CELL_ASSERT(result == IO::Result::Success);
 
-    String jsonData(data);
+    String jsonData((char*)data.AsPointer(), size);
     ScopedObject document = JSON::Document::Parse(jsonData).Unwrap();
 
     PrintValue(document->GetRoot(), true);

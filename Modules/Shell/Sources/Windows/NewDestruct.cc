@@ -60,7 +60,7 @@ Wrapped<Windows*, Result> Windows::New(const String& title, const Extent extent)
     );
 
     if (!title.IsEmpty()) {
-        System::FreeMemory(titleWide);
+        Memory::Free(titleWide);
     }
 
     if (window == nullptr) {

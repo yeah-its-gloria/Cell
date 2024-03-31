@@ -5,8 +5,8 @@
 #include <Cell/Collection/List.hh>
 #include <Cell/DataManagement/Archive.hh>
 #include <Cell/DataManagement/Container.hh>
+#include <Cell/IO/Directory.hh>
 #include <Cell/IO/File.hh>
-#include <Cell/IO/FolderWalker.hh>
 #include <Cell/System/Entry.hh>
 #include <Cell/System/Log.hh>
 #include <Cell/Utilities/MinMaxClamp.hh>
@@ -15,66 +15,28 @@ using namespace Cell;
 using namespace Cell::DataManagement;
 
 void CellEntry(Reference<String> parameterString) {
-    IO::Result ioResult = IO::CheckPath(parameterString.Unwrap());
+    String& path = parameterString.Unwrap();
+    IO::Result ioResult = IO::CheckPath(path);
     if (ioResult != IO::Result::Success) {
         System::Log("Error: Content folder not found");
         return;
     }
 
-    System::Log("Packing Content...");
+    System::Log("Packing Content for \"%\"...", path);
+    ScopedObject<IO::Directory> directory = IO::Directory::Open(path).Unwrap();
 
-    ScopedObject walker = IO::FolderWalker::Open(parameterString.Unwrap()).Unwrap();
+    Collection::List<String> folders = directory->EnumerateDirectories().Unwrap();
+    for (const String& folder : folders) {
+        System::Log("Folder -> %", folder);
+    }
 
-    /*Collection::List<System::String> elements;
-    while (true) {
-        Wrapped<IO::FolderWalkerElementData, IO::Result> result = walker->GetCurrentElementDataAndAdvance();
-        if (result.Result() == IO::Result::NoMoreElements) {
-            break;
-        }
+    Collection::List<String> markdownFiles = directory->Enumerate("*.md").Unwrap();
+    for (const String& file : markdownFiles) {
+        System::Log("Markdown -> %", file);
+    }
 
-        IO::FolderWalkerElementData stuff = result.Unwrap();
-        if (!stuff.isFolder) {
-            elements.Append(stuff.fileName);
-        }
-    }*/
-
-    String fileName = parameterString.Unwrap() + "\\data.bin"; //+ elements[0];
-    ScopedObject importedFile = IO::File::Open(fileName).Unwrap();
-
-    ScopedObject archive = IO::File::Open("archive.cel", IO::FileMode::Write | IO::FileMode::Create).Unwrap();
-
-    ContainerHeader containerHeader = {
-        .version = ContainerVersion,
-        .kind = ContainerContentKind::Archive
-    };
-
-    System::CopyMemory(containerHeader.magic, ContainerMagic, 4);
-
-    ArchiveHeader archiveHeader = {
-        .elements = 1
-    };
-
-    ArchiveEntry archiveEntry = {
-        .name = { 0 },
-        .size = (uint32_t)importedFile->GetSize().Unwrap()
-    };
-
-    //System::CopyMemory(archiveEntry.name, elements[0].ToRawPointer(), Utilities::Minimum<size_t>(elements[0].GetSize(), 20));
-    System::CopyMemory(archiveEntry.name, "data.bin", 8);
-
-    System::OwnedBlock<uint8_t> importedFileData(archiveEntry.size);
-    ioResult = importedFile->Read(importedFileData);
-    CELL_ASSERT(ioResult == IO::Result::Success);
-
-    ioResult = archive->Write(System::UnownedBlock { &containerHeader });
-    CELL_ASSERT(ioResult == IO::Result::Success);
-
-    ioResult = archive->Write(System::UnownedBlock { &archiveHeader });
-    CELL_ASSERT(ioResult == IO::Result::Success);
-
-    ioResult = archive->Write(System::UnownedBlock { &archiveEntry });
-    CELL_ASSERT(ioResult == IO::Result::Success);
-
-    ioResult = archive->Write(importedFileData);
-    CELL_ASSERT(ioResult == IO::Result::Success);
+    Collection::List<String> cmakeFiles = directory->Enumerate("CMakeLists.txt").Unwrap();
+    for (const String& file : cmakeFiles) {
+        System::Log("CMake -> %", file);
+    }
 }

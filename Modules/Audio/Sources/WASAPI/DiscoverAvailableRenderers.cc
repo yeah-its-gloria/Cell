@@ -89,8 +89,8 @@ Wrapped<Collection::List<DeviceInfo>, Result> Subsystem::DiscoverAvailableRender
         }
 
         const size_t idSize = wcslen(id);
-        infos[i].identifier = System::AllocateMemory<wchar_t>(idSize + 1);
-        System::CopyMemory((wchar_t*)infos[i].identifier, id, idSize);
+        infos[i].identifier = Memory::Allocate<wchar_t>(idSize + 1);
+        Memory::Copy<wchar_t>((wchar_t*)infos[i].identifier, id, idSize);
 
         infos[i].name = String::FromPlatformWideString(property.pwszVal).Unwrap();
 

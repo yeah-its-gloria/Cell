@@ -22,7 +22,7 @@ enum class Stage : uint8_t {
     Fragment
 };
 
-class Device : public Object {
+class Device : public NoCopyObject {
 friend Instance;
 
 friend class Buffer;
@@ -66,14 +66,12 @@ public:
     // Backed by 4 images by default.
     CELL_FUNCTION Wrapped<class WSITarget*, Result> CreateWSITarget(Shell::IShell* CELL_NONNULL shell, const uint8_t depth = 4);
 
-    CELL_NON_COPYABLE(Device)
-
 private:
-    CELL_FUNCTION_INTERNAL CELL_INLINE Device(VkPhysicalDevice pd, uint32_t pgi,
-                                              uint32_t pti, VkPhysicalDeviceMemoryProperties pr,
-                                              VkDevice d, VkQueue qg,
-                                              VkQueue qt, VkCommandPool pg,
-                                              VkCommandPool pt, Instance* i)
+    CELL_FUNCTION_INTERNAL Device(VkPhysicalDevice pd, uint32_t pgi,
+                                  uint32_t pti, VkPhysicalDeviceMemoryProperties pr,
+                                  VkDevice d, VkQueue qg,
+                                  VkQueue qt, VkCommandPool pg,
+                                  VkCommandPool pt, Instance* i)
         : physicalDevice(pd), physicalDeviceQueueGraphics(pgi),
           physicalDeviceQueueTransfer(pti), physicalDeviceProperties(pr),
           device(d), deviceQueueGraphics(qg),

@@ -10,14 +10,14 @@ namespace Cell::Utilities {
 template <typename T> concept CompleteType = requires { sizeof(T); };
 
 template <typename T> constexpr bool IsClassType = __is_class(T);
-template <typename T> concept ClassType = requires { __is_class(T); };
+template <typename T> concept ClassType = requires { IsClassType<T>; };
 
 template <typename> constexpr bool IsPointerType = false;
 template <CompleteType T> constexpr bool IsPointerType<T*> = true;
 
-template <typename T> constexpr bool TypeImplementsCellObject = __is_base_of(Object, T);
-template <CompleteType T> constexpr bool TypeImplementsCellObject<T*> = __is_base_of(Object, T);
+template <typename T> constexpr bool ImplementsCellObject = __is_base_of(Object, T);
+template <CompleteType T> constexpr bool ImplementsCellObject<T*> = __is_base_of(Object, T);
 
-template <ClassType T> constexpr bool IsDeletable = IsPointerType<T>;
+template <ClassType T> constexpr bool IsDeletable = IsPointerType<T> && ImplementsCellObject<T>;
 
 }

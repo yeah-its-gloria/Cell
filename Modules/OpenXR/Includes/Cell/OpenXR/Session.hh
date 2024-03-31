@@ -7,7 +7,7 @@
 
 namespace Cell::OpenXR {
 
-class Session : public Object {
+class Session : public NoCopyObject {
 friend Instance;
 
 public:
@@ -16,10 +16,8 @@ public:
 
     // TODO: store render target info and view structures in sessions, allow dispatching frames
 
-    CELL_NON_COPYABLE(Session)
-
 private:
-    CELL_FUNCTION_INTERNAL CELL_INLINE Session(Instance* i, XrSystemId id, XrSystemProperties p, XrViewConfigurationView vc[2], XrSession s, XrSpace sp)
+    CELL_FUNCTION_INTERNAL Session(Instance* i, XrSystemId id, XrSystemProperties p, XrViewConfigurationView vc[2], XrSession s, XrSpace sp)
         : instance(i), id(id), properties(p), viewConfigurations { vc[0], vc[1] }, session(s), space(sp) { }
 
     Instance* instance;

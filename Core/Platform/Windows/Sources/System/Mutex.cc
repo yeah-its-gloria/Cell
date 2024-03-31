@@ -11,24 +11,24 @@ Mutex::Mutex(const bool createLocked) {
     HANDLE mutex = CreateMutexW(nullptr, createLocked, nullptr);
     CELL_ASSERT(mutex != nullptr);
 
-    this->handle = (uintptr_t)mutex;
+    this->impl = (uintptr_t)mutex;
 }
 
 Mutex::~Mutex() {
-    BOOL result = ReleaseMutex((HANDLE)this->handle);
+    BOOL result = ReleaseMutex((HANDLE)this->impl);
     CELL_ASSERT(result == TRUE || (result == FALSE && GetLastError() == ERROR_NOT_OWNER));
 
-    result = CloseHandle((HANDLE)this->handle);
+    result = CloseHandle((HANDLE)this->impl);
     CELL_ASSERT(result == TRUE);
 }
 
 void Mutex::Lock() {
-    const DWORD result = WaitForSingleObjectEx((HANDLE)this->handle, INFINITE, FALSE);
+    const DWORD result = WaitForSingleObjectEx((HANDLE)this->impl, INFINITE, FALSE);
     CELL_ASSERT(result == WAIT_OBJECT_0);
 }
 
 void Mutex::Unlock() {
-    const BOOL result = ReleaseMutex((HANDLE)this->handle);
+    const BOOL result = ReleaseMutex((HANDLE)this->impl);
     CELL_ASSERT(result == TRUE);
 }
 

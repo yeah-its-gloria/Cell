@@ -22,7 +22,7 @@ struct AcquiredImage {
 // Known implementations:
 // CellOpenXR: VulkanTarget
 // CellVulkan: WSITarget
-class IRenderTarget : public Object {
+class IRenderTarget : public NoCopyObject {
 public:
     // Common destructor.
     virtual ~IRenderTarget() = default;

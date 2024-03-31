@@ -11,22 +11,22 @@ namespace Cell {
 template <typename T> class Reference : public Object {
 public:
     // Creates a dead reference.
-    CELL_FUNCTION_INTERNAL CELL_INLINE constexpr Reference() : object(nullptr) { }
+    CELL_FUNCTION_INTERNAL constexpr Reference() : object(nullptr) { }
 
     // Creates a new reference.
-    CELL_FUNCTION_INTERNAL CELL_INLINE constexpr Reference(T& object) : object(__builtin_addressof(object)) { }
+    CELL_FUNCTION_INTERNAL constexpr Reference(T& object) : object(__builtin_addressof(object)) { }
 
     // Unwraps the reference.
-    CELL_NODISCARD CELL_FUNCTION_INTERNAL  CELL_INLINE constexpr T& Unwrap() {
+    CELL_NODISCARD CELL_FUNCTION_INTERNAL constexpr T& Unwrap() {
         return *this->object;
     }
 
-    CELL_NODISCARD CELL_FUNCTION_INTERNAL  CELL_INLINE constexpr const T& Unwrap() const {
+    CELL_NODISCARD CELL_FUNCTION_INTERNAL constexpr const T& Unwrap() const {
         return *this->object;
     }
 
     // Acts directly upon the referenced object.
-    CELL_NODISCARD CELL_FUNCTION_INTERNAL  CELL_INLINE constexpr T& operator -> () {
+    CELL_NODISCARD CELL_FUNCTION_INTERNAL constexpr T& operator -> () {
         return this->Unwrap();
     }
 

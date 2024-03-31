@@ -5,7 +5,7 @@
 
 #include <Cell/Wrapped.hh>
 #include <Cell/IO/Result.hh>
-#include <Cell/System/Block.hh>
+#include <Cell/Memory/Block.hh>
 
 namespace Cell::IO::HID {
 
@@ -28,7 +28,7 @@ struct Capabilities {
 };
 
 // Allows for interacting with HID devices.
-class Device : public Object {
+class Device : public NoCopyObject {
 public:
     // Opens or creates a HID device. Cell supports both USB and Bluetooth based HID devices (e.g controllers).
     CELL_FUNCTION static Wrapped<Device*, Result> Open(const uint16_t vendorId, const uint16_t productId);
@@ -38,26 +38,22 @@ public:
 
     // Reads data from the device. This would be a report for HID devices.
     // Allows terminating reading with a timeout.
-    CELL_FUNCTION Result Read(IBlock& data, const uint32_t milliseconds = 0);
+    CELL_FUNCTION Result Read(Memory::IBlock& data, const uint32_t milliseconds = 0);
 
     // Writes data to the device. This would be a report for HID devices.
     // Allows terminating writing with a timeout.
-    CELL_FUNCTION Result Write(const IBlock& data, const uint32_t milliseconds = 0);
+    CELL_FUNCTION Result Write(const Memory::IBlock& data, const uint32_t milliseconds = 0);
 
     // Fetches the capabilities of the device.
     CELL_FUNCTION Wrapped<Capabilities, Result> GetCapabilities();
 
     // Returns the connection type this device uses.
-    CELL_INLINE ConnectionType GetConnectionType() const {
-        return this->type;
-    }
-
-    CELL_NON_COPYABLE(Device)
+    CELL_FUNCTION ConnectionType GetConnectionType() const;
 
 private:
-    CELL_FUNCTION_INTERNAL CELL_INLINE Device(const uintptr_t handle, const ConnectionType type) : handle(handle), type(type) { }
+    CELL_FUNCTION_INTERNAL Device(uintptr_t i, const ConnectionType t) : impl(i), type(t) { }
 
-    const uintptr_t handle;
+    uintptr_t impl;
     const ConnectionType type;
 };
 

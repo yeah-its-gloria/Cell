@@ -18,7 +18,7 @@ namespace Cell::System {
 typedef void (* ThreadFunction)(void* CELL_NULLABLE parameter);
 
 // Represents a thread from the OS.
-class Thread : public Object {
+class Thread : public NoCopyObject {
 public:
     // Spawns a new thread, with the given parameter and, optionally, name.
     // Some platforms do not support names; they are only used for debugging facilities.
@@ -41,10 +41,8 @@ public:
     // Requests the scheduler to yield execution.
     CELL_FUNCTION static void Yield();
 
-    CELL_NON_COPYABLE(Thread)
-
 private:
-    uintptr_t handle;
+    uintptr_t impl;
 };
 
 }

@@ -162,7 +162,7 @@ Result Pipeline::AddResources(const IEnumerable<ResourceBinding>& resBindings, c
         .pSetLayouts        = layouts.AsRaw()
     };
 
-    VkDescriptorSet* sets = System::AllocateMemory<VkDescriptorSet>(setCount);
+    VkDescriptorSet* sets = Memory::Allocate<VkDescriptorSet>(setCount);
     result = vkAllocateDescriptorSets(this->device->device, &setAllocateInfo, sets);
     switch (result) {
     case VK_SUCCESS: {

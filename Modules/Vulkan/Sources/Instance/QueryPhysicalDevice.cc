@@ -1,14 +1,12 @@
 // SPDX-FileCopyrightText: Copyright 2023-2024 Gloria G.
 // SPDX-License-Identifier: BSD-2-Clause
 
-#include <Cell/System/BlockImpl.hh>
+#include <Cell/Collection/List.hh>
 #include <Cell/Vulkan/Instance.hh>
 
 namespace Cell::Vulkan {
 
 Wrapped<Instance::QueryPhysicalDeviceResult, Result> Instance::QueryPhysicalDevice(VkPhysicalDevice CELL_NULLABLE device) {
-    VkPhysicalDevice physicalDevice = nullptr;
-
     if (device == nullptr) {
         uint32_t deviceCount = 0;
         VkResult vk_result = vkEnumeratePhysicalDevices(this->instance, &deviceCount, nullptr);
@@ -30,8 +28,8 @@ Wrapped<Instance::QueryPhysicalDeviceResult, Result> Instance::QueryPhysicalDevi
         }
         }
 
-        System::OwnedBlock<VkPhysicalDevice> devices(deviceCount);
-        vk_result = vkEnumeratePhysicalDevices(this->instance, &deviceCount, devices);
+        Collection::List<VkPhysicalDevice> devices(deviceCount);
+        vk_result = vkEnumeratePhysicalDevices(this->instance, &deviceCount, devices.AsRaw());
         switch (vk_result) {
         case VK_SUCCESS: {
             break;
@@ -50,30 +48,24 @@ Wrapped<Instance::QueryPhysicalDeviceResult, Result> Instance::QueryPhysicalDevi
         }
         }
 
-        uint32_t index = (uint32_t)-1;
         uint16_t score = 0;
-
-        for (uint32_t i = 0; i < deviceCount; i++) {
-            const uint16_t temp_score = Instance::ScorePhysicalDevice(devices[i]);
+        for (VkPhysicalDevice& dev : devices) {
+            const uint16_t temp_score = Instance::ScorePhysicalDevice(dev);
             if (temp_score > score) {
                 score = temp_score;
-                index = i;
+                device = dev;
             }
         }
 
-        if (index == (uint32_t)-1) {
+        if (device == nullptr) {
             return Result::RunningOnIncompatibleHardware;
         }
-
-        physicalDevice = devices[index];
-    } else {
-        physicalDevice = device;
     }
 
-    const Instance::PhysicalDeviceQueues queues = Instance::QueryPhysicalDeviceQueues(physicalDevice);
+    const Instance::PhysicalDeviceQueues queues = Instance::QueryPhysicalDeviceQueues(device);
 
     Instance::QueryPhysicalDeviceResult result = {
-        .device = physicalDevice,
+        .device = device,
         .queues = queues
     };
 
@@ -88,8 +80,8 @@ Instance::PhysicalDeviceQueues Instance::QueryPhysicalDeviceQueues(VkPhysicalDev
     uint32_t queueFamilyPropertiesCount = 0;
     vkGetPhysicalDeviceQueueFamilyProperties(device, &queueFamilyPropertiesCount, nullptr);
 
-    System::OwnedBlock<VkQueueFamilyProperties> queueFamilyProperties(queueFamilyPropertiesCount);
-    vkGetPhysicalDeviceQueueFamilyProperties(device, &queueFamilyPropertiesCount, queueFamilyProperties);
+    Collection::List<VkQueueFamilyProperties> queueFamilyProperties(queueFamilyPropertiesCount);
+    vkGetPhysicalDeviceQueueFamilyProperties(device, &queueFamilyPropertiesCount, queueFamilyProperties.AsRaw());
 
     for (uint32_t index = 0; index < queueFamilyPropertiesCount; index++) {
         if (graphicsQueue == (uint32_t)-1 && queueFamilyProperties[index].queueFlags & VK_QUEUE_GRAPHICS_BIT) {

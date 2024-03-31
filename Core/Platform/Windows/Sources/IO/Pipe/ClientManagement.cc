@@ -2,7 +2,6 @@
 // SPDX-License-Identifier: BSD-2-Clause
 
 #include <Cell/IO/Pipe.hh>
-#include <Cell/System/Panic.hh>
 #include <Cell/System/Platform/Windows/Includes.h>
 
 namespace Cell::IO {

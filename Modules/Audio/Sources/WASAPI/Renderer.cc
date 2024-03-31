@@ -2,7 +2,6 @@
 // SPDX-License-Identifier: BSD-2-Clause
 
 #include <Cell/Audio/Implementations/WASAPI.hh>
-#include <Cell/System/Memory.hh>
 
 namespace Cell::Audio::Implementations::WASAPI {
 
@@ -52,8 +51,8 @@ Result Renderer::Stop() {
     return Result::Success;
 }
 
-Result Renderer::Submit(const IBlock& block) {
-    const size_t size = block.ByteSize();
+Result Renderer::Submit(const Memory::IBlock& block) {
+    const size_t size = block.GetSize();
     if (size % this->sampleSize != 0) {
         return Result::InvalidParameters;
     }
@@ -67,7 +66,7 @@ Result Renderer::Submit(const IBlock& block) {
 
     case AUDCLNT_E_BUFFER_SIZE_ERROR:
     case AUDCLNT_E_BUFFER_TOO_LARGE: {
-        return Result::InvalidParameters;
+        return Result::NotEnoughSpaceInBuffer;
     }
 
     case AUDCLNT_E_BUFFER_OPERATION_PENDING: {
@@ -83,7 +82,7 @@ Result Renderer::Submit(const IBlock& block) {
     }
     }
 
-    System::CopyMemory<uint8_t>(frameBuffer, (uint8_t*)block.Pointer(), size);
+    Memory::Copy<uint8_t>(frameBuffer, block.AsBytes(), size);
 
     result = this->renderClient->ReleaseBuffer(size / this->sampleSize,0);
     switch (result) {

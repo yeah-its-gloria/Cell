@@ -4,13 +4,13 @@
 #include "DualSenseStructures.hh"
 
 #include <Cell/Shell/Controller/DualSense.hh>
-#include <Cell/System/BlockImpl.hh>
-#include <Cell/System/Log.hh>
+#include <Cell/Memory/Allocator.hh>
+#include <Cell/Memory/UnownedBlock.hh>
 
 namespace Cell::Shell::Controller {
 
 Wrapped<DualSense*, Result> DualSense::Find() {
-    const Wrapped<IO::HID::Device*, IO::Result> hidResult = IO::HID::Device::Open(0x054c, 0x0ce6);
+    Wrapped<IO::HID::Device*, IO::Result> hidResult = IO::HID::Device::Open(0x054c, 0x0ce6);
     if (!hidResult.IsValid()) {
         switch (hidResult.Result()) {
         case IO::Result::NotFound: {
@@ -41,7 +41,7 @@ DualSense::~DualSense() {
 
 Result DualSense::Update() {
     this->lastReport = this->report;
-    System::ClearMemory(this->report);
+    Memory::Clear(this->report);
 
     IO::Result result;
 
@@ -116,7 +116,7 @@ Result DualSense::Update() {
         }
         }
 
-        result = device->Write(System::UnownedBlock { &effectsPacket }, 33);
+        result = device->Write(Memory::UnownedBlock { &effectsPacket }, 33);
         switch (result) {
         case IO::Result::Success: {
             break;
@@ -138,7 +138,7 @@ Result DualSense::Update() {
 
     DualSenseReportPacket packet;
 
-    System::UnownedBlock packetRef { &packet };
+    Memory::UnownedBlock packetRef { &packet };
     result = device->Read(packetRef, 16);
     switch (result) {
     case IO::Result::Success: {

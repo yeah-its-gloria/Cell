@@ -8,11 +8,7 @@
 #include <Cell/System/Panic.hh>
 
 #include <stdio.h>
-
-// why Microsoft
-#define CopyMemory RtlCopyMemory
 #include <ws2tcpip.h>
-#undef CopyMemory
 
 namespace Cell::Network {
 
@@ -73,13 +69,13 @@ Wrapped<AddressInfo*, Result> AddressInfo::Find(const String& address, const uin
 }
 
 AddressInfo::~AddressInfo() {
-    FreeAddrInfoW((ADDRINFOW*)this->handle);
+    FreeAddrInfoW((ADDRINFOW*)this->impl);
 }
 
 size_t AddressInfo::GetResolvedCount() {
     size_t i = 1;
 
-    ADDRINFOW* ptr = (ADDRINFOW*)this->handle;
+    ADDRINFOW* ptr = (ADDRINFOW*)this->impl;
     for (; i < SIZE_MAX; i++) {
         ptr = ptr->ai_next;
         if (ptr == nullptr) {
@@ -91,7 +87,7 @@ size_t AddressInfo::GetResolvedCount() {
 }
 
 Wrapped<String, Result> AddressInfo::GetName(const size_t infoIndex) {
-    ADDRINFOW* ptr = (ADDRINFOW*)this->handle;
+    ADDRINFOW* ptr = (ADDRINFOW*)this->impl;
     for (size_t i = 1; i < infoIndex; i++) {
         ptr = ptr->ai_next;
         if (ptr == nullptr) {

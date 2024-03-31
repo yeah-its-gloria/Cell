@@ -16,8 +16,13 @@ public:
 
     CELL_FUNCTION ~Windows();
 
-    CELL_INLINE HINSTANCE GetInstance() { return this->instance; }
-    CELL_INLINE HWND GetWindow() { return this->window; }
+    CELL_FUNCTION inline HINSTANCE GetInstance() {
+        return this->instance;
+    }
+
+    CELL_FUNCTION inline HWND GetWindow() {
+        return this->window;
+    }
 
     CELL_FUNCTION Result RequestQuit() override;
     CELL_FUNCTION Wrapped<Extent, Result> GetDrawableExtent() override;
@@ -28,10 +33,8 @@ public:
     CELL_FUNCTION Result Log(const String& text) override;
     CELL_FUNCTION Result LogClear() override;
 
-    CELL_NON_COPYABLE(Windows)
-
 private:
-    CELL_INLINE CELL_FUNCTION_INTERNAL Windows(HINSTANCE CELL_NONNULL i, HWND CELL_NONNULL w, HFONT CELL_NONNULL f, const WNDCLASSEXW& c) : instance(i), window(w), font(f), windowClass(c) { }
+    CELL_FUNCTION_INTERNAL Windows(HINSTANCE CELL_NONNULL i, HWND CELL_NONNULL w, HFONT CELL_NONNULL f, const WNDCLASSEXW& c) : instance(i), window(w), font(f), windowClass(c) { }
 
     CELL_FUNCTION_INTERNAL Result RunDispatchImpl() override;
 

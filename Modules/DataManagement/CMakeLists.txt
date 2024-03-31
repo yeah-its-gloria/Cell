@@ -11,30 +11,38 @@ set(MODULE_INCLUDES_DIR ${CMAKE_CURRENT_LIST_DIR}/Includes)
 
 add_library(CellDataManagement ${CELL_LIBRARY_TYPE}
     ${MODULE_INCLUDES_DIR}/Cell/DataManagement/Archive.hh
+    ${MODULE_INCLUDES_DIR}/Cell/DataManagement/Base64.hh
+    ${MODULE_INCLUDES_DIR}/Cell/DataManagement/Checksum.hh
     ${MODULE_INCLUDES_DIR}/Cell/DataManagement/Container.hh
+    ${MODULE_INCLUDES_DIR}/Cell/DataManagement/HTTP.hh
+    ${MODULE_INCLUDES_DIR}/Cell/DataManagement/JSON.hh
+    ${MODULE_INCLUDES_DIR}/Cell/DataManagement/Model.hh
     ${MODULE_INCLUDES_DIR}/Cell/DataManagement/Result.hh
-
-    ${MODULE_INCLUDES_DIR}/Cell/DataManagement/Foreign/Base64.hh
-    ${MODULE_INCLUDES_DIR}/Cell/DataManagement/Foreign/CRC.hh
-    ${MODULE_INCLUDES_DIR}/Cell/DataManagement/Foreign/glTF.hh
-    ${MODULE_INCLUDES_DIR}/Cell/DataManagement/Foreign/HTTP.hh
-    ${MODULE_INCLUDES_DIR}/Cell/DataManagement/Foreign/JSON.hh
-    ${MODULE_INCLUDES_DIR}/Cell/DataManagement/Foreign/PNG.hh
+    ${MODULE_INCLUDES_DIR}/Cell/DataManagement/Texture.hh
+    ${MODULE_INCLUDES_DIR}/Cell/DataManagement/zlib.hh
 
     ${CMAKE_CURRENT_LIST_DIR}/Sources/Archive.cc
-    ${CMAKE_CURRENT_LIST_DIR}/Sources/Foreign/CRC.cc
-    ${CMAKE_CURRENT_LIST_DIR}/Sources/Foreign/Base64.cc
-    ${CMAKE_CURRENT_LIST_DIR}/Sources/Foreign/glTF.cc
-    ${CMAKE_CURRENT_LIST_DIR}/Sources/Foreign/JSON.cc
-    ${CMAKE_CURRENT_LIST_DIR}/Sources/Foreign/PNG.cc
+    ${CMAKE_CURRENT_LIST_DIR}/Sources/Base64.cc
+    ${CMAKE_CURRENT_LIST_DIR}/Sources/Checksum.cc
+    ${CMAKE_CURRENT_LIST_DIR}/Sources/JSON.cc
+    ${CMAKE_CURRENT_LIST_DIR}/Sources/zlib.cc
 
-    ${CMAKE_CURRENT_LIST_DIR}/Sources/Foreign/HTTP/Connection.cc
-    ${CMAKE_CURRENT_LIST_DIR}/Sources/Foreign/HTTP/Request.cc
+    ${CMAKE_CURRENT_LIST_DIR}/Sources/Model/FromGLTF.cc
+    ${CMAKE_CURRENT_LIST_DIR}/Sources/Model/Model.cc
+
+    ${CMAKE_CURRENT_LIST_DIR}/Sources/Texture/FromPNG.cc
+    ${CMAKE_CURRENT_LIST_DIR}/Sources/Texture/Texture.cc
+
+    ${CMAKE_CURRENT_LIST_DIR}/Sources/HTTP/Connection.cc
+    ${CMAKE_CURRENT_LIST_DIR}/Sources/HTTP/Request.cc
 )
 
 target_compile_definitions(CellDataManagement PUBLIC "CELL_MODULES_DATAMANAGEMENT_AVAILABLE=1")
 target_include_directories(CellDataManagement PUBLIC ${MODULE_INCLUDES_DIR})
 target_link_libraries(CellDataManagement PUBLIC CellCore)
+
+add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/ThirdParty/zlib)
+target_link_libraries(CellDataManagement PRIVATE zlib)
 
 if (CELL_ENABLE_TESTS AND CELL_ENABLE_TESTS_LIKELY_FAILURE)
     function(cell_dm_add_test name)

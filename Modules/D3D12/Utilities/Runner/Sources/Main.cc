@@ -5,6 +5,7 @@
 
 #include <Cell/Scoped.hh>
 #include <Cell/D3D12/CommandList.hh>
+#include <Cell/Memory/UnownedBlock.hh>
 #include <Cell/System/Entry.hh>
 #include <Cell/System/Thread.hh>
 
@@ -35,7 +36,7 @@ CELL_FUNCTION_INTERNAL void CellEntry(Reference<String> parameterString) {
 
     ScopedObject<D3D12::Resource> vertexBuffer = device->CreateResource(sizeof(Vertex), sizeof(triangle)).Unwrap();
 
-    const D3D12::Result result = vertexBuffer->CopyData(System::UnownedBlock { triangle, 3 });
+    const D3D12::Result result = vertexBuffer->CopyData(Memory::UnownedBlock { triangle, 3 });
     CELL_ASSERT(result == D3D12::Result::Success);
 
     ScopedObject<D3D12::CommandList> list = device->CreateCommandList(pipeline).Unwrap();

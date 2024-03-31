@@ -23,12 +23,17 @@ add_library(CellCore ${CELL_LIBRARY_TYPE}
     ${CORE_INCLUDES_DIR}/Cell/Collection/Enumerable.hh
     ${CORE_INCLUDES_DIR}/Cell/Collection/List.hh
 
+    ${CORE_INCLUDES_DIR}/Cell/IO/Directory.hh
     ${CORE_INCLUDES_DIR}/Cell/IO/File.hh
-    ${CORE_INCLUDES_DIR}/Cell/IO/FolderWalker.hh
     ${CORE_INCLUDES_DIR}/Cell/IO/HID.hh
     ${CORE_INCLUDES_DIR}/Cell/IO/Pipe.hh
     ${CORE_INCLUDES_DIR}/Cell/IO/Result.hh
     ${CORE_INCLUDES_DIR}/Cell/IO/USB.hh
+
+    ${CORE_INCLUDES_DIR}/Cell/Memory/Allocator.hh
+    ${CORE_INCLUDES_DIR}/Cell/Memory/Block.hh
+    ${CORE_INCLUDES_DIR}/Cell/Memory/OwnedBlock.hh
+    ${CORE_INCLUDES_DIR}/Cell/Memory/UnownedBlock.hh
 
     ${CORE_INCLUDES_DIR}/Cell/Network/AddressInfo.hh
     ${CORE_INCLUDES_DIR}/Cell/Network/Properties.hh
@@ -39,13 +44,10 @@ add_library(CellCore ${CELL_LIBRARY_TYPE}
     ${CORE_INCLUDES_DIR}/Cell/StringDetails/Result.hh
     ${CORE_INCLUDES_DIR}/Cell/StringDetails/RawString.hh
 
-    ${CORE_INCLUDES_DIR}/Cell/System/Block.hh
-    ${CORE_INCLUDES_DIR}/Cell/System/BlockImpl.hh
     ${CORE_INCLUDES_DIR}/Cell/System/DynamicLibrary.hh
     ${CORE_INCLUDES_DIR}/Cell/System/Entry.hh
     ${CORE_INCLUDES_DIR}/Cell/System/Event.hh
     ${CORE_INCLUDES_DIR}/Cell/System/Log.hh
-    ${CORE_INCLUDES_DIR}/Cell/System/Memory.hh
     ${CORE_INCLUDES_DIR}/Cell/System/Mutex.hh
     ${CORE_INCLUDES_DIR}/Cell/System/Panic.hh
     ${CORE_INCLUDES_DIR}/Cell/System/Result.hh
@@ -57,6 +59,7 @@ add_library(CellCore ${CELL_LIBRARY_TYPE}
     ${CORE_INCLUDES_DIR}/Cell/Utilities/Concepts.hh
     ${CORE_INCLUDES_DIR}/Cell/Utilities/MinMaxClamp.hh
     ${CORE_INCLUDES_DIR}/Cell/Utilities/Preprocessor.hh
+    ${CORE_INCLUDES_DIR}/Cell/Utilities/Reader.hh
 
     ${GENERATE_DIR}/Includes/Cell/Version.h
 
@@ -119,7 +122,7 @@ if (MSVC) # for the pitiable that do use VS, I hope you know to use Clang at lea
         "CELL_NONNULL=_Nonnull"
         "CELL_NULLABLE=_Nullable"
         "CELL_FUNCTION_INTERNAL="
-        "CELL_INLINE=inline __attribute__((always_inline))"
+        "CELL_FUNCTION_TEMPLATE="
     )
 else ()
     target_compile_options(CellCore PUBLIC
@@ -149,7 +152,7 @@ else ()
         "CELL_NONNULL=_Nonnull"
         "CELL_NULLABLE=_Nullable"
         "CELL_FUNCTION_INTERNAL=__attribute__((visibility(\"hidden\")))"
-        "CELL_INLINE=inline __attribute__((always_inline))"
+        "CELL_FUNCTION_TEMPLATE=__attribute__((visibility(\"hidden\")))"
     )
 
     target_link_options(CellCore PUBLIC -fuse-ld=lld -nostdlib++)
@@ -183,7 +186,6 @@ if (CELL_ENABLE_TESTS)
     cell_add_test(Utilities)
 
     if (WIN32 AND CELL_ENABLE_TESTS_LIKELY_FAILURE)
-        cell_add_test(Movement)
         cell_add_test(WindowsDirectoryInspection)
-    endif()
+    endif ()
 endif ()

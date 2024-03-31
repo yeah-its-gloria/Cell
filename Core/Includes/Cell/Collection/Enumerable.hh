@@ -33,7 +33,7 @@ public:
     CELL_NODISCARD virtual const T* end() const = 0;
 
     // Checks whether this enumerable contains no items.
-    CELL_NODISCARD bool IsEmpty() const {
+    CELL_NODISCARD CELL_FUNCTION_TEMPLATE bool IsEmpty() const {
         return this->GetCount() == 0;
     }
 };

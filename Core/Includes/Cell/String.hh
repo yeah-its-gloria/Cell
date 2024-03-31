@@ -31,7 +31,7 @@ public:
     // Formats the given content into the string.
     // Use "%" to indicate where to insert an object.
     // TODO: formatting options, like indicating location and how to print specific numbers
-    template <typename... T> CELL_NODISCARD CELL_INLINE static String Format(const char* format, T&&... args) {
+    template <typename... T> CELL_NODISCARD CELL_FUNCTION_TEMPLATE static String Format(const char* format, T&&... args) {
         return FormatImplementation(format,
                                     StringDetails::RawStringSize(format),
                                     (const StringDetails::Formatting::Data[sizeof...(T)]){ StringDetails::Formatting::Package<T>(args)... },

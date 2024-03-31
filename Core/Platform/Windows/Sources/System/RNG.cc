@@ -31,13 +31,13 @@ Wrapped<RandomNumberGenerator*, Result> RandomNumberGenerator::New() {
 }
 
 RandomNumberGenerator::~RandomNumberGenerator() {
-    const NTSTATUS status = BCryptCloseAlgorithmProvider((BCRYPT_ALG_HANDLE)this->handle, 0);
+    const NTSTATUS status = BCryptCloseAlgorithmProvider((BCRYPT_ALG_HANDLE)this->impl, 0);
     CELL_ASSERT(status == STATUS_SUCCESS);
 }
 
 Wrapped<uint64_t, Result> RandomNumberGenerator::Generate() {
     uint64_t data = 0;
-    const NTSTATUS result = BCryptGenRandom((BCRYPT_ALG_HANDLE)this->handle, (uint8_t*)&data, sizeof(uint64_t), 0);
+    const NTSTATUS result = BCryptGenRandom((BCRYPT_ALG_HANDLE)this->impl, (uint8_t*)&data, sizeof(uint64_t), 0);
     switch (result) {
     case STATUS_SUCCESS: {
         break;

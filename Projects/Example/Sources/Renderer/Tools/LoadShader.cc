@@ -3,8 +3,9 @@
 
 #include "../Tools.hh"
 
-#include <Cell/IO/File.hh>
 #include <Cell/Scoped.hh>
+#include <Cell/IO/File.hh>
+#include <Cell/Memory/OwnedBlock.hh>
 
 using namespace Cell;
 using namespace Cell::Vulkan;
@@ -12,10 +13,10 @@ using namespace Cell::Vulkan;
 void VulkanToolsLoadShader(Pipeline* pipeline, const String& path) {
     ScopedObject<IO::File> file = IO::File::Open(path).Unwrap();
 
-    const size_t size = file->GetSize().Unwrap();
+    const size_t size = file->GetSize();
     CELL_ASSERT(size % 4 == 0);
 
-    System::OwnedBlock<uint8_t> buffer(size);
+    Memory::OwnedBlock<uint8_t> buffer(size);
     const IO::Result ioResult = file->Read(buffer);
     CELL_ASSERT(ioResult == IO::Result::Success);
 

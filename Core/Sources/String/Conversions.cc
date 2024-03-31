@@ -10,8 +10,8 @@
 namespace Cell {
 
 char* String::ToCharPointer() const {
-    char* dataStr = System::AllocateMemory<char>(this->size + 1);
-    System::CopyMemory<char>(dataStr, this->data, this->size);
+    char* dataStr = Memory::Allocate<char>(this->size + 1);
+    Memory::Copy<char>(dataStr, this->data, this->size);
 
     return dataStr;
 }
@@ -27,7 +27,7 @@ Wrapped<uint64_t, StringDetails::Result> String::AsNumber(const bool isHex) cons
     //       find a way to properly distinguish, possibly abandoning strtoull altogether
     //       alo allow specifying an offset and end position within the string)
 
-    const uint64_t number = strtoull(terminated, nullptr, isHex ? 16 : 10);
+    uint64_t number = strtoull(terminated, nullptr, isHex ? 16 : 10);
     if (number == UINT64_MAX && errno == ERANGE) {
         return StringDetails::Result::InvalidFormat;
     }

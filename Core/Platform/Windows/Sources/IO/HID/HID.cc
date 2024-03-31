@@ -13,7 +13,7 @@
 namespace Cell::IO::HID {
 
 Device::~Device() {
-    CloseHandle((HANDLE)this->handle);
+    CloseHandle((HANDLE)this->impl);
 }
 
 CELL_FUNCTION_INTERNAL Result handleOverlappedHID(HANDLE handle, OVERLAPPED& overlapped, const DWORD size, const uint32_t milliseconds) {
@@ -63,19 +63,19 @@ CELL_FUNCTION_INTERNAL Result handleOverlappedHID(HANDLE handle, OVERLAPPED& ove
     return Result::Success;
 }
 
-Result Device::Read(IBlock& data, const uint32_t milliseconds) {
-    if (data.ByteSize() > UINT32_MAX) {
+Result Device::Read(Memory::IBlock& data, const uint32_t milliseconds) {
+    if (data.GetSize() > UINT32_MAX) {
         return Result::InvalidParameters;
     }
 
     DWORD read = 0;
     OVERLAPPED overlapped = { .hEvent = CreateEvent(nullptr, TRUE, FALSE, nullptr) };
 
-    const BOOL result = ReadFile((HANDLE)this->handle, data.Pointer(), (DWORD)data.ByteSize(), &read, milliseconds > 0 ? &overlapped : nullptr);
+    const BOOL result = ReadFile((HANDLE)this->impl, data.AsPointer(), (DWORD)data.GetSize(), &read, milliseconds > 0 ? &overlapped : nullptr);
     if (result == FALSE) {
         switch (GetLastError()) {
         case ERROR_IO_PENDING: {
-            return handleOverlappedHID((HANDLE)this->handle, overlapped, (const DWORD)data.ByteSize(), milliseconds);
+            return handleOverlappedHID((HANDLE)this->impl, overlapped, (const DWORD)data.GetSize(), milliseconds);
         }
 
         case ERROR_INVALID_PARAMETER:
@@ -98,26 +98,26 @@ Result Device::Read(IBlock& data, const uint32_t milliseconds) {
 
     CloseHandle(overlapped.hEvent);
 
-    if (read < data.ByteSize()) {
+    if (read < data.GetSize()) {
         return Result::Incomplete;
     }
 
     return Result::Success;
 }
 
-Result Device::Write(const IBlock& data, const uint32_t milliseconds) {
-    if (data.ByteSize() > UINT32_MAX) {
+Result Device::Write(const Memory::IBlock& data, const uint32_t milliseconds) {
+    if (data.GetSize() > UINT32_MAX) {
         return Result::InvalidParameters;
     }
 
     DWORD written = 0;
     OVERLAPPED overlapped = { .hEvent = CreateEvent(nullptr, TRUE, FALSE, nullptr) };
 
-    const BOOL result = WriteFile((HANDLE)this->handle, data.Pointer(), (DWORD)data.ByteSize(), &written, milliseconds > 0 ? &overlapped : nullptr);
+    const BOOL result = WriteFile((HANDLE)this->impl, data.AsPointer(), (DWORD)data.GetSize(), &written, milliseconds > 0 ? &overlapped : nullptr);
     if (result == FALSE) {
         switch (GetLastError()) {
         case ERROR_IO_PENDING: {
-            return handleOverlappedHID((HANDLE)this->handle, overlapped, (const DWORD)data.ByteSize(), milliseconds);
+            return handleOverlappedHID((HANDLE)this->impl, overlapped, (const DWORD)data.GetSize(), milliseconds);
         }
 
         case ERROR_INVALID_USER_BUFFER:
@@ -139,7 +139,7 @@ Result Device::Write(const IBlock& data, const uint32_t milliseconds) {
 
     CloseHandle(overlapped.hEvent);
 
-    if (written < data.ByteSize()) {
+    if (written < data.GetSize()) {
         return Result::Incomplete;
     }
 
@@ -148,7 +148,7 @@ Result Device::Write(const IBlock& data, const uint32_t milliseconds) {
 
 Wrapped<Capabilities, Result> Device::GetCapabilities() {
     PHIDP_PREPARSED_DATA data;
-    BOOLEAN result = HidD_GetPreparsedData((HANDLE)this->handle, &data);
+    BOOLEAN result = HidD_GetPreparsedData((HANDLE)this->impl, &data);
     if (result == FALSE) {
         System::Panic("HidD_GetPreparsedData failed");
     }
@@ -165,6 +165,10 @@ Wrapped<Capabilities, Result> Device::GetCapabilities() {
     }
 
     return Capabilities { .InputReportSize = caps.InputReportByteLength, .OutputReportSize = caps.OutputReportByteLength, .FeatureReportSize = caps.FeatureReportByteLength };
+}
+
+ConnectionType Device::GetConnectionType() const {
+    return this->type;
 }
 
 }

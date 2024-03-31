@@ -3,66 +3,62 @@
 
 #pragma once
 
-#include <Cell/System/Memory.hh>
+#include <Cell/Memory/Allocator.hh>
 
 namespace Cell {
 
 // Scoped block of memory that will free itself using Cell::System::FreeMemory on expiry.
 // It features no count or pre-allocation; this is only meant to be used for scoping heap memory.
-template <typename T> class ScopedBlock : public Object {
+template <typename T> class ScopedBlock : public NoCopyObject {
 public:
     // Creates a scoped block.
-    CELL_INLINE ScopedBlock(T* block) : block(block) { }
+    CELL_FUNCTION_TEMPLATE ScopedBlock(T* block) : block(block) { }
 
     // Destructor for the scoped block.
-    CELL_INLINE ~ScopedBlock() { System::FreeMemory(this->block); }
+    CELL_FUNCTION_TEMPLATE ~ScopedBlock() { Memory::Free(this->block); }
 
     // Turns the managed block into a bare pointer.
-    CELL_NODISCARD CELL_INLINE T* operator &() { return this->block; }
+    CELL_NODISCARD CELL_FUNCTION_TEMPLATE T* operator &() { return this->block; }
 
     // Turns the managed block into a bare pointer.
-    CELL_NODISCARD CELL_INLINE operator T*() { return this->block; }
+    CELL_NODISCARD CELL_FUNCTION_TEMPLATE operator T*() { return this->block; }
 
     // Overrides the stored block.
-    CELL_INLINE ScopedBlock<T>& operator =(const T& block) {
+    CELL_FUNCTION_TEMPLATE ScopedBlock<T>& operator =(const T& block) {
         this->block = block;
         return *this;
     }
-
-    CELL_NON_COPYABLE(ScopedBlock)
 
 private:
     T* block;
 };
 
 // Template creating a scoped object.
-template <typename T> class ScopedObject : public Object {
+template <typename T> class ScopedObject : public NoCopyObject {
 public:
     // Creates a new scoped object.
-    CELL_INLINE ScopedObject(T* object) : object(object) { }
+    CELL_FUNCTION_TEMPLATE ScopedObject(T* object) : object(object) { }
 
     // Destructor for the scoped object.
-    CELL_INLINE ~ScopedObject() { delete this->object; }
+    CELL_FUNCTION_TEMPLATE ~ScopedObject() { delete this->object; }
 
     // Returns the underlying pointer.
-    CELL_NODISCARD CELL_INLINE T* GetPointer() { return this->object; }
+    CELL_NODISCARD CELL_FUNCTION_TEMPLATE T* GetPointer() { return this->object; }
 
     // Convenience operator to act directly upon the wrapped object.
-    CELL_NODISCARD CELL_INLINE T* operator ->() { return this->object; }
+    CELL_NODISCARD CELL_FUNCTION_TEMPLATE T* operator ->() { return this->object; }
 
     // Convenience operator to act directly upon the wrapped object.
-    CELL_NODISCARD CELL_INLINE operator T*() { return this->object; }
+    CELL_NODISCARD CELL_FUNCTION_TEMPLATE operator T*() { return this->object; }
 
     // Turns the managed object into a bare pointer.
-    CELL_NODISCARD CELL_INLINE T* operator &() { return this->object; }
+    CELL_NODISCARD CELL_FUNCTION_TEMPLATE T* operator &() { return this->object; }
 
     // Overrides the stored object.
-    CELL_INLINE ScopedObject<T>& operator =(const T& object) {
+    CELL_FUNCTION_TEMPLATE ScopedObject<T>& operator =(const T& object) {
         this->object = object;
         return *this;
     }
-
-    CELL_NON_COPYABLE(ScopedObject)
 
 private:
     T* object;

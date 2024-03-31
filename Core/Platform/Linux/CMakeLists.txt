@@ -36,6 +36,7 @@ target_sources(CellCore PRIVATE
 target_compile_definitions(CellCore PUBLIC
                            "CELL_PLATFORM_LINUX=1"
 
+                           "$<$<CONFIG:Debug>:_DEBUG>"
                            "_FILE_OFFSET_BITS=64"
                            "_REENTRANT"
 )
@@ -48,10 +49,6 @@ target_compile_options(CellCore PUBLIC
 )
 
 target_link_options(CellCore PUBLIC -Wl,--no-undefined)
-
-if (CMAKE_BUILD_TYPE STREQUAL "Debug")
-    target_compile_definitions(CellCore PUBLIC "_DEBUG")
-endif ()
 
 if (CELL_LIBRARY_TYPE STREQUAL "STATIC")
     target_compile_definitions(CellCore PUBLIC "CELL_FUNCTION=")

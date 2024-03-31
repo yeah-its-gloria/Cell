@@ -3,22 +3,31 @@
 
 #pragma once
 
-#include <stddef.h>
-#include <stdint.h>
+#include <stddef.h> // IWYU pragma: export
+#include <stdint.h> // IWYU pragma: export
 
 namespace Cell {
 
 // Base class type for Cell.
 class Object {
 public:
+    constexpr ~Object() = default;
+
     CELL_FUNCTION static void* CELL_NONNULL operator new(size_t size);
     CELL_FUNCTION static void operator delete(void* CELL_NONNULL memory, size_t size);
+
+protected:
+    constexpr Object() = default;
+};
+
+// Single instanced object, which doesn't allow copying.
+class NoCopyObject : public Object {
+public:
+    constexpr NoCopyObject(NoCopyObject&) = delete;
+    constexpr ~NoCopyObject() = default;
+
+protected:
+    constexpr NoCopyObject() = default;
 };
 
 }
-
-// Creates a constructor for types hiding implementation details with a pointer handle.
-#define CELL_HANDLE_CONSTRUCTOR(T) CELL_FUNCTION_INTERNAL CELL_INLINE constexpr T(const uintptr_t handle) : handle(handle) { }
-
-// Deletes the copy constructor, which only permits moving the object.
-#define CELL_NON_COPYABLE(T) CELL_FUNCTION_INTERNAL CELL_INLINE T(T& _) = delete; CELL_FUNCTION_INTERNAL CELL_INLINE T(T&& _) = default;

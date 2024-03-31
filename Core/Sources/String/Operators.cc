@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: BSD-2-Clause
 
 #include <Cell/String.hh>
-#include <Cell/System/Memory.hh>
+#include <Cell/Memory/Allocator.hh>
 
 namespace Cell {
 using namespace System;
@@ -13,14 +13,14 @@ String& String::operator = (const String& input) {
     }
 
     if (this->data != nullptr) {
-        FreeMemory(this->data);
+        Memory::Free(this->data);
         this->data = nullptr;
     }
 
     this->size = input.size;
     if (input.size > 0) {
-        this->data = AllocateMemory<char>(input.size);
-        CopyMemory<char>(this->data, input.data, input.size);
+        this->data = Memory::Allocate<char>(input.size);
+        Memory::Copy<char>(this->data, input.data, input.size);
     }
 
     return *this;
@@ -28,14 +28,14 @@ String& String::operator = (const String& input) {
 
 String& String::operator = (const char* input) {
     if (this->data != nullptr) {
-        FreeMemory(this->data);
+        Memory::Free(this->data);
         this->data = nullptr;
     }
 
     this->size = StringDetails::RawStringSize(input);
     if (this->size > 0) {
-        this->data = AllocateMemory<char>(this->size);
-        CopyMemory<char>(this->data, input, this->size);
+        this->data = Memory::Allocate<char>(this->size);
+        Memory::Copy<char>(this->data, input, this->size);
     }
 
     return *this;
@@ -50,7 +50,7 @@ bool String::operator == (const String& other) const {
         return false;
     }
 
-    return CompareMemory(this->data, other.data, this->size);
+    return Memory::Compare(this->data, other.data, this->size);
 }
 
 bool String::operator != (const String& other) const {

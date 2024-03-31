@@ -11,13 +11,13 @@ Pipe::~Pipe() {
     CloseHandle((HANDLE)this->handle);
 }
 
-Result Pipe::Read(IBlock& data) {
-    if (data.ByteSize() > UINT32_MAX) {
+Result Pipe::Read(Memory::IBlock& data) {
+    if (data.GetSize() > UINT32_MAX) {
         return Result::InvalidParameters;
     }
 
     DWORD read = 0;
-    const BOOL fileResult = ReadFile((HANDLE)this->handle, data.Pointer(), (DWORD)data.ByteSize(), &read, nullptr);
+    const BOOL fileResult = ReadFile((HANDLE)this->handle, data.AsPointer(), (DWORD)data.GetSize(), &read, nullptr);
     if (fileResult == FALSE) {
         switch (GetLastError()) {
         case ERROR_BROKEN_PIPE: {
@@ -39,20 +39,20 @@ Result Pipe::Read(IBlock& data) {
         }
     }
 
-    if (read != data.ByteSize()) {
+    if (read != data.GetSize()) {
         return Result::Incomplete;
     }
 
     return Result::Success;
 }
 
-Result Pipe::Write(const IBlock& data) {
-    if (data.ByteSize() > UINT32_MAX) {
+Result Pipe::Write(const Memory::IBlock& data) {
+    if (data.GetSize() > UINT32_MAX) {
         return Result::InvalidParameters;
     }
 
     DWORD written = 0;
-    const BOOL fileResult = WriteFile((HANDLE)this->handle, data.Pointer(), (DWORD)data.ByteSize(), &written, nullptr);
+    const BOOL fileResult = WriteFile((HANDLE)this->handle, data.AsPointer(), (DWORD)data.GetSize(), &written, nullptr);
     if (fileResult == FALSE) {
         switch (GetLastError()) {
         case ERROR_BROKEN_PIPE: {
@@ -70,7 +70,7 @@ Result Pipe::Write(const IBlock& data) {
         }
     }
 
-    if (written != data.ByteSize()) {
+    if (written != data.GetSize()) {
         return Result::Incomplete;
     }
 

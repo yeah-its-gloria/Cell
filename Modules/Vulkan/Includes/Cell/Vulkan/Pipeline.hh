@@ -6,7 +6,6 @@
 #include <Cell/Collection/List.hh>
 #include <Cell/Mathematics/Vector2.hh>
 #include <Cell/Mathematics/Quaternion.hh>
-#include <Cell/System/Block.hh>
 #include <Cell/Vulkan/Buffer.hh>
 #include <Cell/Vulkan/Image.hh>
 
@@ -47,7 +46,7 @@ struct Vertex {
     uint32_t textureIndex;
 };
 
-class Pipeline : public Object {
+class Pipeline : public NoCopyObject {
 friend Device;
 
 public:
@@ -56,10 +55,10 @@ public:
 
     // Adds a shader stage to the pipeline. The module is created with the passed SPIR-V bytecode and its lifetime is managed by this pipeline manager.
     // By default, it's a vertex shader.
-    CELL_FUNCTION Result AddShader(const IBlock& data, const Stage stage = Stage::Vertex);
+    CELL_FUNCTION Result AddShader(const Memory::IBlock& data, const Stage stage = Stage::Vertex);
 
     // Adds a shader with vertex and fragment stages to the pipeline. The module is owned by the pipeline manager.
-    CELL_FUNCTION Result AddMultiShader(const IBlock& data);
+    CELL_FUNCTION Result AddMultiShader(const Memory::IBlock& data);
 
     // Adds resources for shaders to this pipeline.
     CELL_FUNCTION Result AddResources(const Collection::IEnumerable<ResourceBinding>& resBindings, const Collection::IEnumerable<ResourceDescriptor>& resDescriptors);
@@ -68,18 +67,16 @@ public:
     CELL_FUNCTION Result Finalize();
 
     // Returns the owning device.
-    CELL_INLINE Device* GetDevice() { return this->device; }
+    CELL_FUNCTION inline Device* GetDevice() { return this->device; }
 
     // Returns a handle to the pipeline object.
-    CELL_INLINE VkPipeline GetPipelineHandle() { return this->pipeline; }
+    CELL_FUNCTION inline VkPipeline GetPipelineHandle() { return this->pipeline; }
 
     // Returns a handle to the pipeline object.
-    CELL_INLINE VkPipelineLayout GetPipelineLayoutHandle() { return this->layout; }
+    CELL_FUNCTION inline VkPipelineLayout GetPipelineLayoutHandle() { return this->layout; }
 
     // Returns the descriptor sets for the given resource index.
-    CELL_INLINE VkDescriptorSet* GetDescriptorSets(const uint32_t index) { return this->resources[index].sets; }
-
-    CELL_NON_COPYABLE(Pipeline)
+    CELL_FUNCTION inline VkDescriptorSet* GetDescriptorSets(const uint32_t index) { return this->resources[index].sets; }
 
 private:
     CELL_FUNCTION_INTERNAL Pipeline(Device* dev, VkFormat fmt) : device(dev), renderFormat(fmt) { }

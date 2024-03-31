@@ -16,16 +16,11 @@ target_sources(CellCore PRIVATE
     ${PLATFORM_DIR}/Sources/IO/File/File.cc
     ${PLATFORM_DIR}/Sources/IO/File/CheckPath.cc
     ${PLATFORM_DIR}/Sources/IO/File/Delete.cc
-    ${PLATFORM_DIR}/Sources/IO/File/Offset.cc
     ${PLATFORM_DIR}/Sources/IO/File/Open.cc
     ${PLATFORM_DIR}/Sources/IO/File/ReadWrite.cc
     ${PLATFORM_DIR}/Sources/IO/File/SetWorkingDirectory.cc
 
-    ${PLATFORM_DIR}/Sources/IO/FolderWalker/FolderWalker.cc
-    ${PLATFORM_DIR}/Sources/IO/FolderWalker/Instance.hh
-    ${PLATFORM_DIR}/Sources/IO/FolderWalker/Advance.cc
-    ${PLATFORM_DIR}/Sources/IO/FolderWalker/GetCurrentElementAndAdvance.cc
-    ${PLATFORM_DIR}/Sources/IO/FolderWalker/Open.cc
+    ${PLATFORM_DIR}/Sources/IO/Directory/Directory.cc
 
     ${PLATFORM_DIR}/Sources/IO/HID/HID.cc
     ${PLATFORM_DIR}/Sources/IO/HID/Open.cc
@@ -40,8 +35,11 @@ target_sources(CellCore PRIVATE
     ${PLATFORM_DIR}/Sources/IO/USB/USB.cc
     ${PLATFORM_DIR}/Sources/IO/USB/Open.cc
 
+    ${PLATFORM_DIR}/Sources/Memory/Allocator.cc
+
     ${PLATFORM_DIR}/Sources/Network/Internal.hh
     ${PLATFORM_DIR}/Sources/Network/AddressInfo.cc
+    ${PLATFORM_DIR}/Sources/Network/TypeConversion.cc
     ${PLATFORM_DIR}/Sources/Network/Socket/Communication.cc
     ${PLATFORM_DIR}/Sources/Network/Socket/Connection.cc
     ${PLATFORM_DIR}/Sources/Network/Socket/NewDestruct.cc
@@ -49,7 +47,6 @@ target_sources(CellCore PRIVATE
     ${PLATFORM_DIR}/Sources/System/DynamicLibrary.cc
     ${PLATFORM_DIR}/Sources/System/Event.cc
     ${PLATFORM_DIR}/Sources/System/Log.cc
-    ${PLATFORM_DIR}/Sources/System/Memory.cc
     ${PLATFORM_DIR}/Sources/System/Mutex.cc
     ${PLATFORM_DIR}/Sources/System/Panic.cc
     ${PLATFORM_DIR}/Sources/System/RNG.cc

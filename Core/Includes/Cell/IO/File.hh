@@ -5,7 +5,7 @@
 
 #include <Cell/String.hh>
 #include <Cell/IO/Result.hh>
-#include <Cell/System/Block.hh>
+#include <Cell/Memory/Block.hh>
 #include <Cell/Utilities/Preprocessor.hh>
 
 namespace Cell::IO {
@@ -31,7 +31,7 @@ enum class FileMode : uint8_t {
 CELL_ENUM_CLASS_OPERATORS(FileMode)
 
 // Represents a file within a nondescript, path based file system.
-class File : public Object {
+class File : public NoCopyObject {
 public:
     // Opens or creates a file.
     CELL_FUNCTION static Wrapped<File*, Result> Open(const String& path, const FileMode mode = FileMode::Read | FileMode::Open);
@@ -40,35 +40,35 @@ public:
     CELL_FUNCTION ~File();
 
     // Reads into the given block of memory.
-    CELL_FUNCTION Result Read(IBlock& data);
+    CELL_FUNCTION Result Read(Memory::IBlock& data);
 
-    // Reads into the given block of memory at the given offset. Allows keeping the previous offset.
-    CELL_FUNCTION Result Read(IBlock& data, const size_t offset, const bool keepPrevious = true);
+    // Reads into the given block of memory at the given offset.
+    // The offset into the file's data will be the given offset + the size of the data.
+    CELL_FUNCTION Result Read(Memory::IBlock& data, const size_t offset);
 
     // Writes the given block of memory.
-    CELL_FUNCTION Result Write(const IBlock& data);
+    CELL_FUNCTION Result Write(const Memory::IBlock& data);
 
-    // Writes the given block of memory at the given offset. Allows keeping the previous offset.
-    CELL_FUNCTION Result Write(const IBlock& data, const size_t offset, const bool keepPrevious = true);
+    // Writes the given block of memory at the given offset.
+    // The offset into the file's data will be the given offset + the size of the data.
+    CELL_FUNCTION Result Write(const Memory::IBlock& data, const size_t offset);
 
     // Flushes any buffered data, if available.
     CELL_FUNCTION Result Flush();
 
-    // Fetches the count of the current file.
-    CELL_FUNCTION Wrapped<size_t, Result> GetSize();
+    // Returns the size of the file in bytes.
+    CELL_FUNCTION size_t GetSize() const;
 
-    // Retrieves the offset at which data would currently be written or read.
-    CELL_FUNCTION Wrapped<size_t, Result> GetOffset();
+    // Retrieves the current offset into the file.
+    CELL_FUNCTION size_t GetOffset() const;
 
     // Sets the offset at which data is read and written. By default, it's reset to zero.
     CELL_FUNCTION Result SetOffset(const size_t offset = 0);
 
-    CELL_NON_COPYABLE(File)
-
 private:
-    CELL_HANDLE_CONSTRUCTOR(File)
+    CELL_FUNCTION_INTERNAL File(uintptr_t i) : impl(i) { }
 
-    const uintptr_t handle;
+    uintptr_t impl;
 };
 
 // Deletes the file at the given path.

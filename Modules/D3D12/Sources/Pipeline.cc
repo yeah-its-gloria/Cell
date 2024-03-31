@@ -5,7 +5,7 @@
 
 namespace Cell::D3D12 {
 
-Wrapped<Pipeline*, Result> Device::CreatePipeline(const IBlock& vertex, const IBlock& pixel) {
+Wrapped<Pipeline*, Result> Device::CreatePipeline(const Memory::IBlock& vertex, const Memory::IBlock& pixel) {
     const D3D12_BLEND_DESC blendStateInfo = {
         .AlphaToCoverageEnable = FALSE,
         .IndependentBlendEnable = FALSE,
@@ -66,11 +66,11 @@ Wrapped<Pipeline*, Result> Device::CreatePipeline(const IBlock& vertex, const IB
     const D3D12_GRAPHICS_PIPELINE_STATE_DESC info = {
         .pRootSignature = this->rootSignature,
 
-        .VS.BytecodeLength  = vertex.ByteSize(),
-        .VS.pShaderBytecode = vertex.Pointer(),
+        .VS.BytecodeLength  = vertex.GetSize(),
+        .VS.pShaderBytecode = vertex.AsPointer(),
 
-        .PS.BytecodeLength  = pixel.ByteSize(),
-        .PS.pShaderBytecode = pixel.Pointer(),
+        .PS.BytecodeLength  = pixel.GetSize(),
+        .PS.pShaderBytecode = pixel.AsPointer(),
 
         .BlendState = blendStateInfo,
 

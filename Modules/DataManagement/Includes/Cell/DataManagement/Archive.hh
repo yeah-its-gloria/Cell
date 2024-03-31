@@ -7,7 +7,7 @@
 
 namespace Cell::DataManagement {
 
-struct CELL_PACKED(1)  ArchiveHeader {
+struct CELL_PACKED(1) ArchiveHeader {
     uint32_t elements;
 };
 
@@ -16,12 +16,10 @@ struct CELL_PACKED(1) ArchiveEntry {
     uint32_t size;
 };
 
-class Archive : public Object {
+class Archive : public NoCopyObject {
 public:
     Archive(IO::File* CELL_NONNULL file);
     ~Archive();
-
-    CELL_NON_COPYABLE(Archive)
 
 private:
     IO::File* file;

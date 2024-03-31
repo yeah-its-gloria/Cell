@@ -4,12 +4,12 @@
 #pragma once
 
 #include <Cell/Audio/Subsystem.hh>
-#include <Cell/System/Block.hh>
+#include <Cell/Memory/Block.hh>
 
 namespace Cell::Audio {
 
 // Base audio rendering interface.
-class IRenderer : public Object {
+class IRenderer : public NoCopyObject {
 public:
     virtual ~IRenderer() = default;
 
@@ -20,7 +20,7 @@ public:
     virtual Result Stop() = 0;
 
     // Submits the given raw samples to the stream.
-    virtual Result Submit(const IBlock& block) = 0;
+    virtual Result Submit(const Memory::IBlock& block) = 0;
 
     // Returns the maximum number of samples that can be buffered.
     virtual Wrapped<uint32_t, Result> GetMaxSampleCount() = 0;

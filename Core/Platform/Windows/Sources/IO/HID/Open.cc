@@ -1,11 +1,9 @@
 // SPDX-FileCopyrightText: Copyright 2023-2024 Gloria G.
 // SPDX-License-Identifier: BSD-2-Clause
 
+#include <Cell/Scoped.hh>
+#include <Cell/String.hh>
 #include <Cell/IO/HID.hh>
-#include <Cell/StringDetails/RawString.hh>
-#include <Cell/System/BlockImpl.hh>
-#include <Cell/System/Log.hh>
-#include <Cell/System/Panic.hh>
 #include <Cell/System/Platform/Windows/Includes.h>
 
 #include <devpkey.h>
@@ -116,8 +114,8 @@ Wrapped<Device*, Result> Device::Open(const uint16_t vendorId, const uint16_t pr
 
         CELL_ASSERT(propertyType == DEVPROP_TYPE_STRING_LIST);
 
-        System::OwnedBlock<wchar_t> hardwareIDs(size + 1);
-        result = SetupDiGetDevicePropertyW(info, &data, &DEVPKEY_Device_HardwareIds, &propertyType, (BYTE*)hardwareIDs.Pointer(), size, &size, 0);
+        ScopedBlock<wchar_t> hardwareIDs = Memory::Allocate<wchar_t>(size + 1);
+        result = SetupDiGetDevicePropertyW(info, &data, &DEVPKEY_Device_HardwareIds, &propertyType, (BYTE*)(wchar_t*)hardwareIDs, size, &size, 0);
         if (result == FALSE) {
             System::Panic("SetupDiGetDevicePropertyW failed");
         }
@@ -137,7 +135,7 @@ Wrapped<Device*, Result> Device::Open(const uint16_t vendorId, const uint16_t pr
             System::Panic("SetupDiGetDeviceInterfaceDetailW failed");
         }
 
-        interfaceDetailData = (SP_DEVICE_INTERFACE_DETAIL_DATA_W*)System::AllocateMemory(interfaceDetailDataSize);
+        interfaceDetailData = (SP_DEVICE_INTERFACE_DETAIL_DATA_W*)Memory::Allocate<uint8_t>(interfaceDetailDataSize);
         interfaceDetailData->cbSize = sizeof(SP_DEVICE_INTERFACE_DETAIL_DATA_W);
 
         result = SetupDiGetDeviceInterfaceDetailW(info, &interfaceData, interfaceDetailData, interfaceDetailDataSize, &interfaceDetailDataSize, nullptr);
@@ -146,10 +144,10 @@ Wrapped<Device*, Result> Device::Open(const uint16_t vendorId, const uint16_t pr
         }
 
         isBluetooth = props.isBluetooth;
-        path = System::AllocateMemory<wchar_t>(wcslen(interfaceDetailData->DevicePath) + 1);
+        path = Memory::Allocate<wchar_t>(wcslen(interfaceDetailData->DevicePath) + 1);
         wcscpy(path, interfaceDetailData->DevicePath);
 
-        System::FreeMemory(interfaceDetailData);
+        Memory::Free(interfaceDetailData);
         break;
     }
 
@@ -172,7 +170,7 @@ Wrapped<Device*, Result> Device::Open(const uint16_t vendorId, const uint16_t pr
         }
     }
 
-    System::FreeMemory(path);
+    Memory::Free(path);
 
     return new Device((uintptr_t)device, isBluetooth ? ConnectionType::Bluetooth : ConnectionType::USB);
 }

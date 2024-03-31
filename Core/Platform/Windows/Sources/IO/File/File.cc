@@ -11,11 +11,11 @@
 namespace Cell::IO {
 
 File::~File() {
-    fclose((FILE*)this->handle);
+    fclose((FILE*)this->impl);
 }
 
 Result File::Flush() {
-    FILE* file = (FILE*)this->handle;
+    FILE* file = (FILE*)this->impl;
 
     const int result = fflush(file);
     if (result != 0) {
@@ -33,36 +33,58 @@ Result File::Flush() {
     return Result::Success;
 }
 
-Wrapped<size_t, Result> File::GetSize() {
-    const int no = _fileno((FILE*)this->handle);
-    if (no < 1) {
-        switch (GetLastError()) {
-        default: {
-            System::Panic("_fileno failed");
-        }
-        }
-    }
+size_t File::GetSize() const {
+    const int no = _fileno((FILE*)this->impl);
+    CELL_ASSERT(no > 0);
 
     const HANDLE file = (HANDLE)_get_osfhandle(no);
-    if (file == FALSE) {
-        switch (GetLastError()) {
-        default: {
-            System::Panic("_get_osfhandle failed");
-        }
-        }
-    }
+    CELL_ASSERT(file != INVALID_HANDLE_VALUE);
 
     uint64_t size = 0;
     const BOOL result = GetFileSizeEx(file, (LARGE_INTEGER*)&size);
-    if (result == FALSE) {
-        switch (GetLastError()) {
+    CELL_ASSERT(result == TRUE);
+
+    return size;
+}
+
+size_t File::GetOffset() const {
+    FILE* file = (FILE*)this->impl;
+
+    const size_t size = (size_t)_ftelli64(file);
+    CELL_ASSERT(size != (size_t)-1);
+
+    return size;
+}
+
+Result File::SetOffset(const size_t offset) {
+    if (offset > INT64_MAX) {
+        return Result::InvalidParameters;
+    }
+
+    FILE* file = (FILE*)this->impl;
+
+    const int result = _fseeki64(file, (int64_t)offset, SEEK_SET);
+    if (result != 0) {
+        if (feof(file) != 0) {
+            return Result::ReachedEnd;
+        }
+
+        switch (ferror(file)) {
+        case EFBIG: {
+            return Result::InvalidParameters;
+        }
+
+        case ENOMEM: {
+            return Result::NotEnoughMemory;
+        }
+
         default: {
-            System::Panic("GetFileSizeEx failed");
+            System::Panic("_fseeki64 failed");
         }
         }
     }
 
-    return size;
+    return Result::Success;
 }
 
 }

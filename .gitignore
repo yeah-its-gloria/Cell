@@ -8,6 +8,8 @@
 .vs
 .vscode
 
+.codechecker
+
 # Third party resources
 /ThirdParty
 

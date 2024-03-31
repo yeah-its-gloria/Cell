@@ -23,7 +23,7 @@ enum class FormFactor : uint8_t {
 };
 
 // Represents an OpenXR main instance.
-class Instance : public Object {
+class Instance : public NoCopyObject {
 friend class Session;
 
 public:
@@ -43,8 +43,6 @@ public:
     CELL_FUNCTION Wrapped<Session*, Result> CreateSessionD3D12(const FormFactor formFactor, D3D12::Device* device);
 #endif
 
-    CELL_NON_COPYABLE(Instance)
-
 private:
     struct SessionPrepData {
         XrSystemId id;
@@ -52,7 +50,7 @@ private:
         XrViewConfigurationView viewConfigurations[2];
     };
 
-    CELL_FUNCTION_INTERNAL CELL_INLINE Instance(XrInstance CELL_NONNULL instance) : instance(instance) { }
+    CELL_FUNCTION_INTERNAL Instance(XrInstance CELL_NONNULL instance) : instance(instance) { }
 
     CELL_FUNCTION_INTERNAL Wrapped<SessionPrepData, Result> PrepSession(const FormFactor formFactor);
     CELL_FUNCTION_INTERNAL Wrapped<XrSpace, Result> PrepSessionSpace(XrSession session);

@@ -40,7 +40,7 @@ struct Command {
     const void* parameters;
 };
 
-class CommandBuffer : public Object {
+class CommandBuffer : public NoCopyObject {
 friend Device;
 
 public:
@@ -72,7 +72,7 @@ private:
         Recorded
     };
 
-    CELL_FUNCTION_INTERNAL CELL_INLINE CommandBuffer(VkCommandBuffer b, VkQueue& q, Device* d) : buffer(b), queueRef(q), device(d)  { }
+    CELL_FUNCTION_INTERNAL CommandBuffer(VkCommandBuffer b, VkQueue& q, Device* d) : buffer(b), queueRef(q), device(d)  { }
 
     VkCommandBuffer buffer;
     VkQueue& queueRef;

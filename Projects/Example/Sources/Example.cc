@@ -17,7 +17,9 @@ void CellEntry(Reference<String> parameterString) {
 }
 
 CELL_FUNCTION_INTERNAL Example::~Example() {
-    delete this->shell;
+    if (this->shell != nullptr) {
+        delete this->shell;
+    }
 }
 
 void Example::Launch(const String& parameterString) {
@@ -48,8 +50,8 @@ void Example::Launch(const String& parameterString) {
 
     this->shell = Shell::CreateShell("Cell - Hi Aurelia").Unwrap();
 
-    Shell::Result shellResult = this->shell->DiscoverPeripherals();
-    if (shellResult != Shell::Result::Success) {
+    Shell::Result result = this->shell->DiscoverPeripherals();
+    if (result != Shell::Result::Success) {
         System::Panic("Failed to discover input peripherals");
     }
 
@@ -71,12 +73,12 @@ void Example::Launch(const String& parameterString) {
     ) {
         this->shellDeltaTime = Utilities::Minimum((GetPreciseTickerValue() - finishedTick) / 1000.f, 0.001f);
 
-        shellResult = this->shell->RunDispatch();
-        if (shellResult == Shell::Result::RequestedQuit) {
+        result = this->shell->RunDispatch();
+        if (result == Shell::Result::RequestedQuit) {
             break;
         }
 
-        CELL_ASSERT(shellResult == Shell::Result::Success);
+        CELL_ASSERT(result == Shell::Result::Success);
 
         finishedTick = GetPreciseTickerValue();
         Thread::Yield();

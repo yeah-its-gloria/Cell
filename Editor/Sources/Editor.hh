@@ -9,7 +9,7 @@
 
 class Editor : Cell::Object {
 public:
-    CELL_INLINE Editor() { }
+    CELL_FUNCTION_INTERNAL Editor() = default;
     CELL_FUNCTION_INTERNAL ~Editor();
     CELL_FUNCTION_INTERNAL void Launch(const Cell::String& parameterString);
 

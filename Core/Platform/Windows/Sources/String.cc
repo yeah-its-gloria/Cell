@@ -3,13 +3,14 @@
 
 #include <Cell/Scoped.hh>
 #include <Cell/String.hh>
-#include <Cell/System/BlockImpl.hh>
 #include <Cell/System/Platform/Windows/Includes.h>
 
 namespace Cell {
 using namespace StringDetails;
 
 Wrapped<String, Result> String::FromPlatformWideString(const wchar_t* input) {
+    CELL_ASSERT(input != nullptr);
+
     const uint32_t inputSize = (uint32_t)wcslen(input);
     if (inputSize == 1) {
         return Result::IsEmpty;
@@ -20,7 +21,7 @@ Wrapped<String, Result> String::FromPlatformWideString(const wchar_t* input) {
         return Result::InvalidFormat;
     }
 
-    System::OwnedBlock<char> data(outputSize + 1);
+    ScopedBlock<char> data = Memory::Allocate<char>(outputSize + 1);
     outputSize = WideCharToMultiByte(CP_UTF8, WC_ERR_INVALID_CHARS, input, (int)inputSize, data, outputSize, nullptr, nullptr);
     CELL_ASSERT(outputSize > 0);
 
@@ -32,14 +33,13 @@ wchar_t* String::ToPlatformWideString() const {
         return nullptr;
     }
 
-    // Win32 APIs require null termination
-    ScopedBlock data = this->ToCharPointer();
+    const int size = this->GetSize();
 
-    int outputSize = MultiByteToWideChar(CP_UTF8, MB_ERR_INVALID_CHARS, &data, (int)this->GetSize(), nullptr, 0);
+    int outputSize = MultiByteToWideChar(CP_UTF8, MB_ERR_INVALID_CHARS, this->data, size, nullptr, 0);
     CELL_ASSERT(outputSize > 0);
 
-    wchar_t* output = System::AllocateMemory<wchar_t>(outputSize + 1);
-    outputSize = MultiByteToWideChar(CP_UTF8, MB_ERR_INVALID_CHARS, &data, (int)this->GetSize(), output, outputSize);
+    wchar_t* output = Memory::Allocate<wchar_t>(outputSize + 1);
+    outputSize = MultiByteToWideChar(CP_UTF8, MB_ERR_INVALID_CHARS, this->data, size, output, outputSize);
     CELL_ASSERT(outputSize > 0);
 
     return output;

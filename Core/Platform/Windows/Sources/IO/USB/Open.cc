@@ -3,10 +3,9 @@
 
 #include "Internal.hh"
 
+#include <Cell/Scoped.hh>
+#include <Cell/String.hh>
 #include <Cell/IO/USB.hh>
-#include <Cell/StringDetails/RawString.hh>
-#include <Cell/System/BlockImpl.hh>
-#include <Cell/System/Log.hh>
 
 #include <devpkey.h>
 #include <SetupAPI.h>
@@ -111,8 +110,8 @@ Wrapped<USB*, Result> USB::Open(const uint16_t vendorId, const uint16_t productI
 
         CELL_ASSERT(propertyType == DEVPROP_TYPE_STRING_LIST);
 
-        System::OwnedBlock<wchar_t> hardwareIDs(size + 1);
-        result = SetupDiGetDevicePropertyW(info, &data, &DEVPKEY_Device_HardwareIds, &propertyType, (BYTE*)hardwareIDs.Pointer(), size, &size, 0);
+        ScopedBlock<wchar_t> hardwareIDs = Memory::Allocate<wchar_t>(size + 1);
+        result = SetupDiGetDevicePropertyW(info, &data, &DEVPKEY_Device_HardwareIds, &propertyType, (BYTE*)(wchar_t*)hardwareIDs, size, &size, 0);
         if (result == FALSE) {
             System::Panic("SetupDiGetDevicePropertyW failed");
         }
@@ -134,7 +133,7 @@ Wrapped<USB*, Result> USB::Open(const uint16_t vendorId, const uint16_t productI
             }
         }
 
-        interfaceDetailData = (SP_DEVICE_INTERFACE_DETAIL_DATA_W*)System::AllocateMemory(interfaceDetailDataSize);
+        interfaceDetailData = (SP_DEVICE_INTERFACE_DETAIL_DATA_W*)Memory::Allocate<uint8_t>(interfaceDetailDataSize);
         interfaceDetailData->cbSize = sizeof(SP_DEVICE_INTERFACE_DETAIL_DATA_W);
 
         result = SetupDiGetDeviceInterfaceDetailW(info, &interfaceData, interfaceDetailData, interfaceDetailDataSize, &interfaceDetailDataSize, nullptr);
@@ -142,10 +141,10 @@ Wrapped<USB*, Result> USB::Open(const uint16_t vendorId, const uint16_t productI
             System::Panic("SetupDiGetDeviceInterfaceDetailW failed");
         }
 
-        path = System::AllocateMemory<wchar_t>(wcslen(interfaceDetailData->DevicePath) + 1);
+        path = Memory::Allocate<wchar_t>(wcslen(interfaceDetailData->DevicePath) + 1);
         wcscpy(path, interfaceDetailData->DevicePath);
 
-        System::FreeMemory(interfaceDetailData);
+        Memory::Free(interfaceDetailData);
         break;
     }
 
@@ -158,7 +157,7 @@ Wrapped<USB*, Result> USB::Open(const uint16_t vendorId, const uint16_t productI
     HANDLE _device = CreateFileW(path, GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, nullptr, OPEN_EXISTING, FILE_FLAG_OVERLAPPED, nullptr);
     CELL_ASSERT(_device != INVALID_HANDLE_VALUE && _device != nullptr);
 
-    System::FreeMemory(path);
+    Memory::Free(path);
 
     WINUSB_INTERFACE_HANDLE winUsbDevice;
     const BOOL result = WinUsb_Initialize(_device, &winUsbDevice);
@@ -180,7 +179,7 @@ Wrapped<USB*, Result> USB::Open(const uint16_t vendorId, const uint16_t productI
         }
     }
 
-    usbData* devData = System::AllocateMemory<usbData>();
+    usbData* devData = Memory::Allocate<usbData>();
 
     devData->device = _device;
     devData->handle = winUsbDevice;

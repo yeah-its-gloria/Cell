@@ -61,7 +61,7 @@ Wrapped<Resource*, Result> Device::CreateResource(const size_t stride, const siz
     return new Resource(this, resource, view);
 }
 
-Result Resource::CopyData(const IBlock& data) {
+Result Resource::CopyData(const Memory::IBlock& data) {
     const D3D12_RANGE range = { 0, 0 };
 
     void* block = nullptr;
@@ -80,7 +80,7 @@ Result Resource::CopyData(const IBlock& data) {
     }
     }
 
-    System::CopyMemory(block, data.Pointer(), data.ByteSize());
+    Memory::Copy(block, data.AsPointer(), data.GetSize());
 
     this->resource->Unmap(0, nullptr);
     return Result::Success;

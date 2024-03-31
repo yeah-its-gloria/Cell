@@ -35,15 +35,13 @@ public:
     CELL_FUNCTION VkImageView GetColorImageView(const uint32_t index) override;
     CELL_FUNCTION VkImageView GetDepthImageView(const uint32_t index) override;
 
-    CELL_NON_COPYABLE(WSITarget)
-
 private:
-    CELL_FUNCTION_INTERNAL CELL_INLINE WSITarget(VkSurfaceKHR s, const uint8_t d, const VkSurfaceCapabilitiesKHR& c,
-                                                 const VkSurfaceFormatKHR f, const VkPresentModeKHR p, const VkExtent2D e,
-                                                 VkSwapchainKHR sc, Collection::List<VkImage>& i,
-                                                 Collection::List<VkImageView>& v, Image*& di,
-                                                 Collection::List<VkSemaphore>& ia, Collection::List<VkSemaphore>& rf,
-                                                 Collection::List<VkFence>& iff, Device* de, Shell::IShell* sh)
+    CELL_FUNCTION_INTERNAL WSITarget(VkSurfaceKHR s, const uint8_t d, const VkSurfaceCapabilitiesKHR& c,
+                                     const VkSurfaceFormatKHR f, const VkPresentModeKHR p, const VkExtent2D e,
+                                     VkSwapchainKHR sc, Collection::List<VkImage>& i,
+                                     Collection::List<VkImageView>& v, Image*& di,
+                                     Collection::List<VkSemaphore>& ia, Collection::List<VkSemaphore>& rf,
+                                     Collection::List<VkFence>& iff, Device* de, Shell::IShell* sh)
         : surface(s), capabilities(c), format(f), mode(p), extent(e),
           swapchain(sc), depth(d), swapchainImages(i), swapchainImageViews(v),
           imageAvailable(ia), renderFinished(rf), inFlightFrames(iff), depthImage(di),

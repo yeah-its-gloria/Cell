@@ -6,12 +6,11 @@
 #include <Cell/String.hh>
 #include <Cell/Network/Properties.hh>
 #include <Cell/Network/Result.hh>
-#include <Cell/System/Memory.hh>
 
 namespace Cell::Network {
 
 // Represents a collection of addressing information for connection targets.
-class AddressInfo : public Object {
+class AddressInfo : public NoCopyObject {
 friend class Socket;
 
 public:
@@ -32,12 +31,10 @@ public:
     // Returns either the canonical name or a string representation of the address at the given info index.
     CELL_FUNCTION Wrapped<String, Result> GetName(const size_t infoIndex = 0);
 
-    CELL_NON_COPYABLE(AddressInfo)
-
 private:
-    CELL_HANDLE_CONSTRUCTOR(AddressInfo)
+    CELL_FUNCTION_INTERNAL AddressInfo(uintptr_t i) : impl(i) { }
 
-    const uintptr_t handle;
+    uintptr_t impl;
 };
 
 }

@@ -1,10 +1,9 @@
 // SPDX-FileCopyrightText: Copyright 2023-2024 Gloria G.
 // SPDX-License-Identifier: BSD-2-Clause
 
-#include <Cell/System/BlockImpl.hh>
+#include <Cell/Scoped.hh>
 #include <Cell/System/Entry.hh>
 #include <Cell/System/Log.hh>
-#include <Cell/System/Panic.hh>
 #include <Cell/System/Platform/Windows/Includes.h>
 
 #include <stdio.h>
@@ -86,8 +85,8 @@ int main() {
     if (firstSpaceIndex + 1 != rawCmdLineSize) {
         const size_t desiredCmdSize = rawCmdLineSize - firstSpaceIndex;
 
-        System::OwnedBlock<wchar_t> stuff(desiredCmdSize);
-        System::CopyMemory<wchar_t>(stuff, rawCmdLine + (firstSpaceIndex + 1), desiredCmdSize - 2);
+        ScopedBlock<wchar_t> stuff = Memory::Allocate<wchar_t>(desiredCmdSize);
+        Memory::Copy<wchar_t>(stuff, rawCmdLine + (firstSpaceIndex + 1), desiredCmdSize - 2);
 
         parameters += String::FromPlatformWideString(stuff).Unwrap();
     }

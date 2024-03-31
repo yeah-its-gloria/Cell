@@ -4,7 +4,6 @@
 #pragma once
 
 #include <Cell/Audio/Subsystem.hh>
-#include <Cell/System/Block.hh>
 
 namespace Cell::Audio {
 
@@ -19,8 +18,11 @@ public:
     // Stops capturing.
     virtual Result Stop() = 0;
 
+    // Fetches the number of currently available samples.
+    virtual Wrapped<uint32_t, Result> GetAvailableSampleCount() = 0;
+
     // Fetches the currently available data into the given block.
-    virtual Result Fetch(System::OwnedBlock<uint8_t>& out) = 0;
+    virtual Wrapped<uint8_t*, Result> Fetch(const uint32_t count) = 0;
 };
 
 }

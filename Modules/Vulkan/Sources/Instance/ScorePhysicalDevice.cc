@@ -1,7 +1,6 @@
 // SPDX-FileCopyrightText: Copyright 2023-2024 Gloria G.
 // SPDX-License-Identifier: BSD-2-Clause
 
-#include <Cell/System/BlockImpl.hh>
 #include <Cell/Vulkan/Instance.hh>
 
 namespace Cell::Vulkan {

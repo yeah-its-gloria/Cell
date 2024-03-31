@@ -4,15 +4,17 @@
 Please note that this project is in an incredibly early state, and that breaking changes will constantly be made.  
 There is no guarantee that any application component currently in tree will even launch across all supported platforms.
 
+**Important note: At the moment, support on Linux is __completely broken__.**
+
 ## Building
 Cell supports Windows and Linux, in particular Arch Linux and Ubuntu. 
-Note that some platform implementations might be less functional than others (I try my best to keep them all on the same page, at least API wise), i.e., the engine might abort for certain functionality (as an example, folder walking is not yet implemented on Linux, but somewhat implemented on Windows).
+Note that some platform implementations might be less functional than others (I try my best to keep them all on the same page, at least API wise), i.e., the engine might abort for certain functionality.
 
 Cell has the following dependencies:
 | Name | Minimum Version | Platform | Notes | Ubuntu Package | Arch Linux Package |
 |-|-|-|-|-|-|
 | [LLVM](https://llvm.org) | 16.0.0 | All | Specifically clang and lld are needed. clang-cl can be used on Windows, if desired. Other compilers are **not officially** supported. | `clang`, `lld`, `llvm` | `clang`, `lld`, `llvm` |
-| [CMake](https://cmake.org/) | 3.20.0 | All | Requires a generator of some kind. | `cmake` | `cmake` |
+| [CMake](https://cmake.org/) | 3.24.0 | All | Requires a generator of some kind. | `cmake` | `cmake` |
 | [Ninja](https://ninja-build.org/) | 1.11.1 | All | Recommended generator for CMake. | `ninja-build` | `ninja` |
 | | | | | | |
 | [Windows SDK](https://developer.microsoft.com/en-us/windows/downloads/windows-sdk/) | 10.0.22621.0 | Windows | Should be installed alongside MSVC v143. | | |
@@ -39,7 +41,7 @@ You can additionally configure the engine further through CMake. I recommend usi
 | `CELL_ENABLE_TESTS` | ON | Enables tests across the entire engine. |
 | `CELL_ENABLE_TESTS_LIKELY_FAILURE` | OFF | Enables tests that are likely to fail or not properly implemented yet. |
 | `CELL_ENABLE_UTILITIES` | ON | Enables utilities being built. |
-| `CELL_ENABLE_STATIC_BUILD` | OFF | Builds all library components statically. Recommended for release builds. |
+| `CELL_ENABLE_STATIC_BUILD` | ON | Builds all library components statically. Particularly recommended for release builds. |
 
 ## Core
 The core implements a platform-agnostic interface for the editor, all modules, titles and utilities.
@@ -60,7 +62,7 @@ The editor serves as a creation utility for various workloads.
 | D3D12 | DirectX 12.1 | Windows only |
 | DataManagement | self-contained | |
 | Mathematics | self-contained | |
-| OpenXR | OpenXR 1.0 | Vulkan implemented |
+| OpenXR | OpenXR 1.0 | Supports D3D12 and Vulkan |
 | Shell | Windows, Wayland (Linux), HID, etc | Serves input implementations |
 | Vulkan | Vulkan 1.2 | Implemented WSIs: Win32 and Wayland |
 

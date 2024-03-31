@@ -13,7 +13,7 @@ namespace Cell::System {
 typedef void (* GenericFunctionPointer)();
 
 // Manages a dynamically loaded library.
-class DynamicLibrary : public Object {
+class DynamicLibrary : public NoCopyObject {
 public:
     // Loads a library.
     CELL_FUNCTION static Wrapped<DynamicLibrary*, Result> New(const String& path);
@@ -24,12 +24,10 @@ public:
     // Loads the function with the given name, and returns a pointer for it.
     CELL_FUNCTION Wrapped<GenericFunctionPointer, Result> GetFunction(const String& name);
 
-    CELL_NON_COPYABLE(DynamicLibrary)
-
 private:
-    CELL_FUNCTION_INTERNAL CELL_INLINE DynamicLibrary(const uintptr_t handle) : handle(handle) { }
+    CELL_FUNCTION_INTERNAL DynamicLibrary(uintptr_t i) : impl(i) { }
 
-    uintptr_t handle;
+    uintptr_t impl;
     Collection::Dictionary<String, GenericFunctionPointer> loadedFunctions;
 };
 

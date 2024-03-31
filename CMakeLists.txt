@@ -7,7 +7,10 @@ project(Cell LANGUAGES C CXX VERSION 1.0.0 DESCRIPTION "Cell")
 
 cmake_policy(SET CMP0054 NEW)
 cmake_policy(SET CMP0079 NEW)
-cmake_policy(SET CMP0149 NEW)
+
+if (CMAKE_VERSION VERSION_GREATER_EQUAL "3.27.0")
+    cmake_policy(SET CMP0149 NEW)
+endif ()
 
 set(CMAKE_C_STANDARD 23)
 set(CMAKE_CXX_STANDARD 20)
@@ -52,7 +55,7 @@ elseif (UNIX)
     else ()
         message(WARNING "Cell mainly targets Linux, other \"Unix-likes\" (${CMAKE_SYSTEM_NAME}) may or may not be compatible")
     endif ()
-else()
+else ()
     message(WARNING "Unknown environment")
 endif ()
 
@@ -68,9 +71,9 @@ if (MSVC AND NOT ${CMAKE_VS_PLATFORM_TOOLSET} STREQUAL "ClangCL")
     message(WARNING "CL is basically guaranteed to break. It's recommended that you use the ClangCL tookit instead of \"${CMAKE_VS_PLATFORM_TOOLSET}\".")
 endif ()
 
-if(NOT DEFINED CMAKE_BUILD_TYPE AND NOT DEFINED CMAKE_CONFIGURATION_TYPES)
+if (NOT DEFINED CMAKE_BUILD_TYPE AND NOT DEFINED CMAKE_CONFIGURATION_TYPES)
     set(CMAKE_BUILD_TYPE Debug CACHE STRING "Which type of build to generate (Debug, Release)")
-endif()
+endif ()
 
 option(CELL_ENABLE_EDITOR "Whether the editor should be built. Defaults to ON." ON)
 option(CELL_ENABLE_PROJECTS "Whether the in tree projects should be built. Defaults to ON." ON)

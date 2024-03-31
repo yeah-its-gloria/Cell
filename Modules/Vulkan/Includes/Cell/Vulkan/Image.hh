@@ -8,7 +8,7 @@
 namespace Cell::Vulkan {
 
 // Represents an image.
-class Image : public Object {
+class Image : public NoCopyObject {
 friend Device;
 friend class Pipeline;
 
@@ -20,15 +20,13 @@ public:
     CELL_FUNCTION Result CopyDataFromBuffer(Buffer* CELL_NONNULL buffer);
 
     // Returns a handle to the underlying image.
-    CELL_INLINE VkImage GetHandle() { return this->image; }
+    CELL_FUNCTION inline VkImage GetHandle() { return this->image; }
 
     // Returns a handle to the underlying image view.
-    CELL_INLINE VkImageView GetViewHandle() { return this->view; }
+    CELL_FUNCTION inline VkImageView GetViewHandle() { return this->view; }
 
     // Returns a handle to the underlying sampler.
-    CELL_INLINE VkSampler GetSamplerHandle() { return this->sampler; }
-
-    CELL_NON_COPYABLE(Image)
+    CELL_FUNCTION inline VkSampler GetSamplerHandle() { return this->sampler; }
 
 private:
     CELL_FUNCTION_INTERNAL Image(Device* dev,

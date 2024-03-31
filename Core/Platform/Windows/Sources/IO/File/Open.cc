@@ -31,7 +31,7 @@ Wrapped<File*, Result> File::Open(const String& path, const FileMode mode) {
             return Result::InvalidParameters;
         }
 
-        creationType = CREATE_ALWAYS | TRUNCATE_EXISTING;
+        creationType = CREATE_ALWAYS;
     } else if (!HAS_MODE(Open) || (!HAS_MODE(Read) && !HAS_MODE(Write))) {
         return Result::InvalidParameters;
     }
@@ -49,7 +49,7 @@ Wrapped<File*, Result> File::Open(const String& path, const FileMode mode) {
     }
 
     ScopedBlock<wchar_t> widePath = path.ToPlatformWideString();
-    if ((mode & FileMode::Create) != FileMode::Create) {
+    if (!HAS_MODE(Create) && !HAS_MODE(Overwrite)) {
         const DWORD attributes = GetFileAttributesW(widePath);
         if (attributes == INVALID_FILE_ATTRIBUTES) {
             switch (GetLastError()) {
@@ -76,7 +76,8 @@ Wrapped<File*, Result> File::Open(const String& path, const FileMode mode) {
 
     const HANDLE fileHandle = CreateFileW(&widePath, accessType, shareType, nullptr, creationType, FILE_ATTRIBUTE_NORMAL, nullptr);
     if (fileHandle == INVALID_HANDLE_VALUE) {
-        switch (GetLastError()) {
+        const DWORD result = GetLastError();
+        switch (result) {
         case ERROR_ACCESS_DENIED: {
             return Result::AccessDenied;
         }
@@ -98,31 +99,50 @@ Wrapped<File*, Result> File::Open(const String& path, const FileMode mode) {
         }
     }
 
-    int osFileHandleFlags = _O_RDWR;
-    char descriptorMode[5] = { 0 };
-    if (HAS_MODE(Read)) {
-        strncat(descriptorMode, "r", 4);
-
-        if (!HAS_MODE(Write)) {
-            osFileHandleFlags = _O_RDONLY;
+    const int osFileHandleFlags = [&mode] {
+        switch ((CELL_BASE_TYPE(FileMode))(mode & (FileMode::Read | FileMode::Write))) {
+        case (CELL_BASE_TYPE(FileMode))FileMode::Read: {
+            return O_BINARY | O_RDONLY;
         }
-    }
 
-    if (HAS_MODE(Write)) {
-        if (!HAS_MODE(Read)) {
-            strncat(descriptorMode, "w", 4);
-            osFileHandleFlags = _O_WRONLY;
-        } else {
-            strncat(descriptorMode, "+", 4);
+        case (CELL_BASE_TYPE(FileMode))FileMode::Write: {
+            return O_BINARY | O_WRONLY;
         }
-    }
 
-    if (HAS_MODE(Create)) {
-        osFileHandleFlags |= _O_CREAT;
-    }
+        case (CELL_BASE_TYPE(FileMode))(FileMode::Read | FileMode::Write): {
+            return O_BINARY | O_RDWR;
+        }
 
-    osFileHandleFlags |= _O_BINARY;
-    strncat(descriptorMode, "b", 4);
+        default: {
+            CELL_UNREACHABLE;
+        }
+        }
+    }();
+
+    const char* descriptorMode =  [&mode] {
+        switch ((CELL_BASE_TYPE(FileMode))(mode)) {
+        case (CELL_BASE_TYPE(FileMode))(FileMode::Read | FileMode::Open): {
+            return (const char*)"rb";
+        }
+
+        case (CELL_BASE_TYPE(FileMode))(FileMode::Write | FileMode::Open): {
+            return (const char*)"wb";
+        }
+
+        case (CELL_BASE_TYPE(FileMode))(FileMode::Read | FileMode::Write | FileMode::Open): {
+            return (const char*)"rb+";
+        }
+
+        case (CELL_BASE_TYPE(FileMode))(FileMode::Read | FileMode::Write | FileMode::Create):
+        case (CELL_BASE_TYPE(FileMode))(FileMode::Read | FileMode::Write | FileMode::Overwrite): {
+            return (const char*)"wb+";
+        }
+
+        default: {
+            CELL_UNREACHABLE;
+        }
+        }
+    }();
 
     FILE* descriptor = _fdopen(_open_osfhandle((intptr_t)fileHandle, osFileHandleFlags), descriptorMode);
     CELL_ASSERT(descriptor != nullptr);

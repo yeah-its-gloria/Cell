@@ -37,7 +37,10 @@ enum class Result : uint8_t {
     NothingFound,
 
     // No more samples could be captured.
-    NoMoreSamples
+    NoMoreSamples,
+
+    // The samples couldn't be stored for playback.
+    NotEnoughSpaceInBuffer
 };
 
 }

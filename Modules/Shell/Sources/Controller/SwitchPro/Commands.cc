@@ -4,7 +4,9 @@
 #include "Structures.hh"
 
 #include <Cell/Shell/Controller/SwitchPro.hh>
-#include <Cell/System/BlockImpl.hh>
+#include <Cell/Memory/Allocator.hh>
+#include <Cell/Memory/OwnedBlock.hh>
+#include <Cell/Memory/UnownedBlock.hh>
 
 namespace Cell::Shell::Controller {
 
@@ -21,12 +23,12 @@ Result SwitchPro::SubmitCommand(uint8_t cmd, uint8_t data, const bool allowFailu
     IO::Result result = IO::Result::Success;
 
     if (this->type == IO::HID::ConnectionType::Bluetooth) {
-        System::OwnedBlock<uint8_t> commandBlock(49);
-        System::CopyMemory<uint8_t>(commandBlock, (uint8_t*)&command, sizeof(SwitchProCommandPacket));
+        Memory::OwnedBlock<uint8_t> commandBlock(49);
+        Memory::Copy<uint8_t>(commandBlock.AsBytes(), (uint8_t*)&command, sizeof(SwitchProCommandPacket));
 
         result = this->device->Write(commandBlock, 33);
     } else {
-        result = this->device->Write(System::UnownedBlock { &command }, 33);
+        result = this->device->Write(Memory::UnownedBlock { &command }, 33);
     }
 
     switch (result) {
@@ -47,7 +49,7 @@ Result SwitchPro::SubmitCommand(uint8_t cmd, uint8_t data, const bool allowFailu
 
     uint8_t counter = 0;
     while (counter < maxTries) {
-        System::OwnedBlock<uint8_t> reportRef(this->type == IO::HID::ConnectionType::Bluetooth ? 362 : 64);
+        Memory::OwnedBlock<uint8_t> reportRef(this->type == IO::HID::ConnectionType::Bluetooth ? 362 : 64);
         result = this->device->Read(reportRef, 66);
         switch (result) {
         case IO::Result::Success: {
@@ -64,7 +66,7 @@ Result SwitchPro::SubmitCommand(uint8_t cmd, uint8_t data, const bool allowFailu
         }
         }
 
-        SwitchProCommandReplyReport* report = (SwitchProCommandReplyReport*)reportRef.Pointer();
+        SwitchProCommandReplyReport* report = (SwitchProCommandReplyReport*)reportRef.AsPointer();
         if (report->reportId != SwitchProReportId::CommandReply) {
             counter++;
             continue;
@@ -99,12 +101,12 @@ Result SwitchPro::SubmitUSB(uint8_t cmd, const bool waitForReply) {
     IO::Result result = IO::Result::Success;
 
     if (this->type == IO::HID::ConnectionType::Bluetooth) {
-        System::OwnedBlock<uint8_t> commandBlock(362);
-        System::CopyMemory<uint8_t>(commandBlock, (uint8_t*)&command, sizeof(SwitchProUSBCommandPacket));
+        Memory::OwnedBlock<uint8_t> commandBlock(362);
+        Memory::Copy<uint8_t>(commandBlock.AsBytes(), (uint8_t*)&command, sizeof(SwitchProUSBCommandPacket));
 
         result = this->device->Write(commandBlock, 33);
     } else {
-        result = this->device->Write(System::UnownedBlock { &command }, 33);
+        result = this->device->Write(Memory::UnownedBlock { &command }, 33);
     }
 
     switch (result) {
@@ -118,7 +120,7 @@ Result SwitchPro::SubmitUSB(uint8_t cmd, const bool waitForReply) {
     }
 
     if (waitForReply) {
-        System::OwnedBlock<uint8_t> reply(this->type == IO::HID::ConnectionType::Bluetooth ? 49 : 64);
+        Memory::OwnedBlock<uint8_t> reply(this->type == IO::HID::ConnectionType::Bluetooth ? 49 : 64);
         uint8_t counter = 0;
         while (counter < 3) {
             result = device->Read(reply, 1000);
@@ -132,12 +134,12 @@ Result SwitchPro::SubmitUSB(uint8_t cmd, const bool waitForReply) {
             }
             }
 
-            if ((SwitchProReportId)reply[0] != SwitchProReportId::USBCommandAcknowledge) {
+            if ((SwitchProReportId)(reply.AsBytes()[0]) != SwitchProReportId::USBCommandAcknowledge) {
                 counter++;
                 continue;
             }
 
-            CELL_ASSERT(reply[1] == (uint8_t)command.command);
+            CELL_ASSERT(reply.AsBytes()[1] == (uint8_t)command.command);
             break;
         }
 

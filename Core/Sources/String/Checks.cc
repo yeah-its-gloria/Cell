@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: BSD-2-Clause
 
 #include <Cell/String.hh>
-#include <Cell/System/Memory.hh>
+#include <Cell/Memory/Allocator.hh>
 
 namespace Cell {
 
@@ -23,7 +23,7 @@ bool String::BeginsWith(const String& substring) const {
         return false;
     }
 
-    return System::CompareMemory(this->data, substring.data, substring.size);
+    return Memory::Compare(this->data, substring.data, substring.size);
 }
 
 bool String::EndsWith(const String& substring) const {
@@ -31,7 +31,7 @@ bool String::EndsWith(const String& substring) const {
         return false;
     }
 
-    return System::CompareMemory(this->data + (this->size - substring.size), substring.data, substring.size);
+    return Memory::Compare(this->data + (this->size - substring.size), substring.data, substring.size);
 }
 
 }

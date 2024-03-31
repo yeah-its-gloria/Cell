@@ -4,12 +4,13 @@
 #include "Structures.hh"
 
 #include <Cell/Shell/Controller/SwitchPro.hh>
-#include <Cell/System/BlockImpl.hh>
+#include <Cell/Memory/Allocator.hh>
+#include <Cell/Memory/OwnedBlock.hh>
 
 namespace Cell::Shell::Controller {
 
 Wrapped<SwitchPro*, Result> SwitchPro::Find() {
-    const Wrapped<IO::HID::Device*, IO::Result> hidResult = IO::HID::Device::Open(0x057e, 0x2009);
+    Wrapped<IO::HID::Device*, IO::Result> hidResult = IO::HID::Device::Open(0x057e, 0x2009);
     if (!hidResult.IsValid()) {
         switch (hidResult.Result()) {
         case IO::Result::NotFound: {
@@ -78,7 +79,7 @@ SwitchPro::~SwitchPro() {
 
 Result SwitchPro::Update() {
     this->lastReport = this->report;
-    System::ClearMemory(this->report);
+    Memory::Clear(this->report);
 
     if (!this->hasUpdated) {
         Result result = Result::Success;
@@ -117,7 +118,7 @@ Result SwitchPro::Update() {
         this->hasUpdated = true;
     }
 
-    System::OwnedBlock<uint8_t> reportRef(this->type == IO::HID::ConnectionType::Bluetooth ? 362 : 64);
+    Memory::OwnedBlock<uint8_t> reportRef(this->type == IO::HID::ConnectionType::Bluetooth ? 362 : 64);
     IO::Result result = this->device->Read(reportRef, 33);
     switch (result) {
     case IO::Result::Success: {
@@ -133,7 +134,7 @@ Result SwitchPro::Update() {
     }
     }
 
-    SwitchProFullInputReport* inputReport = (SwitchProFullInputReport*)reportRef.Pointer();
+    SwitchProFullInputReport* inputReport = (SwitchProFullInputReport*)reportRef.AsPointer();
     if (inputReport->reportId != SwitchProReportId::FullInput) {
         if (++this->wrongReportCount > 3) { // sometimes it fucks up reports, but we give chances around here
             return Result::InvalidReplies;

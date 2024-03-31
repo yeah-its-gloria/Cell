@@ -10,7 +10,7 @@ namespace Cell::Shell {
 
 #define CONTROLLER_AXIS_CASE(axisName, reportName) case ControllerAxis::axisName: { if (fabs(report.reportName) > 0.1) { info.axis(report.reportName, info.userData); } break; }
 
-template <typename B> void handleButton(B current, B previous, B match, ButtonFunction function, void* userData) {
+template <typename B> void handleButton(const B current, const B previous, const B match, ButtonFunction function, void* userData) {
     switch ((((current & match) == match) ? 1 : 0) | ((previous & match) == match ? 2 : 0)) {
     case  1: { function(InputType::Pressed,  userData); break; } // current
     case  2: { function(InputType::Released, userData); break; } // previous

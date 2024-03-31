@@ -15,11 +15,9 @@ public:
 
     CELL_FUNCTION Result Update() override;
 
-    CELL_NON_COPYABLE(SwitchPro)
-
 private:
-    CELL_INLINE SwitchPro(IO::HID::Device* device) : device(device) {
-        this->type = device->GetConnectionType();
+    CELL_FUNCTION_INTERNAL SwitchPro(IO::HID::Device* d) : device(d) {
+        this->type = d->GetConnectionType();
     }
 
     CELL_FUNCTION_INTERNAL Result SubmitCommand(uint8_t cmd, uint8_t data, const bool allowFailure = false);

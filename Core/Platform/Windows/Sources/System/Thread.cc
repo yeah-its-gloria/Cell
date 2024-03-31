@@ -37,7 +37,7 @@ Thread::Thread(ThreadFunction function, void* parameter, const String& name) {
 
     event.Wait();
 
-    this->handle = (uintptr_t)thread;
+    this->impl = (uintptr_t)thread;
     if (!name.IsEmpty()) {
         Result result = this->SetName(name);
         CELL_ASSERT(result == Result::Success);
@@ -45,12 +45,12 @@ Thread::Thread(ThreadFunction function, void* parameter, const String& name) {
 }
 
 Thread::~Thread() {
-    const BOOL result = TerminateThread((HANDLE)this->handle, 0);
+    const BOOL result = TerminateThread((HANDLE)this->impl, 0);
     CELL_ASSERT(result);
 }
 
 Result Thread::Join(const uint32_t timeMilliseconds) const {
-    const DWORD result = WaitForSingleObjectEx((HANDLE)this->handle, timeMilliseconds == 0 ? INFINITE : timeMilliseconds, FALSE);
+    const DWORD result = WaitForSingleObjectEx((HANDLE)this->impl, timeMilliseconds == 0 ? INFINITE : timeMilliseconds, FALSE);
     switch (result) {
     case WAIT_OBJECT_0: {
         return Result::Success;
@@ -67,7 +67,7 @@ Result Thread::Join(const uint32_t timeMilliseconds) const {
 }
 
 bool Thread::IsActive() const {
-    const DWORD result = WaitForSingleObjectEx((HANDLE)this->handle, 0, FALSE);
+    const DWORD result = WaitForSingleObjectEx((HANDLE)this->impl, 0, FALSE);
     switch (result) {
     case WAIT_OBJECT_0: {
         return false;
@@ -93,7 +93,7 @@ Result Thread::SetName(const String& name) {
     }
 
     ScopedBlock<wchar_t> nameWide = name.ToPlatformWideString();
-    const HRESULT result = SetThreadDescription((HANDLE)this->handle, &nameWide);
+    const HRESULT result = SetThreadDescription((HANDLE)this->impl, &nameWide);
     CELL_ASSERT(SUCCEEDED(result) || result == 0x10000000);
 
     return Result::Success;
