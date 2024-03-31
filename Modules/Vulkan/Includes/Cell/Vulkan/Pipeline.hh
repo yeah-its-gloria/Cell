@@ -67,16 +67,16 @@ public:
     CELL_FUNCTION Result Finalize();
 
     // Returns the owning device.
-    CELL_FUNCTION inline Device* GetDevice() { return this->device; }
+    CELL_FUNCTION_TEMPLATE inline Device* GetDevice() { return this->device; }
 
     // Returns a handle to the pipeline object.
-    CELL_FUNCTION inline VkPipeline GetPipelineHandle() { return this->pipeline; }
+    CELL_FUNCTION_TEMPLATE inline VkPipeline GetPipelineHandle() { return this->pipeline; }
 
     // Returns a handle to the pipeline object.
-    CELL_FUNCTION inline VkPipelineLayout GetPipelineLayoutHandle() { return this->layout; }
+    CELL_FUNCTION_TEMPLATE inline VkPipelineLayout GetPipelineLayoutHandle() { return this->layout; }
 
     // Returns the descriptor sets for the given resource index.
-    CELL_FUNCTION inline VkDescriptorSet* GetDescriptorSets(const uint32_t index) { return this->resources[index].sets; }
+    CELL_FUNCTION_TEMPLATE inline VkDescriptorSet* GetDescriptorSets(const uint32_t index) { return this->resources[index].sets; }
 
 private:
     CELL_FUNCTION_INTERNAL Pipeline(Device* dev, VkFormat fmt) : device(dev), renderFormat(fmt) { }

@@ -22,5 +22,5 @@ function (CellAddContentToPack target name input)
         COMMAND $<TARGET_FILE:CellUtilitiesContentPacker> ${input} "$<TARGET_FILE_DIR:${target}>/${name}.cellpkg"
     )
 
-    add_custom_target(CellPackedContent.${name} ALL DEPENDS ${output})
+    add_custom_target(CellPackedContent${name} ALL DEPENDS ${output})
 endfunction ()

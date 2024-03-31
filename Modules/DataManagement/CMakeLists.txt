@@ -18,6 +18,7 @@ add_library(CellDataManagement ${CELL_LIBRARY_TYPE}
     ${MODULE_INCLUDES_DIR}/Cell/DataManagement/JSON.hh
     ${MODULE_INCLUDES_DIR}/Cell/DataManagement/Model.hh
     ${MODULE_INCLUDES_DIR}/Cell/DataManagement/Result.hh
+    ${MODULE_INCLUDES_DIR}/Cell/DataManagement/RustTest.hh
     ${MODULE_INCLUDES_DIR}/Cell/DataManagement/Texture.hh
     ${MODULE_INCLUDES_DIR}/Cell/DataManagement/zlib.hh
 
@@ -25,6 +26,7 @@ add_library(CellDataManagement ${CELL_LIBRARY_TYPE}
     ${CMAKE_CURRENT_LIST_DIR}/Sources/Base64.cc
     ${CMAKE_CURRENT_LIST_DIR}/Sources/Checksum.cc
     ${CMAKE_CURRENT_LIST_DIR}/Sources/JSON.cc
+    ${CMAKE_CURRENT_LIST_DIR}/Sources/RustTest.cc
     ${CMAKE_CURRENT_LIST_DIR}/Sources/zlib.cc
 
     ${CMAKE_CURRENT_LIST_DIR}/Sources/Model/FromGLTF.cc
@@ -41,10 +43,12 @@ target_compile_definitions(CellDataManagement PUBLIC "CELL_MODULES_DATAMANAGEMEN
 target_include_directories(CellDataManagement PUBLIC ${MODULE_INCLUDES_DIR})
 target_link_libraries(CellDataManagement PUBLIC CellCore)
 
+CellAddRustImplementation(CellDataManagement cell_datamanagement_impl)
+
 add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/ThirdParty/zlib)
 target_link_libraries(CellDataManagement PRIVATE zlib)
 
-if (CELL_ENABLE_TESTS AND CELL_ENABLE_TESTS_LIKELY_FAILURE)
+if (CELL_ENABLE_TESTS)
     function(cell_dm_add_test name)
         add_executable(CellDataManagementParsing${name}Test ${CMAKE_CURRENT_LIST_DIR}/Tests/${name}.cc)
         target_link_libraries(CellDataManagementParsing${name}Test PRIVATE CellDataManagement)
@@ -52,10 +56,14 @@ if (CELL_ENABLE_TESTS AND CELL_ENABLE_TESTS_LIKELY_FAILURE)
         cell_target_bootstrap(CellDataManagementParsing${name}Test TRUE)
     endfunction()
 
-    cell_dm_add_test(glTF)
-    cell_dm_add_test(HTTP)
     cell_dm_add_test(JSON)
-    cell_dm_add_test(PNG)
+    cell_dm_add_test(Rust)
+
+    if (CELL_ENABLE_TESTS_LIKELY_FAILURE)
+        cell_dm_add_test(glTF)
+        cell_dm_add_test(HTTP)
+        cell_dm_add_test(PNG)
+    endif ()
 endif ()
 
 cell_target_bootstrap(CellDataManagement)

@@ -18,7 +18,7 @@ public:
     // Cleans up the texture contained and destructs the instance.
     CELL_FUNCTION ~Texture();
 
-    CELL_FUNCTION uint32_t* GetBytes() const {
+    CELL_FUNCTION_TEMPLATE inline uint32_t* GetBytes() const {
         return this->rgba;
     }
 

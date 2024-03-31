@@ -65,7 +65,7 @@ CELL_FUNCTION_INTERNAL inline constexpr uint32_t GetSampleByteSize(const Format&
 // Base audio subsystem interface.
 class ISubsystem : public NoCopyObject {
 public:
-    CELL_FUNCTION virtual ~ISubsystem() = default;
+    virtual ~ISubsystem() = default;
 
     // Sets up a renderer with the given format. The given renderer will always output to the currently selected device.
     virtual Wrapped<class IRenderer*, Result> CreateRenderer(const Format& format) = 0;

@@ -25,7 +25,7 @@ void CellEntry(Reference<String> parameterString) {
 
     ScopedObject<Texture> texture = Texture::FromPNG(data).Unwrap();
 
-    ScopedObject<IO::File> out = IO::File::Open("stuff.raw", IO::FileMode::Overwrite | IO::FileMode::Read | IO::FileMode::Write).Unwrap();
+    ScopedObject<IO::File> out = IO::File::Open("./build/stuff.raw", IO::FileMode::Overwrite | IO::FileMode::Read | IO::FileMode::Write).Unwrap();
 
     const size_t fullSize = 1024 * 1024 * 4;
     for (size_t i = 0; i < fullSize / 128; i++) {

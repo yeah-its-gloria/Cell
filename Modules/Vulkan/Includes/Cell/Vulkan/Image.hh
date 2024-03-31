@@ -20,13 +20,13 @@ public:
     CELL_FUNCTION Result CopyDataFromBuffer(Buffer* CELL_NONNULL buffer);
 
     // Returns a handle to the underlying image.
-    CELL_FUNCTION inline VkImage GetHandle() { return this->image; }
+    CELL_FUNCTION_TEMPLATE inline VkImage GetHandle() { return this->image; }
 
     // Returns a handle to the underlying image view.
-    CELL_FUNCTION inline VkImageView GetViewHandle() { return this->view; }
+    CELL_FUNCTION_TEMPLATE inline VkImageView GetViewHandle() { return this->view; }
 
     // Returns a handle to the underlying sampler.
-    CELL_FUNCTION inline VkSampler GetSamplerHandle() { return this->sampler; }
+    CELL_FUNCTION_TEMPLATE inline VkSampler GetSamplerHandle() { return this->sampler; }
 
 private:
     CELL_FUNCTION_INTERNAL Image(Device* dev,

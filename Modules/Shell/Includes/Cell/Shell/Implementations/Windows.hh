@@ -16,11 +16,11 @@ public:
 
     CELL_FUNCTION ~Windows();
 
-    CELL_FUNCTION inline HINSTANCE GetInstance() {
+    CELL_FUNCTION_TEMPLATE inline HINSTANCE GetInstance() {
         return this->instance;
     }
 
-    CELL_FUNCTION inline HWND GetWindow() {
+    CELL_FUNCTION_TEMPLATE inline HWND GetWindow() {
         return this->window;
     }
 

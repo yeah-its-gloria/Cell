@@ -33,7 +33,7 @@ public:
     CELL_NODISCARD virtual size_t GetElementSize() const = 0;
 
     // Retrieves the current size of the block in bytes.
-    CELL_NODISCARD CELL_FUNCTION size_t GetSize() const {
+    CELL_NODISCARD CELL_FUNCTION_TEMPLATE inline size_t GetSize() const {
         return this->GetElementSize() * this->GetCount();
     }
 

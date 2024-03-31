@@ -19,8 +19,12 @@ CELL_NORETURN CELL_FUNCTION void SoftPanic();
 #ifdef CELL_CORE_SKIP_ASSERT
 #define CELL_ASSERT(x) (void)(x)
 #elifdef CELL_CORE_USE_EXTERNAL_ASSERT
+#if defined(CELL_PLATFORM_WINDOWS) && !defined(_DEBUG)
+#define CELL_ASSERT(x) (void)(x)
+#else
 #include <assert.h>
 #define CELL_ASSERT(condition) assert(condition)
+#endif
 #elifdef CELL_CORE_USE_PANIC_ASSERT
 #define CELL_ASSERT(condition) if (!(condition)) { Cell::System::Panic("Assert \"%s\" failed inside function %s at %s:%d", #condition, __FUNCTION__, __FILE__, __LINE__); } (void)(condition)
 #else

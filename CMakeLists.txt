@@ -21,6 +21,7 @@ set(PROJECT_ROOT_DIR ${CMAKE_CURRENT_LIST_DIR})
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH};${PROJECT_ROOT_DIR}/BuildScripts)
 
 include(Modules)
+include(RustImplementation)
 
 set(CORE_DIR ${PROJECT_ROOT_DIR}/Core)
 set(CORE_INCLUDES_DIR ${CORE_DIR}/Includes)

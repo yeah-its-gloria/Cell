@@ -28,48 +28,4 @@ WSITarget::~WSITarget() {
     vkDestroySurfaceKHR(this->device->instance->instance, this->surface, nullptr);
 }
 
-uint32_t WSITarget::GetFrameCounter() {
-    return this->renderFrameCounter;
-}
-
-VkImageView WSITarget::GetSwapchainImageViewForCurrentIndex() {
-    return this->swapchainImageViews[this->renderImageIndex];
-}
-
-VkImage WSITarget::GetSwapchainImageForCurrentIndex() {
-    return this->swapchainImages[this->renderImageIndex];
-}
-
-Image* WSITarget::GetDepthImage() {
-    return this->depthImage;
-}
-
-VkExtent2D WSITarget::GetExtent() {
-    return this->extent;
-}
-
-VkFormat WSITarget::GetColorFormat() {
-    return this->format.format;
-}
-
-uint32_t WSITarget::GetImageCount() {
-    return this->depth;
-}
-
-uint32_t WSITarget::GetCurrentImageIndex() {
-    return this->renderImageIndex;
-}
-
-VkImage WSITarget::GetColorImage(const uint32_t index) {
-    return this->swapchainImages[index];
-}
-
-VkImageView WSITarget::GetColorImageView(const uint32_t index) {
-    return this->swapchainImageViews[index];
-}
-
-VkImageView WSITarget::GetDepthImageView(const uint32_t index) {
-    (void)(index); return this->depthImage->GetViewHandle();
-}
-
 }

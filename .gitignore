@@ -1,5 +1,6 @@
 # Build caches
 *build*/
+**/target/
 
 # IDE and tool storage
 .cache

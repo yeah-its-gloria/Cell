@@ -44,7 +44,7 @@ public:
     CELL_FUNCTION Wrapped<class Swapchain*, Result> CreateSwapchain(Shell::Implementations::Windows* CELL_NONNULL shell);
 
     // Wrapper for IShell to create a swapchain.
-    CELL_FUNCTION inline Wrapped<class Swapchain*, Result> CreateSwapchain(Shell::IShell* CELL_NONNULL shell) {
+    CELL_FUNCTION_TEMPLATE inline Wrapped<class Swapchain*, Result> CreateSwapchain(Shell::IShell* CELL_NONNULL shell) {
         return this->CreateSwapchain((Shell::Implementations::Windows*)shell);
     }
 

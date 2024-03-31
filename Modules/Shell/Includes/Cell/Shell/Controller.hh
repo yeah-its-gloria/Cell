@@ -31,22 +31,22 @@ struct ControllerProperties {
 class IController : public NoCopyObject {
 public:
     // Destroys the controller instance.
-    CELL_FUNCTION_INTERNAL virtual ~IController() = default;
+    virtual ~IController() = default;
 
     // Updates all data concerning the controller.
     virtual Result Update() = 0;
 
     // Returns the currently reported controller data.
-    CELL_FUNCTION ControllerReport GetReport() {
+    CELL_FUNCTION_TEMPLATE inline ControllerReport GetReport() {
         return this->report;
     }
 
     // Returns the report stored prior to an Update call.
-    CELL_FUNCTION ControllerReport GetPreviousReport() {
+    CELL_FUNCTION_TEMPLATE inline ControllerReport GetPreviousReport() {
         return this->lastReport;
     }
 
-    CELL_FUNCTION void SetProperties(ControllerProperties properties) {
+    CELL_FUNCTION_TEMPLATE inline void SetProperties(ControllerProperties properties) {
         this->properties = properties;
         this->hasUpdated = false;
     }
