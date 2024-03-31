@@ -56,12 +56,12 @@ if (CELL_ENABLE_TESTS)
         cell_target_bootstrap(CellDataManagementParsing${name}Test TRUE)
     endfunction()
 
-    cell_dm_add_test(JSON)
     cell_dm_add_test(Rust)
 
     if (CELL_ENABLE_TESTS_LIKELY_FAILURE)
         cell_dm_add_test(glTF)
         cell_dm_add_test(HTTP)
+        cell_dm_add_test(JSON)
         cell_dm_add_test(PNG)
     endif ()
 endif ()

@@ -42,7 +42,7 @@ jobs:
 #
 #      - name: Test
 #        working-directory: ${{ github.workspace }}/build
-#        run: ctest -C Release --build-run-dir ${{ github.workspace }}
+#        run: ctest -C Release
 
   build-windows:
     name: Windows Release
@@ -126,4 +126,4 @@ jobs:
 
       - name: Test
         working-directory: ${{ github.workspace }}/build
-        run: ctest -C Release --build-run-dir ${{ github.workspace }}
+        run: ctest -C Release
