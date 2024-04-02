@@ -7,8 +7,8 @@
 #include <string.h>
 
 namespace Cell {
-using namespace StringDetails;
 using namespace Memory;
+using namespace StringDetails;
 
 Result String::Append(const String& string) {
     if (string.IsEmpty()) {

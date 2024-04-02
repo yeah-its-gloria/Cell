@@ -26,7 +26,7 @@ Wrapped<Socket*, Result> Socket::New(const Transport transport, const Connection
 }
 
 Socket::~Socket() {
-    const int result = close((int)this->handle);
+    const int result = close((int)this->impl);
     CELL_ASSERT(result == 0);
 }
 

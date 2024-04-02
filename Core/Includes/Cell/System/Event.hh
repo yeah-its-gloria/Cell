@@ -36,7 +36,7 @@ public:
     CELL_FUNCTION EventWaitResult Wait(const uint32_t timeoutMs = 0);
 
 private:
-    uintptr_t handle;
+    uintptr_t impl;
 };
 
 }

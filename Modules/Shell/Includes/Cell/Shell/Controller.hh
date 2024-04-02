@@ -37,16 +37,16 @@ public:
     virtual Result Update() = 0;
 
     // Returns the currently reported controller data.
-    CELL_FUNCTION_TEMPLATE inline ControllerReport GetReport() {
+    CELL_FUNCTION_TEMPLATE ControllerReport GetReport() {
         return this->report;
     }
 
     // Returns the report stored prior to an Update call.
-    CELL_FUNCTION_TEMPLATE inline ControllerReport GetPreviousReport() {
+    CELL_FUNCTION_TEMPLATE ControllerReport GetPreviousReport() {
         return this->lastReport;
     }
 
-    CELL_FUNCTION_TEMPLATE inline void SetProperties(ControllerProperties properties) {
+    CELL_FUNCTION_TEMPLATE void SetProperties(ControllerProperties properties) {
         this->properties = properties;
         this->hasUpdated = false;
     }

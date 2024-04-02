@@ -34,7 +34,7 @@ typedef void (* ButtonFunction)(InputType, void*);
 typedef void (* AxisFunction)(double, void*);
 
 // Base shell interface.
-class IShell : public Object {
+class IShell : public NoCopyObject {
 public:
     // Common destructor.
     virtual ~IShell() = default;

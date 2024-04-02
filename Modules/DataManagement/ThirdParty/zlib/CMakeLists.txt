@@ -137,7 +137,7 @@ if (ZLIB_DEBUG)
     target_compile_definitions(zlib PRIVATE "$<$<CONFIG:Debug>:ZLIB_DEBUG>")
 endif ()
 
-target_compile_definitions(zlib PRIVATE DISABLE_RUNTIME_CPU_DETECTION)
+target_compile_definitions(zlib PRIVATE HAVE_ATTRIBUTE_ALIGNED DISABLE_RUNTIME_CPU_DETECTION)
 
 target_compile_options(zlib PRIVATE
     -Wno-constant-logical-operand

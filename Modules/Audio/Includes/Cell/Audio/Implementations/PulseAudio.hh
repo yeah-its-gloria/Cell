@@ -23,10 +23,8 @@ public:
     CELL_FUNCTION Wrapped<ICapturer*, Result> CreateLoopback(const DeviceInfo& info, const Format& format) override;
     CELL_FUNCTION Wrapped<Collection::List<DeviceInfo>, Result> DiscoverAvailableRenderers() override;
 
-    CELL_NON_COPYABLE(Subsystem)
-
 private:
-    CELL_INLINE Subsystem(pa_threaded_mainloop* l, pa_context* c) : loop(l), context(c) { };
+    CELL_FUNCTION_INTERNAL Subsystem(pa_threaded_mainloop* l, pa_context* c) : loop(l), context(c) { };
 
     CELL_FUNCTION_INTERNAL static void StateCallback(pa_context* context, void* userdata);
 
@@ -44,15 +42,13 @@ public:
 
     CELL_FUNCTION Result Start() override;
     CELL_FUNCTION Result Stop() override;
-    CELL_FUNCTION Result Submit(const IBlock& block) override;
+    CELL_FUNCTION Result Submit(const Memory::IBlock& block) override;
     CELL_FUNCTION Wrapped<uint32_t, Result> GetMaxSampleCount() override;
     CELL_FUNCTION Wrapped<uint32_t, Result> GetCurrentSampleOffset() override;
     CELL_FUNCTION uint32_t GetLatency() override;
 
-    CELL_NON_COPYABLE(Renderer)
-
 private:
-    CELL_INLINE Renderer(Subsystem* s, pa_stream* st, size_t ss) : subsystem(s), stream(st), sampleSize(ss) { }
+    CELL_FUNCTION_INTERNAL Renderer(Subsystem* s, pa_stream* st, size_t ss) : subsystem(s), stream(st), sampleSize(ss) { }
 
     CELL_FUNCTION_INTERNAL static void StateCallback(pa_stream* stream, void* userdata);
     CELL_FUNCTION_INTERNAL static void LatencyCallback(pa_stream* stream, void* userdata);

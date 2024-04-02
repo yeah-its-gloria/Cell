@@ -10,11 +10,11 @@
 namespace Cell::IO {
 
 File::~File() {
-    fclose((FILE*)this->handle);
+    fclose((FILE*)this->impl);
 }
 
 Result File::Flush() {
-    FILE* file = (FILE*)this->handle;
+    FILE* file = (FILE*)this->impl;
 
     const int result = fflush(file);
     if (result != 0) {
@@ -32,33 +32,17 @@ Result File::Flush() {
     return Result::Success;
 }
 
-Wrapped<size_t, Result> File::GetSize() {
-    FILE* file = (FILE*)this->handle;
+size_t File::GetSize() const {
+    FILE* file = (FILE*)this->impl;
 
     const __off64_t initial = ftello64(file);
     if (initial < 0) {
         System::Panic("ftello64 failed");
     }
 
-    int seekResult = fseeko64(file, 0, SEEK_END);
-    if (seekResult != 0) {
-        if (feof(file) != 0) {
-            return Result::ReachedEnd;
-        }
-
-        switch (ferror(file)) {
-        case EFBIG: {
-            return Result::InvalidParameters;
-        }
-
-        case ENOMEM: {
-            return Result::NotEnoughMemory;
-        }
-
-        default: {
-            System::Panic("fseeko64 failed");
-        }
-        }
+    int result = fseeko64(file, 0, SEEK_END);
+    if (result != 0) {
+        System::Panic("fseeko64 failed");
     }
 
     const __off64_t size = ftello64(file);
@@ -66,24 +50,12 @@ Wrapped<size_t, Result> File::GetSize() {
         System::Panic("ftello64 failed");
     }
 
-    seekResult = fseeko64(file, initial, SEEK_SET);
-    if (seekResult != 0) {
-        switch (ferror(file)) {
-        case EFBIG: {
-            return Result::InvalidParameters;
-        }
-
-        case ENOMEM: {
-            return Result::NotEnoughMemory;
-        }
-
-        default: {
-            System::Panic("fseeko64 failed");
-        }
-        }
+    result = fseeko64(file, initial, SEEK_SET);
+    if (result != 0) {
+        System::Panic("fseeko64 failed");
     }
 
-    return size;
+    return (size_t)size;
 }
 
 }

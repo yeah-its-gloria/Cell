@@ -10,8 +10,8 @@
 namespace Cell::Network {
 
 Result Socket::Connect(const AddressInfo* info) {
-    addrinfo* infoData = (addrinfo*)info->handle;
-    const int result = connect((int)this->handle, infoData->ai_addr, infoData->ai_addrlen);
+    addrinfo* infoData = (addrinfo*)info->impl;
+    const int result = connect((int)this->impl, infoData->ai_addr, infoData->ai_addrlen);
     if (result == -1) {
         switch (errno) {
         default: {
@@ -24,7 +24,7 @@ Result Socket::Connect(const AddressInfo* info) {
 }
 
 Result Socket::Disconnect() {
-    const int result = shutdown((int)this->handle, SHUT_RDWR);
+    const int result = shutdown((int)this->impl, SHUT_RDWR);
     if (result == -1) {
         switch (errno) {
         case ENOTCONN: {
@@ -40,12 +40,12 @@ Result Socket::Disconnect() {
     return Result::Success;
 }
 
-Result Socket::Send(const IBlock& data, const bool isOutOfBand) {
-    if (data.ByteSize() > INT32_MAX) {
+Result Socket::Send(const Memory::IBlock& data, const bool isOutOfBand) {
+    if (data.GetSize() > INT32_MAX) {
         return Result::InvalidParameters;
     }
 
-    const ssize_t result = send((int)this->handle, data.Pointer(), data.ByteSize(), isOutOfBand ? MSG_OOB : 0);
+    const ssize_t result = send((int)this->impl, data.AsPointer(), data.GetSize(), isOutOfBand ? MSG_OOB : 0);
     if (result == -1) {
         switch (errno) {
         case ENOMEM: {
@@ -60,12 +60,12 @@ Result Socket::Send(const IBlock& data, const bool isOutOfBand) {
     return Result::Success;
 }
 
-Result Socket::Receive(IBlock& data) {
-    if (data.ByteSize() > INT32_MAX) {
+Result Socket::Receive(Memory::IBlock& data) {
+    if (data.GetSize() > INT32_MAX) {
         return Result::InvalidParameters;
     }
 
-    const ssize_t result = recv((const int)this->handle, data.Pointer(), (int)data.ByteSize(), 0);
+    const ssize_t result = recv((const int)this->impl, data.AsPointer(), (int)data.GetSize(), 0);
     if (result == -1) {
         switch (errno) {
         case ENOMEM: {

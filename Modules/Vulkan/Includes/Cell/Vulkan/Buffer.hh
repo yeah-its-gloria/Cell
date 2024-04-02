@@ -27,10 +27,10 @@ public:
     CELL_FUNCTION Result Copy(const Memory::IBlock& data, const uint64_t offset = 0);
 
     // Returns the owning device.
-    CELL_FUNCTION_TEMPLATE inline Device* GetDevice() { return this->device; }
+    CELL_FUNCTION_TEMPLATE Device* GetDevice() { return this->device; }
 
     // Returns a handle to the buffer object.
-    CELL_FUNCTION_TEMPLATE inline VkBuffer GetBufferHandle() { return this->buffer; }
+    CELL_FUNCTION_TEMPLATE VkBuffer GetBufferHandle() { return this->buffer; }
 
 private:
     CELL_FUNCTION_INTERNAL Buffer(Device* dev, VkBuffer buffer, VkDeviceMemory mem) : device(dev), buffer(buffer), memory(mem), isMapped(false) { }

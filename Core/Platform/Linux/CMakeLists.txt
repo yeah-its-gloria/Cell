@@ -12,20 +12,22 @@ target_sources(CellCore PRIVATE
     ${PLATFORM_DIR}/Sources/IO/File/ReadWrite.cc
     ${PLATFORM_DIR}/Sources/IO/File/SetWorkingDirectory.cc
 
-    ${PLATFORM_DIR}/Sources/IO/FolderWalker.cc
+    ${PLATFORM_DIR}/Sources/IO/Directory.cc
     ${PLATFORM_DIR}/Sources/IO/HID.cc
     ${PLATFORM_DIR}/Sources/IO/Pipe.cc
     ${PLATFORM_DIR}/Sources/IO/USB.cc
 
+    ${PLATFORM_DIR}/Sources/Memory/Allocator.cc
+
     ${PLATFORM_DIR}/Sources/Network/Internal.hh
     ${PLATFORM_DIR}/Sources/Network/AddressInfo.cc
+    ${PLATFORM_DIR}/Sources/Network/TypeConversion.cc
     ${PLATFORM_DIR}/Sources/Network/Socket/NewDestruct.cc
     ${PLATFORM_DIR}/Sources/Network/Socket/Socket.cc
 
     ${PLATFORM_DIR}/Sources/System/DynamicLibrary.cc
     ${PLATFORM_DIR}/Sources/System/Event.cc
     ${PLATFORM_DIR}/Sources/System/Log.cc
-    ${PLATFORM_DIR}/Sources/System/Memory.cc
     ${PLATFORM_DIR}/Sources/System/Mutex.cc
     ${PLATFORM_DIR}/Sources/System/Panic.cc
     ${PLATFORM_DIR}/Sources/System/String.cc

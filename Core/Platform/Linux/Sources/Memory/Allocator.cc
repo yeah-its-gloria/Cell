@@ -1,15 +1,15 @@
 // SPDX-FileCopyrightText: Copyright 2023-2024 Gloria G.
 // SPDX-License-Identifier: BSD-2-Clause
 
-#include <Cell/System/Memory.hh>
+#include <Cell/Memory/Allocator.hh>
 #include <Cell/System/Panic.hh>
 
 #include <stdlib.h>
 #include <string.h>
 
-namespace Cell::System {
+namespace Cell::Memory {
 
-void* AllocateMemory(const size_t size) {
+void* Allocate(const size_t size) {
     CELL_ASSERT(size > 0);
 
     void* buffer = calloc(1, size);
@@ -18,26 +18,26 @@ void* AllocateMemory(const size_t size) {
     return buffer;
 }
 
-void ReallocateMemory(void** buffer, const size_t size) {
+void Reallocate(void*& buffer, const size_t size) {
     CELL_ASSERT(size > 0);
 
-    *buffer = realloc(*buffer, size);
+    buffer = realloc(buffer, size);
     CELL_ASSERT(buffer != nullptr);
 }
 
-void FreeMemory(const void* buffer) {
+void Free(const void* buffer) {
     free((void*)buffer);
 }
 
-void CopyMemory(void* destination, const void* source, const size_t size) {
+void Copy(void* destination, const void* source, const size_t size) {
     memcpy(destination, source, size);
 }
 
-bool CompareMemory(const void* a, const void* b, const size_t size) {
+bool Compare(const void* a, const void* b, const size_t size) {
     return memcmp(a, b, size) == 0;
 }
 
-void ClearMemory(void* block, const size_t size) {
+void Clear(void* block, const size_t size) {
     memset(block, 0, size);
 }
 

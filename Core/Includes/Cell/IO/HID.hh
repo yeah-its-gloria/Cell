@@ -48,7 +48,9 @@ public:
     CELL_FUNCTION Wrapped<Capabilities, Result> GetCapabilities();
 
     // Returns the connection type this device uses.
-    CELL_FUNCTION ConnectionType GetConnectionType() const;
+    CELL_FUNCTION_TEMPLATE ConnectionType GetConnectionType() const {
+        return this->type;
+    }
 
 private:
     CELL_FUNCTION_INTERNAL Device(uintptr_t i, const ConnectionType t) : impl(i), type(t) { }

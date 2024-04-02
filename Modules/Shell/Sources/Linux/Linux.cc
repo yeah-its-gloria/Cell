@@ -45,7 +45,7 @@ Result Linux::SetNewTitle(const String& title) {
         return Result::InvalidParameters;
     }
 
-    ScopedBlock titleStr = title.ToCharPointer();
+    ScopedBlock<char> titleStr = title.ToCharPointer();
     xdg_toplevel_set_title(this->xdgToplevel, &titleStr);
 
     return Result::Success;

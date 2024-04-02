@@ -34,7 +34,7 @@ Thread::Thread(ThreadFunction function, void* parameter, const String& name) {
         .event     = &event,
         .function  = function,
         .parameter = parameter,
-        .handle    = &this->handle
+        .handle    = &this->impl
     };
 
     pthread_t thread = 0;
@@ -43,7 +43,7 @@ Thread::Thread(ThreadFunction function, void* parameter, const String& name) {
 
     event.Wait();
 
-    this->handle = (uintptr_t)thread;
+    this->impl = (uintptr_t)thread;
 
     if (!name.IsEmpty()) {
         this->SetName(name);
@@ -52,13 +52,13 @@ Thread::Thread(ThreadFunction function, void* parameter, const String& name) {
 
 
 Thread::~Thread() {
-    if (this->handle != 0) {
-        pthread_kill((pthread_t)this->handle, SIGTERM);
+    if (this->impl != 0) {
+        pthread_kill((pthread_t)this->impl, SIGTERM);
     }
 }
 
 Result Thread::Join(const uint32_t timeoutMs) const {
-    if (this->handle == 0) {
+    if (this->impl == 0) {
         return Result::Expired;
     }
 
@@ -71,9 +71,9 @@ Result Thread::Join(const uint32_t timeoutMs) const {
             timeout.tv_nsec = (timeoutMs % 1000) * 1000;
         }
 
-        result = pthread_timedjoin_np((pthread_t)this->handle, nullptr, &timeout);
+        result = pthread_timedjoin_np((pthread_t)this->impl, nullptr, &timeout);
     } else {
-        result = pthread_join((pthread_t)this->handle, nullptr);
+        result = pthread_join((pthread_t)this->impl, nullptr);
     }
 
     switch (result) {
@@ -93,11 +93,11 @@ Result Thread::Join(const uint32_t timeoutMs) const {
 }
 
 bool Thread::IsActive() const {
-    if (this->handle == 0) {
+    if (this->impl == 0) {
         return false;
     }
 
-    const int result = pthread_tryjoin_np((pthread_t)this->handle, nullptr);
+    const int result = pthread_tryjoin_np((pthread_t)this->impl, nullptr);
     switch (result) {
     case 0: {
         return false;
@@ -114,7 +114,7 @@ bool Thread::IsActive() const {
 }
 
 Result Thread::SetName(const String& name) {
-    if (this->handle == 0) {
+    if (this->impl == 0) {
         return Result::Expired;
     }
 
@@ -123,7 +123,7 @@ Result Thread::SetName(const String& name) {
     }
 
     ScopedBlock nameStr = name.ToCharPointer();
-    const int result = pthread_setname_np(this->handle, &nameStr);
+    const int result = pthread_setname_np(this->impl, &nameStr);
     switch (result) {
     case 0: {
         break;

@@ -1,8 +1,8 @@
 // SPDX-FileCopyrightText: Copyright 2023-2024 Gloria G.
 // SPDX-License-Identifier: BSD-2-Clause
 
+#include <Cell/Memory/Allocator.hh>
 #include <Cell/System/Event.hh>
-#include <Cell/System/Memory.hh>
 #include <Cell/System/Panic.hh>
 
 #include <errno.h>
@@ -11,12 +11,12 @@
 namespace Cell::System {
 
 Event::Event(const bool createSignaled) {
-    sem_t* semaphore = System::AllocateMemory<sem_t>();
+    sem_t* semaphore = Memory::Allocate<sem_t>();
 
     const int result = sem_init(semaphore, 0, 0);
     CELL_ASSERT(result == 0);
 
-    this->handle = (uintptr_t)semaphore;
+    this->impl = (uintptr_t)semaphore;
 
     if (createSignaled) {
         this->Signal();
@@ -24,18 +24,18 @@ Event::Event(const bool createSignaled) {
 }
 
 Event::~Event() {
-    sem_t* semaphore = (sem_t*)this->handle;
+    sem_t* semaphore = (sem_t*)this->impl;
 
     sem_destroy(semaphore);
-    System::FreeMemory(semaphore);
+    Memory::Free(semaphore);
 }
 
 void Event::Signal() {
-    sem_post((sem_t*)this->handle);
+    sem_post((sem_t*)this->impl);
 }
 
 void Event::Reset() {
-    sem_t* semaphore = (sem_t*)this->handle;
+    sem_t* semaphore = (sem_t*)this->impl;
 
     int value = 0;
     while (true) {
@@ -51,25 +51,27 @@ void Event::Reset() {
 }
 
 EventWaitResult Event::Wait(const uint32_t timeoutMs) {
-    int result;
+    const bool success = [&] {
+        if (timeoutMs == 0) {
+            return sem_wait((sem_t*)this->impl) == 0;
+        }
 
-    if (timeoutMs > 0) {
-        const struct timespec timeout =
-            {
-                .tv_sec  =  timeoutMs / 1000,
-                .tv_nsec = (timeoutMs % 1000) * 1000
-            };
+        const struct timespec timeout = {
+            .tv_sec  =  timeoutMs / 1000,
+            .tv_nsec = (timeoutMs % 1000) * 1000
+        };
 
-        result = sem_timedwait((sem_t*)this->handle, &timeout);
+        return sem_timedwait((sem_t*)this->impl, &timeout) == 0;
+    }();
 
-    } else {
-        result = sem_wait((sem_t*)this->handle);
+    if (success) {
+        // sem_wait/sem_timedwait decrement the counter, which is not the behavior we need
+        this->Signal();
+
+        return EventWaitResult::Signaled;
     }
 
-    if (result == 0) {
-        this->Signal(); // sem_wait/sem_timedwait decrement the counter, which is not the behavior we want (thanks Linux...)
-        return EventWaitResult::Signaled;
-    } else if (errno == ETIMEDOUT) {
+    if (errno == ETIMEDOUT) {
         return EventWaitResult::Timeout;
     }
 

@@ -167,8 +167,4 @@ Wrapped<Capabilities, Result> Device::GetCapabilities() {
     return Capabilities { .InputReportSize = caps.InputReportByteLength, .OutputReportSize = caps.OutputReportByteLength, .FeatureReportSize = caps.FeatureReportByteLength };
 }
 
-ConnectionType Device::GetConnectionType() const {
-    return this->type;
-}
-
 }

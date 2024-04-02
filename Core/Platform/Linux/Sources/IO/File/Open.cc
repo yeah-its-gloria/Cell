@@ -43,7 +43,7 @@ Wrapped<File*, Result> File::Open(const String& path, const FileMode mode) {
         return Result::InvalidParameters;
     }
 
-    ScopedBlock pathStr = path.ToCharPointer();
+    ScopedBlock<char> pathStr = path.ToCharPointer();
     const int descriptor = open(&pathStr, flags);
     if (descriptor == -1) {
         switch (errno) {

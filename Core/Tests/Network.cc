@@ -16,8 +16,8 @@ void CellEntry(Reference<String> parameterString) {
 
     const char* request = "GET / HTTP/1.1\r\nHost: example.com\r\nUser-Agent: Cell/1.0.0\r\nAccept: */*\r\n\r\n";
 
-    ScopedObject info = AddressInfo::Find("example.com", 80).Unwrap();
-    ScopedObject socket = Socket::New().Unwrap();
+    ScopedObject<AddressInfo> info = AddressInfo::Find("example.com", 80).Unwrap();
+    ScopedObject<Socket> socket = Socket::New().Unwrap();
 
     Result result = socket->Connect(&info);
     CELL_ASSERT(result == Result::Success);

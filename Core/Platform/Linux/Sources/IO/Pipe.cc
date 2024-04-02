@@ -23,7 +23,7 @@ Wrapped<Pipe*, Result> Pipe::Create(const String& name, const size_t blockSize, 
 
     String path = String("/tmp/") + name;
 
-    ScopedBlock fullPath = path.ToCharPointer();
+    ScopedBlock<char> fullPath = path.ToCharPointer();
     const int result = mkfifo(&fullPath, 0666);
     if (result < 0) {
         switch (errno) {
@@ -81,11 +81,11 @@ Wrapped<Pipe*, Result> Pipe::Connect(const String& name, const PipeMode mode) {
     return new Pipe((uintptr_t)fileResult.Unwrap());
 }
 
-Result Pipe::Read(IBlock& data) {
+Result Pipe::Read(Memory::IBlock& data) {
     return ((File*)this->handle)->Read(data);
 }
 
-Result Pipe::Write(const IBlock& data) {
+Result Pipe::Write(const Memory::IBlock& data) {
     return ((File*)this->handle)->Write(data);
 }
 

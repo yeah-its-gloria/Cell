@@ -3,7 +3,6 @@
 
 #include <Cell/Scoped.hh>
 #include <Cell/String.hh>
-#include <Cell/System/BlockImpl.hh>
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -15,7 +14,7 @@ Wrapped<String, StringDetails::Result> String::FromPlatformWideString(const wcha
     const size_t result = wcstombs(nullptr, input, 0);
     CELL_ASSERT(result > 0);
 
-    System::OwnedBlock<char> stuff(result + 1);
+    ScopedBlock<char> stuff = Memory::Allocate<char>(result + 1);
     const size_t result2 = wcstombs(stuff, input, result);
     CELL_ASSERT(result2 == result);
 
@@ -31,7 +30,7 @@ wchar_t* String::ToPlatformWideString() const {
     const size_t result = mbstowcs(nullptr, dataStr, 0);
     CELL_ASSERT(result > 0);
 
-    wchar_t* output = System::AllocateMemory<wchar_t>(result + 1);
+    wchar_t* output = Memory::Allocate<wchar_t>(result + 1);
     const size_t result2 = mbstowcs(output, dataStr, result);
     CELL_ASSERT(result2 == result);
 

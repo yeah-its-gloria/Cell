@@ -8,29 +8,29 @@
 namespace Cell::System {
 
 Event::Event(const bool createSignaled) {
-    HANDLE event = CreateEventW(nullptr, true, createSignaled, nullptr);
+    HANDLE event = CreateEventW(nullptr, TRUE, createSignaled ? TRUE : FALSE, nullptr);
     CELL_ASSERT(event != nullptr);
 
-    this->handle = (uintptr_t)event;
+    this->impl = (uintptr_t)event;
 }
 
 Event::~Event() {
-    const BOOL result = CloseHandle((HANDLE)this->handle);
-    CELL_ASSERT(result);
+    const BOOL result = CloseHandle((HANDLE)this->impl);
+    CELL_ASSERT(result == TRUE);
 }
 
 void Event::Signal() {
-    const BOOL result = SetEvent((HANDLE)this->handle);
-    CELL_ASSERT(result);
+    const BOOL result = SetEvent((HANDLE)this->impl);
+    CELL_ASSERT(result == TRUE);
 }
 
 void Event::Reset() {
-    const BOOL result = ResetEvent((HANDLE)this->handle);
-    CELL_ASSERT(result);
+    const BOOL result = ResetEvent((HANDLE)this->impl);
+    CELL_ASSERT(result == TRUE);
 }
 
 EventWaitResult Event::Wait(const uint32_t timeoutMs) {
-    const DWORD result = WaitForSingleObjectEx((HANDLE)this->handle, timeoutMs == 0 ? INFINITE : timeoutMs, FALSE);
+    const DWORD result = WaitForSingleObjectEx((HANDLE)this->impl, timeoutMs == 0 ? INFINITE : timeoutMs, FALSE);
     switch (result) {
     case WAIT_OBJECT_0: {
         this->Signal();

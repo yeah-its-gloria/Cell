@@ -12,17 +12,17 @@ namespace Cell::Memory {
 template <typename T> class OwnedBlock : public IBlock {
 public:
     // Creates an owned, zeroed block of memory, with the given number of T elements allocated.
-    CELL_FUNCTION_INTERNAL explicit OwnedBlock(const size_t count) : data(nullptr), count(count) {
+    CELL_FUNCTION_TEMPLATE explicit OwnedBlock(const size_t count) : data(nullptr), count(count) {
         this->data = Allocate<T>(count);
     }
 
     // Destructs the block and frees its memory.
-    CELL_FUNCTION_INTERNAL ~OwnedBlock() {
+    CELL_FUNCTION_TEMPLATE ~OwnedBlock() {
         Free(this->data);
     }
 
     // Resizes the block to the given number of T elements.
-    CELL_FUNCTION_INTERNAL void Resize(const size_t count) override {
+    CELL_FUNCTION_TEMPLATE void Resize(const size_t count) override {
         this->count = count;
 
         Reallocate<T>(this->data, this->count);
@@ -30,12 +30,12 @@ public:
 
 // -> IBlock
 
-    CELL_NODISCARD CELL_FUNCTION_INTERNAL void* AsPointer() override { return this->data; }
-    CELL_NODISCARD CELL_FUNCTION_INTERNAL uint8_t* AsBytes() override { return (uint8_t*)this->data; }
-    CELL_NODISCARD CELL_FUNCTION_INTERNAL const void* AsPointer() const override { return this->data; }
-    CELL_NODISCARD CELL_FUNCTION_INTERNAL const uint8_t* AsBytes() const override { return (const uint8_t*)this->data; }
-    CELL_NODISCARD CELL_FUNCTION_INTERNAL size_t GetCount() const override { return this->count; }
-    CELL_NODISCARD CELL_FUNCTION_INTERNAL size_t GetElementSize() const override { return sizeof(T); }
+    CELL_NODISCARD CELL_FUNCTION_TEMPLATE void* AsPointer() override { return this->data; }
+    CELL_NODISCARD CELL_FUNCTION_TEMPLATE uint8_t* AsBytes() override { return (uint8_t*)this->data; }
+    CELL_NODISCARD CELL_FUNCTION_TEMPLATE const void* AsPointer() const override { return this->data; }
+    CELL_NODISCARD CELL_FUNCTION_TEMPLATE const uint8_t* AsBytes() const override { return (const uint8_t*)this->data; }
+    CELL_NODISCARD CELL_FUNCTION_TEMPLATE size_t GetCount() const override { return this->count; }
+    CELL_NODISCARD CELL_FUNCTION_TEMPLATE size_t GetElementSize() const override { return sizeof(T); }
 
 private:
     T* data;

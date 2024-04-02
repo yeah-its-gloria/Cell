@@ -152,7 +152,7 @@ else ()
         "CELL_NONNULL=_Nonnull"
         "CELL_NULLABLE=_Nullable"
         "CELL_FUNCTION_INTERNAL=__attribute__((visibility(\"hidden\")))"
-        "CELL_FUNCTION_TEMPLATE=__attribute__((visibility(\"hidden\")))"
+        "CELL_FUNCTION_TEMPLATE=__attribute__((visibility(\"hidden\"))) inline"
     )
 
     target_link_options(CellCore PUBLIC -fuse-ld=lld -nostdlib++)

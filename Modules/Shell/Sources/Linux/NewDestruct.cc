@@ -2,8 +2,8 @@
 // SPDX-License-Identifier: BSD-2-Clause
 
 #include <Cell/Shell/Implementations/Linux.hh>
+#include <Cell/Memory/Allocator.hh>
 #include <Cell/System/Log.hh>
-#include <Cell/System/Memory.hh>
 #include <Cell/System/Panic.hh>
 #include <Cell/System/Timer.hh>
 
@@ -119,7 +119,7 @@ Wrapped<Linux*, Result> Linux::New(const String& title, const Extent extent) {
     _linux->SetDrawableExtent(extent);
 
     if (!title.IsEmpty()) {
-        System::FreeMemory(titleStr);
+        Memory::Free(titleStr);
     }
 
     return _linux;

@@ -20,37 +20,37 @@ public:
     CELL_FUNCTION Wrapped<AcquiredImage, Result> AcquireNext() override;
     CELL_FUNCTION Result Present() override;
 
-    CELL_FUNCTION_TEMPLATE inline uint32_t GetFrameCounter()
+    CELL_FUNCTION_TEMPLATE uint32_t GetFrameCounter()
         { return this->renderFrameCounter; }
 
-    CELL_FUNCTION_TEMPLATE inline VkImageView GetSwapchainImageViewForCurrentIndex()
+    CELL_FUNCTION_TEMPLATE VkImageView GetSwapchainImageViewForCurrentIndex()
         { return this->swapchainImageViews[this->renderImageIndex]; }
 
-    CELL_FUNCTION_TEMPLATE inline VkImage GetSwapchainImageForCurrentIndex()
+    CELL_FUNCTION_TEMPLATE VkImage GetSwapchainImageForCurrentIndex()
         { return this->swapchainImages[this->renderImageIndex]; }
 
-    CELL_FUNCTION_TEMPLATE inline Image* GetDepthImage()
+    CELL_FUNCTION_TEMPLATE Image* GetDepthImage()
         { return this->depthImage; }
 
-    CELL_FUNCTION_TEMPLATE inline VkExtent2D GetExtent() override
+    CELL_FUNCTION_TEMPLATE VkExtent2D GetExtent() override
         { return this->extent; }
 
-    CELL_FUNCTION_TEMPLATE inline VkFormat GetColorFormat() override
+    CELL_FUNCTION_TEMPLATE VkFormat GetColorFormat() override
         { return this->format.format; }
 
-    CELL_FUNCTION_TEMPLATE inline uint32_t GetImageCount() override
+    CELL_FUNCTION_TEMPLATE uint32_t GetImageCount() override
         { return this->depth; }
 
-    CELL_FUNCTION_TEMPLATE inline uint32_t GetCurrentImageIndex() override
+    CELL_FUNCTION_TEMPLATE uint32_t GetCurrentImageIndex() override
         { return this->renderImageIndex; }
 
-    CELL_FUNCTION_TEMPLATE inline VkImage GetColorImage(const uint32_t index) override
+    CELL_FUNCTION_TEMPLATE VkImage GetColorImage(const uint32_t index) override
         { return this->swapchainImages[index]; }
 
-    CELL_FUNCTION_TEMPLATE inline VkImageView GetColorImageView(const uint32_t index) override
+    CELL_FUNCTION_TEMPLATE VkImageView GetColorImageView(const uint32_t index) override
         { return this->swapchainImageViews[index]; }
 
-    CELL_FUNCTION_TEMPLATE inline VkImageView GetDepthImageView(const uint32_t index) override
+    CELL_FUNCTION_TEMPLATE VkImageView GetDepthImageView(const uint32_t index) override
         { (void)(index); return this->depthImage->GetViewHandle(); }
 
 private:

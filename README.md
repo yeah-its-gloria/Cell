@@ -20,7 +20,7 @@ Cell has the following dependencies:
 | | | | | | |
 | [Windows SDK](https://developer.microsoft.com/en-us/windows/downloads/windows-sdk/) | 10.0.22621.0 | Windows | Should be installed alongside MSVC v143. | | |
 | | | | | | |
-| [Wayland](https://wayland.freedesktop.org/) | 1.22 | Linux | Official support for compositors is currently limited to [KDE (KWin)](https://kde.org/). | `libwayland-dev` | `wayland` | 
+| [Wayland](https://wayland.freedesktop.org/) | 1.3 | Linux | Official support for compositors is currently limited to [KDE (KWin)](https://kde.org/). | `libwayland-dev` | `wayland` | 
 | [xkbcommon](https://xkbcommon.org/) | 1.6.0 | Linux | | `libxkbcommon-dev` | `libxkbcommon` |
 | [PulseAudio](https://www.freedesktop.org/wiki/Software/PulseAudio/) | 16.1 | Linux | Official support for server implementations is limited to [pipewire](https://pipewire.org/). | `libpulse-dev` | `libpulse` |
 | | | | | | |

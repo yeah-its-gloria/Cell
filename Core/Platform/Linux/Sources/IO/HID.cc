@@ -10,40 +10,30 @@ Wrapped<Device*, Result> Device::Open(const uint16_t vendorId, const uint16_t pr
     (void)(vendorId);
     (void)(productId);
 
-    // TODO: implement
-
     return Result::NotFound;
 }
 
 Device::~Device() {
-    (void)(this->handle);
-
-    // TODO: implement
+    (void)(this->impl);
 
     CELL_UNIMPLEMENTED
 }
 
-Result Device::Read(IBlock& data, const uint32_t milliseconds) {
+Result Device::Read(Memory::IBlock& data, const uint32_t milliseconds) {
     (void)(data);
     (void)(milliseconds);
-
-    // TODO: implement
 
     CELL_UNIMPLEMENTED
 }
 
-Result Device::Write(const IBlock& data, const uint32_t milliseconds) {
+Result Device::Write(const Memory::IBlock& data, const uint32_t milliseconds) {
     (void)(data);
     (void)(milliseconds);
-
-    // TODO: implement
 
     CELL_UNIMPLEMENTED
 }
 
 Wrapped<Capabilities, Result> Device::GetCapabilities() {
-    // TODO: implement
-
     CELL_UNIMPLEMENTED
 }
 

@@ -26,7 +26,7 @@ Wrapped<DynamicLibrary*, Result> DynamicLibrary::New(const String& path) {
 }
 
 DynamicLibrary::~DynamicLibrary() {
-    dlclose((void*)this->handle);
+    dlclose((void*)this->impl);
 }
 
 }

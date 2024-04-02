@@ -15,7 +15,7 @@ namespace Cell::System {
 CELL_FUNCTION void Log(const String& message);
 
 // Stinky utility because C/C++ really don't like us.
-CELL_FUNCTION_TEMPLATE inline void Log(const char* message) {
+CELL_FUNCTION_TEMPLATE void Log(const char* message) {
     Log(String(message));
 }
 

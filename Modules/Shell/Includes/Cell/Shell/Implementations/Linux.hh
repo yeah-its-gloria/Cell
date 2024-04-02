@@ -26,8 +26,8 @@ public:
 
     CELL_FUNCTION ~Linux();
 
-    CELL_NODISCARD CELL_INLINE wl_display* GetDisplay() const { return this->display; }
-    CELL_NODISCARD CELL_INLINE wl_surface* GetSurface() const { return this->surface; }
+    CELL_NODISCARD CELL_FUNCTION_TEMPLATE wl_display* GetDisplay() const { return this->display; }
+    CELL_NODISCARD CELL_FUNCTION_TEMPLATE wl_surface* GetSurface() const { return this->surface; }
 
     CELL_FUNCTION Result RequestQuit() override;
     CELL_FUNCTION Wrapped<Extent, Result> GetDrawableExtent() override;
@@ -38,10 +38,8 @@ public:
     CELL_FUNCTION Result Log(const String& text) override;
     CELL_FUNCTION Result LogClear() override;
 
-    CELL_NON_COPYABLE(Linux)
-
 private:
-    CELL_INLINE Linux(struct wl_display* display, wl_registry* registry) : display(display), registry(registry) { }
+    CELL_FUNCTION_INTERNAL Linux(wl_display* display, wl_registry* registry) : display(display), registry(registry) { }
 
     CELL_FUNCTION_INTERNAL Result RunDispatchImpl() override;
 

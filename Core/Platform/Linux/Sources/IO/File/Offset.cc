@@ -9,27 +9,15 @@
 
 namespace Cell::IO {
 
-Wrapped<size_t, Result> File::GetOffset() {
-    FILE* file = (FILE*)this->handle;
+size_t File::GetOffset() const {
+    FILE* file = (FILE*)this->impl;
 
-    const int64_t size = ftello64(file);
-    if (size == -1) {
-        switch (ferror(file)) {
-        case EFBIG: {
-            return Result::InvalidParameters;
-        }
-
-        case ENOMEM: {
-            return Result::NotEnoughMemory;
-        }
-
-        default: {
-            System::Panic("ftello64 failed");
-        }
-        }
+    const int64_t offset = ftello64(file);
+    if (offset == -1) {
+        System::Panic("ftello64 failed");
     }
 
-    return (size_t)size;
+    return (size_t)offset;
 }
 
 Result File::SetOffset(const size_t offset) {
@@ -37,7 +25,7 @@ Result File::SetOffset(const size_t offset) {
         return Result::InvalidParameters;
     }
 
-    FILE* file = (FILE*)this->handle;
+    FILE* file = (FILE*)this->impl;
 
     const int result = fseeko64(file, (int64_t)offset, SEEK_SET);
     if (result != 0) {

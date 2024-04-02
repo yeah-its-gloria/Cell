@@ -72,13 +72,13 @@ Wrapped<AddressInfo*, Result> AddressInfo::Find(const String& address, const uin
 }
 
 AddressInfo::~AddressInfo() {
-    freeaddrinfo((addrinfo*)this->handle);
+    freeaddrinfo((addrinfo*)this->impl);
 }
 
 size_t AddressInfo::GetResolvedCount() {
     size_t i = 1;
 
-    addrinfo* ptr = (addrinfo*)this->handle;
+    addrinfo* ptr = (addrinfo*)this->impl;
     for (; i < SIZE_MAX; i++) {
         ptr = ptr->ai_next;
         if (ptr == nullptr) {
@@ -90,7 +90,7 @@ size_t AddressInfo::GetResolvedCount() {
 }
 
 Wrapped<String, Result> AddressInfo::GetName(const size_t infoIndex) {
-    addrinfo* ptr = (addrinfo*)this->handle;
+    addrinfo* ptr = (addrinfo*)this->impl;
     for (size_t i = 1; i < infoIndex; i++) {
         ptr = ptr->ai_next;
         if (ptr == nullptr) {

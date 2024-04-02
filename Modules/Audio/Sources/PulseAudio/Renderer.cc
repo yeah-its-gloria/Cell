@@ -45,13 +45,13 @@ Result Renderer::Stop() {
     return Result::Success;
 }
 
-Result Renderer::Submit(const IBlock& block) {
-    const size_t size = block.ByteSize();
+Result Renderer::Submit(const Memory::IBlock& block) {
+    const size_t size = block.GetSize();
     if (size % this->sampleSize != 0) {
         return Result::InvalidParameters;
     }
 
-    const int result = pa_stream_write(this->stream, block.Pointer(), size, nullptr, 0, PA_SEEK_RELATIVE);
+    const int result = pa_stream_write(this->stream, block.AsPointer(), size, nullptr, 0, PA_SEEK_RELATIVE);
     switch (result) {
     case PA_OK: {
         break;

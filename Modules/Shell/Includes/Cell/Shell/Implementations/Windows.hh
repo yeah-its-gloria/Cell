@@ -13,16 +13,10 @@ namespace Cell::Shell::Implementations {
 class Windows : public IShell {
 public:
     CELL_FUNCTION static Wrapped<Windows*, Result> New(const String& title, const Extent extent);
-
     CELL_FUNCTION ~Windows();
 
-    CELL_FUNCTION_TEMPLATE inline HINSTANCE GetInstance() {
-        return this->instance;
-    }
-
-    CELL_FUNCTION_TEMPLATE inline HWND GetWindow() {
-        return this->window;
-    }
+    CELL_NODISCARD CELL_FUNCTION_TEMPLATE HINSTANCE GetInstance() const { return this->instance; }
+    CELL_NODISCARD CELL_FUNCTION_TEMPLATE HWND GetWindow() const { return this->window; }
 
     CELL_FUNCTION Result RequestQuit() override;
     CELL_FUNCTION Wrapped<Extent, Result> GetDrawableExtent() override;

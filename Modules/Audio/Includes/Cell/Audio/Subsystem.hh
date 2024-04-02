@@ -40,7 +40,7 @@ struct Format {
 };
 
 // Calculates a single sample's byte size for the given format.
-CELL_FUNCTION_INTERNAL inline constexpr uint32_t GetSampleByteSize(const Format& format) {
+CELL_FUNCTION_TEMPLATE constexpr uint32_t GetSampleByteSize(const Format& format) {
     const uint32_t bits = [&format]{
         switch (format.type) {
         case FormatType::Float32PCM: {
