@@ -111,8 +111,19 @@ private:
         const VkImageAspectFlagBits aspectMask = VK_IMAGE_ASPECT_COLOR_BIT
     );
 
-    CELL_FUNCTION_INTERNAL uint32_t GetMemoryTypeIndex(VkBuffer buffer, const VkMemoryPropertyFlags type);
-    CELL_FUNCTION_INTERNAL uint32_t GetMemoryTypeIndex(VkImage image, const VkMemoryPropertyFlags type);
+    CELL_FUNCTION_TEMPLATE uint32_t GetMemoryTypeIndex(const uint32_t bits, const VkMemoryPropertyFlags type) {
+        uint32_t typeIndex = (uint32_t)-1;
+        for (uint32_t i = 0; i < this->physicalDeviceProperties.memoryTypeCount; i++) {
+            if (bits & (1 << i) && this->physicalDeviceProperties.memoryTypes[i].propertyFlags & type) {
+                typeIndex = i;
+                break;
+            }
+        }
+
+        CELL_ASSERT(typeIndex != (uint32_t)-1);
+
+        return typeIndex;
+    }
 
     CELL_FUNCTION_INTERNAL Wrapped<SurfaceStaticInfo, Result> GetSurfaceStatics(VkSurfaceKHR& surface);
     CELL_FUNCTION_INTERNAL Wrapped<SurfaceDynamicInfo, Result> GetSurfaceDynamics(VkSurfaceKHR& surface, const Shell::Extent& shellExtent);

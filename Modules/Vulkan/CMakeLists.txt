@@ -43,7 +43,6 @@ add_library(CellVulkan ${CELL_LIBRARY_TYPE}
 
     ${CMAKE_CURRENT_LIST_DIR}/Sources/Device/CreateImageView.cc
     ${CMAKE_CURRENT_LIST_DIR}/Sources/Device/Device.cc
-    ${CMAKE_CURRENT_LIST_DIR}/Sources/Device/GetMemoryTypeIndex.cc
 
 # ------------------------------------------------------------------------------------------------
 

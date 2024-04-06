@@ -47,7 +47,7 @@ Wrapped<Buffer*, Result> Device::CreateBuffer(const size_t size, const VkBufferU
         .pNext           = nullptr,
 
         .allocationSize  = requirements.size,
-        .memoryTypeIndex = this->GetMemoryTypeIndex(buffer, type)
+        .memoryTypeIndex = this->GetMemoryTypeIndex(requirements.memoryTypeBits, type)
     };
 
     VkDeviceMemory memory = nullptr;

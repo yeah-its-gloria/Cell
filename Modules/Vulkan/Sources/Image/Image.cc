@@ -12,28 +12,29 @@ Wrapped<Image*, Result> Device::CreateImage(const uint32_t width, const uint32_t
     }
 
     const VkImageCreateInfo imageInfo = {
-        .sType               = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO,
-        .pNext               = nullptr,
-        .flags               = 0,
+        .sType                 = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO,
+        .pNext                 = nullptr,
+        .flags                 = 0,
 
-        .imageType           = VK_IMAGE_TYPE_2D,
-        .format              = format,
+        .imageType             = VK_IMAGE_TYPE_2D,
+        .format                = format,
 
-        .extent.width        = width,
-        .extent.height       = height,
-        .extent.depth        = 1,
+        .extent.width          = width,
+        .extent.height         = height,
+        .extent.depth          = 1,
 
-        .mipLevels           = 1,
-        .arrayLayers         = 1,
-        .samples             = VK_SAMPLE_COUNT_1_BIT,
+        .mipLevels             = 1,
+        .arrayLayers           = 1,
+        .samples               = VK_SAMPLE_COUNT_1_BIT,
 
-        .tiling              = tiling,
-        .usage               = (VkImageUsageFlags)usage,
-        .sharingMode         = VK_SHARING_MODE_EXCLUSIVE,
+        .tiling                = tiling,
+        .usage                 = (VkImageUsageFlags)usage,
+        .sharingMode           = VK_SHARING_MODE_EXCLUSIVE,
 
-        .pQueueFamilyIndices = nullptr,
+        .queueFamilyIndexCount = 0,
+        .pQueueFamilyIndices   = nullptr,
 
-        .initialLayout       = VK_IMAGE_LAYOUT_UNDEFINED
+        .initialLayout         = VK_IMAGE_LAYOUT_UNDEFINED
     };
 
     VkImage image = nullptr;
@@ -64,7 +65,7 @@ Wrapped<Image*, Result> Device::CreateImage(const uint32_t width, const uint32_t
         .pNext           = nullptr,
 
         .allocationSize  = requirements.size,
-        .memoryTypeIndex = this->GetMemoryTypeIndex(image, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT),
+        .memoryTypeIndex = this->GetMemoryTypeIndex(requirements.memoryTypeBits, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT),
     };
 
     VkDeviceMemory memory = nullptr;
