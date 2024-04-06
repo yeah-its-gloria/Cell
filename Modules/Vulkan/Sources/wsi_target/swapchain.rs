@@ -4,9 +4,11 @@
 use core::ptr::{null, null_mut};
 
 use crate::{
-    ffi::{vkCreateSwapchainKHR, CompositeAlphaFlag, SharingMode, StructureType, SwapchainCreateInfo, SwapchainKHR, VkResult, VK_TRUE, vkGetSwapchainImagesKHR, Image, ImageView},
-    wsi_target::WSITarget,
-    Error,
+    ffi::{
+        vkCreateSwapchainKHR, vkGetSwapchainImagesKHR, CompositeAlphaFlag, SharingMode, StructureType, SwapchainCreateInfo, SwapchainKHR, VkImage, VkImageView, VkResult,
+        VK_TRUE,
+    },
+    Error, WSITarget,
 };
 
 impl WSITarget<'_> {
@@ -54,7 +56,7 @@ impl WSITarget<'_> {
         }
 
         let mut image_count = 4;
-        let mut images: [Image; 4] = [null_mut(); 4];
+        let mut images: [VkImage; 4] = [null_mut(); 4];
         match unsafe { vkGetSwapchainImagesKHR(self.parent.device, swapchain, &mut image_count, images.as_mut_ptr()) } {
             VkResult::Success => {}
 
@@ -66,7 +68,7 @@ impl WSITarget<'_> {
             }
         }
 
-        let mut _image_views: [ImageView; 4] = [null_mut(); 4];
+        let mut _image_views: [VkImageView; 4] = [null_mut(); 4];
         for _image in images {
             // ...
         }

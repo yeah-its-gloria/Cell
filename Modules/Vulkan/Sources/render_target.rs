@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: BSD-2-Clause
 
 use crate::{
-    ffi::{Fence, Image, Semaphore},
+    ffi::{Fence, Semaphore, VkImage},
     Error,
 };
 
@@ -15,7 +15,7 @@ pub(crate) struct SynchronizationComponents {
 
 /// Represents an acquired image, usable for rendering.
 pub struct AcquiredImage {
-    image: Image,
+    image: VkImage,
     sync: Option<SynchronizationComponents>,
 }
 

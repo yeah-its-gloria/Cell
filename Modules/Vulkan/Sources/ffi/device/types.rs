@@ -3,7 +3,15 @@
 
 use core::ffi::{c_char, c_void};
 
-use crate::ffi::{FenceCreateFlags, Flags, PhysicalDeviceFeatures, StructureType};
+use cell_core::interop::Opaque;
+
+use crate::ffi::{PhysicalDeviceFeatures, StructureType};
+
+pub type VkDevice = *mut Opaque;
+pub type Queue = *mut Opaque;
+pub type DeviceSize = u64;
+
+pub type CommandBuffer = *mut Opaque;
 
 #[repr(C)]
 pub struct DeviceQueueCreateInfo {
@@ -29,16 +37,8 @@ pub struct DeviceCreateInfo {
     pub features: *const PhysicalDeviceFeatures,
 }
 
-#[repr(C)]
-pub struct SemaphoreCreateInfo {
-    pub s_type: StructureType,
-    pub next: *mut c_void,
-    pub flags: Flags,
-}
-
-#[repr(C)]
-pub struct FenceCreateInfo {
-    pub s_type: StructureType,
-    pub next: *mut c_void,
-    pub flags: FenceCreateFlags,
+#[repr(u32)]
+pub enum SharingMode {
+    Exclusive = 0,
+    Concurrent = 1,
 }

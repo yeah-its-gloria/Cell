@@ -4,25 +4,27 @@
 //! Vulkan module for Cell; implements Vulkan support, primarily rendering
 
 #![no_std]
-
 extern crate alloc;
 
 mod device;
+mod image;
 mod instance;
 mod render_target;
 mod wsi_target;
 
 mod ffi;
 
-use device::*;
-use render_target::*;
+pub use device::*;
+pub use image::*;
+pub use render_target::*;
+pub use wsi_target::*;
 
 pub use instance::Instance;
 
 pub mod surface_details {
     pub use super::{
         ffi::{AllocationCallbacks, StructureType, SurfaceKHR, VkInstance, VkResult},
-        wsi_target::SurfaceProvider,
+        SurfaceProvider,
     };
 }
 

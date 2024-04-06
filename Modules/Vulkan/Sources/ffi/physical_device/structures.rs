@@ -3,9 +3,7 @@
 
 use core::ffi::c_char;
 
-use crate::ffi::{
-    Extent3D, PhysicalDeviceType, QueueFlags, SampleCount, {Bool32, DeviceSize},
-};
+use crate::ffi::{Bool32, DeviceSize, Extent3D, MemoryHeap, MemoryType, PhysicalDeviceType, QueueFlags, SampleCount};
 
 #[repr(C)]
 pub struct PhysicalDeviceLimits {
@@ -146,4 +144,12 @@ pub struct QueueFamilyProperties {
     pub count: u32,
     pub timestamp_valid_bits: u32,
     pub minimal_image_transfer_granularity: Extent3D,
+}
+
+#[repr(C)]
+pub struct PhysicalDeviceMemoryProperties {
+    pub memory_type_count: u32,
+    pub memory_types: [MemoryType; 16],
+    pub memory_heap_count: u32,
+    pub memory_heaps: [MemoryHeap; 16],
 }

@@ -3,46 +3,12 @@
 
 use cell_core::interop::Opaque;
 
-use super::{
-    Format, ImageUsageFlags, PhysicalDevice, VkResult, {AllocationCallbacks, Extent2D}, {Bool32, VkInstance},
-};
+use super::{AllocationCallbacks, Bool32, Extent2D, Format, ImageUsageFlags, PhysicalDevice, VkInstance, VkResult};
+
+mod enumerations;
+pub use enumerations::*;
 
 pub type SurfaceKHR = *mut Opaque;
-
-#[repr(u32)]
-#[derive(Clone, Copy, PartialEq)]
-pub enum ColorSpace {
-    #[allow(non_camel_case_types)]
-    sRGB_Nonlinear = 0,
-}
-
-#[repr(u32)]
-#[derive(Clone, Copy, PartialEq)]
-pub enum PresentMode {
-    Immediate = 0,
-    Mailbox = 1,
-    FIFO = 2,
-
-    #[allow(non_camel_case_types)]
-    FIFO_Relaxed = 3,
-}
-
-#[repr(u32)]
-pub enum CompositeAlphaFlag {
-    Opaque = 1,
-    PreMultiplied = 2,
-    PostMultiplied = 4,
-    Inherit = 8,
-}
-
-#[repr(u32)]
-#[derive(Clone, Copy, Debug)]
-pub enum SurfaceTransformFlag {
-    Identity = 1 << 0,
-    Rotated90 = 1 << 1,
-    Rotated180 = 1 << 2,
-    Rotated270 = 1 << 3,
-}
 
 #[repr(C)]
 pub struct SurfaceCapabilities {

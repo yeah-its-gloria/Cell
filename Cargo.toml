@@ -3,5 +3,11 @@
 
 [workspace]
 members = ["BuildTools", "Core", "Modules/Shell", "Modules/Vulkan", "Project"]
-
 resolver = "2"
+
+[profile.dev]
+panic = "abort"
+
+[profile.release]
+panic = "abort"
+lto = true

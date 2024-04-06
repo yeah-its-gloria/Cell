@@ -4,10 +4,7 @@
 use alloc::{vec, vec::IntoIter};
 use core::{ffi::c_void, ptr::null_mut};
 
-use crate::ffi::{
-    enumerations::StructureType,
-    types::{Bool32, VK_FALSE},
-};
+use crate::ffi::{Bool32, StructureType, VK_FALSE};
 
 #[repr(C)]
 pub struct PhysicalDeviceDynamicRenderingFeatures {

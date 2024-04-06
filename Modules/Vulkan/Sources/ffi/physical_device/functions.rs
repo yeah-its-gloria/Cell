@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: BSD-2-Clause
 
 use crate::ffi::{
-    PhysicalDevice, PhysicalDeviceFeaturesEx, VkInstance, VkResult, {PhysicalDeviceProperties, QueueFamilyProperties},
+    PhysicalDevice, PhysicalDeviceFeaturesEx, VkInstance, VkResult, {PhysicalDeviceMemoryProperties, PhysicalDeviceProperties, QueueFamilyProperties},
 };
 
 extern "C" {
@@ -10,4 +10,5 @@ extern "C" {
     pub fn vkGetPhysicalDeviceProperties(device: PhysicalDevice, properties: *mut PhysicalDeviceProperties);
     pub fn vkGetPhysicalDeviceFeatures2(device: PhysicalDevice, features: *mut PhysicalDeviceFeaturesEx);
     pub fn vkGetPhysicalDeviceQueueFamilyProperties(device: PhysicalDevice, count: *mut u32, properties: *mut QueueFamilyProperties);
+    pub fn vkGetPhysicalDeviceMemoryProperties(device: PhysicalDevice, properties: *mut PhysicalDeviceMemoryProperties);
 }

@@ -5,9 +5,9 @@ use core::ffi::c_void;
 
 use cell_core::interop::Opaque;
 
-use super::{
+use crate::ffi::{
     AllocationCallbacks, Bool32, ColorSpace, CompositeAlphaFlag, Extent2D, Flags, Format, PresentMode, SharingMode, StructureType, SurfaceKHR, SurfaceTransformFlag,
-    VkDevice, VkResult, Image,
+    VkDevice, VkImage, VkResult,
 };
 
 pub type SwapchainKHR = *mut Opaque;
@@ -37,5 +37,5 @@ pub struct SwapchainCreateInfo {
 extern "C" {
     pub fn vkCreateSwapchainKHR(device: VkDevice, info: *const SwapchainCreateInfo, allocator: *const AllocationCallbacks, swapchain: *mut SwapchainKHR) -> VkResult;
     pub fn vkDestroySwapchainKHR(device: VkDevice, swapchain: SwapchainKHR, allocator: *const AllocationCallbacks);
-    pub fn vkGetSwapchainImagesKHR(device: VkDevice, swapchain: SwapchainKHR, count: *mut u32, images: *mut Image) -> VkResult;
+    pub fn vkGetSwapchainImagesKHR(device: VkDevice, swapchain: SwapchainKHR, count: *mut u32, images: *mut VkImage) -> VkResult;
 }

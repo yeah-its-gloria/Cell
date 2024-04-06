@@ -1,12 +1,9 @@
 // SPDX-FileCopyrightText: Copyright 2023 Gloria G.
 // SPDX-License-Identifier: BSD-2-Clause
 
-use super::{
-    super::{
-        ffi::{Extent2D, GetSurfaceCapabilities, SurfaceCapabilities, VkResult},
-        Error,
-    },
-    SurfaceProvider, WSITarget,
+use crate::{
+    ffi::{Extent2D, GetSurfaceCapabilities, SurfaceCapabilities, VkResult},
+    Error, SurfaceProvider, WSITarget,
 };
 
 impl WSITarget<'_> {

@@ -4,7 +4,7 @@
 use alloc::{vec, vec::Vec};
 use core::ptr::null_mut;
 
-use super::super::{
+use crate::{
     ffi::{ColorSpace, Format, GetSurfaceFormats, GetSurfacePresentModes, PhysicalDevice, PresentMode, SurfaceFormat, SurfaceKHR, VkResult},
     Error,
 };

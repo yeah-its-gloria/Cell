@@ -10,16 +10,16 @@ bitflags::bitflags! {
     pub struct KeyboardButton : u64 {
         const None = 0;
 
-        const Zero = 1 << 0;
-        const One = 1 << 1;
-        const Two = 1 << 2;
+        const Zero  = 1 << 0;
+        const One   = 1 << 1;
+        const Two   = 1 << 2;
         const Three = 1 << 3;
-        const Four = 1 << 4;
-        const Five = 1 << 5;
-        const Six = 1 << 6;
+        const Four  = 1 << 4;
+        const Five  = 1 << 5;
+        const Six   = 1 << 6;
         const Seven = 1 << 7;
         const Eight = 1 << 8;
-        const Nine = 1 << 9;
+        const Nine  = 1 << 9;
 
         const A = 1 << 10;
         const B = 1 << 11;
@@ -48,32 +48,32 @@ bitflags::bitflags! {
         const Y = 1 << 34;
         const Z = 1 << 35;
 
-        const Escape = 1 << 36;
-        const Space = 1 << 37;
-        const Backspace = 1 << 38;
-        const Tab = 1 << 39;
-        const Return = 1 << 40;
-        const LeftShift = 1 << 41;
-        const RightShift = 1 << 42;
-        const LeftControl = 1 << 43;
+        const Escape       = 1 << 36;
+        const Space        = 1 << 37;
+        const Backspace    = 1 << 38;
+        const Tab          = 1 << 39;
+        const Return       = 1 << 40;
+        const LeftShift    = 1 << 41;
+        const RightShift   = 1 << 42;
+        const LeftControl  = 1 << 43;
         const RightControl = 1 << 44;
-        const LeftAlt = 1 << 45;
-        const RightAlt = 1 << 46;
+        const LeftAlt      = 1 << 45;
+        const RightAlt     = 1 << 46;
 
-        const UpArrow = 1 << 47;
-        const DownArrow = 1 << 48;
-        const LeftArrow = 1 << 49;
+        const UpArrow    = 1 << 47;
+        const DownArrow  = 1 << 48;
+        const LeftArrow  = 1 << 49;
         const RightArrow = 1 << 50;
 
-        const F1 = 1 << 51;
-        const F2 = 1 << 52;
-        const F3 = 1 << 53;
-        const F4 = 1 << 54;
-        const F5 = 1 << 55;
-        const F6 = 1 << 56;
-        const F7 = 1 << 57;
-        const F8 = 1 << 58;
-        const F9 = 1 << 59;
+        const F1  = 1 << 51;
+        const F2  = 1 << 52;
+        const F3  = 1 << 53;
+        const F4  = 1 << 54;
+        const F5  = 1 << 55;
+        const F6  = 1 << 56;
+        const F7  = 1 << 57;
+        const F8  = 1 << 58;
+        const F9  = 1 << 59;
         const F10 = 1 << 60;
         const F11 = 1 << 61;
         const F12 = 1 << 62;

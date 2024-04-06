@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: Copyright 2023 Gloria G.
 // SPDX-License-Identifier: BSD-2-Clause
 
-use super::super::{
+use crate::{
     ffi::{GetSurfaceSupport, PhysicalDevice, SurfaceKHR, VkResult, VK_FALSE, VK_TRUE},
     Error,
 };

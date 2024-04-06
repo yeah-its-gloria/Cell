@@ -6,7 +6,11 @@ pub use crate::os_impl::_log;
 /// Logs a message to the debugger output, preferred by the platform.
 #[macro_export]
 macro_rules! log {
-    ($($arg:tt)*) => {{
-        $crate::_log(core::format_args!($($arg)*).as_str().unwrap());
-    }};
+    ($bare:expr) => {
+        $crate::_log($bare);
+    };
+
+    ($fmt:expr, $($arg:tt)*) => {
+        $crate::_log($crate::alloc::format!($fmt, $($arg)*).as_str());
+    };
 }

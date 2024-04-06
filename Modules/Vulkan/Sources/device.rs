@@ -11,6 +11,8 @@ use core::{
     ptr::{null, null_mut},
 };
 
+use crate::ffi::{vkGetPhysicalDeviceMemoryProperties, PhysicalDeviceMemoryProperties};
+
 use self::{
     super::{
         extension_list,
@@ -29,6 +31,7 @@ use self::{
 pub struct Device<'a> {
     pub(crate) parent: &'a Instance,
     pub(crate) physical_device: PhysicalDevice,
+    pub(crate) physical_memory_properties: PhysicalDeviceMemoryProperties,
     pub(crate) graphics_index: u32,
     transfer_index: Option<u32>,
     pub(crate) device: VkDevice,
@@ -36,7 +39,7 @@ pub struct Device<'a> {
     transfer: Option<Queue>,
 }
 
-pub fn as_mut_ptr<T>(element: &mut T) -> *mut c_void {
+pub(crate) fn as_mut_ptr<T>(element: &mut T) -> *mut c_void {
     element as *mut T as *mut c_void
 }
 
@@ -49,9 +52,7 @@ impl Instance {
             VkResult::ErrorOutOfHostMemory => return Err(Error::OutOfHostMemory),
             VkResult::ErrorOutOfDeviceMemory => return Err(Error::OutOfDeviceMemory),
 
-            _ => {
-                panic!("vkEnumeratePhysicalDevices failed");
-            }
+            _ => { panic!("vkEnumeratePhysicalDevices failed"); }
         }
 
         if count == 0 {
@@ -65,9 +66,7 @@ impl Instance {
             VkResult::ErrorOutOfHostMemory => return Err(Error::OutOfHostMemory),
             VkResult::ErrorOutOfDeviceMemory => return Err(Error::OutOfDeviceMemory),
 
-            _ => {
-                panic!("vkEnumeratePhysicalDevices failed");
-            }
+            _ => { panic!("vkEnumeratePhysicalDevices failed"); }
         }
 
         let mut scores = Vec::<u16>::new();
@@ -82,7 +81,7 @@ impl Instance {
         Ok(devices[scores.iter().enumerate().max().map(|(i, _)| i).unwrap()])
     }
 
-    fn create_device(&self, physical_device: PhysicalDevice, graphics: u32, transfer: Option<u32>) -> Result<(VkDevice, Queue, Option<Queue>), Error> {
+    fn create_device(&self, physical_device: PhysicalDevice, graphics: u32, transfer: Option<u32>) -> Result<(VkDevice, PhysicalDeviceMemoryProperties, Queue, Option<Queue>), Error> {
         let extensions = extension_list![
             "VK_KHR_swapchain\0",
             "VK_KHR_dynamic_rendering\0",
@@ -101,6 +100,7 @@ impl Instance {
                 count: 1,
                 priorities: &priority,
             },
+
             DeviceQueueCreateInfo {
                 s_type: StructureType::DeviceQueueCreateInfo,
                 next: null_mut(),
@@ -143,6 +143,9 @@ impl Instance {
         let mut device: VkDevice = null_mut();
         match unsafe { CreateDevice(physical_device, &create_info, null(), &mut device) } {
             VkResult::Success => {
+                let mut properties = PhysicalDeviceMemoryProperties::default();
+                unsafe { vkGetPhysicalDeviceMemoryProperties(physical_device, &mut properties) };
+
                 let mut graphics_queue: Queue = null_mut();
                 unsafe { GetDeviceQueue(device, graphics, 0, &mut graphics_queue) };
 
@@ -151,7 +154,7 @@ impl Instance {
                     unsafe { GetDeviceQueue(device, transfer.unwrap(), 0, &mut transfer_queue) };
                 }
 
-                Ok((device, graphics_queue, if transfer.is_some() { Some(transfer_queue) } else { None }))
+                Ok((device, properties, graphics_queue, if transfer.is_some() { Some(transfer_queue) } else { None }))
             }
 
             VkResult::ErrorOutOfHostMemory => Err(Error::OutOfHostMemory),
@@ -160,9 +163,7 @@ impl Instance {
             VkResult::ErrorLayerNotPresent => Err(Error::LayersMissing),
             VkResult::ErrorDeviceLost => Err(Error::DeviceLost),
 
-            _ => {
-                panic!("CreateDevice failed");
-            }
+            _ => { panic!("CreateDevice failed"); }
         }
     }
 
@@ -172,9 +173,10 @@ impl Instance {
             Ok(physical_device) => {
                 let (graphics_index, transfer_index) = physical_device.get_queue_family_indices();
                 match self.create_device(physical_device, graphics_index, transfer_index) {
-                    Ok((device, graphics, transfer)) => Ok(Device {
+                    Ok((device, physical_memory_properties, graphics, transfer)) => Ok(Device {
                         parent: self,
                         physical_device,
+                        physical_memory_properties,
                         graphics_index,
                         transfer_index,
                         device,
@@ -188,6 +190,18 @@ impl Instance {
 
             Err(err) => Err(err),
         }
+    }
+}
+
+impl Device<'_> {
+    pub(crate) fn get_type_index(&self, bits: u32) -> u32 {
+        for i in 0..self.physical_memory_properties.memory_type_count {
+            if bits & (1 << i) != 0 && self.physical_memory_properties.memory_types[i as usize].property_flags & bits != 0 {
+                return i;
+            }
+        }
+
+        panic!("Invalid memory type");
     }
 }
 

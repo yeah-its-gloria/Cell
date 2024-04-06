@@ -2,9 +2,10 @@
 // SPDX-License-Identifier: BSD-2-Clause
 
 use crate::ffi::{
-    Extent3D, PhysicalDeviceLimits, PhysicalDeviceProperties, PhysicalDeviceSparseProperties, PhysicalDeviceType, QueueFamilyProperties, QueueFlags, SampleCount,
-    VK_FALSE,
+    Extent3D, MemoryHeap, MemoryHeapFlags, MemoryType, PhysicalDeviceLimits, PhysicalDeviceProperties, PhysicalDeviceSparseProperties, PhysicalDeviceType, QueueFamilyProperties, QueueFlags, SampleCount, VK_FALSE
 };
+
+use super::PhysicalDeviceMemoryProperties;
 
 impl Default for PhysicalDeviceLimits {
     fn default() -> Self {
@@ -154,6 +155,17 @@ impl Default for QueueFamilyProperties {
             count: 0,
             timestamp_valid_bits: 0,
             minimal_image_transfer_granularity: Extent3D { width: 0, height: 0, depth: 0 },
+        }
+    }
+}
+
+impl Default for PhysicalDeviceMemoryProperties {
+    fn default() -> Self {
+        PhysicalDeviceMemoryProperties {
+            memory_type_count: 0,
+            memory_types: [MemoryType { property_flags: 0, heap_index: 0 }; 16],
+            memory_heap_count: 0,
+            memory_heaps: [MemoryHeap { size: 0, flags: MemoryHeapFlags::None }; 16],
         }
     }
 }

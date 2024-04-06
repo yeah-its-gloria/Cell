@@ -8,4 +8,4 @@ edition = "2021"
 authors = ["Gloria G."]
 
 [lib]
-path = "Sources/mod.rs"
+path = "Sources/lib.rs"

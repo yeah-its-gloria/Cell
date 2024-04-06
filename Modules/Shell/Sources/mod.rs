@@ -19,6 +19,9 @@ use os_impl::Windows as OSImplementation;
 #[cfg(unix)]
 use os_impl::Linux as OSImplementation;
 
+#[cfg(not(any(windows, unix)))]
+compile_error!("No shell implementation!");
+
 pub use self::keyboard::KeyboardButton;
 
 /// Error values for shell related functionality.
@@ -65,6 +68,3 @@ pub trait Shell: cell_module_vulkan::surface_details::SurfaceProvider {
 pub fn create_default_shell(title: &str, width: u32, height: u32) -> Result<impl Shell, Error> {
     OSImplementation::init(title, width, height)
 }
-
-#[cfg(not(any(windows, unix)))]
-compile_error!("No shell implementation!");

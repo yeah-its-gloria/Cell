@@ -3,7 +3,7 @@
 
 use cell_core::interop::Opaque;
 
-use super::types::Flags;
+use super::Flags;
 
 mod defaults;
 mod features;
