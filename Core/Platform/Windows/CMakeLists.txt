@@ -84,7 +84,10 @@ target_link_libraries(CellCore PRIVATE
     shlwapi
     winusb
 
+    PUBLIC kernel32
     PUBLIC runtimeobject
+    PUBLIC userenv
+    PUBLIC user32
     PUBLIC ws2_32
     PUBLIC ${CLANG_RT_BUILTINS}
 )

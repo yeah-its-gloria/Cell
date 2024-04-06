@@ -8,7 +8,10 @@
 namespace Cell::DataManagement {
 
 uint8_t RustTest() {
-    return Rust::TEST_STUB();
+    Rust::CAPI_Test* test = Rust::TestNew();
+    const uint8_t value = Rust::TestGetValue(test);
+    Rust::TestDestruct(test);
+    return value;
 }
 
 }
