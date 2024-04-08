@@ -116,17 +116,14 @@ Wrapped<Device::SwapchainData, Result> Device::CreateSwapchainForSurface(const S
 
     Collection::List<VkImageView> views(imageCount);
 
-    Result cellResult = Result::Success;
     for (uint32_t index = 0; index < imageCount; index++) {
-        cellResult = this->CreateImageView(views[index], images[index], info.format.format);
-        if (cellResult != Result::Success) {
-            break;
+        Wrapped<VkImageView, Result> viewResult = this->CreateImageView(images[index], info.format.format);
+        if (!viewResult.IsValid()) {
+            vkDestroySwapchainKHR(this->device, swapchain, nullptr);
+            return viewResult.Result();
         }
-    }
 
-    if (cellResult != Result::Success) {
-        vkDestroySwapchainKHR(this->device, swapchain, nullptr);
-        return cellResult;
+        views[index] = viewResult.Unwrap();
     }
 
     // Image render prep
@@ -138,7 +135,7 @@ Wrapped<Device::SwapchainData, Result> Device::CreateSwapchainForSurface(const S
 
     ScopedObject<CommandBuffer> commandBuffer = commandBufferResult.Unwrap();
 
-    cellResult = commandBuffer->Begin();
+    Result cellResult = commandBuffer->Begin();
     if (cellResult != Result::Success) {
         return cellResult;
     }

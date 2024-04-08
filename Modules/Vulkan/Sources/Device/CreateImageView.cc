@@ -5,7 +5,7 @@
 
 namespace Cell::Vulkan {
 
-Result Device::CreateImageView(VkImageView& view, VkImage image, const VkFormat format, const VkImageViewType type, const VkImageAspectFlagBits aspectMask) {
+Wrapped<VkImageView, Result> Device::CreateImageView(VkImage image, const VkFormat format, const VkImageViewType type, const VkImageAspectFlagBits aspectMask) {
     if (type > VK_IMAGE_VIEW_TYPE_CUBE_ARRAY) {
         return Result::InvalidParameters;
     }
@@ -31,6 +31,7 @@ Result Device::CreateImageView(VkImageView& view, VkImage image, const VkFormat 
         .subresourceRange.layerCount     = 1
     };
 
+    VkImageView view = nullptr;
     const VkResult result = vkCreateImageView(this->device, &viewInfo, nullptr, &view);
     switch (result) {
     case VK_SUCCESS: {
@@ -50,7 +51,7 @@ Result Device::CreateImageView(VkImageView& view, VkImage image, const VkFormat 
     }
     }
 
-    return Result::Success;
+    return view;
 }
 
 }

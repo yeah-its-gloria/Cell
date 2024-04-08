@@ -103,26 +103,20 @@ private:
         Collection::List<VkImageView> views;
     };
 
-    CELL_FUNCTION Result CreateImageView(
-        VkImageView& view,
-        VkImage CELL_NONNULL image,
-        const VkFormat format,
-        const VkImageViewType type = VK_IMAGE_VIEW_TYPE_2D,
-        const VkImageAspectFlagBits aspectMask = VK_IMAGE_ASPECT_COLOR_BIT
+    CELL_FUNCTION Wrapped<VkImageView, Result> CreateImageView(VkImage CELL_NONNULL image,
+                                                               const VkFormat format,
+                                                               const VkImageViewType type = VK_IMAGE_VIEW_TYPE_2D,
+                                                               const VkImageAspectFlagBits aspectMask = VK_IMAGE_ASPECT_COLOR_BIT
     );
 
     CELL_FUNCTION_TEMPLATE uint32_t GetMemoryTypeIndex(const uint32_t bits, const VkMemoryPropertyFlags type) {
-        uint32_t typeIndex = (uint32_t)-1;
         for (uint32_t i = 0; i < this->physicalDeviceProperties.memoryTypeCount; i++) {
             if (bits & (1 << i) && this->physicalDeviceProperties.memoryTypes[i].propertyFlags & type) {
-                typeIndex = i;
-                break;
+                return i;
             }
         }
 
-        CELL_ASSERT(typeIndex != (uint32_t)-1);
-
-        return typeIndex;
+        System::Panic("GetMemoryTypeIndex failed");
     }
 
     CELL_FUNCTION_INTERNAL Wrapped<SurfaceStaticInfo, Result> GetSurfaceStatics(VkSurfaceKHR& surface);

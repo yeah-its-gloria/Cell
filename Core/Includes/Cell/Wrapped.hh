@@ -12,35 +12,37 @@ namespace Cell {
 template <typename T, typename R> class Wrapped : public Object {
 public:
     // Creates a successful result with an object.
-    CELL_FUNCTION_INTERNAL constexpr Wrapped(T object) : object(object) { }
+    CELL_FUNCTION_TEMPLATE constexpr Wrapped(T object) : object(object) { }
 
     // Creates a failure condition with no object.
-    CELL_FUNCTION_INTERNAL constexpr Wrapped(R result) : result(result) { }
+    CELL_FUNCTION_TEMPLATE constexpr Wrapped(R result) : result(result) {
+        CELL_ASSERT(result != R::Success);
+    }
 
-    CELL_FUNCTION_INTERNAL constexpr ~Wrapped() { }
+    CELL_FUNCTION_TEMPLATE constexpr ~Wrapped() { }
 
     // Returns the wrapped object.
-    CELL_NODISCARD CELL_FUNCTION_INTERNAL T Unwrap() {
+    CELL_NODISCARD CELL_FUNCTION_TEMPLATE T Unwrap() {
         return this->object.Unwrap();
     }
 
     // Returns the wrapped object if it's valid, or returns other.
-    CELL_NODISCARD CELL_FUNCTION_INTERNAL T UnwrapOr(T other) {
+    CELL_NODISCARD CELL_FUNCTION_TEMPLATE T UnwrapOr(T other) {
         return this->object ? this->object.Unwrap() : other;
     }
 
     // Returns the wrapped result.
-    CELL_NODISCARD CELL_FUNCTION_INTERNAL R Result() const {
+    CELL_NODISCARD CELL_FUNCTION_TEMPLATE R Result() const {
         return this->result;
     }
 
     // Returns whether this wrapped result failed, which means the object it holds is invalid.
-    CELL_NODISCARD CELL_FUNCTION_INTERNAL bool IsValid() const {
+    CELL_NODISCARD CELL_FUNCTION_TEMPLATE bool IsValid() const {
         return this->object;
     }
 
     // Returns whether this wrapped result failed, which means the object it holds is invalid.
-    CELL_NODISCARD operator bool() const {
+    CELL_NODISCARD CELL_FUNCTION_TEMPLATE operator bool() const {
         return this->object;
     }
 

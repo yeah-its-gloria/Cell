@@ -113,13 +113,14 @@ Wrapped<Image*, Result> Device::CreateImage(const uint32_t width, const uint32_t
     }
     }
 
-    VkImageView view = nullptr;
-    const Result cellResult = this->CreateImageView(view, image, format, VK_IMAGE_VIEW_TYPE_2D, (VkImageAspectFlagBits)viewAspectMask);
-    if (cellResult != Result::Success) {
+    Wrapped<VkImageView, Result> viewResult = this->CreateImageView(image, format, VK_IMAGE_VIEW_TYPE_2D, (VkImageAspectFlagBits)viewAspectMask);
+    if (!viewResult.IsValid()) {
         vkDestroyImage(this->device, image, nullptr);
         vkFreeMemory(this->device, memory, nullptr);
-        return cellResult;
+        return viewResult.Result();
     }
+
+    VkImageView view = viewResult.Unwrap();
 
     const VkSamplerCreateInfo samplerInfo = {
         .sType                   = VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO,
