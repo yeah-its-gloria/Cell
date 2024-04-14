@@ -38,12 +38,12 @@ void PrintValue(JSON::Value value, const bool isRoot = false, const bool isArray
 
     case JSON::Type::Object: {
         if (isRoot) {
-            Log("(Document contains % top level elements)", value.size);
+            Log("(Document contains % top level element%)", value.count, value.count == 1 ? "" : "s");
         } else {
-            Log("%: object, % elements", value.name, value.size);
+            Log("%: object, % element%", value.name, value.count, value.count == 1 ? "" : "s");
         }
 
-        for (size_t i = 0; i < value.size; i++) {
+        for (size_t i = 0; i < value.count; i++) {
             PrintValue(value.object[i]);
         }
 
@@ -51,9 +51,9 @@ void PrintValue(JSON::Value value, const bool isRoot = false, const bool isArray
     }
 
     case JSON::Type::Array: {
-        Log("%: array, % elements", value.name, value.size);
+        Log("%: array, % elements", value.name, value.count);
 
-        for (size_t i = 0; i < value.size; i++) {
+        for (size_t i = 0; i < value.count; i++) {
             PrintValue(value.object[i], false, true);
         }
 

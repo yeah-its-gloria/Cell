@@ -52,15 +52,15 @@ CELL_FUNCTION_INTERNAL size_t parseValue(Value& value, const char* document, con
 
     switch (document[position]) {
     case '"': { // string
-        size_t string_end = 0;
-        seekResult = seekNextToken(string_end, '"', document, position + 1, false);
+        size_t stringEnd = 0;
+        seekResult = seekNextToken(stringEnd, '"', document, position + 1, false);
         CELL_ASSERT(seekResult == seekResult::Success);
 
-        value.type = Type::String;
-        value.size = string_end - position - 1;
-        value.string = new String(document + position + 1, value.size);
+        value.type   = Type::String;
+        value.count  = 0;
+        value.string = new String(document + position + 1, stringEnd - 1);
 
-        position = string_end + 1;
+        position = stringEnd + 1;
         break;
     }
 
@@ -68,7 +68,7 @@ CELL_FUNCTION_INTERNAL size_t parseValue(Value& value, const char* document, con
         CELL_ASSERT(strncmp(document + position, "true", 4) == 0);
 
         value.type = Type::Boolean;
-        value.size = 0;
+        value.count = 0;
         value.boolean = true;
 
         position += StringDetails::RawStringSize("true");
@@ -79,7 +79,7 @@ CELL_FUNCTION_INTERNAL size_t parseValue(Value& value, const char* document, con
         CELL_ASSERT(strncmp(document + position, "false", 5) == 0);
 
         value.type = Type::Boolean;
-        value.size = 0;
+        value.count = 0;
         value.boolean = false;
 
         position += StringDetails::RawStringSize("false");
@@ -90,7 +90,7 @@ CELL_FUNCTION_INTERNAL size_t parseValue(Value& value, const char* document, con
         CELL_ASSERT(strncmp(document + position, "null", 4) == 0);
 
         value.type = Type::Null;
-        value.size = 0;
+        value.count = 0;
         value.object = nullptr;
 
         position += StringDetails::RawStringSize("null");
@@ -113,7 +113,7 @@ CELL_FUNCTION_INTERNAL size_t parseValue(Value& value, const char* document, con
         //Collection::List<Value> elements;
 
         value.type = Type::Array;
-        value.size = 0; //elements.GetCount();
+        value.count = 0; //elements.GetCount();
         value.array = nullptr;
 
         /*value.array = Memory::Allocate<Value>(elements.GetCount());
@@ -134,7 +134,7 @@ CELL_FUNCTION_INTERNAL size_t parseValue(Value& value, const char* document, con
         size_t endPosition = parseObject(elements, document + position, size - position, recursionCounter);
 
         value.type = Type::Object;
-        value.size = elements.GetCount();
+        value.count = elements.GetCount();
 
         value.object = Memory::Allocate<Value>(elements.GetCount());
         for (size_t i = 0; i < elements.GetCount(); i++) {
@@ -168,7 +168,7 @@ CELL_FUNCTION_INTERNAL size_t parseValue(Value& value, const char* document, con
         Memory::Copy<char>(numberString, document + position, numberEnd - position);
 
         value.type = Type::Number;
-        value.size = 0;
+        value.count = 0;
         value.number = strtod(numberString, nullptr);
 
         position = numberEnd + 1;
@@ -202,8 +202,7 @@ size_t parseObject(Collection::List<Value>& values, const char* document, const 
         CELL_ASSERT(seekResult == seekResult::Success);
 
         // allocate it
-        value.name = Memory::Allocate<char>(end - position + 1);
-        Memory::Copy<char>(value.name, document + position + 1, end - position - 1);
+        value.name = String(document + position + 1, end - position - 1);
 
         // move on
         position = end + 1;
@@ -254,7 +253,7 @@ Wrapped<Document*, Result> Document::Parse(const String& string) {
     uint8_t recursionCounter = 0;
     parseObject(values, document + position, string.GetSize() - position, recursionCounter);
 
-    Value root = { .name = nullptr, .type = Type::Object, .object = nullptr, .size = values.GetCount() };
+    Value root = { .name = "", .type = Type::Object, .object = nullptr, .count = values.GetCount() };
 
     root.object = Memory::Allocate<Value>(values.GetCount());
     for (size_t i = 0; i < values.GetCount(); i++) {

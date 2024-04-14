@@ -18,7 +18,6 @@ add_library(CellDataManagement ${CELL_LIBRARY_TYPE}
     ${MODULE_INCLUDES_DIR}/Cell/DataManagement/JSON.hh
     ${MODULE_INCLUDES_DIR}/Cell/DataManagement/Model.hh
     ${MODULE_INCLUDES_DIR}/Cell/DataManagement/Result.hh
-    ${MODULE_INCLUDES_DIR}/Cell/DataManagement/RustTest.hh
     ${MODULE_INCLUDES_DIR}/Cell/DataManagement/Texture.hh
     ${MODULE_INCLUDES_DIR}/Cell/DataManagement/zlib.hh
 
@@ -26,7 +25,6 @@ add_library(CellDataManagement ${CELL_LIBRARY_TYPE}
     ${CMAKE_CURRENT_LIST_DIR}/Sources/Base64.cc
     ${CMAKE_CURRENT_LIST_DIR}/Sources/Checksum.cc
     ${CMAKE_CURRENT_LIST_DIR}/Sources/JSON.cc
-    ${CMAKE_CURRENT_LIST_DIR}/Sources/RustTest.cc
     ${CMAKE_CURRENT_LIST_DIR}/Sources/zlib.cc
 
     ${CMAKE_CURRENT_LIST_DIR}/Sources/Model/FromGLTF.cc
@@ -43,8 +41,6 @@ target_compile_definitions(CellDataManagement PUBLIC "CELL_MODULES_DATAMANAGEMEN
 target_include_directories(CellDataManagement PUBLIC ${MODULE_INCLUDES_DIR})
 target_link_libraries(CellDataManagement PUBLIC CellCore)
 
-CellAddRustImplementation(CellDataManagement cell_datamanagement_impl)
-
 add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/ThirdParty/zlib)
 target_link_libraries(CellDataManagement PRIVATE zlib)
 
@@ -55,8 +51,6 @@ if (CELL_ENABLE_TESTS)
         add_test(NAME CellDataManagementParsing${name}Test COMMAND CellDataManagementParsing${name}Test WORKING_DIRECTORY ${PROJECT_ROOT_DIR})
         cell_target_bootstrap(CellDataManagementParsing${name}Test TRUE)
     endfunction()
-
-    cell_dm_add_test(Rust)
 
     if (CELL_ENABLE_TESTS_LIKELY_FAILURE)
         cell_dm_add_test(glTF)

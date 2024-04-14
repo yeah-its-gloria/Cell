@@ -29,6 +29,9 @@ Result String::Append(const String& string) {
 
 Result String::Append(const char* input) {
     const size_t dataSize = StringDetails::RawStringSize(input);
+    if (dataSize == 0) {
+        return Result::Success;
+    }
 
     if (this->size == 0) {
         this->data = Allocate<char>(dataSize);

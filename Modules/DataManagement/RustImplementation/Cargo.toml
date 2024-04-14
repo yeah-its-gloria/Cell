@@ -1,9 +1,0 @@
-[package]
-name    = "cell_datamanagement_impl"
-authors = [ "Gloria G." ]
-version = "1.0.0"
-edition = "2021"
-
-[lib]
-crate-type = [ "staticlib" ]
-bench      = false

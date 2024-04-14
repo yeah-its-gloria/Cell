@@ -19,18 +19,23 @@ enum class Type : uint8_t {
 };
 
 struct Value {
-    char* name;
+    // Name of the value. This is empty for values within array type values.
+    String name;
+
+    // Indicates the type of value stored.
     Type type;
 
     union {
         Value* object;
-        Value* array; // values are unnamed
-        String* string; // UTF-8
+        Value* array;
+        String* string;
         double number;
         bool boolean;
     };
 
-    size_t size; // length for string, 0 for num/bool/null, count for object/array
+    // Counts the number of values that are part of this value.
+    // Applies only to object and array type values.
+    size_t count;
 };
 
 class Document : public Object {
