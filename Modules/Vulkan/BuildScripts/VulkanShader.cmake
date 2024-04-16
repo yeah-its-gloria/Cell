@@ -18,13 +18,15 @@ find_package(spirv-link REQUIRED FATAL_ERROR)
 function(CellVulkanAddShader target name input output_dir type)
     set(output "${output_dir}/${name}.spv")
 
-    if (${type} STREQUAL "VERTEX")
-        set(entry "vertexMain")
-    elseif (${type} STREQUAL "FRAGMENT")
-        set(entry "fragMain")
-    else ()
-        message(FATAL_ERROR "Invalid shader type ${type}.")
-    endif ()
+    #if (${type} STREQUAL "VERTEX")
+    #    set(entry "vertexMain")
+    #elseif (${type} STREQUAL "FRAGMENT")
+    #    set(entry "fragMain")
+    #else ()
+    #    message(FATAL_ERROR "Invalid shader type ${type}.")
+    #endif ()
+
+    set(entry "main")
 
     if (${ARGC} GREATER 4 AND "${ARGV5}" STREQUAL "TRUE") # Why do I use CMake
         set(lang "GLSL")
@@ -46,8 +48,8 @@ function(CellVulkanAddShader target name input output_dir type)
             ${glslc_PROGRAM}
             "-mfmt=bin"
             "-O"
-            "--target-env=vulkan1.3"
-            "--target-spv=spv1.6"
+            "--target-env=vulkan1.2"
+            "--target-spv=spv1.5"
             "-fentry-point=${entry}"
             ${additional_shader_parameters}
             "-Werror"

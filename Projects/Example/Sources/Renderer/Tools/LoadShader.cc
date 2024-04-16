@@ -23,3 +23,17 @@ void VulkanToolsLoadShader(Pipeline* pipeline, const String& path) {
     const Result result = pipeline->AddMultiShader(buffer);
     CELL_ASSERT(result == Result::Success);
 }
+
+void VulkanToolsLoadShader(Pipeline* pipeline, const String& path, Stage stage) {
+    ScopedObject<IO::File> file = IO::File::Open(path).Unwrap();
+
+    const size_t size = file->GetSize();
+    CELL_ASSERT(size % 4 == 0);
+
+    Memory::OwnedBlock<uint8_t> buffer(size);
+    const IO::Result ioResult = file->Read(buffer);
+    CELL_ASSERT(ioResult == IO::Result::Success);
+
+    const Result result = pipeline->AddShader(buffer, stage);
+    CELL_ASSERT(result == Result::Success);
+}

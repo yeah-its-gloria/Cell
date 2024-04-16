@@ -26,7 +26,8 @@ float4 sampleTex(uint index, float2 coords) {
     return 1.0;
 }
 
-float4 fragMain(FragmentInput input, bool isFront : SV_IsFrontFace) : SV_Target {
+// fragMain
+float4 main(FragmentInput input, bool isFront : SV_IsFrontFace) : SV_Target {
     float4 color = input.color * sampleTex(input.texIndex, input.texCoords);
     if (!isFront) {
         float average = (color.r + color.g + color.b) / 3.0;

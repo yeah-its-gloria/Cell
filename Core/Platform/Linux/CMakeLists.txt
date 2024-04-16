@@ -50,7 +50,7 @@ target_compile_options(CellCore PUBLIC
     -Wno-unknown-warning-option
 )
 
-target_link_options(CellCore PUBLIC -Wl,--no-undefined)
+target_link_options(CellCore PUBLIC -Wl,--no-undefined -fuse-ld=lld)
 
 if (CELL_LIBRARY_TYPE STREQUAL "STATIC")
     target_compile_definitions(CellCore PUBLIC "CELL_FUNCTION=")

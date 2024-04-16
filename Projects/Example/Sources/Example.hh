@@ -22,7 +22,7 @@ public:
 private:
     CELL_FUNCTION_INTERNAL void ShellSetup();
 
-    CELL_FUNCTION_INTERNAL void AudioThread();
+    //CELL_FUNCTION_INTERNAL void AudioThread();
     CELL_FUNCTION_INTERNAL void RendererThread();
     CELL_FUNCTION_INTERNAL void XRThread();
 

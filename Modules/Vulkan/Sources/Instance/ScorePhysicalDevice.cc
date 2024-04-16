@@ -64,8 +64,9 @@ uint16_t Instance::ScorePhysicalDevice(VkPhysicalDevice device) {
     vkGetPhysicalDeviceFeatures2(device, &features);
 
     // TODO: check which features we actually want lol
-
-    if (features.features.fullDrawIndexUint32            == VK_FALSE ||
+    // BUG: yolo-ing this for macOS
+    
+    /*if (features.features.fullDrawIndexUint32            == VK_FALSE ||
         features.features.independentBlend               == VK_FALSE ||
         features.features.geometryShader                 == VK_FALSE ||
         features.features.tessellationShader             == VK_FALSE ||
@@ -81,7 +82,7 @@ uint16_t Instance::ScorePhysicalDevice(VkPhysicalDevice device) {
         extendedDynamicStateFeature.extendedDynamicState == VK_FALSE
     ) {
         return 0;
-    }
+    }*/
 
     // Queue family checks
 

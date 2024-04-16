@@ -4,8 +4,8 @@
 
 #ifdef ARM_NEON
 #include "neon_intrins.h"
-#include "zbuild.h"
-#include "arch/generic/chunk_permute_table.h"
+#include "../zbuild.h"
+#include "../generic/chunk_permute_table.h"
 
 typedef uint8x16_t chunk_t;
 
@@ -90,10 +90,10 @@ static inline chunk_t GET_CHUNK_MAG(uint8_t *buf, uint32_t *chunk_rem, uint32_t 
 #endif
 }
 
-#include "chunkset_tpl.h"
+#include "../chunkset_tpl.h"
 
 #define INFLATE_FAST     inflate_fast_neon
 
-#include "inffast_tpl.h"
+#include "../inffast_tpl.h"
 
 #endif

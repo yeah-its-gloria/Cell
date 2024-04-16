@@ -6,16 +6,20 @@
 namespace Cell::Vulkan {
 
 Wrapped<Device*, Result> Instance::CreateDevice() {
-    const char* extensions[4] = {
+    const char* extensions[] = {
         VK_KHR_SWAPCHAIN_EXTENSION_NAME,
 
         VK_KHR_DYNAMIC_RENDERING_EXTENSION_NAME,
         VK_KHR_SHADER_NON_SEMANTIC_INFO_EXTENSION_NAME,
 
-        VK_EXT_EXTENDED_DYNAMIC_STATE_EXTENSION_NAME
+        VK_EXT_EXTENDED_DYNAMIC_STATE_EXTENSION_NAME,
+
+#ifdef CELL_PLATFORM_MACOS
+        "VK_KHR_portability_subset"
+#endif
     };
 
-    return this->CreateDevice(extensions, 4);
+    return this->CreateDevice(extensions, sizeof(extensions) / sizeof(char*));
 }
 
 Wrapped<Device*, Result> Instance::CreateDevice(const char** extensions, const uint32_t count, VkPhysicalDevice physicalDevice) {
@@ -57,13 +61,13 @@ Wrapped<Device*, Result> Instance::CreateDevice(const char** extensions, const u
         .imageCubeArray                          = VK_FALSE,
 
         .independentBlend                        = VK_TRUE,
-        .geometryShader                          = VK_TRUE,
+        .geometryShader                          = VK_FALSE, // MoltenVK doesn"t like this
         .tessellationShader                      = VK_TRUE,
 
         .sampleRateShading                       = VK_FALSE,
         .dualSrcBlend                            = VK_FALSE,
 
-        .logicOp                                 = VK_TRUE,
+        .logicOp                                 = VK_FALSE, // yeah MoltenVK doesn't like this either
 
         .multiDrawIndirect                       = VK_FALSE,
         .drawIndirectFirstInstance               = VK_FALSE,
@@ -76,7 +80,7 @@ Wrapped<Device*, Result> Instance::CreateDevice(const char** extensions, const u
 
         .depthBounds                             = VK_FALSE,
 
-        .wideLines                               = VK_TRUE,
+        .wideLines                               = VK_FALSE, // nope. not for macOS today
 
         .largePoints                             = VK_FALSE,
         .alphaToOne                              = VK_FALSE,
@@ -105,7 +109,7 @@ Wrapped<Device*, Result> Instance::CreateDevice(const char** extensions, const u
         .shaderClipDistance                      = VK_FALSE,
         .shaderCullDistance                      = VK_FALSE,
 
-        .shaderFloat64                           = VK_TRUE,
+        .shaderFloat64                           = VK_FALSE, // : ) lol
         .shaderInt64                             = VK_TRUE,
         .shaderInt16                             = VK_TRUE,
 

@@ -69,12 +69,12 @@ public:
     CELL_FUNCTION Result RunDispatch();
 
     // Checks whether the title should still be active.
-    CELL_NODISCARD inline bool IsStillActive() const {
+    CELL_NODISCARD CELL_FUNCTION_INTERNAL bool IsStillActive() const {
         return !this->isDone;
     }
 
     // Returns whether the application is still in the foreground.
-    CELL_NODISCARD inline bool IsInForeground() const {
+    CELL_NODISCARD CELL_FUNCTION_INTERNAL bool IsInForeground() const {
         return this->isActivated;
     }
 

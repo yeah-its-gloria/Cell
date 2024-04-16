@@ -64,7 +64,7 @@ public:
 
     // Creates a WSI implementation render target backed by the given shell.
     // Backed by 4 images by default.
-    CELL_FUNCTION Wrapped<class WSITarget*, Result> CreateWSITarget(Shell::IShell* CELL_NONNULL shell, const uint8_t depth = 4);
+    CELL_FUNCTION Wrapped<class WSITarget*, Result> CreateWSITarget(Shell::IShell* CELL_NONNULL shell, const uint8_t depth = 3);
 
 private:
     CELL_FUNCTION_INTERNAL Device(VkPhysicalDevice pd, uint32_t pgi,

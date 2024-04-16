@@ -27,7 +27,8 @@ cbuffer : register(b0) {
     } MainUBO;
 };
 
-VertexOutput vertexMain(VertexInput input) {
+// vertexMain
+VertexOutput main(VertexInput input) {
     VertexOutput output = (VertexOutput)0;
 
     output.position = float4(input.position.xyz, 1.0) * MainUBO.model * MainUBO.view * MainUBO.projection;

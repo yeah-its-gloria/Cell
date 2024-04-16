@@ -11,7 +11,7 @@ namespace Cell::Vulkan {
 Wrapped<Image*, Result> Device::CreateDepthStencilImage(const VkExtent2D& extent) {
     Wrapped<Image*, Result> imageResult = this->CreateImage(extent.width,
                                                             extent.height,
-                                                            VK_FORMAT_D24_UNORM_S8_UINT,
+                                                            VK_FORMAT_D32_SFLOAT_S8_UINT,
                                                             VK_IMAGE_TILING_OPTIMAL,
                                                             (VkImageAspectFlagBits)(VK_IMAGE_ASPECT_DEPTH_BIT | VK_IMAGE_ASPECT_STENCIL_BIT),
                                                             VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT);

@@ -255,8 +255,8 @@ Result Pipeline::Finalize() {
         .viewMask                = 0,
         .colorAttachmentCount    = 1,
         .pColorAttachmentFormats = &this->renderFormat,
-        .depthAttachmentFormat   = VK_FORMAT_D24_UNORM_S8_UINT,
-        .stencilAttachmentFormat = VK_FORMAT_UNDEFINED
+        .depthAttachmentFormat   = VK_FORMAT_D32_SFLOAT_S8_UINT,
+        .stencilAttachmentFormat = VK_FORMAT_D32_SFLOAT_S8_UINT
     };
 
     // pipeline creation

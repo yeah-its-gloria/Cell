@@ -42,9 +42,11 @@ target_compile_definitions(CellMathematics PUBLIC "CELL_MODULES_MATHEMATICS_AVAI
 target_include_directories(CellMathematics PUBLIC ${MODULE_INCLUDES_DIR})
 target_link_libraries(CellMathematics PUBLIC CellCore)
 
-if (WIN32 OR UNIX)
+if ((WIN32 OR UNIX) AND (${CMAKE_SYSTEM_PROCESSOR} STREQUAL "AMD64" OR ${CMAKE_SYSTEM_PROCESSOR} STREQUAL "x86_64"))
     target_compile_definitions(CellMathematics PUBLIC "CELL_MODULES_MATHEMATICS_HARDWARE_ACCELERATE_X86=1")
     target_compile_options(CellMathematics PRIVATE -mfma)
+elseif (${CMAKE_SYSTEM_PROCESSOR} STREQUAL "arm64")
+    # ...
 else ()
     message(FATAL_ERROR "Unsupported platform.")
 endif ()

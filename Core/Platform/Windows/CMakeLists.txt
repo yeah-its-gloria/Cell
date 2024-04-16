@@ -92,6 +92,8 @@ target_link_libraries(CellCore PRIVATE
     PUBLIC ${CLANG_RT_BUILTINS}
 )
 
+target_link_options(CellCore PUBLIC -fuse-ld=lld)
+
 function(Cell_Platform_Windows_Generate_Manifests target type)
     get_target_property(NAME ${target} NAME)
 

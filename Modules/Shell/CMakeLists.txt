@@ -51,6 +51,16 @@ if (WIN32)
 
     target_compile_options(CellShell PRIVATE -Wno-language-extension-token)
     target_link_libraries(CellShell PRIVATE dwmapi)
+elseif (APPLE)
+    target_sources(CellShell PRIVATE
+        ${MODULE_INCLUDES_DIR}/Cell/Shell/Implementations/macOS.hh
+
+        ${CMAKE_CURRENT_LIST_DIR}/Sources/macOS/macOS.mm
+
+        ${CMAKE_CURRENT_LIST_DIR}/Sources/macOS/Controller/Xbox.cc
+    )
+
+    target_link_libraries(CellShell PRIVATE "-framework Cocoa" "-framework QuartzCore" c++)
 elseif (UNIX)
     find_package(wayland REQUIRED FATAL_ERROR)
 

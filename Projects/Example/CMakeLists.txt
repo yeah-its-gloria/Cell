@@ -14,7 +14,7 @@ add_executable(CellExample
     ${SOURCES_DIR}/InputController.hh
     ${SOURCES_DIR}/InputController.cc
 
-    ${SOURCES_DIR}/AudioThread.cc
+    #${SOURCES_DIR}/AudioThread.cc
 
     ${SOURCES_DIR}/Renderer/Thread.cc
     ${SOURCES_DIR}/Renderer/Tools.hh
@@ -26,7 +26,7 @@ add_executable(CellExample
 
 target_link_libraries(CellExample PRIVATE
     CellCore
-    CellAudio
+    #CellAudio
     CellDataManagement
     CellMathematics
     CellShell
@@ -43,9 +43,12 @@ endif ()
 
 cell_target_bootstrap(CellExample)
 
-CellVulkanAddShader(CellExample DefaultVertex ${BUILDCONTENT_DIR}/Shaders/Default/Vertex.hlsl ${GENERATE_DIR}/Shaders VERTEX)
-CellVulkanAddShader(CellExample DefaultFragment ${BUILDCONTENT_DIR}/Shaders/Default/Fragment.hlsl ${GENERATE_DIR}/Shaders FRAGMENT)
-CellVulkanLinkShaders(CellExample Default ${GENERATE_DIR}/Shaders/DefaultVertex.spv ${GENERATE_DIR}/Shaders/DefaultFragment.spv ${CONTENT_DIR}/Shaders)
+#CellVulkanAddShader(CellExample DefaultVertex ${BUILDCONTENT_DIR}/Shaders/Default/Vertex.hlsl ${GENERATE_DIR}/Shaders VERTEX)
+#CellVulkanAddShader(CellExample DefaultFragment ${BUILDCONTENT_DIR}/Shaders/Default/Fragment.hlsl ${GENERATE_DIR}/Shaders FRAGMENT)
+#CellVulkanLinkShaders(CellExample Default ${GENERATE_DIR}/Shaders/DefaultVertex.spv ${GENERATE_DIR}/Shaders/DefaultFragment.spv ${CONTENT_DIR}/Shaders)
+
+CellVulkanAddShader(CellExample DefaultVertex ${BUILDCONTENT_DIR}/Shaders/Default/Vertex.hlsl ${CONTENT_DIR}/Shaders VERTEX)
+CellVulkanAddShader(CellExample DefaultFragment ${BUILDCONTENT_DIR}/Shaders/Default/Fragment.hlsl ${CONTENT_DIR}/Shaders FRAGMENT)
 
 CellVulkanAddShader(CellExample Default2Vertex ${BUILDCONTENT_DIR}/Shaders/Default2/Vertex.glsl ${CONTENT_DIR}/Shaders VERTEX TRUE)
 CellVulkanAddShader(CellExample Default2Fragment ${BUILDCONTENT_DIR}/Shaders/Default2/Fragment.glsl ${CONTENT_DIR}/Shaders FRAGMENT TRUE)

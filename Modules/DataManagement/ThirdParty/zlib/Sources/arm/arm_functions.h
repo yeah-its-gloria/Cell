@@ -23,18 +23,7 @@ void inflate_fast_neon(PREFIX3(stream) *strm, uint32_t start);
 uint32_t crc32_acle(uint32_t crc, const uint8_t *buf, size_t len);
 #endif
 
-#ifdef ARM_SIMD
-void slide_hash_armv6(deflate_state *s);
-#endif
-
-
 #ifdef DISABLE_RUNTIME_CPU_DETECTION
-// ARM - SIMD
-#  if (defined(ARM_SIMD) && defined(__ARM_FEATURE_SIMD32)) || defined(ARM_NOCHECK_SIMD)
-#    undef native_slide_hash
-#    define native_slide_hash slide_hash_armv6
-#  endif
-// ARM - NEON
 #  if (defined(ARM_NEON) && (defined(__ARM_NEON__) || defined(__ARM_NEON))) || ARM_NOCHECK_NEON
 #    undef native_adler32
 #    define native_adler32 adler32_neon

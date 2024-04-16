@@ -17,7 +17,7 @@ Result Pipeline::AddResources(const IEnumerable<ResourceBinding>& resBindings, c
     // This is kinda weirdly improvised
     CELL_ASSERT(resDescriptors.GetCount() % resBindings.GetCount() == 0);
 
-    const uint32_t setCount = resDescriptors.GetCount() / resBindings.GetCount();
+    const uint32_t setCount = (uint32_t)(resDescriptors.GetCount() / resBindings.GetCount());
 
     // binding generation
 
@@ -191,7 +191,7 @@ Result Pipeline::AddResources(const IEnumerable<ResourceBinding>& resBindings, c
     Collection::List<VkDescriptorBufferInfo> bufferInfos;
     Collection::List<VkDescriptorImageInfo> imageInfos;
 
-    const uint32_t bindingCount = bindings.GetCount();
+    const uint32_t bindingCount = (uint32_t)bindings.GetCount();
     for (uint32_t setIndex = 0; setIndex < setCount; setIndex++) {
         for (uint32_t resourceIndex = 0; resourceIndex < resBindings.GetCount(); resourceIndex++) {
             switch (bindings[resourceIndex].descriptorType) {
@@ -263,7 +263,7 @@ Result Pipeline::AddResources(const IEnumerable<ResourceBinding>& resBindings, c
         }
     }
 
-    vkUpdateDescriptorSets(this->device->device, writeSets.GetCount(), writeSets.AsRaw(), 0, nullptr);
+    vkUpdateDescriptorSets(this->device->device, (uint32_t)writeSets.GetCount(), writeSets.AsRaw(), 0, nullptr);
 
     // collecting data
 

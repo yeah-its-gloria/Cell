@@ -155,11 +155,13 @@ else ()
         "CELL_FUNCTION_TEMPLATE=__attribute__((visibility(\"hidden\"))) inline"
     )
 
-    target_link_options(CellCore PUBLIC -fuse-ld=lld -nostdlib++)
+    target_link_options(CellCore PUBLIC -nostdlib++)
 endif ()
 
 if (WIN32)
     set(PLATFORM_DIR ${CORE_DIR}/Platform/Windows)
+elseif (APPLE)
+    set(PLATFORM_DIR ${CORE_DIR}/Platform/macOS)
 elseif (UNIX)
     set(PLATFORM_DIR ${CORE_DIR}/Platform/Linux)
 else ()

@@ -114,21 +114,18 @@ if (${CMAKE_SYSTEM_PROCESSOR} STREQUAL "AMD64" OR ${CMAKE_SYSTEM_PROCESSOR} STRE
 elseif (${CMAKE_SYSTEM_PROCESSOR} STREQUAL "arm64")
     target_sources(zlib PRIVATE
         ${SOURCES_DIR}/arm/acle_intrins.h
-        ${SOURCES_DIR}/arm/arm_features.h
         ${SOURCES_DIR}/arm/arm_functions.h
         ${SOURCES_DIR}/arm/neon_intrins.h
 
         ${SOURCES_DIR}/arm/adler32_neon.c
-        ${SOURCES_DIR}/arm/arm_features.c
         ${SOURCES_DIR}/arm/chunkset_neon.c
         ${SOURCES_DIR}/arm/compare256_neon.c
         ${SOURCES_DIR}/arm/crc32_acle.c
-        ${SOURCES_DIR}/arm/slide_hash_armv6.c
         ${SOURCES_DIR}/arm/slide_hash_neon.c
     )
 
-    target_compile_definitions(zlib PRIVATE ARM_FEATURES ARM_NEON ARM_SIMD)
-    target_compile_options(zlib PRIVATE -mfloat-abi=hard)
+    target_compile_definitions(zlib PRIVATE ARM_FEATURES ARM_ACLE ARM_NEON ARM_NEON_HASLD4 HAVE_ARM_ACLE_H HAVE_BUILTIN_CTZLL)
+    target_compile_options(zlib PRIVATE -Wno-shorten-64-to-32)
 else ()
     message(AUTHOR_WARNING "No zlib acceleration available for ${CMAKE_SYSTEM_PROCESSOR}")
 endif ()

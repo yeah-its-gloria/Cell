@@ -21,13 +21,13 @@ String String::FormatImplementation(const char* format, const size_t length, con
 
             switch (content[insertedArgumentCount].type) {
             case Type::Int: {
-                sprintf(buf, "%lld", content[insertedArgumentCount].sInt);
+                snprintf(buf, 200, "%lld", content[insertedArgumentCount].sInt);
                 output += buf;
                 break;
             }
 
             case Type::UInt: {
-                sprintf(buf, "%llu", content[insertedArgumentCount].uInt);
+                snprintf(buf, 200, "%llu", content[insertedArgumentCount].uInt);
                 output += buf;
                 break;
             }
@@ -44,7 +44,7 @@ String String::FormatImplementation(const char* format, const size_t length, con
 
             case Type::Address: {
                 // Avoids a formatting error, I hate C types so much
-                sprintf(buf, "0x%016llx", (unsigned long long)(content[insertedArgumentCount].address));
+                snprintf(buf, 200, "0x%016llx", (unsigned long long)(content[insertedArgumentCount].address));
                 output += buf;
                 break;
             }
@@ -55,7 +55,7 @@ String String::FormatImplementation(const char* format, const size_t length, con
             }
 
             case Type::FloatingPoint: {
-                sprintf(buf, "%f", content[insertedArgumentCount].floatingPoint);
+                snprintf(buf, 200, "%f", content[insertedArgumentCount].floatingPoint);
                 output += buf;
             }
             }

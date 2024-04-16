@@ -97,7 +97,10 @@ void Example::RendererThread() {
 
     VulkanToolsSetUpResources(&pipeline, uniforms, &lesbianTexture, &transTexture, &target);
 
-    VulkanToolsLoadShader(&pipeline, this->GetContentPath("/Shaders/Default.spv"));
+    //VulkanToolsLoadShader(&pipeline, this->GetContentPath("/Shaders/Default.spv"));
+
+    VulkanToolsLoadShader(&pipeline, this->GetContentPath("/Shaders/DefaultVertex.spv"), Stage::Vertex);
+    VulkanToolsLoadShader(&pipeline, this->GetContentPath("/Shaders/DefaultFragment.spv"), Stage::Fragment);
 
     Result result = pipeline->Finalize();
     CELL_ASSERT(result == Result::Success);

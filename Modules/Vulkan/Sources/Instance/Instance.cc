@@ -6,6 +6,8 @@
 #ifdef CELL_PLATFORM_WINDOWS
 #include <Cell/System/Platform/Windows/Includes.h>
 #include <vulkan/vulkan_win32.h>
+#elif CELL_PLATFORM_MACOS
+#include <vulkan/vulkan_macos.h>
 #elif CELL_PLATFORM_LINUX
 #include <vulkan/vulkan_wayland.h>
 #else
@@ -15,17 +17,20 @@
 namespace Cell::Vulkan {
 
 Wrapped<Instance*, Result> Instance::New() {
-    const char* extensions[2] = {
+    const char* extensions[] = {
         VK_KHR_SURFACE_EXTENSION_NAME,
 
 #ifdef CELL_PLATFORM_WINDOWS
         VK_KHR_WIN32_SURFACE_EXTENSION_NAME
+#elif CELL_PLATFORM_MACOS
+        VK_MVK_MACOS_SURFACE_EXTENSION_NAME,
+        VK_KHR_PORTABILITY_ENUMERATION_EXTENSION_NAME
 #elif CELL_PLATFORM_LINUX
         VK_KHR_WAYLAND_SURFACE_EXTENSION_NAME
 #endif
     };
 
-    return Instance::New(extensions, 2);
+    return Instance::New(extensions, sizeof(extensions) / sizeof(char*));
 }
 
 Wrapped<Instance*, Result> Instance::New(const char** extensions, const uint32_t count) {
@@ -45,7 +50,11 @@ Wrapped<Instance*, Result> Instance::New(const char** extensions, const uint32_t
     const VkInstanceCreateInfo instanceInfo = {
         .sType                   = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO,
         .pNext                   = nullptr,
+#ifdef CELL_PLATFORM_MACOS
+        .flags                   = VK_INSTANCE_CREATE_ENUMERATE_PORTABILITY_BIT_KHR,
+#else
         .flags                   = 0,
+#endif
 
         .pApplicationInfo        = &applicationInfo,
 

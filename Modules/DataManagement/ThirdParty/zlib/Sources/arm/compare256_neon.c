@@ -3,10 +3,10 @@
  * For conditions of distribution and use, see copyright notice in zlib.h
  */
 
-#include "zbuild.h"
-#include "zutil_p.h"
-#include "deflate.h"
-#include "fallback_builtins.h"
+#include "../zbuild.h"
+#include "../zutil_p.h"
+#include "../deflate.h"
+#include "../fallback_builtins.h"
 
 #if defined(ARM_NEON) && defined(HAVE_BUILTIN_CTZLL)
 #include "neon_intrins.h"
@@ -49,12 +49,12 @@ Z_INTERNAL uint32_t compare256_neon(const uint8_t *src0, const uint8_t *src1) {
 #define LONGEST_MATCH       longest_match_neon
 #define COMPARE256          compare256_neon_static
 
-#include "match_tpl.h"
+#include "../match_tpl.h"
 
 #define LONGEST_MATCH_SLOW
 #define LONGEST_MATCH       longest_match_slow_neon
 #define COMPARE256          compare256_neon_static
 
-#include "match_tpl.h"
+#include "../match_tpl.h"
 
 #endif

@@ -585,7 +585,7 @@ int32_t Z_EXPORT PREFIX(inflate)(PREFIX3(stream) *strm, int32_t flush) {
                         state->head->name[state->length++] = (unsigned char)len;
                 } while (len && copy < have);
                 if ((state->flags & 0x0200) && (state->wrap & 4))
-                    state->check = PREFIX(crc32)(state->check, next, copy);
+                    state->check = PREFIX(crc32)((uint32_t)state->check, next, copy);
                 have -= copy;
                 next += copy;
                 if (len)
@@ -608,7 +608,7 @@ int32_t Z_EXPORT PREFIX(inflate)(PREFIX3(stream) *strm, int32_t flush) {
                         state->head->comment[state->length++] = (unsigned char)len;
                 } while (len && copy < have);
                 if ((state->flags & 0x0200) && (state->wrap & 4))
-                    state->check = PREFIX(crc32)(state->check, next, copy);
+                    state->check = PREFIX(crc32)((uint32_t)state->check, next, copy);
                 have -= copy;
                 next += copy;
                 if (len)
