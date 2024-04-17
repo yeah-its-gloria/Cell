@@ -3,6 +3,7 @@
 
 #include <Cell/System/Entry.hh>
 #include <Cell/System/Thread.hh>
+#include <Cell/System/Timer.hh>
 
 #include <AppKit/AppKit.h>
 #include <Foundation/NSThread.h>
@@ -64,6 +65,8 @@ int main() {
     System::Thread mainThread(([](void* p) { Reference<String> r = *(Reference<String>*)p; CellEntry(r); }), (void*)&ref);
 
     while (mainThread.IsActive()) {
+        System::Sleep(1);
+
         @autoreleasepool {
             NSEvent* event = [NSApp nextEventMatchingMask: NSEventMaskAny
                                     untilDate: [NSDate distantPast]

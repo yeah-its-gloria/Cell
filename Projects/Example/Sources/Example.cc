@@ -81,7 +81,7 @@ void Example::Launch(const String& parameterString) {
         CELL_ASSERT(result == Shell::Result::Success);
 
         finishedTick = GetPreciseTickerValue();
-        Thread::Yield();
+        SleepPrecise(500);
     }
 
     //audio.Join();

@@ -69,7 +69,17 @@ function(cell_target_bootstrap target)
 
     if (is_tool)
         target_compile_definitions(${target} PRIVATE "CELL_SYSTEM_IS_TOOL=true")
-    else ()
-        target_compile_definitions(${target} PRIVATE "CELL_SYSTEM_IS_TOOL=false")
+        return()
     endif ()
+
+    target_compile_definitions(${target} PRIVATE "CELL_SYSTEM_IS_TOOL=false")
+
+    target_sources(${target} PRIVATE ${PLATFORM_DIR}/BuildContent/Cell.icns)
+    set_source_files_properties(${PLATFORM_DIR}/BuildContent/Cell.icns PROPERTIES MACOSX_PACKAGE_LOCATION "Resources")
+
+    set_target_properties(${target} PROPERTIES
+        MACOSX_BUNDLE True
+        MACOSX_BUNDLE_INFO_PLIST ${PLATFORM_DIR}/BuildContent/Info.plist.in
+        MACOSX_BUNDLE_EXECUTABLE_NAME ${target}
+    )
 endfunction()
