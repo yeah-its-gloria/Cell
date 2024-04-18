@@ -133,7 +133,7 @@ void InputController::OnRun(const InputType type) {
 
 void InputController::OnForwardAxis(const double value) {
     this->inputMutex.Lock();
-    this->velocity.z = MovementSpeed * value * this->owner->shellDeltaTime * GlobalSpeedMultiplier;
+    this->velocity.z = -MovementSpeed * value * this->owner->shellDeltaTime * GlobalSpeedMultiplier;
     this->inputMutex.Unlock();
 }
 

@@ -79,7 +79,6 @@
 #endif
 #define HASH_MASK (HASH_SIZE - 1u) /* HASH_SIZE-1 */
 
-
 /* Data structure describing a single value and its code string. */
 typedef struct ct_data_s {
     union {
@@ -394,7 +393,6 @@ static inline void put_uint64(deflate_state *s, uint64_t lld) {
 #define WIN_INIT STD_MAX_MATCH
 /* Number of bytes after end of data in window to initialize in order to avoid
    memory checker errors from longest match routines */
-
 
 void Z_INTERNAL PREFIX(fill_window)(deflate_state *s);
 void Z_INTERNAL slide_hash_c(deflate_state *s);

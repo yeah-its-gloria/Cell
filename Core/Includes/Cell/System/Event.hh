@@ -4,17 +4,9 @@
 #pragma once
 
 #include <Cell/Cell.hh>
+#include <Cell/System/Result.hh>
 
 namespace Cell::System {
-
-// Describes wait results for events.
-enum class EventWaitResult : uint8_t {
-    // The event was signaled.
-    Signaled,
-
-    // The event was not yet signaled.
-    Timeout
-};
 
 // Represents an event. Can be signaled, useful as a semaphore for operation.
 class Event : public NoCopyObject {
@@ -33,7 +25,7 @@ public:
 
     // Waits for the event to be signaled with the given timeout.
     // By default, it blocks forever until the event is signaled.
-    CELL_FUNCTION EventWaitResult Wait(const uint32_t timeoutMs = 0);
+    CELL_FUNCTION Result Wait(const uint32_t timeoutMs = 0);
 
 private:
     uintptr_t impl;

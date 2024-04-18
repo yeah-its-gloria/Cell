@@ -107,6 +107,15 @@ public:
         Memory::Copy<T>(this->data, list.data, this->count);
     }
 
+    // Destructs this list's memory.
+    CELL_FUNCTION_TEMPLATE ~List() {
+        if (this->data == nullptr) {
+            return;
+        }
+
+        Memory::Free(this->data);
+    }
+
     // Destructs this list by deleting every object stored and freeing its memory.
     CELL_FUNCTION_TEMPLATE ~List() requires Utilities::IsDeletable<T> {
         if (this->data == nullptr) {
@@ -115,15 +124,6 @@ public:
 
         for (size_t i = 0; i < this->count; i++) {
             delete this->data[i];
-        }
-
-        Memory::Free(this->data);
-    }
-
-    // Destructs this list's memory.
-    CELL_FUNCTION_TEMPLATE ~List() {
-        if (this->data == nullptr) {
-            return;
         }
 
         Memory::Free(this->data);
@@ -230,7 +230,6 @@ public:
     CELL_NODISCARD CELL_FUNCTION_TEMPLATE T* AsRaw() {
         return this->data;
     }
-
 
     // Overwrites the contents of this list with the given list.
     CELL_FUNCTION_TEMPLATE List<T>& operator = (const List<T>& list) {

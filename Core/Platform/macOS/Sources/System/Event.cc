@@ -5,52 +5,86 @@
 #include <Cell/System/Event.hh>
 #include <Cell/System/Panic.hh>
 
-#include <dispatch/dispatch.h>
+#include <mach/mach_init.h>
+#include <mach/semaphore.h>
+#include <mach/task.h>
 
 namespace Cell::System {
 
+struct EventInfo {
+    bool state;
+    semaphore_t signal;
+};
+
 Event::Event(const bool createSignaled) {
-    dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
-    if (semaphore == nullptr) {
-        System::Panic("dispatch_semaphore_create failed");
-    }
+    EventInfo* info = Memory::Allocate<EventInfo>();
 
-    this->impl = (uintptr_t)semaphore;
+    info->state = createSignaled;
+    semaphore_create(mach_task_self(), &info->signal, SYNC_POLICY_FIFO, 0);
 
-    if (createSignaled) {
-        this->Signal();
-    }
+    this->impl = (uintptr_t)info;
 }
 
 Event::~Event() {
-    // TODO: implement
+    EventInfo* info = (EventInfo*)this->impl;
+
+    const kern_return_t result = semaphore_destroy(mach_task_self(), info->signal);
+    CELL_ASSERT(result == KERN_SUCCESS);
+
+    Memory::Free(info);
 }
 
 void Event::Signal() {
-    dispatch_semaphore_signal((dispatch_semaphore_t)this->impl);
+    EventInfo* info = (EventInfo*)this->impl;
+    if (info->state) {
+        return;
+    }
+
+    info->state = true;
+
+    const kern_return_t result = semaphore_signal_all(info->signal);
+    CELL_ASSERT(result == KERN_SUCCESS);
 }
 
 void Event::Reset() {
-    while (true) {
-        const intptr_t result = dispatch_semaphore_wait((dispatch_semaphore_t)this->impl, DISPATCH_TIME_NOW);
-        if (result != 0) {
-            break;
-        }
-    }
+    EventInfo* info = (EventInfo*)this->impl;
+    info->state = false;
 }
 
-EventWaitResult Event::Wait(const uint32_t timeoutMs) {
-    dispatch_time_t timeout = DISPATCH_TIME_FOREVER;
-    if (timeoutMs != 0) {
-        timeout = dispatch_time(DISPATCH_TIME_NOW, timeoutMs * (NSEC_PER_SEC / MSEC_PER_SEC));
+Result Event::Wait(const uint32_t timeoutMs) {
+    EventInfo* info = (EventInfo*)this->impl;
+
+    if (info->state) {
+        return Result::Success;
     }
 
-    const intptr_t result = dispatch_semaphore_wait((dispatch_semaphore_t)this->impl, timeout);
-    if (result == 0) {
-        return EventWaitResult::Signaled;
+    if (timeoutMs == 0) {
+        const kern_return_t result = semaphore_wait(info->signal);
+        CELL_ASSERT(result == KERN_SUCCESS && info->state);
+
+        return Result::Success;
     }
 
-    return EventWaitResult::Timeout;
+    const mach_timespec_t timeout = {
+        .tv_sec  = (timeoutMs / 1000),
+        .tv_nsec = (clock_res_t)((timeoutMs % 1000) * 1000000)
+    };
+
+    const kern_return_t result = semaphore_timedwait(info->signal, timeout);
+    switch (result) {
+    case KERN_SUCCESS: {
+        CELL_ASSERT(info->state);
+        return Result::Success;
+    }
+
+    case KERN_OPERATION_TIMED_OUT: {
+        return Result::Timeout;
+    }
+
+    default: {
+        System::Panic("semaphore_timedwait failed");
+    }
+    }
 }
 
 }

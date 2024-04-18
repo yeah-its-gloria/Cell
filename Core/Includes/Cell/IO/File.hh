@@ -18,14 +18,11 @@ enum class FileMode : uint8_t {
     // Allows writing data.
     Write = 1 << 1,
 
-    // Creates a new file. This will not replace an existing file.
-    Create = 1 << 2,
-
-    // Opens an existing file. This will not create a file.
-    Open = 1 << 3,
-
-    // Either creates a new file or overwrites the contents of the existing file.
-    Overwrite = 1 << 4
+    // Overwrites an existing file.
+    //
+    // When opening a file, it'll be created if it doesn't exist.
+    // When creating a file, the call won't fail with AlreadyExists.
+    Overwrite = 1 << 2
 };
 
 CELL_ENUM_CLASS_OPERATORS(FileMode)
@@ -33,8 +30,14 @@ CELL_ENUM_CLASS_OPERATORS(FileMode)
 // Represents a file within a nondescript, path based file system.
 class File : public NoCopyObject {
 public:
-    // Opens or creates a file.
-    CELL_FUNCTION static Wrapped<File*, Result> Open(const String& path, const FileMode mode = FileMode::Read | FileMode::Open);
+    // Opens a file.
+    CELL_FUNCTION static Wrapped<File*, Result> Open(const String& path, const FileMode mode = FileMode::Read);
+
+    // Creates a file.
+    CELL_FUNCTION static Wrapped<File*, Result> Create(const String& path, const FileMode mode = FileMode::Read | FileMode::Write);
+
+    // Deletes the file at the given path.
+    CELL_FUNCTION static Result Delete(const String& path);
 
     // Closes the file.
     CELL_FUNCTION ~File();
@@ -70,9 +73,6 @@ private:
 
     uintptr_t impl;
 };
-
-// Deletes the file at the given path.
-CELL_FUNCTION Result Delete(const String& path);
 
 // Checks if the given path is valid; e.g a file or directory is present.
 CELL_FUNCTION Result CheckPath(const String& path);

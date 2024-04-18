@@ -11,7 +11,6 @@ Wrapped<uint8_t*, Result> Base64Decode(const String& data) {
     CELL_UNIMPLEMENTED
 }
 
-
 Wrapped<String, Result> Base64Encode(const Memory::IBlock& data) {
     (void)(data);
 

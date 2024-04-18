@@ -4,6 +4,8 @@
 target_sources(CellCore PRIVATE
     ${PLATFORM_DIR}/Sources/VirtualStub.cc
 
+    ${PLATFORM_DIR}/Sources/String.cc
+
     ${PLATFORM_DIR}/Sources/IO/File/File.cc
     ${PLATFORM_DIR}/Sources/IO/File/CheckPath.cc
     ${PLATFORM_DIR}/Sources/IO/File/Delete.cc
@@ -30,7 +32,6 @@ target_sources(CellCore PRIVATE
     ${PLATFORM_DIR}/Sources/System/Log.cc
     ${PLATFORM_DIR}/Sources/System/Mutex.cc
     ${PLATFORM_DIR}/Sources/System/Panic.cc
-    ${PLATFORM_DIR}/Sources/System/String.cc
     ${PLATFORM_DIR}/Sources/System/Thread.cc
     ${PLATFORM_DIR}/Sources/System/Timer.cc
 )

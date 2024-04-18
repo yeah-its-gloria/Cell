@@ -116,7 +116,6 @@ rem_peel:
          performed on the maximum possible inputs before overflow
          */
 
-
          /* In AVX2-land, this trip through GPRs will probably be unavoidable, as there's no cheap and easy
           * conversion from 64 bit integer to 32 bit (needed for the inexpensive modulus with a constant).
           * This casting to 32 bit is cheap through GPRs (just register aliasing). See above for exactly

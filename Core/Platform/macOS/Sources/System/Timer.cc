@@ -10,26 +10,22 @@
 namespace Cell::System {
 
 uint64_t GetPreciseTickerValue() {
-    timespec timespec { };
-    const int result = clock_gettime(CLOCK_MONOTONIC, &timespec);
-    CELL_ASSERT(result == 0);
-
-    return timespec.tv_nsec / 1000 + timespec.tv_sec * 1000000;
+    const uint64_t result = clock_gettime_nsec_np(CLOCK_MONOTONIC);
+    return result / 1000;
 }
 
 void Sleep(const uint32_t milliseconds) {
-    const int result = usleep(milliseconds * 1000);
-    CELL_ASSERT(result == 0);
+    SleepPrecise(milliseconds * 1000);
 }
 
-void SleepPrecise(const uint64_t nanoseconds) {
+void SleepPrecise(const uint64_t microseconds) {
     const struct timespec timeout = {
-        .tv_sec  = (time_t)(nanoseconds / 1000000000),
-        .tv_nsec = (time_t)(nanoseconds % 1000000000)
+        .tv_sec  = (time_t)(microseconds / 1000000),
+        .tv_nsec = (time_t)(microseconds % 1000000)
     };
 
-    const int result = nanosleep(&timeout, nullptr);
-    CELL_ASSERT(result == 0);
+    /*const int result =*/ nanosleep(&timeout, nullptr);
+    //CELL_ASSERT(result == 0);
 }
 
 }

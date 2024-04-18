@@ -33,7 +33,6 @@ static const lut_rem_pair perm_idx_lut[13] = {
     {10 * 32, 1},/* 15 */
 };
 
-
 static inline void chunkmemset_2(uint8_t *from, chunk_t *chunk) {
     int16_t tmp;
     memcpy(&tmp, from, sizeof(tmp));

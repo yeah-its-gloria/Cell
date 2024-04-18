@@ -122,7 +122,6 @@ static void init_block(deflate_state *s) {
 #define SMALLEST 1
 /* Index within the heap array of least frequent node in the Huffman tree */
 
-
 /* ===========================================================================
  * Remove the smallest element from the heap and recreate the heap with
  * one less element. Updates heap and heap_len.

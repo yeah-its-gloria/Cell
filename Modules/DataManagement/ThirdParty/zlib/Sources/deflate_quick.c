@@ -49,7 +49,6 @@ Z_INTERNAL block_state deflate_quick(deflate_state *s, int flush) {
     int64_t dist;
     unsigned match_len, last;
 
-
     last = (flush == Z_FINISH) ? 1 : 0;
     if (UNLIKELY(last && s->block_open != 2)) {
         /* Emit end of previous block */

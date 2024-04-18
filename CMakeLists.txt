@@ -1,20 +1,25 @@
 # SPDX-FileCopyrightText: Copyright 2023-2024 Gloria G.
 # SPDX-License-Identifier: BSD-2-Clause
 
-cmake_minimum_required(VERSION 3.24.0 FATAL_ERROR)
-
-project(Cell LANGUAGES C CXX VERSION 1.0.0 DESCRIPTION "Cell")
+cmake_minimum_required(VERSION 3.27.0 FATAL_ERROR)
 
 cmake_policy(SET CMP0054 NEW)
 cmake_policy(SET CMP0079 NEW)
-
-if (CMAKE_VERSION VERSION_GREATER_EQUAL "3.27.0")
-    cmake_policy(SET CMP0149 NEW)
-endif ()
+cmake_policy(SET CMP0143 NEW)
+cmake_policy(SET CMP0149 NEW)
 
 set(CMAKE_C_STANDARD 23)
 set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_OBJC_STANDARD 17)
+set(CMAKE_OBJCXX_STANDARD 17)
+
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+
+project(Cell LANGUAGES C CXX VERSION 1.0.0 DESCRIPTION "Cell")
+
+if (APPLE)
+    enable_language(OBJC)
+endif ()
 
 set(PROJECT_ROOT_DIR ${CMAKE_CURRENT_LIST_DIR})
 
@@ -50,7 +55,7 @@ if (WIN32)
         message(WARNING "\"${CMAKE_SYSTEM_NAME}\" is not a known Win32 implementation")
     endif ()
 elseif (APPLE)
-    message(NOTICE "macOS support isn't fully functional")
+    # ...
 elseif (UNIX)
     if (${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
         message(NOTICE "Several interfaces on Linux aren't yet implemented fully!")
@@ -63,14 +68,18 @@ endif ()
 
 if (NOT ${CMAKE_GENERATOR} STREQUAL "Ninja Multi-Config"
         AND NOT ${CMAKE_GENERATOR} STREQUAL "Ninja"
-        AND (NOT MSVC AND NOT ${CMAKE_GENERATOR} STREQUAL "Visual Studio 17 2022")
+        AND (NOT MSVC AND NOT ${CMAKE_GENERATOR} STREQUAL "Visual Studio 17 2022"
+        AND (NOT APPLE AND NOT ${CMAKE_GENERATOR} STREQUAL "Xcode"))
     )
-
     message(AUTHOR_WARNING "Using Ninja or Ninja Multi-Config as the generator is recommended over \"${CMAKE_GENERATOR}\".")
 endif ()
 
 if (MSVC AND NOT ${CMAKE_VS_PLATFORM_TOOLSET} STREQUAL "ClangCL")
     message(WARNING "CL is basically guaranteed to break. It's recommended that you use the ClangCL tookit instead of \"${CMAKE_VS_PLATFORM_TOOLSET}\".")
+endif ()
+
+if (${CMAKE_GENERATOR} STREQUAL "Xcode")
+    set(CMAKE_XCODE_GENERATE_TOP_LEVEL_PROJECT_ONLY TRUE)
 endif ()
 
 if (NOT DEFINED CMAKE_BUILD_TYPE AND NOT DEFINED CMAKE_CONFIGURATION_TYPES)

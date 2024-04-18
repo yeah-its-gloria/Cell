@@ -94,7 +94,6 @@ Result Windows::IndicateStatus(const ShellStatus status) {
     return Result::Success;
 }
 
-
 Result Windows::CaptureState(const bool captured) {
     if (!this->isActivated) {
         return Result::NotActive;

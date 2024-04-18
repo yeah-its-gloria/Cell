@@ -50,7 +50,7 @@ void Event::Reset() {
     }
 }
 
-EventWaitResult Event::Wait(const uint32_t timeoutMs) {
+Result Event::Wait(const uint32_t timeoutMs) {
     const bool success = [&] {
         if (timeoutMs == 0) {
             return sem_wait((sem_t*)this->impl) == 0;
@@ -65,14 +65,12 @@ EventWaitResult Event::Wait(const uint32_t timeoutMs) {
     }();
 
     if (success) {
-        // sem_wait/sem_timedwait decrement the counter, which is not the behavior we need
         this->Signal();
-
-        return EventWaitResult::Signaled;
+        return Result::Success;
     }
 
     if (errno == ETIMEDOUT) {
-        return EventWaitResult::Timeout;
+        return Result::Timeout;
     }
 
     System::Panic("sem_wait/sem_timedwait failed");

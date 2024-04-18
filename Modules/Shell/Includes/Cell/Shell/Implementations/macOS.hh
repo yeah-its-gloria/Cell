@@ -11,8 +11,20 @@
 
 @interface CellWindowImpl : NSWindow {}
 @end
+
+@interface CellWindowDelegate : NSObject<NSWindowDelegate>
+-(id) initWithRefToIsDone: (bool*) isDone andIsActivated: (bool*) isActivated;
+
+-(BOOL) windowShouldClose: (NSWindow*) sender;
+-(void) windowDidBecomeKey: (NSNotification *) notification;
+-(void) windowDidResignKey: (NSNotification *) notification;
+
+@property(assign) bool* isDone;
+@property(assign) bool* isActivated;
+@end
 #else
 typedef void CellWindowImpl;
+typedef void CellWindowDelegate;
 typedef void CAMetalLayer;
 #endif
 
@@ -36,12 +48,13 @@ public:
     CELL_FUNCTION Result LogClear() override;
 
 private:
-    CELL_FUNCTION_INTERNAL macOS(CellWindowImpl* i, CAMetalLayer* l) : impl(i), layer(l) { }
+    CELL_FUNCTION_INTERNAL macOS(CellWindowImpl* w, CAMetalLayer* l) : window(w), layer(l), delegate(nullptr) { }
 
     CELL_FUNCTION_INTERNAL Result RunDispatchImpl() override;
 
-    CellWindowImpl* impl;
+    CellWindowImpl* window;
     CAMetalLayer* layer;
+    CellWindowDelegate* delegate;
 };
 
 }

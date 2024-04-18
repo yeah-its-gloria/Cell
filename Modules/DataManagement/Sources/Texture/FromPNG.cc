@@ -62,7 +62,6 @@ const uint32_t sRGBIdentifier = 's' | 'R' << 8 | 'G' << 16 | 'B' << 24;
 const uint32_t gAMAIdentifier = 'g' | 'A' << 8 | 'M' << 16 | 'A' << 24;
 const uint32_t pHYsIdentifier = 'p' | 'H' << 8 | 'Y' << 16 | 's' << 24;
 
-
 CELL_FUNCTION_INTERNAL uint32_t GenerateCRCForChunk(const uint32_t& identifier, const uint8_t* data, const size_t& size) {
     uint8_t* buffer = Memory::Allocate<uint8_t>(sizeof(uint32_t) + size);
 
@@ -96,7 +95,6 @@ CELL_FUNCTION_INTERNAL bool IsValidDepthForColorType(const uint8_t& depth, const
     }
     }
 }
-
 
 CELL_FUNCTION_INTERNAL uint8_t PerformFilter(const uint8_t& filter, const uint8_t& current, const uint8_t previous, const uint8_t previousScanline, const uint8_t previousScanlinePrevious) {
     switch (filter) {

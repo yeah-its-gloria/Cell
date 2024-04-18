@@ -55,6 +55,9 @@ elseif (APPLE)
     target_sources(CellShell PRIVATE
         ${MODULE_INCLUDES_DIR}/Cell/Shell/Implementations/macOS.hh
 
+        ${CMAKE_CURRENT_LIST_DIR}/Sources/macOS/Backend.hh
+
+        ${CMAKE_CURRENT_LIST_DIR}/Sources/macOS/Backend.mm
         ${CMAKE_CURRENT_LIST_DIR}/Sources/macOS/macOS.mm
 
         ${CMAKE_CURRENT_LIST_DIR}/Sources/macOS/Controller/Xbox.cc

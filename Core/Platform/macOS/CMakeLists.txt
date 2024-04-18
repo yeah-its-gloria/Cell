@@ -1,18 +1,15 @@
 # SPDX-FileCopyrightText: Copyright 2023-2024 Gloria G.
 # SPDX-License-Identifier: BSD-2-Clause
 
-enable_language(OBJC)
-
 target_sources(CellCore PRIVATE
     ${PLATFORM_DIR}/Sources/VirtualStub.cc
 
-    ${PLATFORM_DIR}/Sources/IO/File/File.cc
-    ${PLATFORM_DIR}/Sources/IO/File/CheckPath.cc
-    ${PLATFORM_DIR}/Sources/IO/File/Delete.cc
-    ${PLATFORM_DIR}/Sources/IO/File/Offset.cc
-    ${PLATFORM_DIR}/Sources/IO/File/Open.cc
-    ${PLATFORM_DIR}/Sources/IO/File/ReadWrite.cc
-    ${PLATFORM_DIR}/Sources/IO/File/SetWorkingDirectory.cc
+    ${PLATFORM_DIR}/Sources/String.mm
+
+    ${PLATFORM_DIR}/Sources/IO/File/File.mm
+    ${PLATFORM_DIR}/Sources/IO/File/CheckPathSetWorkingDirectory.mm
+    ${PLATFORM_DIR}/Sources/IO/File/OpenCreate.mm
+    ${PLATFORM_DIR}/Sources/IO/File/ReadWriteFlush.mm
 
     ${PLATFORM_DIR}/Sources/IO/Directory.cc
     ${PLATFORM_DIR}/Sources/IO/HID.cc
@@ -30,9 +27,8 @@ target_sources(CellCore PRIVATE
     ${PLATFORM_DIR}/Sources/System/DynamicLibrary.cc
     ${PLATFORM_DIR}/Sources/System/Event.cc
     ${PLATFORM_DIR}/Sources/System/Log.cc
-    ${PLATFORM_DIR}/Sources/System/Mutex.cc
-    ${PLATFORM_DIR}/Sources/System/Panic.cc
-    ${PLATFORM_DIR}/Sources/System/String.cc
+    ${PLATFORM_DIR}/Sources/System/Mutex.mm
+    ${PLATFORM_DIR}/Sources/System/Panic.mm
     ${PLATFORM_DIR}/Sources/System/Thread.mm
     ${PLATFORM_DIR}/Sources/System/Timer.cc
 )
@@ -51,7 +47,8 @@ else ()
     message(FATAL_ERROR "\"${CELL_LIBRARY_TYPE}\" is an invalid library type.")
 endif ()
 
-target_link_libraries(CellCore PUBLIC dl m "-framework Foundation" "-framework AppKit" PRIVATE c++)
+target_link_libraries(CellCore PRIVATE dl m "-framework Foundation" "-framework AppKit" "-framework IOKit" c++)
+target_link_options(CellCore PUBLIC -Wl,-no_warn_duplicate_libraries)
 
 function(cell_target_bootstrap target)
     get_target_property(type ${target} TYPE)
@@ -67,6 +64,12 @@ function(cell_target_bootstrap target)
 
     target_sources(${target} PRIVATE ${PLATFORM_DIR}/Sources/Bootstrap.mm)
 
+    set_target_properties(${target} PROPERTIES
+        MACOSX_DEPLOYMENT_TARGET 10.13.0
+
+        XCODE_GENERATE_SCHEME TRUE
+    )
+
     if (is_tool)
         target_compile_definitions(${target} PRIVATE "CELL_SYSTEM_IS_TOOL=true")
         return()
@@ -81,5 +84,7 @@ function(cell_target_bootstrap target)
         MACOSX_BUNDLE True
         MACOSX_BUNDLE_INFO_PLIST ${PLATFORM_DIR}/BuildContent/Info.plist.in
         MACOSX_BUNDLE_EXECUTABLE_NAME ${target}
+
+        XCODE_SCHEME_WORKING_DIRECTORY ${PROJECT_ROOT_DIR}
     )
 endfunction()

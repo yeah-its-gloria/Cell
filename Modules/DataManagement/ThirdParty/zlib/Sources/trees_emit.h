@@ -9,7 +9,6 @@
 #  include <inttypes.h>
 #endif
 
-
 /* trees.h */
 extern Z_INTERNAL const ct_data static_ltree[L_CODES+2];
 extern Z_INTERNAL const ct_data static_dtree[D_CODES];

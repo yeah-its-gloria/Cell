@@ -14,7 +14,6 @@ Z_INTERNAL uint32_t crc32_fold_final_c(crc32_fold *crc);
 
 Z_INTERNAL uint32_t adler32_fold_copy_c(uint32_t adler, uint8_t *dst, const uint8_t *src, size_t len);
 
-
 typedef uint32_t (*adler32_func)(uint32_t adler, const uint8_t *buf, size_t len);
 typedef uint32_t (*compare256_func)(const uint8_t *src0, const uint8_t *src1);
 typedef uint32_t (*crc32_func)(uint32_t crc32, const uint8_t *buf, size_t len);
@@ -62,7 +61,6 @@ uint32_t longest_match_slow_c(deflate_state *const s, Pos cur_match);
 #    endif
 #  endif
 
-
 // Select generic implementation for longest_match, longest_match_slow, longest_match_slow functions.
 #if defined(UNALIGNED_OK) && BYTE_ORDER == LITTLE_ENDIAN
 #  if defined(UNALIGNED64_OK) && defined(HAVE_BUILTIN_CTZLL)
@@ -83,7 +81,6 @@ uint32_t longest_match_slow_c(deflate_state *const s, Pos cur_match);
 #  define longest_match_slow_generic longest_match_slow_c
 #  define compare256_generic compare256_c
 #endif
-
 
 #ifdef DISABLE_RUNTIME_CPU_DETECTION
 // Generic code

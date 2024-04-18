@@ -7,11 +7,12 @@
 #include <Cell/Memory/Allocator.hh>
 #include <Cell/Memory/OwnedBlock.hh>
 #include <Cell/Memory/UnownedBlock.hh>
+#include <Cell/System/Log.hh>
 
 namespace Cell::Shell::Controller {
 
 Wrapped<DualShock4*, Result> DualShock4::Find() {
-    Wrapped<IO::HID::Device*, IO::Result> hidResult = IO::HID::Device::Open(0x054c, 0x05c4);
+    Wrapped<IO::HID::Device*, IO::Result> hidResult = IO::HID::Device::Open(0x054c, 0x09cc); // NOTE: some DualShock 4 controllers have a different product ID seemingly?
     if (!hidResult.IsValid()) {
         switch (hidResult.Result()) {
         case IO::Result::NotFound: {
@@ -150,7 +151,8 @@ Result DualShock4::Update() {
     }
 
     if (packet.id != 0x01) {
-        return Result::InvalidReplies;
+        System::Log("Received report with ID %", packet.id);
+        return Result::Success;
     }
 
     // TODO: find something cleaner than this

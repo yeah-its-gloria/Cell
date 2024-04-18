@@ -214,7 +214,6 @@ typedef zng_gz_header *zng_gz_headerp;
 
 #define Z_NULL  NULL  /* for compatibility with zlib, was for initializing zalloc, zfree, opaque */
 
-
                         /* basic functions */
 
 Z_EXTERN Z_EXPORT
@@ -243,7 +242,6 @@ int32_t zng_deflateInit(zng_stream *strm, int32_t level);
    msg is set to null if there is no error message.  deflateInit does not perform
    any compression: this will be done by deflate().
 */
-
 
 Z_EXTERN Z_EXPORT
 int32_t zng_deflate(zng_stream *strm, int32_t flush);
@@ -358,7 +356,6 @@ int32_t zng_deflate(zng_stream *strm, int32_t flush);
   continue compressing.
 */
 
-
 Z_EXTERN Z_EXPORT
 int32_t zng_deflateEnd(zng_stream *strm);
 /*
@@ -372,7 +369,6 @@ int32_t zng_deflateEnd(zng_stream *strm);
    may be set but then points to a static string (which must not be
    deallocated).
 */
-
 
 Z_EXTERN Z_EXPORT
 int32_t zng_inflateInit(zng_stream *strm);
@@ -395,7 +391,6 @@ int32_t zng_inflateInit(zng_stream *strm);
    does not process any header information -- that is deferred until inflate()
    is called.
 */
-
 
 Z_EXTERN Z_EXPORT
 int32_t zng_inflate(zng_stream *strm, int32_t flush);
@@ -515,10 +510,7 @@ int32_t zng_inflate(zng_stream *strm, int32_t flush);
   continue decompressing.  If Z_DATA_ERROR is returned, the application may
   then call inflateSync() to look for a good compression block if a partial
   recovery of the data is to be attempted.
-*/
-
-
-Z_EXTERN Z_EXPORT
+*/Z_EXTERN Z_EXPORT
 int32_t zng_inflateEnd(zng_stream *strm);
 /*
      All dynamically allocated data structures for this stream are freed.
@@ -528,7 +520,6 @@ int32_t zng_inflateEnd(zng_stream *strm);
      inflateEnd returns Z_OK if success, or Z_STREAM_ERROR if the stream state
    was inconsistent.
 */
-
 
                         /* Advanced functions */
 
@@ -1199,7 +1190,6 @@ unsigned long zng_zlibCompileFlags(void);
      27-31: 0 (reserved)
  */
 
-
                         /* utility functions */
 
 /*
@@ -1266,7 +1256,6 @@ int32_t zng_uncompress(uint8_t *dest, size_t *destLen, const uint8_t *source, si
    buffer with the uncompressed data up to that point.
 */
 
-
 Z_EXTERN Z_EXPORT
 int32_t zng_uncompress2(uint8_t *dest, size_t *destLen, const uint8_t *source, size_t *sourceLen);
 /*
@@ -1274,7 +1263,6 @@ int32_t zng_uncompress2(uint8_t *dest, size_t *destLen, const uint8_t *source, s
    length of the source is *sourceLen.  On return, *sourceLen is the number of
    source bytes consumed.
 */
-
 
 #ifdef WITH_GZFILEOP
                         /* gzip file access functions */
@@ -1797,7 +1785,6 @@ struct gzFile_s {
 #  define @ZLIB_SYMBOL_PREFIX@zng_gzgetc(g) ((g)->have ? ((g)->have--, (g)->pos++, *((g)->next)++) : (@ZLIB_SYMBOL_PREFIX@zng_gzgetc)(g))
 
 #endif /* WITH_GZFILEOP */
-
 
 typedef enum {
     Z_DEFLATE_LEVEL = 0,         /* compression level, represented as an int */

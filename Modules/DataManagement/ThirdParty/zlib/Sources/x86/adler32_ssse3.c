@@ -77,7 +77,6 @@ Z_INTERNAL uint32_t adler32_ssse3(uint32_t adler, const uint8_t *buf, size_t len
         max_iters -= align_offset;
     }
 
-
     while (len >= 16) {
         vs1 = _mm_cvtsi32_si128(adler);
         vs2 = _mm_cvtsi32_si128(sum2);

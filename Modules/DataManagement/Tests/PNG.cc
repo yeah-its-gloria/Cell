@@ -33,5 +33,3 @@ void CellEntry(Reference<String> parameterString) {
         CELL_ASSERT(result == IO::Result::Success);
     }
 }
-
-

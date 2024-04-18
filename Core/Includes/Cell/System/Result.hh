@@ -31,7 +31,10 @@ enum class Result : uint8_t {
     NotFound,
 
     // The subsystem lacked enough memory.
-    OutOfMemory
+    OutOfMemory,
+
+    // A resource was inaccessible.
+    AccessDenied
 };
 
 }

@@ -37,4 +37,8 @@ wchar_t* String::ToPlatformWideString() const {
     return output;
 }
 
+NSString* String::ToPlatformNSString() const {
+    CELL_UNIMPLEMENTED
+}
+
 }

@@ -33,7 +33,6 @@ static const unsigned char bl_order[BL_CODES]
   * probability, to avoid transmitting the lengths for unused bit length codes.
   */
 
-
 /* Function definitions */
 void gen_codes        (ct_data *tree, int max_code, uint16_t *bl_count);
 

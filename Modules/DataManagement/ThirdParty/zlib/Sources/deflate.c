@@ -160,7 +160,6 @@ static const config configuration_table[10] = {
 /* rank Z_BLOCK between Z_NO_FLUSH and Z_PARTIAL_FLUSH */
 #define RANK(f) (((f) * 2) - ((f) > 4 ? 9 : 0))
 
-
 /* ===========================================================================
  * Initialize the hash table. prev[] will be initialized on the fly.
  */

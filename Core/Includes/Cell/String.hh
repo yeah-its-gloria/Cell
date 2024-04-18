@@ -77,6 +77,12 @@ public:
     // The buffer lifetime is caller managed.
     CELL_NODISCARD CELL_FUNCTION wchar_t* CELL_NONNULL ToPlatformWideString() const;
 
+    // Creates an NSString representation of this string's contents.
+    // The reference does not copy the string as a whole.
+    //
+    // Only implemented on macOS.
+    CELL_NODISCARD CELL_FUNCTION NSString* CELL_NONNULL ToPlatformNSString() const;
+
     // Converts the string in its entirety to a number.
     CELL_NODISCARD CELL_FUNCTION Wrapped<uint64_t, StringDetails::Result> AsNumber(const bool isHex = false) const;
 

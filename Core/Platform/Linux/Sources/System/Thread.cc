@@ -50,7 +50,6 @@ Thread::Thread(ThreadFunction function, void* parameter, const String& name) {
     }
 }
 
-
 Thread::~Thread() {
     if (this->impl != 0) {
         pthread_kill((pthread_t)this->impl, SIGTERM);
