@@ -63,6 +63,7 @@ Wrapped<Pipeline*, Result> Device::CreatePipeline(const Memory::IBlock& vertex, 
 
     // TODO: specify this fully lol
 
+#pragma clang diagnostic ignored "-Wmissing-field-initializers"
     const D3D12_GRAPHICS_PIPELINE_STATE_DESC info = {
         .pRootSignature = this->rootSignature,
 

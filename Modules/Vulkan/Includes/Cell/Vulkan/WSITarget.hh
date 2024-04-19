@@ -71,7 +71,7 @@ private:
     VkPresentModeKHR mode;
     VkExtent2D extent;
     VkSwapchainKHR swapchain;
-    uint32_t depth;
+    uint8_t depth;
 
     Collection::List<VkImage> swapchainImages;
     Collection::List<VkImageView> swapchainImageViews;

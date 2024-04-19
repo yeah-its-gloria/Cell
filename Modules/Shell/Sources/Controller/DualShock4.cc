@@ -66,6 +66,7 @@ Result DualShock4::Update() {
 
     // Update controller
     if (!this->hasUpdated) {
+        #pragma clang diagnostic ignored "-Wmissing-field-initializers"
         DualShock4EffectsPacket effectsPacket = {
             .id = 0x05,
             .magic = 0x07,

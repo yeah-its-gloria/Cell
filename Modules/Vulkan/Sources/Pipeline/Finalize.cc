@@ -181,6 +181,7 @@ Result Pipeline::Finalize() {
         .compareOp = VK_COMPARE_OP_ALWAYS,
         .compareMask = 0,
         .writeMask = 0,
+        .reference = 0,
     };
 
     const VkPipelineDepthStencilStateCreateInfo depthStencilInfo = {
@@ -271,6 +272,7 @@ Result Pipeline::Finalize() {
 
         .pVertexInputState   = &vertexInputInfo,
         .pInputAssemblyState = &inputAssemblyInfo,
+        .pTessellationState  = nullptr,
         .pViewportState      = &viewportInfo,
         .pRasterizationState = &rasterizationInfo,
         .pMultisampleState   = &multisamplingInfo,

@@ -14,25 +14,10 @@ namespace Cell::IO {
 
 #define HAS_MODE(in) ((FileMode::in & mode) == FileMode::in)
 
+// TODO: implement create
+
 Wrapped<File*, Result> File::Open(const String& path, const FileMode mode) {
     if (path.IsEmpty()) {
-        return Result::InvalidParameters;
-    }
-
-    DWORD creationType = OPEN_EXISTING;
-    if (HAS_MODE(Create)) {
-        if (HAS_MODE(Overwrite) || HAS_MODE(Open)) {
-            return Result::InvalidParameters;
-        }
-
-        creationType = CREATE_NEW;
-    } else if (HAS_MODE(Overwrite)) {
-        if (HAS_MODE(Open)) {
-            return Result::InvalidParameters;
-        }
-
-        creationType = CREATE_ALWAYS;
-    } else if (!HAS_MODE(Open) || (!HAS_MODE(Read) && !HAS_MODE(Write))) {
         return Result::InvalidParameters;
     }
 
@@ -49,7 +34,7 @@ Wrapped<File*, Result> File::Open(const String& path, const FileMode mode) {
     }
 
     ScopedBlock<wchar_t> widePath = path.ToPlatformWideString();
-    if (!HAS_MODE(Create) && !HAS_MODE(Overwrite)) {
+    if (!HAS_MODE(Overwrite)) {
         const DWORD attributes = GetFileAttributesW(widePath);
         if (attributes == INVALID_FILE_ATTRIBUTES) {
             switch (GetLastError()) {
@@ -74,7 +59,7 @@ Wrapped<File*, Result> File::Open(const String& path, const FileMode mode) {
         }
     }
 
-    const HANDLE fileHandle = CreateFileW(&widePath, accessType, shareType, nullptr, creationType, FILE_ATTRIBUTE_NORMAL, nullptr);
+    const HANDLE fileHandle = CreateFileW(&widePath, accessType, shareType, nullptr, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, nullptr);
     if (fileHandle == INVALID_HANDLE_VALUE) {
         const DWORD result = GetLastError();
         switch (result) {
@@ -119,30 +104,34 @@ Wrapped<File*, Result> File::Open(const String& path, const FileMode mode) {
         }
     }();
 
+#pragma clang diagnostic ignored "-Wmissing-field-initializers"
+#pragma clang diagnostic push
+
     const char* descriptorMode =  [&mode] {
-        switch ((CELL_BASE_TYPE(FileMode))(mode)) {
-        case (CELL_BASE_TYPE(FileMode))(FileMode::Read | FileMode::Open): {
+        switch ((CELL_BASE_TYPE(FileMode))(mode & (FileMode::Read | FileMode::Write))) {
+        case (CELL_BASE_TYPE(FileMode))(FileMode::Read): {
             return (const char*)"rb";
         }
 
-        case (CELL_BASE_TYPE(FileMode))(FileMode::Write | FileMode::Open): {
+        case (CELL_BASE_TYPE(FileMode))(FileMode::Write): {
             return (const char*)"wb";
         }
 
-        case (CELL_BASE_TYPE(FileMode))(FileMode::Read | FileMode::Write | FileMode::Open): {
+        case (CELL_BASE_TYPE(FileMode))(FileMode::Read | FileMode::Write): {
             return (const char*)"rb+";
         }
 
-        case (CELL_BASE_TYPE(FileMode))(FileMode::Read | FileMode::Write | FileMode::Create):
-        case (CELL_BASE_TYPE(FileMode))(FileMode::Read | FileMode::Write | FileMode::Overwrite): {
+        /*case (CELL_BASE_TYPE(FileMode))(FileMode::Read | FileMode::Write):{
             return (const char*)"wb+";
-        }
+        }*/
 
         default: {
             CELL_UNREACHABLE;
         }
         }
     }();
+
+#pragma clang diagnostic pop
 
     FILE* descriptor = _fdopen(_open_osfhandle((intptr_t)fileHandle, osFileHandleFlags), descriptorMode);
     CELL_ASSERT(descriptor != nullptr);

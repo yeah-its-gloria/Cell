@@ -69,6 +69,8 @@ Result Device::Read(Memory::IBlock& data, const uint32_t milliseconds) {
     }
 
     DWORD read = 0;
+
+    #pragma clang diagnostic ignored "-Wmissing-field-initializers"
     OVERLAPPED overlapped = { .hEvent = CreateEvent(nullptr, TRUE, FALSE, nullptr) };
 
     const BOOL result = ReadFile((HANDLE)this->impl, data.AsPointer(), (DWORD)data.GetSize(), &read, milliseconds > 0 ? &overlapped : nullptr);

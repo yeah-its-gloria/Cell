@@ -55,6 +55,7 @@ Result DualSense::Update() {
             effectsEx = DualSenseEffectsEx::ImprovedRumble;
         }
 
+#pragma clang diagnostic ignored "-Wmissing-field-initializers"
         DualSenseEffectsPacket effectsPacket = {
             .id = 0x02,
 

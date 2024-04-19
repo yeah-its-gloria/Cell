@@ -58,10 +58,11 @@ Result Pipeline::AddResources(const IEnumerable<ResourceBinding>& resBindings, c
         }
 
         const VkDescriptorSetLayoutBinding binding = {
-            .binding         = i,
-            .descriptorType  = type,
-            .descriptorCount = 1,
-            .stageFlags      = stageFlags
+            .binding            = i,
+            .descriptorType     = type,
+            .descriptorCount    = 1,
+            .stageFlags         = stageFlags,
+            .pImmutableSamplers = nullptr,
         };
 
         bindings[i] = binding;

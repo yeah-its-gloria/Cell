@@ -6,6 +6,7 @@ option(CELL_PLATFORM_WINDOWS_LOG_TO_CONSOLE "Whether to log to the console or vi
 find_file(CLANG_RT_BUILTINS NAME "clang_rt.builtins-x86_64.lib" REQUIRED HINTS
     "C:\\Program Files\\LLVM\\lib\\clang\\16\\lib\\windows\\"
     "C:\\Program Files\\LLVM\\lib\\clang\\17\\lib\\windows\\"
+    "C:\\Program Files\\LLVM\\lib\\clang\\18\\lib\\windows\\"
 )
 
 target_sources(CellCore PRIVATE

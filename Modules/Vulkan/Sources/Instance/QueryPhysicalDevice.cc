@@ -64,6 +64,7 @@ Wrapped<Instance::QueryPhysicalDeviceResult, Result> Instance::QueryPhysicalDevi
 
     const Instance::PhysicalDeviceQueues queues = Instance::QueryPhysicalDeviceQueues(device);
 
+#pragma clang diagnostic ignored "-Wmissing-field-initializers"
     Instance::QueryPhysicalDeviceResult result = {
         .device = device,
         .queues = queues
