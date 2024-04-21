@@ -37,7 +37,8 @@ public:
     CELL_FUNCTION static Wrapped<macOS*, Result> New(const String& title, const Extent extent);
     CELL_FUNCTION ~macOS();
 
-    CELL_FUNCTION_TEMPLATE CAMetalLayer* GetMetalLayer() { return this->layer; }
+    CELL_NODISCARD CELL_FUNCTION_TEMPLATE CAMetalLayer* GetMetalLayer() const { return this->layer; }
+    CELL_NODISCARD CELL_FUNCTION_TEMPLATE CellWindowImpl* GetWindow() const { return this->window; }
 
     CELL_FUNCTION Result RequestQuit() override;
     CELL_FUNCTION Wrapped<Extent, Result> GetDrawableExtent() override;

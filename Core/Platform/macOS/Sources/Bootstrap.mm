@@ -14,12 +14,20 @@
 using namespace Cell;
 
 @interface CellAppDelegate : NSObject<NSApplicationDelegate>
--(NSApplicationTerminateReply)applicationShouldTerminate:(NSApplication *)sender;
+// ...
 @end
 
 @implementation CellAppDelegate
--(NSApplicationTerminateReply)applicationShouldTerminate:(NSApplication *)sender {
+-(NSApplicationTerminateReply) applicationShouldTerminate: (NSApplication*) app {
+    (void)(app);
+
 	return NSTerminateNow;
+}
+
+-(BOOL) applicationSupportsSecureRestorableState: (NSApplication*) app {
+    (void)(app);
+
+    return FALSE;
 }
 @end
 
@@ -30,7 +38,7 @@ int main() {
     NSApplication* application = [NSApplication sharedApplication];
 
     CellAppDelegate* delegate = [[CellAppDelegate alloc] init];
-    [application setActivationPolicy:NSApplicationActivationPolicyRegular];
+    [application setActivationPolicy: NSApplicationActivationPolicyRegular];
     [application setDelegate: delegate];
 
     const BOOL multithreaded = [NSThread isMultiThreaded];

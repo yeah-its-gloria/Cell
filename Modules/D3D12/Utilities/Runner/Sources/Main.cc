@@ -16,7 +16,7 @@ struct Vertex {
     float color[4];
 };
 
-CELL_FUNCTION_INTERNAL void CellEntry(Reference<String> parameterString) {
+void CellEntry(Reference<String> parameterString) {
     (void)(parameterString);
 
     ScopedObject<Shell::IShell> shell = Shell::CreateShell("Cell - D3D12").Unwrap();

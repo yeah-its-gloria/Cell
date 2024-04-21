@@ -119,6 +119,10 @@ if (WIN32)
     CellAddModule(D3D12)
 endif ()
 
+if (APPLE)
+    CellAddModule(Metal)
+endif ()
+
 #CellAddModule(OpenXR)
 
 if (CELL_ENABLE_EDITOR)
