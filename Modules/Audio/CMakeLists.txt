@@ -10,6 +10,7 @@ add_library(CellAudio ${CELL_LIBRARY_TYPE}
     ${MODULE_INCLUDES_DIR}/Cell/Audio/Result.hh
     ${MODULE_INCLUDES_DIR}/Cell/Audio/Subsystem.hh
 
+    ${MODULE_INCLUDES_DIR}/Cell/Audio/Implementations/CoreAudio.hh
     ${MODULE_INCLUDES_DIR}/Cell/Audio/Implementations/PulseAudio.hh
     ${MODULE_INCLUDES_DIR}/Cell/Audio/Implementations/WASAPI.hh
 
@@ -36,6 +37,13 @@ if (WIN32)
 
     target_compile_options(CellAudio PUBLIC -Wno-language-extension-token)
     target_link_libraries(CellAudio PRIVATE mmdevapi)
+elseif (APPLE)
+    target_sources(CellAudio PRIVATE
+        ${CMAKE_CURRENT_LIST_DIR}/Sources/CoreAudio/Renderer.cc
+        ${CMAKE_CURRENT_LIST_DIR}/Sources/CoreAudio/Subsystem.cc
+    )
+
+    target_link_libraries(CellAudio PRIVATE "-framework Foundation" "-framework CoreAudio" "-framework AudioToolbox")
 elseif (UNIX)
     find_package(PulseAudio REQUIRED FATAL_ERROR)
 

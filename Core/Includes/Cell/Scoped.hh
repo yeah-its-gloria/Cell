@@ -23,6 +23,12 @@ public:
     // Turns the managed block into a bare pointer.
     CELL_NODISCARD CELL_FUNCTION_TEMPLATE operator T*() { return this->block; }
 
+    // Turns the managed block into a bare pointer.
+    CELL_NODISCARD CELL_FUNCTION_TEMPLATE operator void*() { return (void*)this->block; }
+
+    // Array operator implementation acting upon the stored block.
+    CELL_NODISCARD CELL_FUNCTION_TEMPLATE T operator[](const size_t index) { return this->block[index]; }
+
     // Overrides the stored block.
     CELL_FUNCTION_TEMPLATE ScopedBlock<T>& operator =(const T& block) {
         this->block = block;

@@ -87,12 +87,19 @@ if (WIN32)
 
     if (DEFINED Vulkan_BINARIES)
         add_custom_command(TARGET CellVulkan POST_BUILD
-                           COMMENT "Copying Vulkan loader..."
-                           COMMAND ${CMAKE_COMMAND} -E copy_if_different ${Vulkan_BINARIES} $<TARGET_FILE_DIR:CellVulkan>
+            COMMENT "Copying Vulkan loader..."
+            COMMAND ${CMAKE_COMMAND} -E copy_if_different ${Vulkan_BINARIES} $<TARGET_FILE_DIR:CellVulkan>
         )
     endif ()
 elseif (APPLE)
     target_sources(CellVulkan PRIVATE ${CMAKE_CURRENT_LIST_DIR}/Sources/WSITarget/Platform/macOS.cc)
+
+    if (DEFINED Vulkan_BINARIES)
+        add_custom_command(TARGET CellVulkan POST_BUILD
+            COMMENT "Copying Vulkan loader..."
+            COMMAND ${CMAKE_COMMAND} -E copy_if_different ${Vulkan_BINARIES} $<TARGET_FILE_DIR:CellVulkan>/libvulkan.1.dylib
+        )
+    endif ()
 elseif (UNIX)
     target_sources(CellVulkan PRIVATE ${CMAKE_CURRENT_LIST_DIR}/Sources/WSITarget/Platform/Linux.cc)
 else ()

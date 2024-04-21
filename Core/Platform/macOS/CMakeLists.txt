@@ -64,6 +64,8 @@ function(cell_target_bootstrap target)
 
     target_sources(${target} PRIVATE ${PLATFORM_DIR}/Sources/Bootstrap.mm)
 
+    target_link_libraries(${target} PRIVATE "-framework Foundation" "-framework AppKit" c++)
+
     set_target_properties(${target} PROPERTIES
         MACOSX_DEPLOYMENT_TARGET 10.13.0
 
@@ -81,7 +83,7 @@ function(cell_target_bootstrap target)
     set_source_files_properties(${PLATFORM_DIR}/BuildContent/Cell.icns PROPERTIES MACOSX_PACKAGE_LOCATION "Resources")
 
     set_target_properties(${target} PROPERTIES
-        MACOSX_BUNDLE True
+        MACOSX_BUNDLE TRUE
         MACOSX_BUNDLE_INFO_PLIST ${PLATFORM_DIR}/BuildContent/Info.plist.in
         MACOSX_BUNDLE_EXECUTABLE_NAME ${target}
 

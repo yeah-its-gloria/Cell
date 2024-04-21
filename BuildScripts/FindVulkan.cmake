@@ -5,6 +5,9 @@ include(FindPackageHandleStandardArgs)
 
 if (WIN32)
     find_file(Vulkan_BINARY NAMES vulkan-1.dll)
+elseif (APPLE)
+    # TODO: find a less hard coded way to find the relevant dylib (needed for proper packaging later)
+    find_file(Vulkan_BINARY NAMES libvulkan.1.3.280.dylib HINTS /usr/local/lib NO_CACHE)
 endif ()
 
 find_path   (Vulkan_INCLUDE_DIR NAMES vulkan/vulkan.h HINTS $ENV{VULKAN_SDK}/Include)

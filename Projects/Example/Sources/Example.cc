@@ -57,7 +57,7 @@ void Example::Launch(const String& parameterString) {
 
     this->controller = InputController::New(this);
 
-    //Thread audio(CELL_THREAD_CLASS_FUNC(Example, AudioThread), "Audio Thread");
+    Thread audio(CELL_THREAD_CLASS_FUNC(Example, AudioThread), "Audio Thread");
     Thread renderer(CELL_THREAD_CLASS_FUNC(Example, RendererThread), "Renderer Thread");
 
 #ifdef CELL_MODULES_OPENXR_AVAILABLE
@@ -65,8 +65,8 @@ void Example::Launch(const String& parameterString) {
 #endif
 
     uint64_t finishedTick = GetPreciseTickerValue();
-    while (//audio.IsActive()
-           /*||*/ renderer.IsActive()
+    while (audio.IsActive()
+           || renderer.IsActive()
 #ifdef CELL_MODULES_OPENXR_AVAILABLE
            || xr.IsActive()
 #endif
@@ -84,7 +84,7 @@ void Example::Launch(const String& parameterString) {
         SleepPrecise(500);
     }
 
-    //audio.Join();
+    audio.Join();
     renderer.Join();
 
 #ifdef CELL_MODULES_OPENXR_AVAILABLE

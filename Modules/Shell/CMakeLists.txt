@@ -59,6 +59,7 @@ elseif (APPLE)
 
         ${CMAKE_CURRENT_LIST_DIR}/Sources/macOS/Backend.mm
         ${CMAKE_CURRENT_LIST_DIR}/Sources/macOS/macOS.mm
+        ${CMAKE_CURRENT_LIST_DIR}/Sources/macOS/WindowImpl.mm
 
         ${CMAKE_CURRENT_LIST_DIR}/Sources/macOS/Controller/Xbox.cc
     )

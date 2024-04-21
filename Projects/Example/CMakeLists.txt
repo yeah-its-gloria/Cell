@@ -14,7 +14,7 @@ add_executable(CellExample
     ${SOURCES_DIR}/InputController.hh
     ${SOURCES_DIR}/InputController.cc
 
-    #${SOURCES_DIR}/AudioThread.cc
+    ${SOURCES_DIR}/AudioThread.cc
 
     ${SOURCES_DIR}/Renderer/Thread.cc
     ${SOURCES_DIR}/Renderer/Tools.hh
@@ -26,7 +26,7 @@ add_executable(CellExample
 
 target_link_libraries(CellExample PRIVATE
     CellCore
-    #CellAudio
+    CellAudio
     CellDataManagement
     CellMathematics
     CellShell

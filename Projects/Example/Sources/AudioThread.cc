@@ -19,7 +19,7 @@ void Example::AudioThread() {
     const uint32_t sampleSize = ((2 * 32) / 8);
 
     const Format format = {
-        .type = FormatType::Float32PCM,
+        .type = FormatType::S16PCM,
         .channels = 2,
         .rate = 48000
     };

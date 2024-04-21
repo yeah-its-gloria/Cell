@@ -14,6 +14,7 @@ Wrapped<macOS*, Result> macOS::New(const String& title, const Extent extent) {
     [trampoline performSelectorOnMainThread: @selector(create:) withObject: nsTitle waitUntilDone: YES];
 
     macOS* macos = new macOS(trampoline.window, trampoline.layer);
+    macos->window.keysRef = &macos->keys;
 
     macos->delegate = [[CellWindowDelegate alloc] initWithRefToIsDone: &macos->isDone andIsActivated: &macos->isActivated];
     [macos->window performSelectorOnMainThread: @selector(setDelegate:) withObject: macos->delegate waitUntilDone: YES];

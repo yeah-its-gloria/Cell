@@ -3,16 +3,6 @@
 
 #include "Backend.hh"
 
-@implementation CellWindowImpl
--(BOOL) canBecomeKeyWindow {
-    return YES;
-}
-
--(BOOL) canBecomeMainWindow {
-    return YES;
-}
-@end
-
 @implementation CellWindowDelegate
 -(id) initWithRefToIsDone: (bool*) isDone andIsActivated: (bool*) isActivated {
     CellWindowDelegate* obj = [super init];
@@ -25,7 +15,6 @@
 
 -(BOOL) windowShouldClose: (NSWindow*) sender {
     *self.isDone = true;
-
     return NO;
 }
 

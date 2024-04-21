@@ -112,7 +112,7 @@ add_subdirectory(${CORE_DIR})
 CellAddModule(DataManagement)
 CellAddModule(Mathematics)
 CellAddModule(Shell)
-#CellAddModule(Audio)
+CellAddModule(Audio)
 CellAddModule(Vulkan)
 
 if (WIN32)

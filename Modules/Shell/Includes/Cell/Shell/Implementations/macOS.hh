@@ -10,6 +10,7 @@
 #import <QuartzCore/CAMetalLayer.h>
 
 @interface CellWindowImpl : NSWindow {}
+@property(assign) Cell::Shell::KeyboardButton* keysRef;
 @end
 
 @interface CellWindowDelegate : NSObject<NSWindowDelegate>
