@@ -5,7 +5,7 @@
 
 namespace Cell::OpenXR {
 
-Wrapped<Session*, Result> Instance::CreateSessionD3D12(const FormFactor formFactor, D3D12::Device* device) {
+Wrapped<Session*, Result> Instance::CreateSessionD3D12(const FormFactor formFactor, Renderer::D3D12::Device* device) {
     Wrapped<SessionPrepData, Result> prepDataResult = this->PrepSession(formFactor);
     if (!prepDataResult.IsValid()) {
         return prepDataResult.Result();

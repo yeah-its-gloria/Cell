@@ -30,7 +30,7 @@ target_link_libraries(CellExample PRIVATE
     CellDataManagement
     CellMathematics
     CellShell
-    CellVulkan
+    CellRenderer
 )
 
 if (TARGET CellOpenXR AND TARGET CellD3D12)
@@ -43,14 +43,14 @@ endif ()
 
 cell_target_bootstrap(CellExample)
 
-#CellVulkanAddShader(CellExample DefaultVertex ${BUILDCONTENT_DIR}/Shaders/Default/Vertex.hlsl ${GENERATE_DIR}/Shaders VERTEX)
-#CellVulkanAddShader(CellExample DefaultFragment ${BUILDCONTENT_DIR}/Shaders/Default/Fragment.hlsl ${GENERATE_DIR}/Shaders FRAGMENT)
-#CellVulkanLinkShaders(CellExample Default ${GENERATE_DIR}/Shaders/DefaultVertex.spv ${GENERATE_DIR}/Shaders/DefaultFragment.spv ${CONTENT_DIR}/Shaders)
+#CellRendererAddVulkanShader(CellExample DefaultVertex ${BUILDCONTENT_DIR}/Shaders/Default/Vertex.hlsl ${GENERATE_DIR}/Shaders VERTEX)
+#CellRendererAddVulkanShader(CellExample DefaultFragment ${BUILDCONTENT_DIR}/Shaders/Default/Fragment.hlsl ${GENERATE_DIR}/Shaders FRAGMENT)
+#CellRendererLinkVulkanShader(CellExample Default ${GENERATE_DIR}/Shaders/DefaultVertex.spv ${GENERATE_DIR}/Shaders/DefaultFragment.spv ${CONTENT_DIR}/Shaders)
 
-CellVulkanAddShader(CellExample DefaultVertex ${BUILDCONTENT_DIR}/Shaders/Default/Vertex.hlsl ${CONTENT_DIR}/Shaders VERTEX)
-CellVulkanAddShader(CellExample DefaultFragment ${BUILDCONTENT_DIR}/Shaders/Default/Fragment.hlsl ${CONTENT_DIR}/Shaders FRAGMENT)
+CellRendererAddVulkanShader(CellExample DefaultVertex ${BUILDCONTENT_DIR}/Shaders/Default/Vertex.hlsl ${CONTENT_DIR}/Shaders VERTEX)
+CellRendererAddVulkanShader(CellExample DefaultFragment ${BUILDCONTENT_DIR}/Shaders/Default/Fragment.hlsl ${CONTENT_DIR}/Shaders FRAGMENT)
 
-CellVulkanAddShader(CellExample Default2Vertex ${BUILDCONTENT_DIR}/Shaders/Default2/Vertex.glsl ${CONTENT_DIR}/Shaders VERTEX TRUE)
-CellVulkanAddShader(CellExample Default2Fragment ${BUILDCONTENT_DIR}/Shaders/Default2/Fragment.glsl ${CONTENT_DIR}/Shaders FRAGMENT TRUE)
+CellRendererAddVulkanShader(CellExample Default2Vertex ${BUILDCONTENT_DIR}/Shaders/Default2/Vertex.glsl ${CONTENT_DIR}/Shaders VERTEX TRUE)
+CellRendererAddVulkanShader(CellExample Default2Fragment ${BUILDCONTENT_DIR}/Shaders/Default2/Fragment.glsl ${CONTENT_DIR}/Shaders FRAGMENT TRUE)
 
 CellAddContentToPack(CellExample Content ${CONTENT_DIR})

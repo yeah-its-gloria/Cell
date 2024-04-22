@@ -5,7 +5,7 @@
 
 namespace Cell::OpenXR {
 
-Wrapped<Session*, Result> Instance::CreateSessionVulkan(const FormFactor formFactor, Vulkan::Device* device) {
+Wrapped<Session*, Result> Instance::CreateSessionVulkan(const FormFactor formFactor, Renderer::Vulkan::Device* device) {
     Wrapped<SessionPrepData, Result> prepDataResult = this->PrepSession(formFactor);
     if (!prepDataResult.IsValid()) {
         return prepDataResult.Result();

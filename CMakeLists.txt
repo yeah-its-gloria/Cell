@@ -113,17 +113,11 @@ CellAddModule(DataManagement)
 CellAddModule(Mathematics)
 CellAddModule(Shell)
 CellAddModule(Audio)
-CellAddModule(Vulkan)
+CellAddModule(Renderer)
 
-if (WIN32)
-    CellAddModule(D3D12)
+if (WIN32 OR (UNIX AND NOT APPLE))
+    CellAddModule(OpenXR)
 endif ()
-
-if (APPLE)
-    CellAddModule(Metal)
-endif ()
-
-#CellAddModule(OpenXR)
 
 if (CELL_ENABLE_EDITOR)
     add_subdirectory(${PROJECT_ROOT_DIR}/Editor)

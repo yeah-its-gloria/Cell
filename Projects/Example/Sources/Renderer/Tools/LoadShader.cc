@@ -8,7 +8,8 @@
 #include <Cell/Memory/OwnedBlock.hh>
 
 using namespace Cell;
-using namespace Cell::Vulkan;
+using namespace Cell::Renderer;
+using namespace Cell::Renderer::Vulkan;
 
 void VulkanToolsLoadShader(Pipeline* pipeline, const String& path) {
     ScopedObject<IO::File> file = IO::File::Open(path).Unwrap();

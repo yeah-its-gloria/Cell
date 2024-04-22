@@ -5,8 +5,9 @@
 
 #include <Cell/Collection/Array.hh>
 
-using namespace Cell::Vulkan;
-using namespace Cell::Vulkan::CommandParameters;
+using namespace Cell::Renderer;
+using namespace Cell::Renderer::Vulkan;
+using namespace Cell::Renderer::Vulkan::CommandParameters;
 
 void VulkanToolsGenerateRenderCommands(const uint32_t vertexCount,
                                        const uint32_t drawCount,

@@ -7,7 +7,8 @@
 #include <Cell/System/Log.hh>
 
 using namespace Cell;
-using namespace Cell::Vulkan;
+using namespace Cell::Renderer;
+using namespace Cell::Renderer::Vulkan;
 
 void VulkanToolsSetUpResources(Pipeline* pipeline, Collection::List<Buffer*>& uniforms, Image* texture1, Image* texture2, IRenderTarget* target) {
     const Collection::List<ResourceBinding> bindings = {

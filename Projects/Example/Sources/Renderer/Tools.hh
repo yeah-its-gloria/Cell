@@ -7,11 +7,11 @@
 
 #include <Cell/Collection/List.hh>
 #include <Cell/Mathematics/Matrix4x4.hh>
-#include <Cell/Vulkan/Buffer.hh>
-#include <Cell/Vulkan/CommandBuffer.hh>
-#include <Cell/Vulkan/Image.hh>
-#include <Cell/Vulkan/Pipeline.hh>
-#include <Cell/Vulkan/RenderTarget.hh>
+#include <Cell/Renderer/Vulkan/Buffer.hh>
+#include <Cell/Renderer/Vulkan/CommandBuffer.hh>
+#include <Cell/Renderer/Vulkan/Image.hh>
+#include <Cell/Renderer/Vulkan/Pipeline.hh>
+#include <Cell/Renderer/Vulkan/RenderTarget.hh>
 
 struct CELL_PACKED(16) ExampleUBO {
     Cell::Mathematics::Matrix4x4 model;
@@ -21,23 +21,25 @@ struct CELL_PACKED(16) ExampleUBO {
     float delta;
 };
 
-CELL_FUNCTION_INTERNAL void VulkanToolsLoadShader(Cell::Vulkan::Pipeline* CELL_NONNULL pipeline, const Cell::String& path);
-CELL_FUNCTION_INTERNAL void VulkanToolsLoadShader(Cell::Vulkan::Pipeline* CELL_NONNULL pipeline, const Cell::String& path, const Cell::Vulkan::Stage stage);
+CELL_FUNCTION_INTERNAL void VulkanToolsLoadShader(Cell::Renderer::Vulkan::Pipeline* CELL_NONNULL pipeline, const Cell::String& path);
 
-CELL_FUNCTION_INTERNAL Cell::Vulkan::Image* VulkanToolsLoadTexture(Cell::Vulkan::Device* CELL_NONNULL device, const Cell::String& texturePath);
+CELL_FUNCTION_INTERNAL void VulkanToolsLoadShader(Cell::Renderer::Vulkan::Pipeline* CELL_NONNULL pipeline,
+                                                  const Cell::String& path,
+                                                  const Cell::Renderer::Vulkan::Stage stage);
+
+CELL_FUNCTION_INTERNAL Cell::Renderer::Vulkan::Image* VulkanToolsLoadTexture(Cell::Renderer::Vulkan::Device* CELL_NONNULL device,
+                                                                             const Cell::String& texturePath);
 
 CELL_FUNCTION_INTERNAL void VulkanToolsGenerateRenderCommands(const uint32_t vertexCount,
                                                               const uint32_t drawCount,
-                                                              Cell::Vulkan::CommandBuffer* CELL_NONNULL commandBuffer,
-                                                              Cell::Vulkan::Pipeline* CELL_NONNULL pipeline,
-                                                              Cell::Vulkan::Buffer* CELL_NONNULL buffer,
-                                                              Cell::Vulkan::IRenderTarget* CELL_NONNULL target,
-                                                              const uint32_t frameId
-);
+                                                              Cell::Renderer::Vulkan::CommandBuffer* CELL_NONNULL commandBuffer,
+                                                              Cell::Renderer::Vulkan::Pipeline* CELL_NONNULL pipeline,
+                                                              Cell::Renderer::Vulkan::Buffer* CELL_NONNULL buffer,
+                                                              Cell::Renderer::Vulkan::IRenderTarget* CELL_NONNULL target,
+                                                              const uint32_t frameId);
 
-CELL_FUNCTION_INTERNAL void VulkanToolsSetUpResources(Cell::Vulkan::Pipeline* CELL_NONNULL pipeline,
-                                                      Cell::Collection::List<Cell::Vulkan::Buffer*>& uniforms,
-                                                      Cell::Vulkan::Image* CELL_NONNULL texture1,
-                                                      Cell::Vulkan::Image* CELL_NONNULL texture2,
-                                                      Cell::Vulkan::IRenderTarget* CELL_NONNULL target
-);
+CELL_FUNCTION_INTERNAL void VulkanToolsSetUpResources(Cell::Renderer::Vulkan::Pipeline* CELL_NONNULL pipeline,
+                                                      Cell::Collection::List<Cell::Renderer::Vulkan::Buffer*>& uniforms,
+                                                      Cell::Renderer::Vulkan::Image* CELL_NONNULL texture1,
+                                                      Cell::Renderer::Vulkan::Image* CELL_NONNULL texture2,
+                                                      Cell::Renderer::Vulkan::IRenderTarget* CELL_NONNULL target);

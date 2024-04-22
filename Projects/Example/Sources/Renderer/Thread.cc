@@ -10,12 +10,13 @@
 #include <Cell/Memory/UnownedBlock.hh>
 #include <Cell/System/Timer.hh>
 #include <Cell/Utilities/MinMaxClamp.hh>
-#include <Cell/Vulkan/WSITarget.hh>
+#include <Cell/Renderer/Vulkan/WSITarget.hh>
 
 using namespace Cell;
 using namespace Cell::Mathematics;
 using namespace Cell::Mathematics::Utilities;
-using namespace Cell::Vulkan;
+using namespace Cell::Renderer;
+using namespace Cell::Renderer::Vulkan;
 
 void Example::RendererThread() {
     Shell::Result shellResult = this->shell->IndicateStatus(Shell::ShellStatus::Working);
