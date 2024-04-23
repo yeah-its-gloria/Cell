@@ -10,10 +10,6 @@ if (NOT OpenXR_FOUND)
     return()
 endif ()
 
-if (NOT TARGET CellVulkan AND NOT TARGET CellD3D12)
-    message(FATAL_ERROR "Neither Vulkan nor D3D12 were found, no backing renderer available")
-endif ()
-
 set(MODULE_INCLUDES_DIR ${CMAKE_CURRENT_LIST_DIR}/Includes)
 
 add_library(CellOpenXR ${CELL_LIBRARY_TYPE}
@@ -26,22 +22,21 @@ add_library(CellOpenXR ${CELL_LIBRARY_TYPE}
     ${CMAKE_CURRENT_LIST_DIR}/Sources/Session.cc
 )
 
-target_compile_definitions(CellOpenXR PUBLIC "CELL_MODULES_OPENXR_AVAILABLE=1")
-target_include_directories(CellOpenXR PUBLIC ${MODULE_INCLUDES_DIR} ${OpenXR_INCLUDE_DIRS})
-target_link_libraries(CellOpenXR PUBLIC CellCore CellMathematics PRIVATE ${OpenXR_LIBRARIES})
+target_link_libraries(CellOpenXR PUBLIC CellCore PUBLIC CellMathematics PRIVATE ${OpenXR_LIBRARIES})
 
-if (TARGET CellVulkan)
+if (${cell_renderer_vulkan_enabled})
     target_sources(CellOpenXR PRIVATE ${CMAKE_CURRENT_LIST_DIR}/Sources/CreateSessionVulkan.cc)
 
-    target_compile_definitions(CellOpenXR PUBLIC "XR_USE_GRAPHICS_API_VULKAN=1")
-    target_link_libraries(CellOpenXR PUBLIC CellVulkan PRIVATE ${Vulkan_LIBRARIES})
+    target_compile_definitions(CellOpenXR PUBLIC "CELL_MODULES_OPENXR_AVAILABLE=1" "XR_USE_GRAPHICS_API_VULKAN=1")
+    target_include_directories(CellOpenXR PUBLIC ${MODULE_INCLUDES_DIR} ${OpenXR_INCLUDE_DIRS})
+    target_link_libraries(CellOpenXR PUBLIC CellRenderer PRIVATE ${Vulkan_LIBRARIES})
 endif ()
 
-if (TARGET CellD3D12)
+if (${cell_renderer_d3d12_enabled})
     target_sources(CellOpenXR PRIVATE ${CMAKE_CURRENT_LIST_DIR}/Sources/CreateSessionD3D12.cc)
 
     target_compile_definitions(CellOpenXR PUBLIC "XR_USE_GRAPHICS_API_D3D12=1")
-    target_link_libraries(CellOpenXR PUBLIC CellD3D12 PRIVATE dxgi PRIVATE d3d12)
+    target_link_libraries(CellOpenXR PUBLIC CellRenderer PRIVATE dxgi PRIVATE d3d12)
 endif ()
 
 if (WIN32)
@@ -51,7 +46,7 @@ if (WIN32)
                            COMMAND ${CMAKE_COMMAND} -E copy_if_different ${OpenXR_BINARIES} $<TARGET_FILE_DIR:CellOpenXR>
         )
     endif ()
-elseif (NOT UNIX)
+elseif (APPLE OR NOT UNIX)
     message(FATAL_ERROR "Unsupported platform.")
 endif ()
 

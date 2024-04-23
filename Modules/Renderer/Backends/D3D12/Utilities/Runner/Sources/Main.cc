@@ -37,8 +37,8 @@ void CellEntry(Reference<String> parameterString) {
 
     ScopedObject<D3D12::Resource> vertexBuffer = device->CreateResource(sizeof(Vertex), sizeof(triangle)).Unwrap();
 
-    const D3D12::Result result = vertexBuffer->CopyData(Memory::UnownedBlock { triangle, 3 });
-    CELL_ASSERT(result == D3D12::Result::Success);
+    const Result result = vertexBuffer->CopyData(Memory::UnownedBlock { triangle, 3 });
+    CELL_ASSERT(result == Result::Success);
 
     ScopedObject<D3D12::CommandList> list = device->CreateCommandList(pipeline).Unwrap();
 

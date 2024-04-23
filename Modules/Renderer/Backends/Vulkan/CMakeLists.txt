@@ -3,25 +3,25 @@
 
 find_package(Vulkan REQUIRED FATAL_ERROR)
 
-set(SUBMODULE_INCLUDES_DIR ${CMAKE_CURRENT_LIST_DIR}/Includes)
+set(submodule_include_dir ${CMAKE_CURRENT_LIST_DIR}/Includes)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH};${CMAKE_CURRENT_LIST_DIR}/BuildScripts)
 
 include(VulkanShader)
 
 target_sources(CellRenderer PRIVATE
-    ${SUBMODULE_INCLUDES_DIR}/Cell/Renderer/Vulkan/Buffer.hh
-    ${SUBMODULE_INCLUDES_DIR}/Cell/Renderer/Vulkan/CommandBuffer.hh
-    ${SUBMODULE_INCLUDES_DIR}/Cell/Renderer/Vulkan/Device.hh
-    ${SUBMODULE_INCLUDES_DIR}/Cell/Renderer/Vulkan/Image.hh
-    ${SUBMODULE_INCLUDES_DIR}/Cell/Renderer/Vulkan/Instance.hh
-    ${SUBMODULE_INCLUDES_DIR}/Cell/Renderer/Vulkan/Pipeline.hh
-    ${SUBMODULE_INCLUDES_DIR}/Cell/Renderer/Vulkan/RenderTarget.hh
-    ${SUBMODULE_INCLUDES_DIR}/Cell/Renderer/Vulkan/WSITarget.hh
+    ${submodule_include_dir}/Cell/Renderer/Vulkan/Buffer.hh
+    ${submodule_include_dir}/Cell/Renderer/Vulkan/CommandBuffer.hh
+    ${submodule_include_dir}/Cell/Renderer/Vulkan/Device.hh
+    ${submodule_include_dir}/Cell/Renderer/Vulkan/Image.hh
+    ${submodule_include_dir}/Cell/Renderer/Vulkan/Instance.hh
+    ${submodule_include_dir}/Cell/Renderer/Vulkan/Pipeline.hh
+    ${submodule_include_dir}/Cell/Renderer/Vulkan/RenderTarget.hh
+    ${submodule_include_dir}/Cell/Renderer/Vulkan/WSITarget.hh
 
-    ${SUBMODULE_INCLUDES_DIR}/Cell/Renderer/Vulkan/CommandParameters/Binding.hh
-    ${SUBMODULE_INCLUDES_DIR}/Cell/Renderer/Vulkan/CommandParameters/Copy.hh
-    ${SUBMODULE_INCLUDES_DIR}/Cell/Renderer/Vulkan/CommandParameters/Draw.hh
-    ${SUBMODULE_INCLUDES_DIR}/Cell/Renderer/Vulkan/CommandParameters/Rendering.hh
+    ${submodule_include_dir}/Cell/Renderer/Vulkan/CommandParameters/Binding.hh
+    ${submodule_include_dir}/Cell/Renderer/Vulkan/CommandParameters/Copy.hh
+    ${submodule_include_dir}/Cell/Renderer/Vulkan/CommandParameters/Draw.hh
+    ${submodule_include_dir}/Cell/Renderer/Vulkan/CommandParameters/Rendering.hh
 
 # ------------------------------------------------------------------------------------------------
 
@@ -76,7 +76,7 @@ target_sources(CellRenderer PRIVATE
 )
 
 target_compile_definitions(CellRenderer PUBLIC "CELL_MODULES_RENDERER_VULKAN_AVAILABLE=1")
-target_include_directories(CellRenderer PUBLIC ${SUBMODULE_INCLUDES_DIR} ${Vulkan_INCLUDE_DIRS})
+target_include_directories(CellRenderer PUBLIC ${submodule_include_dir} ${Vulkan_INCLUDE_DIRS})
 target_link_libraries(CellRenderer PRIVATE ${Vulkan_LIBRARIES})
 
 # TODO: fix CMake's weirdness about targets and commands following it

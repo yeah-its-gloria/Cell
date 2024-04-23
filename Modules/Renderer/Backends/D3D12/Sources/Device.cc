@@ -19,7 +19,7 @@ Wrapped<Device*, Result> Device::New() {
     }
 
     case E_OUTOFMEMORY: {
-        return Result::NotEnoughMemory;
+        return Result::OutOfHostMemory;
     }
 
     default: {

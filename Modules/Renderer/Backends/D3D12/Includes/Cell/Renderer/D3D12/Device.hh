@@ -5,11 +5,15 @@
 
 #include <Cell/Wrapped.hh>
 #include <Cell/Memory/Block.hh>
-#include <Cell/Renderer/D3D12/Result.hh>
+#include <Cell/Renderer/Result.hh>
 #include <Cell/Shell/Implementations/Windows.hh>
 
 #include <d3d12.h>
 #include <dxgi1_5.h>
+
+#if CELL_MODULES_OPENXR_AVAILABLE
+namespace Cell::OpenXR { class Instance; class Session; }
+#endif
 
 namespace Cell::Renderer::D3D12 {
 
@@ -19,8 +23,8 @@ friend class CommandList;
 friend class Resource;
 
 #if CELL_MODULES_OPENXR_AVAILABLE
-friend class Cell::OpenXR::Instance;
-friend class Cell::OpenXR::Session;
+friend Cell::OpenXR::Instance;
+friend Cell::OpenXR::Session;
 #endif
 
 public:

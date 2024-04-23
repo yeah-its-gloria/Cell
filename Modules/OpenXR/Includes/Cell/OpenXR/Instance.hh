@@ -33,12 +33,12 @@ public:
     // Destroys this instance and disconnects from the runtime.
     CELL_FUNCTION ~Instance();
 
-#ifdef CELL_MODULES_D3D12_AVAILABLE
+#ifdef CELL_MODULES_RENDERER_D3D12_AVAILABLE
     // Initializes a session with D3D12.
     CELL_FUNCTION Wrapped<Session*, Result> CreateSessionD3D12(const FormFactor formFactor, Renderer::D3D12::Device* device);
 #endif
 
-#ifdef CELL_MODULES_VULKAN_AVAILABLE
+#ifdef CELL_MODULES_RENDERER_VULKAN_AVAILABLE
     // Initializes a session with Vulkan.
     CELL_FUNCTION Wrapped<Session*, Result> CreateSessionVulkan(const FormFactor formFactor, Renderer::Vulkan::Device* device);
 #endif
