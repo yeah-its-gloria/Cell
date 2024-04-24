@@ -45,7 +45,7 @@ void Buffer::Unmap() {
 }
 
 Result Buffer::Copy(const Memory::IBlock& data, const uint64_t offset) {
-    CELL_ASSERT(this->isMapped);
+    CELL_ASSERT(!this->isMapped);
 
     void* address = nullptr;
     Result result = this->Map(address, data.GetSize(), offset);

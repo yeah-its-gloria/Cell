@@ -88,7 +88,14 @@ Result CommandBuffer::Reset() {
 }
 
 Result CommandBuffer::WriteSinglePass(const Collection::IEnumerable<const Command>& commands) {
-    CELL_ASSERT(this->recordState == RecordState::Recording);
+    if (this->recordState == RecordState::Recorded) {
+        const Result result = this->Reset();
+        if (result != Result::Success) {
+            return result;
+        }
+    }
+
+    CELL_ASSERT(this->recordState == RecordState::Initialized);
 
     Result result = this->Begin();
     if (result != Result::Success) {

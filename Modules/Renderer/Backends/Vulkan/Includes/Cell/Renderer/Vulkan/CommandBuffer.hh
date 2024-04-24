@@ -77,7 +77,7 @@ private:
     VkCommandBuffer buffer;
     VkQueue& queueRef;
 
-    RecordState recordState = RecordState::Recorded;
+    RecordState recordState = RecordState::Initialized;
 
     Device* device;
 };

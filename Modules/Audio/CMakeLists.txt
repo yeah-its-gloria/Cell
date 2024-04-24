@@ -39,6 +39,7 @@ if (WIN32)
     target_link_libraries(CellAudio PRIVATE mmdevapi)
 elseif (APPLE)
     target_sources(CellAudio PRIVATE
+        ${CMAKE_CURRENT_LIST_DIR}/Sources/CoreAudio/Capturer.cc
         ${CMAKE_CURRENT_LIST_DIR}/Sources/CoreAudio/Renderer.cc
         ${CMAKE_CURRENT_LIST_DIR}/Sources/CoreAudio/Subsystem.cc
     )

@@ -9,6 +9,8 @@
 #include <AppKit/AppKit.h>
 #include <Foundation/NSThread.h>
 
+#include <CoreFoundation/CoreFoundation.h>
+
 #include <stdio.h>
 
 using namespace Cell;
@@ -50,7 +52,7 @@ int main() {
     NSMenu*     menuBar      = [[NSMenu alloc] init];
     NSMenu*     appMenu      = [[NSMenu alloc] init];
     NSMenuItem* appMenuItem  = [[NSMenuItem alloc] init];
-    NSMenuItem* quitMenuItem = [[NSMenuItem alloc] initWithTitle: @"Quit Cell" action: @selector(terminate:) keyEquivalent: @"q"];
+    NSMenuItem* quitMenuItem = [[NSMenuItem alloc] initWithTitle: @"Quit" action: @selector(terminate:) keyEquivalent: @"q"];
 
     [appMenu     addItem:     quitMenuItem];
     [appMenuItem setSubmenu:  appMenu];
@@ -68,15 +70,15 @@ int main() {
     while (mainThread.IsActive()) {
         System::Sleep(1);
 
-        NSEvent* event = [NSApp nextEventMatchingMask: NSEventMaskAny
-                                untilDate: [NSDate distantPast]
-                                inMode: NSDefaultRunLoopMode
-                                dequeue: YES];
+        NSEvent* event = [application nextEventMatchingMask: NSEventMaskAny
+                                      untilDate: [NSDate distantPast]
+                                      inMode: NSDefaultRunLoopMode
+                                      dequeue: YES];
         if (event == nullptr) {
             continue;
         }
 
-        [NSApp sendEvent: event];
+        [application sendEvent: event];
     }
 
     return 0;

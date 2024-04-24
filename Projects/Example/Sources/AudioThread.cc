@@ -19,7 +19,7 @@ void Example::AudioThread() {
     const uint32_t sampleSize = ((2 * 32) / 8);
 
     const Format format = {
-        .type = FormatType::S16PCM,
+        .type = FormatType::Float32PCM,
         .channels = 2,
         .rate = 48000
     };
@@ -36,21 +36,22 @@ void Example::AudioThread() {
     Result result = renderer->Start();
     CELL_ASSERT(result == Result::Success);
 
+    // BUG: CoreAudio hates this design, right now this doesn't track the samples played properly
+    // TODO: build a better way of even doing buffers in the first place
     uint32_t dataOffset = 0;
     while (this->shell->IsStillActive()) {
         if (!this->controller->TriggeredAudio() || dataOffset >= size) {
             dataOffset = 0;
-            System::Thread::Yield();
+            System::SleepPrecise(renderer->GetLatency());
             continue;
         }
 
         System::SleepPrecise(renderer->GetLatency());
 
         // BUG: this doesn't function well on PulseAudio with particularly small samples
-        // TODO: build a better way of detecting when the buffer is full
         const uint32_t offset = renderer->GetCurrentSampleOffset().Unwrap();
         if (offset > 0) {
-            System::Thread::Yield();
+            System::SleepPrecise(renderer->GetLatency());
             continue;
         }
 

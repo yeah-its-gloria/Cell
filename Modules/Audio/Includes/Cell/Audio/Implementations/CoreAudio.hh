@@ -44,14 +44,40 @@ public:
     CELL_FUNCTION uint32_t GetLatency() override;
 
 private:
-    CELL_FUNCTION_INTERNAL Renderer(Subsystem* s, AudioDeviceID d) : subsystem(s), device(d), queue(nullptr) { }
+    CELL_FUNCTION_INTERNAL Renderer(Subsystem* CELL_NONNULL s, AudioDeviceID d) : subsystem(s), device(d), queue(nullptr), buffer(nullptr) { }
 
-    CELL_FUNCTION_INTERNAL static void OutputBufferFunc(void* data, AudioQueueRef queue, AudioQueueBufferRef buffer);
+    CELL_FUNCTION_INTERNAL static void OutputBufferReadyCallback(void* CELL_NULLABLE data, AudioQueueRef queue, AudioQueueBufferRef buffer);
+
+    Subsystem* subsystem;
+
+    AudioDeviceID device;
+    AudioQueueRef queue;
+
+    AudioQueueBufferRef buffer;
+};
+
+class Capturer : public ICapturer {
+friend Subsystem;
+
+public:
+    CELL_FUNCTION ~Capturer();
+
+    CELL_FUNCTION Result Start() override;
+    CELL_FUNCTION Result Stop() override;
+    CELL_FUNCTION Wrapped<uint32_t, Result> GetAvailableSampleCount() override;
+    CELL_FUNCTION Wrapped<uint8_t*, Result> Fetch(const uint32_t count) override;
+
+private:
+    CELL_FUNCTION_INTERNAL Capturer(Subsystem* CELL_NONNULL s, AudioDeviceID d) : subsystem(s), device(d), queue(nullptr) { }
+
+    CELL_FUNCTION_INTERNAL static void InputBufferFunc(void* CELL_NULLABLE data, AudioQueueRef queue, AudioQueueBufferRef buffer,
+        const AudioTimeStamp* CELL_NONNULL startTime, UInt32 descriptionCount, const AudioStreamPacketDescription* CELL_NULLABLE descriptions);
 
     Subsystem* subsystem;
 
     AudioDeviceID device;
     AudioQueueRef queue;
 };
+
 
 }
