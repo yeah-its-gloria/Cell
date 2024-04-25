@@ -134,6 +134,8 @@ else ()
         -Wno-c99-extensions
         -Wno-nullability-extension
         -Wno-nullability-completeness
+        -Wno-c++11-extensions
+        -Wno-c++17-extensions
         -Wno-c++2b-extensions
 
         -pedantic

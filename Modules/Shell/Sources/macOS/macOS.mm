@@ -1,42 +1,72 @@
 // SPDX-FileCopyrightText: Copyright 2023-2024 Gloria G.
 // SPDX-License-Identifier: BSD-2-Clause
 
-#include "Backend.hh"
+#include <Cell/Shell/Implementations/macOS.hh>
 
 namespace Cell::Shell::Implementations {
 
 Wrapped<macOS*, Result> macOS::New(const String& title, const Extent extent) {
-    NSRect contentRect = NSMakeRect(0, 0, extent.width, extent.height);
-
     NSString* nsTitle = title.IsEmpty() ? @"Cell" : title.ToPlatformNSString();
 
-    CellWindowCreatorTrampoline* trampoline = [[CellWindowCreatorTrampoline alloc] initWithRect: contentRect];
-    [trampoline performSelectorOnMainThread: @selector(create:) withObject: nsTitle waitUntilDone: YES];
+    macOS* instance = new macOS();
+    instance->delegate = [[CellWindowDelegate alloc] initWithRefToIsDone: &instance->isDone andIsActivated: &instance->isActivated];
 
-    macOS* macos = new macOS(trampoline.window, trampoline.layer);
-    macos->window.keysRef = &macos->keys;
+    dispatch_sync(dispatch_get_main_queue(), ^{
+        instance->window = [[CellWindowImpl alloc] initWithContentRect: NSMakeRect(0, 0, extent.width, extent.height)
+                                                   styleMask: NSWindowStyleMaskClosable | NSWindowStyleMaskMiniaturizable | NSWindowStyleMaskTitled
+                                                   backing: NSBackingStoreBuffered
+                                                   defer: NO];
 
-    macos->delegate = [[CellWindowDelegate alloc] initWithRefToIsDone: &macos->isDone andIsActivated: &macos->isActivated];
-    [macos->window performSelectorOnMainThread: @selector(setDelegate:) withObject: macos->delegate waitUntilDone: YES];
+        instance->layer = [CAMetalLayer layer];
 
-    return macos;
+        [instance->window setReleasedWhenClosed: NO];
+
+        NSView* view = [instance->window contentView];
+        [view setWantsLayer: YES];
+        view.layer = instance->layer;
+
+        [instance->window setColorSpace: [NSColorSpace sRGBColorSpace]];
+        [instance->window setBackgroundColor: [NSColor blackColor]];
+        [instance->window setLevel: NSNormalWindowLevel];
+        [instance->window setTitle: nsTitle];
+        [instance->window setDelegate: instance->delegate];
+
+        [instance->window center];
+        [instance->window makeKeyAndOrderFront: nullptr];
+    });
+
+    instance->window.keysRef = &instance->keys;
+    return instance;
 }
 
 macOS::~macOS() {
-    /* ... */
+    // ...
 }
 
 Result macOS::RequestQuit() {
-    CellWindowCreatorTrampoline* trampoline = [[CellWindowCreatorTrampoline alloc] initWithWindow: this->window andLayer: this->layer];
-    [trampoline performSelectorOnMainThread: @selector(close:) withObject: nullptr waitUntilDone: YES];
+    dispatch_sync(dispatch_get_main_queue(), ^{
+        [this->window performClose: nullptr];
+    });
+
     return Result::Success;
 }
 
-Result macOS::SetDrawableExtent(const Extent extent) {
-    CellWindowCreatorTrampoline* trampoline = [[CellWindowCreatorTrampoline alloc] initWithWindow: this->window
-        andSize: NSSize { .width = (double)extent.width, .height = (double)extent.height }];
+Wrapped<Extent, Result> macOS::GetDrawableExtent() {
+    __block CGSize size = { 0.f, 0.f };
 
-    [trampoline performSelectorOnMainThread: @selector(resize:) withObject: nullptr waitUntilDone: YES];
+    dispatch_sync(dispatch_get_main_queue(), ^{
+        NSView* view = [this->window contentView];
+        size = [view convertRectToBacking: [view bounds]].size;
+    });
+
+    return Extent { .width = (uint32_t)size.width, .height = (uint32_t)size.height };
+}
+
+Result macOS::SetDrawableExtent(const Extent extent) {
+    dispatch_sync(dispatch_get_main_queue(), ^{
+        [this->window setContentSize: CGSize { .width = (CGFloat)extent.width, .height = (CGFloat)extent.height }];
+    });
+
     return Result::Success;
 }
 
@@ -46,9 +76,9 @@ Result macOS::SetNewTitle(const String& title) {
     }
 
     NSString* nsTitle = title.ToPlatformNSString();
-
-    CellWindowCreatorTrampoline* trampoline = [[CellWindowCreatorTrampoline alloc] initWithWindow: this->window];
-    [trampoline performSelectorOnMainThread: @selector(doTitleSet:) withObject: nsTitle waitUntilDone: YES];
+    dispatch_sync(dispatch_get_main_queue(), ^{
+        [this->window setTitle: nsTitle];
+    });
 
     return Result::Success;
 }
@@ -88,13 +118,6 @@ Result macOS::RunDispatchImpl() {
     // ...
 
     return Result::Success;
-}
-
-Wrapped<Extent, Result> macOS::GetDrawableExtent() {
-    CellWindowCreatorTrampoline* trampoline = [[CellWindowCreatorTrampoline alloc] initWithWindow: this->window];
-    [trampoline performSelectorOnMainThread: @selector(doGetExtent:) withObject: nullptr waitUntilDone: YES];
-
-    return Extent { .width = (uint32_t)trampoline.rect.size.width, .height = (uint32_t)trampoline.rect.size.height };
 }
 
 }

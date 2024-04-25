@@ -138,7 +138,10 @@ Wrapped<IRenderer*, Result> Subsystem::CreateRenderer(const DeviceInfo& info, co
     }
     }
 
-    CFStringRef deviceUID;
+    (void)(DeviceUIDRenderInfo);
+
+    // TODO: setting the device ID currently causes crashes inside AudioHardware
+    /*CFStringRef deviceUID;
     UInt32 deviceUIDSize = sizeof(CFStringRef);
     result = AudioObjectGetPropertyData(id, &DeviceUIDRenderInfo, 0, NULL, &deviceUIDSize, &deviceUID);
     CELL_ASSERT(result == kAudioHardwareNoError);
@@ -146,7 +149,7 @@ Wrapped<IRenderer*, Result> Subsystem::CreateRenderer(const DeviceInfo& info, co
     result = AudioQueueSetProperty(renderer->queue, kAudioQueueProperty_CurrentDevice, &deviceUID, deviceUIDSize);
     CELL_ASSERT(result == kAudioHardwareNoError);
 
-    CFRelease(deviceUID);
+    CFRelease(deviceUID);*/
 
     AudioQueueBufferRef buffer = nullptr;
     result = AudioQueueAllocateBuffer(renderer->queue, streamDescription.mBytesPerPacket * streamDescription.mSampleRate * 2, &buffer);

@@ -55,16 +55,13 @@ elseif (APPLE)
     target_sources(CellShell PRIVATE
         ${MODULE_INCLUDES_DIR}/Cell/Shell/Implementations/macOS.hh
 
-        ${CMAKE_CURRENT_LIST_DIR}/Sources/macOS/Backend.hh
-
-        ${CMAKE_CURRENT_LIST_DIR}/Sources/macOS/Backend.mm
+        ${CMAKE_CURRENT_LIST_DIR}/Sources/macOS/Events.mm
         ${CMAKE_CURRENT_LIST_DIR}/Sources/macOS/macOS.mm
-        ${CMAKE_CURRENT_LIST_DIR}/Sources/macOS/WindowImpl.mm
 
-        ${CMAKE_CURRENT_LIST_DIR}/Sources/macOS/Controller/Xbox.cc
+        ${CMAKE_CURRENT_LIST_DIR}/Sources/macOS/Controller/Xbox.mm
     )
 
-    target_link_libraries(CellShell PRIVATE "-framework Cocoa" "-framework QuartzCore" c++)
+    target_link_libraries(CellShell PRIVATE "-framework Cocoa" "-framework QuartzCore" "-framework GameController" c++)
 elseif (UNIX)
     find_package(wayland REQUIRED FATAL_ERROR)
 

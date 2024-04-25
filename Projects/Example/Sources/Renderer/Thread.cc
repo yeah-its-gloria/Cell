@@ -125,13 +125,13 @@ void Example::RendererThread() {
     while (this->shell->IsStillActive()) {
         this->renderDeltaTime = Cell::Utilities::Minimum((System::GetPreciseTickerValue() - finishedTick) / 1000.f, 0.001f);
 
-        if (!this->shell->IsInForeground()) {
-            System::Thread::Yield();
+        /*if (!this->shell->IsInForeground()) {
+            System::SleepPrecise(400);
             continue;
         } else {
             shellResult = this->shell->CaptureState(true);
             CELL_ASSERT(shellResult == Shell::Result::Success);
-        }
+        }*/
 
         ubo.delta = this->renderDeltaTime;
         ubo.view = this->controller->GetCamera();
@@ -162,6 +162,6 @@ void Example::RendererThread() {
         }
 
         finishedTick = System::GetPreciseTickerValue();
-        System::Thread::Yield();
+        System::SleepPrecise(400);
     }
 }

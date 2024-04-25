@@ -7,7 +7,7 @@
 
 #ifdef __OBJC__
 #include <Cocoa/Cocoa.h>
-#import <QuartzCore/CAMetalLayer.h>
+#include <QuartzCore/CAMetalLayer.h>
 
 @interface CellWindowImpl : NSWindow {}
 @property(assign) Cell::Shell::KeyboardButton* keysRef;
@@ -15,10 +15,6 @@
 
 @interface CellWindowDelegate : NSObject<NSWindowDelegate>
 -(id) initWithRefToIsDone: (bool*) isDone andIsActivated: (bool*) isActivated;
-
--(BOOL) windowShouldClose: (NSWindow*) sender;
--(void) windowDidBecomeKey: (NSNotification *) notification;
--(void) windowDidResignKey: (NSNotification *) notification;
 
 @property(assign) bool* isDone;
 @property(assign) bool* isActivated;
@@ -50,13 +46,13 @@ public:
     CELL_FUNCTION Result LogClear() override;
 
 private:
-    CELL_FUNCTION_INTERNAL macOS(CellWindowImpl* w, CAMetalLayer* l) : window(w), layer(l), delegate(nullptr) { }
+    CELL_FUNCTION_INTERNAL macOS() { }
 
     CELL_FUNCTION_INTERNAL Result RunDispatchImpl() override;
 
-    CellWindowImpl* window;
-    CAMetalLayer* layer;
-    CellWindowDelegate* delegate;
+    CellWindowImpl* window = nullptr;
+    CAMetalLayer* layer = nullptr;
+    CellWindowDelegate* delegate = nullptr;
 };
 
 }

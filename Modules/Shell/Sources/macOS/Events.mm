@@ -64,6 +64,7 @@ const KeyboardButton KeyLUT[52] = {
     KeyboardButton::Backspace
 };
 
+// Window implementation
 @implementation CellWindowImpl
 -(BOOL) canBecomeKeyWindow {
     return YES;
@@ -99,5 +100,36 @@ const KeyboardButton KeyLUT[52] = {
     }
 
     *self.keysRef ^= KeyLUT[event.keyCode];
+}
+@end
+
+// Delegate implementation
+@implementation CellWindowDelegate
+-(id) initWithRefToIsDone: (bool*) isDone andIsActivated: (bool*) isActivated {
+    CellWindowDelegate* obj = [super init];
+
+    obj.isDone      = isDone;
+    obj.isActivated = isActivated;
+
+    return obj;
+}
+
+-(BOOL) windowShouldClose: (NSWindow*) sender {
+    (void)(sender);
+
+    *self.isDone = true;
+    return NO;
+}
+
+-(void) windowDidBecomeKey: (NSNotification*) notification {
+    (void)(notification);
+
+    *self.isActivated = true;
+}
+
+-(void) windowDidResignKey: (NSNotification*) notification {
+    (void)(notification);
+
+    *self.isActivated = false;
 }
 @end

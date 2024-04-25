@@ -64,8 +64,8 @@ int main() {
 
     String parameters = "";
 
-    Reference ref(parameters);
-    System::Thread mainThread(([](void* p) { Reference<String> r = *(Reference<String>*)p; CellEntry(r); }), (void*)&ref);
+    Reference ref(parameters); // what did I even need references for
+    System::Thread mainThread(([](void* p) { Reference<String> r = *(Reference<String>*)p; CellEntry(r); }), (void*)&ref, "Main Thread");
 
     while (mainThread.IsActive()) {
         System::Sleep(1);
