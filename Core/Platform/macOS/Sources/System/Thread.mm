@@ -14,7 +14,7 @@ struct threadData {
 };
 
 Thread::Thread(ThreadFunction function, void* parameter, const String& name) {
-    NSCondition* finished = [[NSCondition alloc] init];
+    NSCondition* finished = [NSCondition new];
 
     NSThread* thread = [[NSThread alloc] initWithBlock: ^{
         function(parameter);

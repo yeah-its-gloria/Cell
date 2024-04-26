@@ -12,14 +12,14 @@ namespace Cell::System {
 
 void SoftPanic() {
     @autoreleasepool {
-        NSAlert* alert = [[NSAlert alloc] init];
+        NSAlert* alert = [NSAlert new];
 
         [alert setAlertStyle: NSAlertStyleCritical];
         [alert setMessageText: @"A fatal error occurred."];
 
         [alert runModal];
 
-        [NSApp terminate: nil];
+        [NSApp terminate: nullptr];
     }
 
     abort();

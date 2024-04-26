@@ -54,7 +54,7 @@ Result File::Read(Memory::IBlock& data, const size_t offset) {
 Result File::Write(const Memory::IBlock& data) {
     NSFileHandle* handle = (NSFileHandle*)this->impl;
 
-    NSData* nsData = [[NSData alloc] initWithBytesNoCopy: (void*)data.AsPointer() length: data.GetSize() deallocator: ^(void * _Nonnull, NSUInteger) { /* ... */ }];
+    NSData* nsData = [[NSData alloc] initWithBytesNoCopy: (void*)data.AsPointer() length: data.GetSize() freeWhenDone: NO];
 
     NSError* error = nullptr;
     const BOOL result = [handle writeData: nsData error: &error];

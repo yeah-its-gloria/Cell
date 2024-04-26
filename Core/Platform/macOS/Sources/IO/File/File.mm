@@ -71,7 +71,8 @@ Result File::Delete(const String &path) {
     NSDictionary<NSFileAttributeKey, id>* attributes = [manager attributesOfItemAtPath: nsPath error: &error];
     if (error != nullptr) {
         switch (error.code) {
-        case NSFileNoSuchFileError: {
+        case NSFileNoSuchFileError:
+        case NSFileReadNoSuchFileError: {
             return Result::NotFound;
         }
 

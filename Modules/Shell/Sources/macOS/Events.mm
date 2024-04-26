@@ -81,8 +81,6 @@ const KeyboardButton KeyLUT[52] = {
         return;
     }
 
-    self.keyLock->Lock();
-
     if (event.keyCode > sizeof(KeyLUT) || KeyLUT[event.keyCode] == KeyboardButton::None) {
 #ifdef _DEBUG
         const char* identifier = [event.characters cStringUsingEncoding: NSUTF8StringEncoding];
@@ -91,8 +89,8 @@ const KeyboardButton KeyLUT[52] = {
         return;
     }
 
+    self.keyLock->Lock();
     *self.keysRef |= KeyLUT[event.keyCode];
-
     self.keyLock->Unlock();
 }
 
@@ -103,8 +101,6 @@ const KeyboardButton KeyLUT[52] = {
         return;
     }
 
-    self.keyLock->Lock();
-
     if (event.keyCode > sizeof(KeyLUT) || KeyLUT[event.keyCode] == KeyboardButton::None) {
 #ifdef _DEBUG
         const char* identifier = [event.characters cStringUsingEncoding: NSUTF8StringEncoding];
@@ -113,6 +109,7 @@ const KeyboardButton KeyLUT[52] = {
         return;
     }
 
+    self.keyLock->Lock();
     *self.keysRef ^= KeyLUT[event.keyCode];
     self.keyLock->Unlock();
 }
@@ -120,10 +117,14 @@ const KeyboardButton KeyLUT[52] = {
 -(void) flagsChanged: (NSEvent*) event {
     CELL_ASSERT(event.type == NSEventTypeFlagsChanged && self.keysRef != nullptr && self.keyLock != nullptr);
 
+    // Ignored keys: Caps Lock, Function (fn), Command, Numeric Pad keys, Help
+    if ((event.modifierFlags & (NSEventModifierFlagShift | NSEventModifierFlagControl | NSEventModifierFlagOption)) == 0) {
+        return;
+    }
+
     self.keyLock->Lock();
 
     // BUG: sometimes modifiers seem to cause keys to get stuck
-    // Ignored keys: Caps Lock, Function (fn), Command, Numeric Pad keys, Help
     // macOS doesn't seem to care about which side was pressed, therefore we treat them the same
 
     if (event.modifierFlags & NSEventModifierFlagShift) {

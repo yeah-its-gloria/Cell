@@ -125,10 +125,10 @@ void Example::RendererThread() {
     while (this->shell->IsStillActive()) {
         this->renderDeltaTime = Cell::Utilities::Minimum((System::GetPreciseTickerValue() - finishedTick) / 1000.f, 0.001f);
 
-        /*if (!this->shell->IsInForeground()) {
+        if (!this->shell->IsInForeground()) {
             System::SleepPrecise(400);
             continue;
-        } else {
+        } /*else {
             shellResult = this->shell->CaptureState(true);
             CELL_ASSERT(shellResult == Shell::Result::Success);
         }*/
@@ -157,7 +157,7 @@ void Example::RendererThread() {
         }
 
         default: {
-            System::Panic("Cell::Vulkan::Instance::RenderImage failed");
+            System::Panic("Cell::Renderer::Vulkan::Instance::RenderImage failed");
         }
         }
 

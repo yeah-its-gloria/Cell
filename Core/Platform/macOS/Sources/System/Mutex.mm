@@ -8,7 +8,7 @@
 namespace Cell::System {
 
 Mutex::Mutex(const bool createLocked) {
-    this->impl = (uintptr_t)[[NSCondition alloc] init];
+    this->impl = (uintptr_t)[NSCondition new];
 
     if (createLocked) {
         [(NSCondition*)this->impl lock];

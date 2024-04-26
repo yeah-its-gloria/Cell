@@ -18,7 +18,8 @@ Result CheckPath(const String& path) {
     NSDictionary<NSFileAttributeKey, id>* attributes = [[NSFileManager defaultManager] attributesOfItemAtPath: nsPath error: &error];
     if (error != nullptr) {
         switch (error.code) {
-        case NSFileNoSuchFileError: {
+        case NSFileNoSuchFileError:
+        case NSFileReadNoSuchFileError: {
             return Result::NotFound;
         }
 

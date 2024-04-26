@@ -39,7 +39,7 @@ int main() {
 
     NSApplication* application = [NSApplication sharedApplication];
 
-    CellAppDelegate* delegate = [[CellAppDelegate alloc] init];
+    CellAppDelegate* delegate = [CellAppDelegate new];
     [application setActivationPolicy: NSApplicationActivationPolicyRegular];
     [application setDelegate: delegate];
 
@@ -49,9 +49,9 @@ int main() {
         CELL_ASSERT([NSThread isMultiThreaded] == YES);
     }
 
-    NSMenu*     menuBar      = [[NSMenu alloc] init];
-    NSMenu*     appMenu      = [[NSMenu alloc] init];
-    NSMenuItem* appMenuItem  = [[NSMenuItem alloc] init];
+    NSMenu*     menuBar      = [NSMenu new];
+    NSMenu*     appMenu      = [NSMenu new];
+    NSMenuItem* appMenuItem  = [NSMenuItem new];
     NSMenuItem* quitMenuItem = [[NSMenuItem alloc] initWithTitle: @"Quit" action: @selector(terminate:) keyEquivalent: @"q"];
 
     [appMenu     addItem:     quitMenuItem];

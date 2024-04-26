@@ -47,7 +47,8 @@ CELL_FUNCTION_INTERNAL Wrapped<NSFileHandle*, Result> createHandle(NSString* pat
 
     if (error != nullptr) {
         switch (error.code) {
-        case NSFileNoSuchFileError: {
+        case NSFileNoSuchFileError:
+        case NSFileReadNoSuchFileError: {
             return Result::NotFound;
         }
 
