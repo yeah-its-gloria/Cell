@@ -6,11 +6,14 @@
 #include <Cell/Shell/Shell.hh>
 
 #ifdef __OBJC__
+#include <Cell/System/Mutex.hh>
+
 #include <Cocoa/Cocoa.h>
 #include <QuartzCore/CAMetalLayer.h>
 
 @interface CellWindowImpl : NSWindow {}
 @property(assign) Cell::Shell::KeyboardButton* keysRef;
+@property(assign) Cell::System::Mutex* keyLock;
 @end
 
 @interface CellWindowDelegate : NSObject<NSWindowDelegate>

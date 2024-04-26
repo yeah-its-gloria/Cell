@@ -37,15 +37,9 @@ static const AudioObjectPropertyAddress DeviceRenderConfigurationInfo = {
     kAudioObjectPropertyElementMain
 };
 
-static const AudioObjectPropertyAddress DeviceUIDCaptureInfo = {
+static const AudioObjectPropertyAddress DeviceUIDInfo = {
     kAudioDevicePropertyDeviceUID,
-    kAudioDevicePropertyScopeInput,
-    kAudioObjectPropertyElementMain
-};
-
-static const AudioObjectPropertyAddress DeviceUIDRenderInfo = {
-    kAudioDevicePropertyDeviceUID,
-    kAudioDevicePropertyScopeOutput,
+    kAudioObjectPropertyScopeGlobal,
     kAudioObjectPropertyElementMain
 };
 
@@ -123,7 +117,8 @@ Wrapped<IRenderer*, Result> Subsystem::CreateRenderer(const DeviceInfo& info, co
     Renderer* renderer = new Renderer(this, id);
 
     const AudioStreamBasicDescription streamDescription = MakeStreamDescription(format);
-    OSStatus result = AudioQueueNewOutput(&streamDescription, Renderer::OutputBufferReadyCallback, renderer, CFRunLoopGetMain(), kCFRunLoopDefaultMode, 0, &renderer->queue);
+    OSStatus result = AudioQueueNewOutputWithDispatchQueue(&renderer->queue, &streamDescription, 0, dispatch_get_main_queue(),
+        ^(AudioQueueRef q, AudioQueueBufferRef b) { Renderer::OutputBufferReadyCallback(renderer, q, b); });
     switch (result) {
     case kAudioHardwareNoError: {
         break;
@@ -138,18 +133,15 @@ Wrapped<IRenderer*, Result> Subsystem::CreateRenderer(const DeviceInfo& info, co
     }
     }
 
-    (void)(DeviceUIDRenderInfo);
-
-    // TODO: setting the device ID currently causes crashes inside AudioHardware
-    /*CFStringRef deviceUID;
+    CFStringRef deviceUID;
     UInt32 deviceUIDSize = sizeof(CFStringRef);
-    result = AudioObjectGetPropertyData(id, &DeviceUIDRenderInfo, 0, NULL, &deviceUIDSize, &deviceUID);
+    result = AudioObjectGetPropertyData(id, &DeviceUIDInfo, 0, NULL, &deviceUIDSize, &deviceUID);
     CELL_ASSERT(result == kAudioHardwareNoError);
 
-    result = AudioQueueSetProperty(renderer->queue, kAudioQueueProperty_CurrentDevice, &deviceUID, deviceUIDSize);
+    result = AudioQueueSetProperty(renderer->queue, kAudioQueueProperty_CurrentDevice, &deviceUID, sizeof(CFStringRef));
     CELL_ASSERT(result == kAudioHardwareNoError);
 
-    CFRelease(deviceUID);*/
+    CFRelease(deviceUID);
 
     AudioQueueBufferRef buffer = nullptr;
     result = AudioQueueAllocateBuffer(renderer->queue, streamDescription.mBytesPerPacket * streamDescription.mSampleRate * 2, &buffer);
@@ -167,7 +159,6 @@ Wrapped<IRenderer*, Result> Subsystem::CreateRenderer(const DeviceInfo& info, co
 Wrapped<ICapturer*, Result> Subsystem::CreateLoopback(const DeviceInfo& info, const Format& format) {
     (void)(info); (void)(format);
 
-    (void)(DeviceUIDCaptureInfo);
     (void)(DeviceCaptureConfigurationInfo);
 
     CELL_UNIMPLEMENTED

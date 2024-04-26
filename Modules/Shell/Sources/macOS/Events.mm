@@ -75,7 +75,13 @@ const KeyboardButton KeyLUT[52] = {
 }
 
 -(void) keyDown: (NSEvent*) event {
-    CELL_ASSERT(event.type == NSEventTypeKeyDown && self.keysRef != nullptr);
+    CELL_ASSERT(event.type == NSEventTypeKeyDown && self.keysRef != nullptr && self.keyLock != nullptr);
+
+    if (event.ARepeat == YES) {
+        return;
+    }
+
+    self.keyLock->Lock();
 
     if (event.keyCode > sizeof(KeyLUT) || KeyLUT[event.keyCode] == KeyboardButton::None) {
 #ifdef _DEBUG
@@ -86,10 +92,18 @@ const KeyboardButton KeyLUT[52] = {
     }
 
     *self.keysRef |= KeyLUT[event.keyCode];
+
+    self.keyLock->Unlock();
 }
 
 -(void) keyUp: (NSEvent*) event {
-    CELL_ASSERT(event.type == NSEventTypeKeyUp && self.keysRef != nullptr);
+    CELL_ASSERT(event.type == NSEventTypeKeyUp && self.keysRef != nullptr && self.keyLock != nullptr);
+
+    if (event.ARepeat == YES) {
+        return;
+    }
+
+    self.keyLock->Lock();
 
     if (event.keyCode > sizeof(KeyLUT) || KeyLUT[event.keyCode] == KeyboardButton::None) {
 #ifdef _DEBUG
@@ -100,6 +114,37 @@ const KeyboardButton KeyLUT[52] = {
     }
 
     *self.keysRef ^= KeyLUT[event.keyCode];
+    self.keyLock->Unlock();
+}
+
+-(void) flagsChanged: (NSEvent*) event {
+    CELL_ASSERT(event.type == NSEventTypeFlagsChanged && self.keysRef != nullptr && self.keyLock != nullptr);
+
+    self.keyLock->Lock();
+
+    // BUG: sometimes modifiers seem to cause keys to get stuck
+    // Ignored keys: Caps Lock, Function (fn), Command, Numeric Pad keys, Help
+    // macOS doesn't seem to care about which side was pressed, therefore we treat them the same
+
+    if (event.modifierFlags & NSEventModifierFlagShift) {
+        *self.keysRef &= KeyboardButton::LeftShift;
+    } else {
+        *self.keysRef ^= KeyboardButton::LeftShift;
+    }
+
+    if (event.modifierFlags & NSEventModifierFlagControl) {
+        *self.keysRef &= KeyboardButton::LeftControl;
+    } else {
+        *self.keysRef ^= KeyboardButton::LeftControl;
+    }
+
+    if (event.modifierFlags & NSEventModifierFlagOption) {
+        *self.keysRef &= KeyboardButton::LeftAlt;
+    } else {
+        *self.keysRef ^= KeyboardButton::LeftAlt;
+    }
+
+    self.keyLock->Unlock();
 }
 @end
 

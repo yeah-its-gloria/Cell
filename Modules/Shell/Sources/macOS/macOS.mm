@@ -34,13 +34,13 @@ Wrapped<macOS*, Result> macOS::New(const String& title, const Extent extent) {
         [instance->window center];
         [instance->window makeKeyAndOrderFront: nullptr];
     });
-
+    instance->window.keyLock = new System::Mutex();
     instance->window.keysRef = &instance->keys;
     return instance;
 }
 
 macOS::~macOS() {
-    // ...
+    delete this->window.keyLock;
 }
 
 Result macOS::RequestQuit() {
