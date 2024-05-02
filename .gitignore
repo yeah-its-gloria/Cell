@@ -4,20 +4,19 @@
 
 # IDE and tool storage
 .cache
-
+.codechecker
 .idea
 .vs
 .vscode
 
-.codechecker
-
 # Third party resources
 /ThirdParty
 
-# OS garbage
+# OS data
 .DS_Store
 desktop.ini
 thumbs.db
+*.app
 
 # Exclusions
 !BuildContent

@@ -5,7 +5,7 @@
 
 #include <Cell/Cell.hh>
 
-#if defined(CELL_PLATFORM_MACOS) && defined(__OBJC__)
+#if defined(__OBJC__)
 #include <Foundation/NSString.h>
 #else
 typedef void NSString;

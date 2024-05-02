@@ -4,7 +4,7 @@
 Please note that this project is in an incredibly early state, and that breaking changes will constantly be made.  
 There is no guarantee that any application component currently in tree will even launch across all supported platforms.
 
-**Important note: At the moment, support on Linux is __completely broken__.**
+**Important note: At the moment, support on Linux is __completely broken__. Windows may not function properly. Yeah I develop actively on a Mac**
 
 ## Building
 Cell supports Windows and Linux, in particular Arch Linux and Ubuntu. 
@@ -14,7 +14,7 @@ Cell has the following dependencies:
 | Name | Minimum Version | Platform | Notes | Ubuntu Package | Arch Linux Package |
 |-|-|-|-|-|-|
 | [LLVM](https://llvm.org) | 16.0.0 | All | Specifically clang and lld are needed. clang-cl can be used on Windows, if desired. Other compilers are **not officially** supported. | `clang`, `lld`, `llvm` | `clang`, `lld`, `llvm` |
-| [CMake](https://cmake.org/) | 3.24.0 | All | Requires a generator of some kind. | `cmake` | `cmake` |
+| [Meson](https://mesonbuild.org/) | 1.4.0 | All | | `meson` | `meson` |
 | [Ninja](https://ninja-build.org/) | 1.11.1 | All | Recommended generator for CMake. | `ninja-build` | `ninja` ||
 | | | | | | |
 | [Windows SDK](https://developer.microsoft.com/en-us/windows/downloads/windows-sdk/) | 10.0.22621.0 | Windows | Should be installed alongside MSVC v143. | | |
@@ -32,25 +32,8 @@ Cell has the following dependencies:
 Requires either Windows 10 or newer, Ubuntu 24.04 or newer, or an up-to-date Arch Linux installation.  
 Other Linux distributions might not be as well supported, and other Unix-ish-likes are likely broken and do not receive full support.
 
-You can additionally configure the engine further through CMake. I recommend using a multi-configuration generator, like `Ninja Multi-Config`.
- 
-| Setting | Default Value | Intent |
-|-|-|-|
-| `CELL_ENABLE_EDITOR` | ON | Enables the editor being built. |
-| `CELL_ENABLE_PROJECTS` | ON | Enables the in tree project being built. |
-| `CELL_ENABLE_TESTS` | ON | Enables tests across the entire engine. |
-| `CELL_ENABLE_TESTS_LIKELY_FAILURE` | OFF | Enables tests that are likely to fail or not properly implemented yet. |
-| `CELL_ENABLE_UTILITIES` | ON | Enables utilities being built. |
-| `CELL_ENABLE_STATIC_BUILD` | ON | Builds all library components statically. Particularly recommended for release builds. |
-
 ## Core
 The core implements a platform-agnostic interface for the editor, all modules, titles and utilities.
-
-| Setting | Default Value | Intent |
-|-|-|-|
-| `CELL_CORE_SKIP_ASSERT` | OFF | Disables checking assertions. Takes priority over all assertion options. |
-| `CELL_CORE_USE_EXTERNAL_ASSERT` | OFF | Calls `assert()` in case an assertion fails. Takes priority over `CELL_USE_PANIC_ASSERT` |
-| `CELL_CORE_USE_PANIC_ASSERT` | ON | Calls `Cell::System::Panic()` in case an assertion fails. |
 
 ## Editor
 The editor serves as a creation utility for various workloads.
@@ -58,18 +41,17 @@ The editor serves as a creation utility for various workloads.
 ## Modules
 | Name | Implementation | Notes |
 |-|-|-|
-| Audio | WASAPI (Windows), PulseAudio (Linux) | |
-| D3D12 | DirectX 12.1 | Windows only |
+| Audio | WASAPI (Windows), CoreAudio (macOS), PulseAudio (Linux) | |
 | DataManagement | self-contained | |
 | Mathematics | self-contained | |
 | OpenXR | OpenXR 1.0 | Supports D3D12 and Vulkan |
-| Shell | Windows, Wayland (Linux), HID, etc | Serves input implementations |
-| Vulkan | Vulkan 1.2 | Implemented WSIs: Win32 and Wayland |
+| Renderer | D3D12 (Windows), Metal (macOS), Vulkan 1.2 (all) | Implemented Vulkan WSIs: Win32, Metal, Wayland |
+| Shell | Windows, AppKit (macOS), Wayland (Linux), HID, etc | Serves input implementations |
 
 A content packing utility is also available.
 
-## In-tree Project
-The project in Cell's source tree is meant to be a broad testing ground.
+## In-tree Projects
+The projects in Cell's source tree are meant to be a broad testing ground.
 
 ## Testing
 The engine, modules and projects may use tests.

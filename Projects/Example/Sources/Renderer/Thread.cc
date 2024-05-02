@@ -121,6 +121,9 @@ void Example::RendererThread() {
     shellResult = this->shell->IndicateStatus(Shell::ShellStatus::Default);
     CELL_ASSERT(shellResult == Shell::Result::Success);
 
+    shellResult = this->shell->CaptureState(true);
+    CELL_ASSERT(shellResult == Shell::Result::Success);
+
     uint64_t finishedTick = System::GetPreciseTickerValue();
     while (this->shell->IsStillActive()) {
         this->renderDeltaTime = Cell::Utilities::Minimum((System::GetPreciseTickerValue() - finishedTick) / 1000.f, 0.001f);
@@ -128,10 +131,7 @@ void Example::RendererThread() {
         if (!this->shell->IsInForeground()) {
             System::SleepPrecise(400);
             continue;
-        } /*else {
-            shellResult = this->shell->CaptureState(true);
-            CELL_ASSERT(shellResult == Shell::Result::Success);
-        }*/
+        }
 
         ubo.delta = this->renderDeltaTime;
         ubo.view = this->controller->GetCamera();

@@ -14,7 +14,7 @@ using namespace Cell::Memory;
 void CellEntry(Reference<String> parameterString) {
     (void)(parameterString);
 
-    ScopedObject<IO::File> file = IO::File::Open("./Engine/Modules/DataManagement/Content/Box.glb").Unwrap();
+    ScopedObject<IO::File> file = IO::File::Open("./Engine/Modules/DataManagement/Tests/Content/Box.glb").Unwrap();
     const size_t size = file->GetSize();
 
     OwnedBlock<uint8_t> data(size);

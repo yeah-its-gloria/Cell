@@ -1,0 +1,11 @@
+# SPDX-FileCopyrightText: Copyright 2023-2024 Gloria G.
+# SPDX-License-Identifier: BSD-2-Clause
+
+option('core_assert_mode', type: 'combo', choices: [ 'external', 'panic', 'skip' ], description: 'How to act when assert checks fail and or Cell::System::Panic is called.')
+option('test_mode', type: 'combo', choices: [ 'functioning', 'all', 'none' ], description: 'Which tests should be activated.')
+
+option('editor', type: 'boolean', description: 'Whether the editor should be built.')
+option('projects', type: 'boolean', description: 'Whether all projects should be built.')
+option('utilities', type: 'boolean', description: 'Whether utilities should be built.')
+
+option('core_windows_log_console', type: 'boolean', description: 'Whether debug logging should go to stdout instead of OutputDebugStringW.')

@@ -16,7 +16,7 @@ using namespace Cell::Memory;
 void CellEntry(Reference<String> parameterString) {
     (void)(parameterString);
 
-    ScopedObject<IO::File> file = IO::File::Open("./Modules/DataManagement/Content/TransTrueColor.png").Unwrap();
+    ScopedObject<IO::File> file = IO::File::Open("./Modules/DataManagement/Tests/Content/TransTrueColor.png").Unwrap();
     const size_t size = file->GetSize();
 
     OwnedBlock<uint8_t> data(size);

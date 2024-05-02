@@ -1,0 +1,16 @@
+// SPDX-FileCopyrightText: Copyright 2023-2024 Gloria G.
+// SPDX-License-Identifier: BSD-2-Clause
+
+#pragma once
+
+// Declares the major version component for Cell.
+#define CELL_VERSION_MAJOR @Cell_VERSION_MAJOR@
+
+// Declares the minor version component for Cell.
+#define CELL_VERSION_MINOR @Cell_VERSION_MINOR@
+
+// Declares the patch version component for Cell.
+#define CELL_VERSION_PATCH @Cell_VERSION_PATCH@
+
+// Contains the current version of Cell as a string literal.
+#define CELL_VERSION_STRING "@Cell_VERSION_MAJOR@.@Cell_VERSION_MINOR@.@Cell_VERSION_PATCH@"

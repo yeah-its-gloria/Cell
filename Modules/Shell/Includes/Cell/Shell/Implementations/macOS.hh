@@ -14,6 +14,9 @@
 @interface CellWindowImpl : NSWindow {}
 @property(assign) Cell::Shell::KeyboardButton* keysRef;
 @property(assign) Cell::System::Mutex* keyLock;
+@property(assign) double* mouseXRef;
+@property(assign) double* mouseYRef;
+@property(assign) bool    isLocked;
 @end
 
 @interface CellWindowDelegate : NSObject<NSWindowDelegate>

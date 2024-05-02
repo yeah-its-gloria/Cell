@@ -6,6 +6,7 @@
 #include <Cell/System/Panic.hh>
 
 #include <AudioToolbox/AudioFormat.h>
+#include <AudioUnit/AudioUnit.h>
 
 Cell::Audio::DeviceInfo::~DeviceInfo() {
     // ...

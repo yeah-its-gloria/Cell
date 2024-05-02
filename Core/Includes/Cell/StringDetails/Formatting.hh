@@ -72,6 +72,10 @@ IMPL_PRIMITIVE(int16_t, Int, sInt)
 IMPL_PRIMITIVE(int32_t, Int, sInt)
 IMPL_PRIMITIVE(int64_t, Int, sInt)
 
+#ifdef CELL_PLATFORM_MACOS
+IMPL_PRIMITIVE(size_t, UInt, uInt)
+#endif
+
 IMPL_PRIMITIVE(float, FloatingPoint, floatingPoint)
 IMPL_PRIMITIVE(double, FloatingPoint, floatingPoint)
 
