@@ -13,9 +13,9 @@ Note that some platform implementations might be less functional than others (I 
 Cell has the following dependencies:
 | Name | Minimum Version | Platform | Notes | Ubuntu Package | Arch Linux Package |
 |-|-|-|-|-|-|
-| [LLVM](https://llvm.org) | 16.0.0 | All | Specifically clang and lld are needed. clang-cl can be used on Windows, if desired. Other compilers are **not officially** supported. | `clang`, `lld`, `llvm` | `clang`, `lld`, `llvm` |
+| [LLVM](https://llvm.org) | 16.0.0 | All | Specifically clang and lld are needed. clang-cl may be usable on Windows, but untested. Other compilers aren't tested or supported. | `clang`, `lld`, `llvm` | `clang`, `lld`, `llvm` |
 | [Meson](https://mesonbuild.org/) | 1.4.0 | All | | `meson` | `meson` |
-| [Ninja](https://ninja-build.org/) | 1.11.1 | All | Recommended generator for CMake. | `ninja-build` | `ninja` ||
+| [Ninja](https://ninja-build.org/) | 1.11.1 | All | Recommended backend for Meson. Xcode works too, if you can stand it. Visual Studio is broken. | `ninja-build` | `ninja` ||
 | | | | | | |
 | [Windows SDK](https://developer.microsoft.com/en-us/windows/downloads/windows-sdk/) | 10.0.22621.0 | Windows | Should be installed alongside MSVC v143. | | |
 | | | | | | |
