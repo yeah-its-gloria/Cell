@@ -14,7 +14,7 @@ SPDX-License-Identifier: BSD-2-Clause
         </application>
     </compatibility>
 
-    <description>@DESCRIPTION@</description>
+    <description>Cell</description>
 
     <dependency>
         <dependentAssembly>

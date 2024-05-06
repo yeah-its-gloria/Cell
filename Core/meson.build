@@ -1,6 +1,9 @@
 # SPDX-FileCopyrightText: Copyright 2023-2024 Gloria G.
 # SPDX-License-Identifier: BSD-2-Clause
 
+version_parts = meson.project_version().split('.')
+assert(version_parts.length() == 3, 'Malformed version')
+
 # Base parameters
 
 core_includes = [ include_directories('Includes'), include_directories('.') ]
@@ -47,6 +50,8 @@ core_private_linker_args = []
 
 core_bootstrap_sources = []
 core_bootstrap_link_args = []
+
+core_sources_shared = []
 
 # Options
 
@@ -140,6 +145,26 @@ if host_machine.system() == 'windows'
     core_bootstrap_link_args += [
         '-lntdll',
         '-Wl,-entry:mainCRTStartup'
+    ]
+
+    # Manifest generation
+    windows = import('windows')
+
+    manifest_rc_file = configure_file(
+        input: 'BuildContent/Windows/Manifest.rc.in',
+        output: 'Manifest.rc',
+        configuration: {
+            'CORE_DIRECTORY': meson.current_source_dir(),
+            'VMAJOR':         version_parts[0],
+            'VMINOR':         version_parts[1],
+            'VPATCH':         version_parts[2]
+        }
+    )
+
+    manifest_rc =  windows.compile_resources(manifest_rc_file)
+
+    core_sources_shared += [
+        manifest_rc
     ]
 elif host_machine.system() == 'darwin'
     core_sources += [
@@ -253,9 +278,6 @@ endif
 
 # File generation
 
-version_parts = meson.project_version().split('.')
-assert(version_parts.length() == 3, 'Malformed version')
-
 configure_file(
     input: 'GeneratedIncludes/CellVersion.h.in',
     output: 'CellVersion.h',
@@ -269,7 +291,7 @@ configure_file(
 # Target setup
 
 core_library = shared_library('CellCore',
-    sources: core_sources,
+    sources: [ core_sources, core_sources_shared ],
     include_directories: core_includes,
 
     c_args: core_defines,
@@ -288,7 +310,7 @@ core = declare_dependency(
     link_with: core_library
 )
 
-core_bootstrapper = declare_dependency(sources: core_bootstrap_sources, link_args: core_bootstrap_link_args)
+core_bootstrapper = declare_dependency(sources: [ core_bootstrap_sources, core_sources_shared], link_args: core_bootstrap_link_args)
 
 # Tests
 

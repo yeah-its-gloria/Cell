@@ -32,10 +32,10 @@ void CellEntry(Reference<String> parameterString) {
     // SORRY :(
 
     shell->Log(String::Format("Loopback:\t%", renderers[3].name));
-    shell->Log(String::Format("Render:\t\t%", renderers[0].name));
+    shell->Log(String::Format("Render:\t\t%", renderers[1].name));
 
     ScopedObject<Audio::ICapturer> loopback = subsystem->CreateLoopback(renderers[3], format).Unwrap();
-    ScopedObject<Audio::IRenderer> renderer = subsystem->CreateRenderer(renderers[0], format).Unwrap();
+    ScopedObject<Audio::IRenderer> renderer = subsystem->CreateRenderer(renderers[1], format).Unwrap();
 
     Audio::Result result = loopback->Start();
     CELL_ASSERT(result == Audio::Result::Success);
