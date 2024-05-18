@@ -34,7 +34,7 @@ using namespace Cell;
 -(BOOL) applicationSupportsSecureRestorableState: (NSApplication*) app {
     (void)(app);
 
-    return NO;
+    return YES;
 }
 @end
 

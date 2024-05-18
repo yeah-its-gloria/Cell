@@ -3,6 +3,10 @@
 
 #include <Cell/Renderer/Vulkan/Device.hh>
 
+#ifdef CELL_PLATFORM_MACOS
+#include <vulkan/vulkan_beta.h>
+#endif
+
 namespace Cell::Renderer::Vulkan {
 
 Wrapped<Device*, Result> Instance::CreateDevice() {
@@ -15,7 +19,7 @@ Wrapped<Device*, Result> Instance::CreateDevice() {
         VK_EXT_EXTENDED_DYNAMIC_STATE_EXTENSION_NAME,
 
 #ifdef CELL_PLATFORM_MACOS
-        "VK_KHR_portability_subset"
+        VK_KHR_PORTABILITY_SUBSET_EXTENSION_NAME
 #endif
     };
 
