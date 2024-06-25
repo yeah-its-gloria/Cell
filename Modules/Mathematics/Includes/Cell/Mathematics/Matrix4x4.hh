@@ -8,7 +8,7 @@
 namespace Cell::Mathematics {
 
 // 4 x 4 matrix.
-class alignas(16) Matrix4x4 : public Object {
+class alignas(4) Matrix4x4 : public Object {
 public:
     // Creates an empty matrix.
     CELL_FUNCTION Matrix4x4();

@@ -132,11 +132,16 @@ Wrapped<Device*, Result> Instance::CreateDevice(const char** extensions, const u
         .inheritedQueries                        = VK_FALSE
     };
 
-    const VkPhysicalDeviceExtendedDynamicStateFeaturesEXT extendedDynamicStateFeature = {
-        .sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_EXTENDED_DYNAMIC_STATE_FEATURES_EXT,
-        .pNext = nullptr,
-        .extendedDynamicState = VK_TRUE
+    const VkPhysicalDeviceScalarBlockLayoutFeatures scalarBlockLayoutFeature = {
+        .sType             = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SCALAR_BLOCK_LAYOUT_FEATURES,
+        .pNext             = nullptr,
+        .scalarBlockLayout = VK_TRUE
+    };
 
+    const VkPhysicalDeviceExtendedDynamicStateFeaturesEXT extendedDynamicStateFeature = {
+        .sType                = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_EXTENDED_DYNAMIC_STATE_FEATURES_EXT,
+        .pNext                = (void*)&scalarBlockLayoutFeature,
+        .extendedDynamicState = VK_TRUE
     };
 
     const VkPhysicalDeviceDynamicRenderingFeaturesKHR dynamicRenderingFeature = {

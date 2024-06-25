@@ -13,7 +13,7 @@
 #include <Cell/Renderer/Vulkan/Pipeline.hh>
 #include <Cell/Renderer/Vulkan/RenderTarget.hh>
 
-struct CELL_PACKED(16) ExampleUBO {
+struct ExampleUBO {
     Cell::Mathematics::Matrix4x4 model;
     Cell::Mathematics::Matrix4x4 view;
     Cell::Mathematics::Matrix4x4 projection;

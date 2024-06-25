@@ -159,8 +159,8 @@ Wrapped<Device::SwapchainData, Result> Device::CreateSwapchainForSurface(const S
         };
 
         const CommandParameters::InsertBarrier barrierParams = {
-            .stageMaskSource      = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
-            .stageMaskDestination = VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT,
+            .stageMaskSource      = VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT,
+            .stageMaskDestination = VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT,
             .dependencyFlags      = 0,
             .barrierCount         = 0,
             .barriers             = nullptr,

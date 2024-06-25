@@ -22,7 +22,7 @@ void VulkanToolsGenerateRenderCommands(const uint32_t vertexCount,
         .sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER,
         .pNext = nullptr,
         .srcAccessMask = VK_ACCESS_NONE,
-        .dstAccessMask = VK_ACCESS_NONE,
+        .dstAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT,
         .oldLayout = VK_IMAGE_LAYOUT_UNDEFINED,
         .newLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL,
         .srcQueueFamilyIndex = 0,
@@ -30,14 +30,14 @@ void VulkanToolsGenerateRenderCommands(const uint32_t vertexCount,
         .image = target->GetColorImage(frameId),
         .subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT,
         .subresourceRange.baseMipLevel = 0,
-        .subresourceRange.levelCount = 1,
+        .subresourceRange.levelCount = VK_REMAINING_MIP_LEVELS,
         .subresourceRange.baseArrayLayer = 0,
-        .subresourceRange.layerCount = 1
+        .subresourceRange.layerCount = VK_REMAINING_ARRAY_LAYERS
     };
 
     const CommandParameters::InsertBarrier drawingBarrier = {
         .stageMaskSource = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
-        .stageMaskDestination = VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT,
+        .stageMaskDestination = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
         .dependencyFlags = 0,
         .barrierCount = 0,
         .barriers = nullptr,
@@ -165,9 +165,9 @@ void VulkanToolsGenerateRenderCommands(const uint32_t vertexCount,
         .image = target->GetColorImage(frameId),
         .subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT,
         .subresourceRange.baseMipLevel = 0,
-        .subresourceRange.levelCount = 1,
+        .subresourceRange.levelCount = VK_REMAINING_MIP_LEVELS,
         .subresourceRange.baseArrayLayer = 0,
-        .subresourceRange.layerCount = 1
+        .subresourceRange.layerCount = VK_REMAINING_ARRAY_LAYERS
     };
 
     const CommandParameters::InsertBarrier presentationBarrier = {

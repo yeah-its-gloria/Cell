@@ -100,8 +100,8 @@ void Example::RendererThread() {
 
     //VulkanToolsLoadShader(&pipeline, this->GetContentPath("/Shaders/Default.spv"));
 
-    VulkanToolsLoadShader(&pipeline, this->GetContentPath("/Shaders/DefaultVertex.spv"), Stage::Vertex);
-    VulkanToolsLoadShader(&pipeline, this->GetContentPath("/Shaders/DefaultFragment.spv"), Stage::Fragment);
+    VulkanToolsLoadShader(&pipeline, this->GetContentPath("/Shaders/Default2Vertex.spv"), Stage::Vertex);
+    VulkanToolsLoadShader(&pipeline, this->GetContentPath("/Shaders/Default2Fragment.spv"), Stage::Fragment);
 
     Result result = pipeline->Finalize();
     CELL_ASSERT(result == Result::Success);

@@ -43,9 +43,15 @@ uint16_t Instance::ScorePhysicalDevice(VkPhysicalDevice device) {
 
     // Feature checks
 
+    VkPhysicalDeviceScalarBlockLayoutFeatures scalarBlockLayoutFeature = {
+        .sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SCALAR_BLOCK_LAYOUT_FEATURES,
+        .pNext = nullptr,
+        .scalarBlockLayout = VK_FALSE
+    };
+
     VkPhysicalDeviceExtendedDynamicStateFeaturesEXT extendedDynamicStateFeature = {
         .sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_EXTENDED_DYNAMIC_STATE_FEATURES_EXT,
-        .pNext = nullptr,
+        .pNext = &scalarBlockLayoutFeature,
         .extendedDynamicState = VK_FALSE
     };
 
@@ -79,7 +85,8 @@ uint16_t Instance::ScorePhysicalDevice(VkPhysicalDevice device) {
         features.features.shaderInt64                    == VK_FALSE ||
         features.features.shaderInt16                    == VK_FALSE ||
         dynamicRenderingFeature.dynamicRendering         == VK_FALSE ||
-        extendedDynamicStateFeature.extendedDynamicState == VK_FALSE
+        extendedDynamicStateFeature.extendedDynamicState == VK_FALSE ||
+        scalarBlockLayoutFeature.scalarBlockLayout       == VK_FALSE
     ) {
         return 0;
     }*/

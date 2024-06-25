@@ -3,6 +3,7 @@
 
 #version 460
 #pragma shader_stage(vertex)
+#extension GL_EXT_scalar_block_layout : enable
 
 layout (location = 0) in vec3 inPosition;
 layout (location = 1) in vec4 inColor;
@@ -13,7 +14,7 @@ layout (location = 0) out vec4 outColor;
 layout (location = 1) out vec2 outTexCoords;
 layout (location = 2) out uint outTexIndex;
 
-layout (set = 0, binding = 0) uniform vsubo {
+layout (scalar, set = 0, binding = 0) uniform vsubo {
     mat4x4 model;
     mat4x4 view;
     mat4x4 projection;
